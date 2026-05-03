@@ -427,7 +427,7 @@ body {
   overflow: hidden;
   transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.player-panel.open { max-height: 420px; }
+.player-panel.open { max-height: 400px; }
 
 .player-panel-header {
   display: flex;
@@ -456,21 +456,12 @@ body {
 }
 .player-close:hover { color: var(--accent); }
 
-.player-frame {
+#player-editor {
+  display: block;
   width: 100%;
   height: 340px;
-  border: none;
   border-radius: 3px;
-  background: #0e0c09;
-}
-
-.player-hint {
-  font-family: 'Courier New', monospace;
-  font-size: 0.62rem;
-  color: #4a3e32;
-  letter-spacing: 0.08em;
-  text-align: center;
-  padding: 0.35rem 0 0.1rem;
+  overflow: hidden;
 }
 
 /* ── Keyframes ── */

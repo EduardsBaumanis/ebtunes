@@ -24,19 +24,28 @@ function strudelUrl(code) {
   return 'https://strudel.cc/#' + btoa(unescape(encodeURIComponent(code)));
 }
 
-function embedUrl(code) {
-  return 'https://strudel.cc/?embed#' + btoa(unescape(encodeURIComponent(code)));
-}
-
 function openPlayer(song) {
   document.getElementById('player-title').textContent = song.title;
-  document.getElementById('player-frame').src = embedUrl(song.code);
   document.getElementById('player-panel').classList.add('open');
+  const el = document.getElementById('player-editor');
+  const loadCode = () => {
+    if (el.editor) {
+      el.editor.setCode(song.code);
+      el.editor.evaluate();
+    } else {
+      el.setAttribute('code', song.code);
+    }
+  };
+  if (el.editor) {
+    loadCode();
+  } else {
+    customElements.whenDefined('strudel-editor').then(loadCode);
+  }
 }
 
 function closePlayer() {
   document.getElementById('player-panel').classList.remove('open');
-  document.getElementById('player-frame').src = 'about:blank';
+  try { document.getElementById('player-editor').editor.stop(); } catch (e) {}
 }
 
 function showView(id) {
@@ -187,9 +196,6 @@ function init() {
   document.getElementById('btn-not').addEventListener('click', () => vote('not'));
   document.getElementById('btn-reset').addEventListener('click', reset);
   document.getElementById('player-close').addEventListener('click', closePlayer);
-  document.getElementById('player-modal').addEventListener('click', e => {
-    if (e.target === e.currentTarget) closePlayer();
-  });
 
   document.addEventListener('keydown', e => {
     if (document.getElementById('player-panel').classList.contains('open')) {
