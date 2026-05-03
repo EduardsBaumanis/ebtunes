@@ -1,0 +1,117 @@
+// ============================================================
+// LESSON 06: Synths and Sound Design
+// ============================================================
+// Every sound is a WAVEFORM — a pattern of air pressure changes over time.
+// Synthesizers generate waveforms electronically using OSCILLATORS.
+//
+// THE FOUR BASIC WAVEFORMS:
+//
+//   SINE      →  Only the fundamental frequency. No harmonics.
+//                Sounds: smooth, pure, warm, mellow.
+//                Uses: sub-bass, soft leads, flute-like tones.
+//
+//   TRIANGLE  →  Odd harmonics at low intensity.
+//                Sounds: hollow, reedy, softer than square.
+//                Uses: NES/chiptune sounds, soft bass lines.
+//
+//   SQUARE    →  Odd harmonics at full intensity.
+//                Sounds: hollow, buzzy, nasal, clarinety.
+//                Uses: chiptune leads, classic synth bass.
+//
+//   SAWTOOTH  →  All harmonics (both odd and even). Rich and full.
+//                Sounds: bright, cutting, buzzy, "aggressive".
+//                Uses: leads, strings, pads, bass — most versatile.
+//
+// THE ADSR ENVELOPE — shapes volume over time:
+//   A = Attack   time to reach full volume  (0.001 = instant, 1.0 = 1-sec swell)
+//   D = Decay    time to fall to sustain level
+//   S = Sustain  volume level while key is held  (0.0 to 1.0)
+//   R = Release  time to fade after note ends
+//
+//   In Strudel:
+//     .attack(seconds)    .decay(seconds)
+//     .sustain(level)     .release(seconds)
+//
+// FILTERS:
+//   LPF (Low-Pass Filter) — lets low frequencies through, cuts highs.
+//     .lpf(hz)  →  200 = very dark/muffled, 5000 = bright/open
+//   HPF (High-Pass Filter) — lets highs through, cuts lows.
+//     .hpf(hz)  →  removes bassy rumble, makes sound thin/airy
+// ============================================================
+
+setcpm(55)
+
+// --- EXAMPLE 1: The four waveforms on the same note ---
+// Uncomment each one to compare timbres. Same pitch, very different sound.
+note("c3*4").sound("sine")
+// note("c3*4").sound("triangle")
+// note("c3*4").sound("square")
+// note("c3*4").sound("sawtooth")
+
+
+// --- EXAMPLE 2: ADSR — slow attack (string-like pad) ---
+// Slow attack makes notes swell in rather than hit immediately.
+// note("c4 e4 g4 b4")
+//   .sound("sawtooth")
+//   .attack(0.5)      // 500ms swell
+//   .decay(0.1)
+//   .sustain(0.8)
+//   .release(0.8)
+//   .slow(2)
+
+
+// --- EXAMPLE 3: Pluck synth (percussive ADSR) ---
+// Short attack + short decay + zero sustain = plucked/percussive sound.
+// note("c3 e3 g3 c3 bb2 g3 e3 c3")
+//   .sound("triangle")
+//   .attack(0.001)
+//   .decay(0.12)
+//   .sustain(0.0)
+//   .release(0.05)
+
+
+// --- EXAMPLE 4: LPF darkness control ---
+// Change the lpf value to hear from muffled to bright.
+// note("c3*4")
+//   .sound("sawtooth")
+//   .lpf(400)    // try: 100, 200, 500, 1000, 3000, 8000
+
+
+// --- EXAMPLE 5: Sub-bass with sine wave ---
+// Sine = no harmonics = pure, deep bass. Used in almost all electronic music.
+// The kick and bass together form the "low end" of a track.
+// stack(
+//   s("bd ~ sd ~"),
+//   note("c2*4").sound("sine").gain(0.9)
+// )
+
+
+// --- EXAMPLE 6: Classic synth bass (sawtooth + LPF + envelope) ---
+// Open the LPF slightly with a fast envelope = "wah" articulation.
+// note("c2 ~ eb2 f2 ~ f2 eb2 ~")
+//   .sound("sawtooth")
+//   .lpf(600)
+//   .attack(0.005)
+//   .decay(0.1)
+//   .sustain(0.3)
+//   .release(0.1)
+//   .gain(0.75)
+
+
+// --- EXAMPLE 7: Layered synth pad ---
+// Two sawtooth waves = richer sound. Try with slow attack for pads.
+// stack(
+//   note("<[c4,g4] [ab3,eb4]>").sound("sawtooth").attack(0.6).release(1.0)
+//     .lpf(1800).room(0.5).gain(0.35),
+//   note("<[c4,g4] [ab3,eb4]>").sound("sawtooth").attack(0.8).release(1.2)
+//     .lpf(1400).room(0.6).gain(0.25)
+// )
+
+
+// ============================================================
+// EXERCISE:
+//   1. Build a "lead synth": sawtooth + lpf(2000) + fast attack + short release
+//   2. Build a "bass": sawtooth + lpf(300) + attack(0.005) + gain(0.8)
+//   3. Build a "pad": sawtooth + attack(0.8) + release(1.5) + room(0.6) + lpf(1200)
+//   4. Try .vowel("<a e i o>") on a sawtooth — what does it do?
+// ============================================================

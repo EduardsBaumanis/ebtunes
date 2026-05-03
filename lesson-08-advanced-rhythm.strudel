@@ -1,0 +1,117 @@
+// ============================================================
+// LESSON 08: Advanced Rhythm — Euclidean, Polyrhythm & Variation
+// ============================================================
+// Beyond basic 4/4 patterns, rhythm gets fascinating with math and probability.
+//
+// EUCLIDEAN RHYTHMS:
+//   Discovered by Godfried Toussaint — distribute N hits as evenly
+//   as possible across K steps. These patterns appear in African, Middle
+//   Eastern, and Latin music, evolved independently across cultures.
+//
+//   Notation: E(hits, steps)
+//   E(2,3)  = [x . x]            waltz feel
+//   E(3,8)  = [x . . x . . x .]  tresillo (Latin/African clave)
+//   E(5,8)  = [x . x x . x x .]  bossa nova clave
+//   E(4,16) = [x . . . x . . . x . . . x . . .]  straight 4/4
+//   E(7,16) = complex, asymmetric — feels "alive"
+//
+//   In Strudel:  s("bd").euclid(3, 8)
+//   With offset: s("bd").euclid(3, 8, 1)  ← rotate pattern by 1 step
+//
+// POLYRHYTHM vs POLYMETER:
+//   Polyrhythm: N different rhythms over the SAME time span.
+//     3 hits vs 4 hits in the same bar = 3:4 polyrhythm.
+//     Both finish at the same time. Creates internal cross-rhythm.
+//
+//   Polymeter: patterns of DIFFERENT LENGTHS looping independently.
+//     A 3-step pattern against a 4-step pattern slowly drifts apart,
+//     realigning after 12 steps (LCM). Used in Steve Reich, minimalism.
+//
+// SYNCOPATION:
+//   Emphasis on OFF-BEATS or WEAK beats. Creates groove and tension.
+//   "bd ~ ~ ~" = downbeat (simple)
+//   "~ bd ~ ~" = syncopated (kick on beat 2 only — reggae style)
+//   "bd ~ [~ bd] ~" = kick on beat 1 and the "and" of beat 2
+//
+// PATTERN TRANSFORMATIONS:
+//   .every(n, fn)     apply fn every n cycles
+//   .sometimes(fn)    apply fn ~50% of cycles  (random)
+//   .often(fn)        apply fn ~75% of cycles
+//   .rarely(fn)       apply fn ~25% of cycles
+//   .rev()            reverse the pattern
+//   .degradeBy(p)     drop notes randomly with probability p (0–1)
+// ============================================================
+
+setcpm(65)
+
+// --- EXAMPLE 1: Euclidean tresillo E(3,8) ---
+// 3 hits over 8 steps — the most common rhythm in Latin and African music.
+s("bd").euclid(3, 8)
+
+
+// --- EXAMPLE 2: Bossa nova feel —  E(3,8) + E(2,8) ---
+// stack(
+//   s("bd").euclid(3, 8).gain(0.9),
+//   s("sd").euclid(2, 8).gain(0.7),
+//   s("hh*8").gain(0.4)
+// )
+
+
+// --- EXAMPLE 3: Polyrhythm — 3 against 4 ---
+// Both patterns span exactly ONE cycle. The kick plays 3 times,
+// the snare plays 4. They weave together and create tension.
+// stack(
+//   s("bd*3").gain(0.9),    // 3 evenly-spaced kicks per cycle
+//   s("sd*4").gain(0.6)     // 4 evenly-spaced snares per cycle
+// )
+
+
+// --- EXAMPLE 4: Rotating a Euclidean pattern (offset) ---
+// Same rhythm, different starting point. Shifts the groove's "feel".
+// stack(
+//   s("bd").euclid(3, 8),         // default start
+//   s("sd").euclid(3, 8, 2),      // rotated by 2 steps
+//   s("hh*8").gain(0.35)
+// )
+
+
+// --- EXAMPLE 5: every() for automatic variation ---
+// The pattern plays normally, but every 4th cycle it runs a function.
+// s("bd sd bd sd").every(4, x => x.rev())
+
+
+// --- EXAMPLE 6: sometimes() — humanizing a hi-hat ---
+// Randomly vary the speed or effect on some cycles.
+// stack(
+//   s("bd ~ sd ~"),
+//   s("hh*8").sometimes(x => x.fast(2)).gain(0.45)
+// )
+
+
+// --- EXAMPLE 7: degradeBy() — controlled randomness / glitch ---
+// Randomly drop notes. Near 0 = mostly plays, near 1 = mostly silent.
+// Great for breakdowns, tension, and lo-fi feel.
+// stack(
+//   s("bd ~ sd ~").degradeBy(0.2),
+//   s("hh*8").degradeBy(0.4).gain(0.4)
+// )
+
+
+// --- EXAMPLE 8: Complex Euclidean groove ---
+// Layering multiple Euclidean patterns creates interlocking textures.
+// stack(
+//   s("bd").euclid(4, 16).gain(0.95),     // 4 kicks over 16 steps
+//   s("sd").euclid(3, 16).gain(0.8),      // 3 snares — avoids the kick
+//   s("hh").euclid(9, 16).gain(0.4),      // 9 hi-hats — dense
+//   s("oh").euclid(2, 16).gain(0.55)      // 2 open hats — accents
+// )
+
+
+// ============================================================
+// EXERCISE:
+//   1. Find E(5, 16) — does it feel different from E(4, 16)?
+//   2. Use .every(2, x => x.rev()) on a melody — notice the palindrome feel
+//   3. Try s("bd").euclid(3,8).every(4, x => x.euclid(5,8))
+//      — alternates between two Euclidean patterns
+//   4. Layer E(3,8) and E(5,8) — this is the bossa nova clave system
+// ============================================================
