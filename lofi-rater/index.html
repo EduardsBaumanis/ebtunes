@@ -54,11 +54,13 @@
 
       <!-- ── INLINE PLAYER ── -->
       <div id="player-panel" class="player-panel">
-        <div class="player-panel-header">
+        <div class="player-panel-inner">
           <span id="player-title" class="player-title"></span>
-          <button id="player-close" class="player-close">✕</button>
+          <div class="player-controls">
+            <button id="player-play-stop" class="player-play-stop">▶</button>
+            <button id="player-close" class="player-close">✕</button>
+          </div>
         </div>
-        <div id="player-slot"></div>
       </div>
 
       <div class="vote-row">
@@ -86,6 +88,11 @@
       <button id="btn-reset" class="btn-primary">Rate Again</button>
     </div>
   </div>
+
+  <!-- Pre-initialized off-screen Strudel engine -->
+  <strudel-editor id="strudel-engine"><!--
+s("bd")
+  --></strudel-editor>
 
   <script src="songs.js"></script>
   <script src="app.js"></script>

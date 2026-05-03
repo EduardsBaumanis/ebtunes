@@ -24,38 +24,43 @@ function strudelUrl(code) {
   return 'https://strudel.cc/#' + btoa(unescape(encodeURIComponent(code)));
 }
 
+let playerPlaying = false;
+
+function getEngine() {
+  return document.getElementById('strudel-engine');
+}
+
 function openPlayer(song) {
   document.getElementById('player-title').textContent = song.title;
   document.getElementById('player-panel').classList.add('open');
-
-  // Wait for the panel's max-height transition to finish (350ms) so
-  // CodeMirror can measure its container dimensions correctly.
-  setTimeout(() => {
-    const slot = document.getElementById('player-slot');
-    slot.innerHTML = '';
-
-    const el = document.createElement('strudel-editor');
-    el.id = 'player-editor';
-    // Code must be in an HTML comment — Strudel reads innerHTML on mount.
-    el.innerHTML = `<!--\n${song.code}\n-->`;
-    slot.appendChild(el);
-
-    // Give the element a frame to initialize, then auto-evaluate.
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      if (el.editor) {
-        try { el.editor.evaluate(); } catch (e) {}
-      }
-    }));
-  }, 380);
+  const engine = getEngine();
+  if (engine.editor) {
+    engine.editor.setCode(song.code);
+    try { engine.editor.evaluate(); playerPlaying = true; } catch (e) {}
+  }
+  document.getElementById('player-play-stop').textContent = playerPlaying ? '■' : '▶';
 }
 
 function closePlayer() {
   document.getElementById('player-panel').classList.remove('open');
-  const el = document.getElementById('player-editor');
-  if (el && el.editor) { try { el.editor.stop(); } catch (e) {} }
-  setTimeout(() => {
-    document.getElementById('player-slot').innerHTML = '';
-  }, 380);
+  const engine = getEngine();
+  if (engine.editor) { try { engine.editor.stop(); } catch (e) {} }
+  playerPlaying = false;
+  document.getElementById('player-play-stop').textContent = '▶';
+}
+
+function togglePlayStop() {
+  const engine = getEngine();
+  if (!engine.editor) return;
+  if (playerPlaying) {
+    try { engine.editor.stop(); } catch (e) {}
+    playerPlaying = false;
+    document.getElementById('player-play-stop').textContent = '▶';
+  } else {
+    try { engine.editor.evaluate(); } catch (e) {}
+    playerPlaying = true;
+    document.getElementById('player-play-stop').textContent = '■';
+  }
 }
 
 function showView(id) {
@@ -206,6 +211,7 @@ function init() {
   document.getElementById('btn-not').addEventListener('click', () => vote('not'));
   document.getElementById('btn-reset').addEventListener('click', reset);
   document.getElementById('player-close').addEventListener('click', closePlayer);
+  document.getElementById('player-play-stop').addEventListener('click', togglePlayStop);
 
   document.addEventListener('keydown', e => {
     if (document.getElementById('player-panel').classList.contains('open')) {
