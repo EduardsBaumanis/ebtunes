@@ -456,6 +456,10 @@ body {
 }
 .player-close:hover { color: var(--accent); }
 
+#player-slot {
+  width: 100%;
+  min-height: 0;
+}
 #player-editor {
   display: block;
   width: 100%;

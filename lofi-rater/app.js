@@ -27,25 +27,35 @@ function strudelUrl(code) {
 function openPlayer(song) {
   document.getElementById('player-title').textContent = song.title;
   document.getElementById('player-panel').classList.add('open');
-  const el = document.getElementById('player-editor');
-  const loadCode = () => {
-    if (el.editor) {
-      el.editor.setCode(song.code);
-      el.editor.evaluate();
-    } else {
-      el.setAttribute('code', song.code);
-    }
-  };
-  if (el.editor) {
-    loadCode();
-  } else {
-    customElements.whenDefined('strudel-editor').then(loadCode);
-  }
+
+  // Wait for the panel's max-height transition to finish (350ms) so
+  // CodeMirror can measure its container dimensions correctly.
+  setTimeout(() => {
+    const slot = document.getElementById('player-slot');
+    slot.innerHTML = '';
+
+    const el = document.createElement('strudel-editor');
+    el.id = 'player-editor';
+    // Code must be in an HTML comment — Strudel reads innerHTML on mount.
+    el.innerHTML = `<!--\n${song.code}\n-->`;
+    slot.appendChild(el);
+
+    // Give the element a frame to initialize, then auto-evaluate.
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (el.editor) {
+        try { el.editor.evaluate(); } catch (e) {}
+      }
+    }));
+  }, 380);
 }
 
 function closePlayer() {
   document.getElementById('player-panel').classList.remove('open');
-  try { document.getElementById('player-editor').editor.stop(); } catch (e) {}
+  const el = document.getElementById('player-editor');
+  if (el && el.editor) { try { el.editor.stop(); } catch (e) {} }
+  setTimeout(() => {
+    document.getElementById('player-slot').innerHTML = '';
+  }, 380);
 }
 
 function showView(id) {

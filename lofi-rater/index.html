@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>lofi rater</title>
   <link rel="stylesheet" href="style.css">
-  <script type="module" src="https://esm.sh/@strudel/repl@1.3.0"></script>
+  <script src="https://unpkg.com/@strudel/repl@1.3.0" defer></script>
 </head>
 <body>
 
@@ -58,7 +58,7 @@
           <span id="player-title" class="player-title"></span>
           <button id="player-close" class="player-close">✕</button>
         </div>
-        <strudel-editor id="player-editor"></strudel-editor>
+        <div id="player-slot"></div>
       </div>
 
       <div class="vote-row">
