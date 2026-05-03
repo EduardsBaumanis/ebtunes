@@ -30,11 +30,11 @@ setcpm(36)
 
 stack(
 
-  // ── KICK (hip-hop boom-bap) ──────────────────────────────────
-  // Kick on beat 1, the "and" of 2, and the "and" of 3.
-  // Classic lo-fi hip-hop placement — lands between the snare hits,
-  // creating a push-pull groove without clashing with beat 2.
-  s("bd ~ ~ bd ~ bd ~ ~")
+  // ── KICK (boom-bap, two kicks only) ─────────────────────────
+  // Beat 1 + the "and" of beat 2. The second kick anticipates
+  // beat 3, leaning the groove forward without crowding the
+  // snare on beat 4. Classic lo-fi hip-hop at slow tempos.
+  s("bd ~ ~ bd ~ ~ ~ ~")
     .gain(0.82)
     .lpf(3200),
 
