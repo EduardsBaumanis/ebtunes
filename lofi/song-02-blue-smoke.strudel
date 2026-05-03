@@ -12,7 +12,7 @@
 // quality — darker than major, but lighter than pure minor.
 // ══════════════════════════════════════════════════════════════
 
-setcpm(40)
+setcpm(17)
 
 stack(
 
@@ -38,7 +38,7 @@ stack(
   // the hi-hat sits in the back third of the beat (triplet swing).
   s("[hh [~ hh]]*4")
     .gain(0.28)
-    .hpf(6000)
+    .hpf(5200)\n    .room(0.1)
     .pan(0.64)
     .room(0.06),
 
@@ -61,7 +61,7 @@ stack(
   //   Cmaj9: C  ~  G  ~  |  Am7: A  ~  E  ~
   note("d2 ~ a2 ~ ~ ~  g2 ~ d3 ~ ~ ~  c2 ~ g2 ~ ~ ~  a2 ~ e3 ~ ~ ~")
     .sound("sawtooth")
-    .lpf(420)
+    .lpf(220)
     .attack(0.006).decay(0.14).sustain(0.4).release(0.09)
     .gain(0.65)
     .slow(3),

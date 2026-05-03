@@ -21,7 +21,7 @@
 //   never quite lands where you expect.
 // ══════════════════════════════════════════════════════════════
 
-setcpm(43)
+setcpm(30)
 
 stack(
 
@@ -47,7 +47,8 @@ stack(
   // straight, giving bossa its flowing rhythmic quality.
   s("hh").euclid(5, 8)
     .gain(0.3)
-    .hpf(7000)
+    .hpf(5500)
+    .room(0.12)
     .pan(0.63)
     .room(0.05),
 
@@ -70,7 +71,7 @@ stack(
   //   C7:    C (root) → G (5th)
   note("f2 ~ ~ c3 ~ ~ ~ ~  d2 ~ ~ a2 ~ ~ ~ ~  g2 ~ ~ d3 ~ ~ ~ ~  c2 ~ ~ g2 ~ ~ ~ ~")
     .sound("sawtooth")
-    .lpf(450)
+    .lpf(240)
     .attack(0.006).decay(0.1).sustain(0.5).release(0.1)
     .gain(0.6)
     .slow(4),

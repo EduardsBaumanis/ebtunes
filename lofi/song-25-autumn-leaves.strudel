@@ -1,0 +1,104 @@
+// ══════════════════════════════════════════════════════════════
+// "Autumn Leaves"
+// Lo-fi jazz — nostalgic, wistful, seasonal melancholy
+//
+// Key:    B major
+// Tempo:  ~79 BPM  (setcpm 39.5)
+// Chords: Bmaj7 → G#m7 → C#m7 → F#7  (I – vi – ii – V)
+// Feel:   Walking through fallen leaves, time passing softly
+// ══════════════════════════════════════════════════════════════
+
+setcpm(27)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Warm and textured. Walking pace.
+  s("bd ~ ~ bd ~ bd ~ ~")
+    .gain(0.79)
+    .lpf(4100),
+
+
+  // ── SNARE ────────────────────────────────────────────────────
+  // Organic and warm. Natural backbeat.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.69)
+    .room(0.11),
+
+
+  // ── HI-HAT ───────────────────────────────────────────────────
+  // Swung eighths with warmth and presence.
+  s("[hh [~ hh]]*4")
+    .gain(0.34)
+    .hpf(6200)
+    .room(0.09)
+    .pan(0.6),
+
+
+  // ── OPEN HI-HAT ──────────────────────────────────────────────
+  // Occasional rustling like leaves.
+  s("~ ~ ~ oh ~ ~ ~ ~")
+    .gain(0.46)
+    .hpf(5600)
+    .pan(0.57),
+
+
+  // ── BOUNCY BASS ───────────────────────────────────────────────
+  // Root to 5th, rhythmic but gentle.
+  //   Bmaj7: B  F# (5th)
+  //   G#m7:  G# D# (5th)
+  //   C#m7:  C# G# (5th)
+  //   F#7:   F# C# (5th)
+  note("b2 ~ fs3 ~ ~ ~  gs3 ~ ds4 ~ ~ ~  cs3 ~ gs3 ~ ~ ~  fs3 ~ cs4 ~ ~ ~")
+    .sound("sawtooth")
+    .lpf(290)
+    .attack(0.007).decay(0.11).sustain(0.45).release(0.08)
+    .gain(0.62)
+    .slow(3),
+
+
+  // ── WARM VOICINGS ─────────────────────────────────────────────
+  // Bright major and minor 7ths.
+  //   Bmaj7: B  D# F# A#
+  //   G#m7:  G# B  D# F#
+  //   C#m7:  C# E  G# B
+  //   F#7:   F# A# C# E
+  note("<[b4,ds5,fs5,as5] [gs4,b4,ds5,fs5] [cs4,e4,gs4,b4] [fs4,as4,cs5,e5]>")
+    .sound("sawtooth")
+    .attack(0.038)
+    .release(0.36)
+    .lpf(2550)
+    .room(0.25)
+    .gain(0.33)
+    .pan(0.43)
+    .slow(2),
+
+
+  // ── PAD (autumn warmth) ────────────────────────────────────────
+  // Sustained major chord texture.
+  note("<[b3,ds4,fs4] [gs4,b4,ds5] [cs4,e4,gs4] [fs4,as4,cs5]>")
+    .sound("sine")
+    .attack(0.13)
+    .release(0.68)
+    .lpf(1350)
+    .room(0.39)
+    .gain(0.17)
+    .slow(4),
+
+
+  // ── NOSTALGIC MELODY ──────────────────────────────────────────
+  // B major: B C# D# E F# G# A#
+  // Wistful and flowing.
+  note("ds5 ~ fs5 ~ gs5 fs5 ~ ds5  ~ cs5 ~ ~ b4 ~ ~ ds5")
+    .sound("sine")
+    .attack(0.019)
+    .release(0.29)
+    .delay(0.38)
+    .delaytime(0.333)
+    .delayfeedback(0.18)
+    .room(0.37)
+    .gain(0.53)
+    .pan(0.5)
+    .slow(2)
+
+)

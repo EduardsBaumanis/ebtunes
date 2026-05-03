@@ -23,7 +23,7 @@
 //   two octaves) so they ring like bells rather than stab.
 // ══════════════════════════════════════════════════════════════
 
-setcpm(38)
+setcpm(27)
 
 stack(
 
@@ -41,7 +41,8 @@ stack(
   // High HPF makes it more "air" than "metal."
   s("[hh [~ hh]]*4")
     .gain(0.22)
-    .hpf(9000)
+    .hpf(7500)
+    .room(0.14)
     .pan(0.6)
     .room(0.1),
 
@@ -62,7 +63,7 @@ stack(
   // Ebm9: Eb Ab  |  Abm9: Ab Eb  |  Dbmaj9: Db Ab  |  Bbm7: Bb F
   note("eb2 ~ ab2 ~ ~ ~  ab2 ~ eb3 ~ ~ ~  db2 ~ ab2 ~ ~ ~  bb2 ~ f3 ~ ~ ~")
     .sound("sawtooth")
-    .lpf(380)
+    .lpf(200)
     .attack(0.04).decay(0.2).sustain(0.6).release(0.3)
     .gain(0.6)
     .slow(3),

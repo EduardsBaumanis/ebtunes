@@ -25,7 +25,7 @@
 //   presence in the mid-range. Bright key, bright sound.
 // ══════════════════════════════════════════════════════════════
 
-setcpm(42)
+setcpm(29)
 
 stack(
 
@@ -48,7 +48,8 @@ stack(
   // than usual — lets a bit more body through.
   s("[hh [~ hh]]*4")
     .gain(0.32)
-    .hpf(5000)
+    .hpf(4200)
+    .room(0.11)
     .pan(0.62),
 
 

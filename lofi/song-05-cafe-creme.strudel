@@ -22,7 +22,7 @@
 //   The kick anticipates beat 3 slightly, creating a forward lean.
 // ══════════════════════════════════════════════════════════════
 
-setcpm(39)
+setcpm(27)
 
 stack(
 
@@ -47,7 +47,8 @@ stack(
   // jazz from straight dance music.
   s("[hh [~ hh]]*4")
     .gain(0.3)
-    .hpf(6000)
+    .hpf(5200)
+    .room(0.09)
     .pan(0.6),
 
 
@@ -60,7 +61,7 @@ stack(
   // D7:    D  A  then chromatic approach to G (C#→back to G)
   note("g2 ~ d3 ~ ~ ~  e2 ~ b2 ~ ~ ~  a2 ~ e3 ~ ~ ~  d2 ~ a2 ~ cs3 ~")
     .sound("sawtooth")
-    .lpf(500)
+    .lpf(280)
     .attack(0.006).decay(0.1).sustain(0.5).release(0.08)
     .gain(0.6)
     .slow(3),

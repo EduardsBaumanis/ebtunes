@@ -16,7 +16,7 @@
 //   it's a dominant chord, one that always "wants" to resolve.
 // ══════════════════════════════════════════════════════════════
 
-setcpm(35)
+setcpm(25)
 
 stack(
 
@@ -40,7 +40,8 @@ stack(
   // each beat, pulling the groove back and making it feel heavy.
   s("[hh [~ hh]]*4")
     .gain(0.28)
-    .lpf(11000)
+    .lpf(9500)
+    .room(0.09)
     .pan(0.63),
 
 

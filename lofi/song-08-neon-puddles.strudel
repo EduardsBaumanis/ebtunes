@@ -26,7 +26,7 @@
 //   "and" of beat 2 occasionally. More urban, less straight.
 // ══════════════════════════════════════════════════════════════
 
-setcpm(36)
+setcpm(25)
 
 stack(
 
@@ -54,7 +54,8 @@ stack(
   // Slightly more subdued than other songs — this is a night song.
   s("[hh [~ hh]]*4")
     .gain(0.26)
-    .lpf(10000)
+    .lpf(8800)
+    .room(0.11)
     .pan(0.64),
 
 
@@ -65,7 +66,7 @@ stack(
   // With passing tones between chords
   note("a2 ~ e3 ~ ~ ~  d2 ~ a2 ~ ~ ~  g2 ~ d3 ~ ~ ~  c2 ~ g2 ~ ~ ~")
     .sound("sawtooth")
-    .lpf(420)
+    .lpf(220)
     .attack(0.006).decay(0.13).sustain(0.45).release(0.09)
     .gain(0.63)
     .slow(3),

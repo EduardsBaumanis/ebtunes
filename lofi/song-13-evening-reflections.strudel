@@ -1,0 +1,86 @@
+// ══════════════════════════════════════════════════════════════
+// "Evening Reflections"
+// Lo-fi jazz — peaceful, contemplative, sunset hour
+//
+// Key:    Ab major
+// Tempo:  ~77 BPM  (setcpm 38.5)
+// Chords: Abmaj7 → Fm7 → Bbm7 → Eb7  (I – vi – ii – V)
+// Feel:   Watching the sun go down, everything turns gold
+// ══════════════════════════════════════════════════════════════
+
+setcpm(27)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Warm and steady. Simple pattern on beats 1 and 3.
+  s("bd ~ ~ ~ bd ~ ~ ~")
+    .gain(0.81)
+    .lpf(3800),
+
+
+  // ── SNARE ────────────────────────────────────────────────────
+  // Soft brushes, very organic feel with light room.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.67)
+    .room(0.14),
+
+
+  // ── HI-HAT ───────────────────────────────────────────────────
+  // Swung eighths, warm and mellow.
+  s("[hh [~ hh]]*4")
+    .gain(0.31)
+    .lpf(8000)
+    .room(0.1)
+    .pan(0.59),
+
+
+  // ── OPEN HI-HAT ──────────────────────────────────────────────
+  // Subtle shimmer on the second half of the phrase.
+  s("~ ~ ~ ~ ~ ~ ~ oh")
+    .gain(0.46)
+    .pan(0.57),
+
+
+  // ── WALKING BASS ─────────────────────────────────────────────
+  // Slow jazz walking, following harmonic movement.
+  //   Abmaj7: Ab C  Eb G
+  //   Fm7:    F  Ab C  Eb
+  //   Bbm7:   Bb Db F  Ab
+  //   Eb7:    Eb G  Bb Db
+  note("ab2 c3 eb3 g3  f3 ab3 c4 eb4  bb2 db3 f3 ab3  eb3 g3 bb3 db4")
+    .sound("sawtooth")
+    .lpf(210)
+    .attack(0.009).decay(0.13).sustain(0.48).release(0.09)
+    .gain(0.63),
+
+
+  // ── WARM CHORD PAD ────────────────────────────────────────────
+  // Lush voicings with 7ths and 9ths implied.
+  note("<[ab3,c4,eb4,g4] [f3,ab3,c4,eb4] [bb3,db4,f4,ab4] [eb3,g3,bb3,db4]>")
+    .sound("sawtooth")
+    .attack(0.07)
+    .release(0.52)
+    .lpf(2050)
+    .room(0.36)
+    .gain(0.27)
+    .pan(0.42)
+    .slow(2),
+
+
+  // ── MELODY ───────────────────────────────────────────────────
+  // Ab major pentatonic: Ab Bb C Eb F
+  // Warm, introspective, slightly detached.
+  note("c5 ~ eb5 ~ f5 ~ ab5 ~  ~ g4 ~ ~ f4 ~ eb5 ~")
+    .sound("triangle")
+    .attack(0.016)
+    .release(0.34)
+    .delay(0.38)
+    .delaytime(0.375)
+    .delayfeedback(0.24)
+    .room(0.46)
+    .gain(0.47)
+    .pan(0.51)
+    .slow(2)
+
+)
