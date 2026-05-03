@@ -415,61 +415,46 @@ body {
 .result-vote { font-size: 1.2rem; flex-shrink: 0; }
 
 /* ════════════════════════════
-   PLAYER MODAL
+   INLINE PLAYER PANEL
 ════════════════════════════ */
-.player-modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(10, 8, 5, 0.92);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-}
-.player-modal.open { display: flex; }
-
-.player-inner {
+.player-panel {
   width: 100%;
-  max-width: 760px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-  animation: fadeUp 0.22s ease both;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
+.player-panel.open { max-height: 420px; }
 
-.player-header {
+.player-panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  padding: 0.5rem 0 0.4rem;
 }
 
 .player-title {
-  font-size: 1.1rem;
-  color: var(--accent);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-family: 'Courier New', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--card-muted);
+  text-transform: uppercase;
 }
 
 .player-close {
   background: none;
-  border: 1px solid var(--border);
+  border: none;
   color: var(--card-muted);
-  padding: 0.3rem 0.9rem;
-  font-family: 'Courier New', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  line-height: 1;
   cursor: pointer;
-  border-radius: 2px;
-  transition: border-color 0.15s, color 0.15s;
-  white-space: nowrap;
+  padding: 0.1rem 0.2rem;
+  transition: color 0.15s;
 }
-.player-close:hover { border-color: var(--accent); color: var(--accent); }
+.player-close:hover { color: var(--accent); }
 
 .player-frame {
   width: 100%;
-  height: 420px;
+  height: 340px;
   border: none;
   border-radius: 3px;
   background: #0e0c09;
@@ -477,10 +462,11 @@ body {
 
 .player-hint {
   font-family: 'Courier New', monospace;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   color: #4a3e32;
   letter-spacing: 0.08em;
   text-align: center;
+  padding: 0.35rem 0 0.1rem;
 }
 
 /* ── Keyframes ── */

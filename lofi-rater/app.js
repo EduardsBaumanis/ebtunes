@@ -31,11 +31,11 @@ function embedUrl(code) {
 function openPlayer(song) {
   document.getElementById('player-title').textContent = song.title;
   document.getElementById('player-frame').src = embedUrl(song.code);
-  document.getElementById('player-modal').classList.add('open');
+  document.getElementById('player-panel').classList.add('open');
 }
 
 function closePlayer() {
-  document.getElementById('player-modal').classList.remove('open');
+  document.getElementById('player-panel').classList.remove('open');
   document.getElementById('player-frame').src = 'about:blank';
 }
 
@@ -74,6 +74,7 @@ function renderCard(song) {
 }
 
 function nextCard() {
+  closePlayer();
   if (queue.length === 0) {
     showResults();
     return;
@@ -191,9 +192,8 @@ function init() {
   });
 
   document.addEventListener('keydown', e => {
-    if (document.getElementById('player-modal').classList.contains('open')) {
+    if (document.getElementById('player-panel').classList.contains('open')) {
       if (e.key === 'Escape') closePlayer();
-      return;
     }
     if (document.getElementById('view-rating').classList.contains('active')) {
       if (e.key === 'ArrowRight' || e.key === 'l' || e.key === 'L') vote('hot');
