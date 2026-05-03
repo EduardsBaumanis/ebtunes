@@ -1,0 +1,135 @@
+// ============================================================
+// TECHNO LESSON 02: Berlin Minimal Techno
+// ============================================================
+// By the mid-1990s, Detroit's template had crossed the Atlantic
+// to Berlin. As reunification opened the city's abandoned buildings
+// — warehouses, power stations, bunkers — a new underground
+// culture emerged. The music got darker, slower, and radically minimal.
+//
+// Berlin minimal strips techno to its bare bones. If Detroit asked
+// "what can we add?", Berlin asked "what can we remove?"
+//
+// KEY ARTISTS:
+//   Plastikman (Richie Hawtin) — "Spastik", "Krakpot"
+//   Robert Hood — "Minimal Nation", "Internal Empire"
+//   Basic Channel / Maurizio — pioneers of dub-minimal crossover
+//   Marcel Dettmann, Ben Klock — modern Berlin techno
+//   Jeff Mills — "The Bells", "Waveform Transmission"
+//
+// DEFINING CHARACTERISTICS:
+//   ✦ Radical minimalism — often just 2–3 elements at a time
+//   ✦ Hypnotic repetition — tiny variations over LONG stretches
+//   ✦ Deep, dark, industrial atmosphere
+//   ✦ BPM: 130–140
+//   ✦ No melody — groove and texture only
+//   ✦ Subtle automation — sounds that slowly evolve over many bars
+//   ✦ Very long mixes — tracks run 8–15 minutes
+//
+// THE PHILOSOPHY:
+//   In Berlin minimal, a filter slowly opening over 8 bars IS the
+//   musical content. The listener is drawn into tiny shifts.
+//   Richie Hawtin once described it as "sonic hypnosis."
+//
+// THE SOUND:
+//   Kick = deep, clean, perfectly centered, no reverb
+//   Hat = offbeat only, or very sparse
+//   Bass = single sustained note with slow LPF modulation
+//   Texture = a subtle noise or metallic loop buried in the mix
+//   Nothing else — for minutes at a time
+// ============================================================
+
+setcpm(68)  // ~136 BPM
+
+// --- EXAMPLE 1: Just the kick ---
+// In a club, sometimes a DJ will drop everything except the kick
+// for a full minute. The crowd goes wild. This is minimal techno.
+s("bd*4").gain(0.95)
+
+
+// --- EXAMPLE 2: Add the offbeat hi-hat ---
+// Only on the "ands" (upbeats). The space between kick and hat
+// IS the groove in minimal techno. No clap, no snare.
+// stack(
+//   s("bd*4").gain(0.95),
+//   s("~ hh ~ hh ~ hh ~ hh").gain(0.38).hpf(7000)
+// )
+
+
+// --- EXAMPLE 3: The slowly-modulated bass ---
+// A single note. A single LPF. The filter opens over 16 cycles.
+// THAT IS THE ENTIRE MUSICAL CONTENT. And it works.
+// sine.range(lo, hi).slow(n) creates a smooth oscillating value.
+// note("c2*4")
+//   .sound("sawtooth")
+//   .lpf(sine.range(150, 900).slow(16))
+//   .gain(0.72)
+
+
+// --- EXAMPLE 4: Sparse clap — once every 2 bars ---
+// "/2" plays only once every 2 cycles. The clap becomes an EVENT.
+// stack(
+//   s("bd*4").gain(0.95),
+//   s("~ hh ~ hh ~ hh ~ hh").gain(0.36).hpf(7000),
+//   s("~ ~ ~ cp/2").gain(0.75)
+// )
+
+
+// --- EXAMPLE 5: Subtle texture layer ---
+// A barely audible high-frequency tone adds presence.
+// This is the "air" in minimal mixes — you don't hear it directly,
+// but removing it makes the mix feel empty and flat.
+// note("c6*16")
+//   .sound("triangle")
+//   .gain(0.06)
+//   .hpf(8000)
+//   .room(0.5)
+
+
+// --- EXAMPLE 6: Full minimal groove with slow evolution ---
+// This is the complete minimal template. Press play and wait.
+// At first it sounds like "nothing is happening."
+// After 30 seconds, you realize YOU are changing — not the music.
+// stack(
+//   // Kick — always present
+//   s("bd*4").gain(0.95),
+//
+//   // Offbeat hat — hypnotic pulse
+//   s("~ hh ~ hh ~ hh ~ hh").gain(0.35).hpf(7500),
+//
+//   // Sparse open hat — accent every 4 cycles
+//   s("oh/4").gain(0.5).pan(0.55),
+//
+//   // Deep bass — slowly opens over 32 cycles (very gradual)
+//   note("c2*4")
+//     .sound("sawtooth")
+//     .lpf(sine.range(120, 700).slow(32))
+//     .gain(0.7),
+//
+//   // Subtle one-note pad — barely audible, just presence
+//   note("c4")
+//     .sound("sine")
+//     .room(0.95).size(0.9)
+//     .gain(0.1)
+//     .slow(4)
+// )
+
+
+// --- EXAMPLE 7: Adding a single-note melodic cell ---
+// Robert Hood style: one note, occasionally two, always sparse.
+// note("c3 ~ ~ ~ ~ ~ ~ ~")
+//   .sound("square")
+//   .attack(0.01).release(0.2)
+//   .lpf(1800)
+//   .gain(0.45)
+//   .slow(2)
+
+
+// ============================================================
+// EXERCISE:
+//   1. Start with ONLY s("bd*4") — listen for 30 seconds, then add
+//      the hat — notice how the groove suddenly locks in
+//   2. Change .slow(16) to .slow(64) — extreme slow evolution
+//   3. Remove layers one by one and notice what disappears last
+//   4. Listen to: Plastikman "Spastik" (1993) — the ultimate minimal track
+//      Can you identify how few elements it uses?
+// ============================================================
