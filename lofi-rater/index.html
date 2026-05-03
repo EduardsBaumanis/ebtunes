@@ -44,9 +44,7 @@
             <blockquote id="card-feel" class="card-feel"></blockquote>
             <p id="card-chords" class="card-chords"></p>
             <div id="card-tags" class="card-tags"></div>
-            <a id="card-play" href="#" target="_blank" rel="noopener" class="play-btn">
-              ▶ Open in Strudel
-            </a>
+            <button id="card-play" class="play-btn">▶ Play</button>
           </div>
           <div class="card-hot-flash"></div>
           <div class="card-not-flash"></div>
@@ -76,6 +74,19 @@
       <p id="results-summary" class="results-summary"></p>
       <div id="results-list" class="results-list"></div>
       <button id="btn-reset" class="btn-primary">Rate Again</button>
+    </div>
+  </div>
+
+  <!-- ── PLAYER MODAL ── -->
+  <div id="player-modal" class="player-modal">
+    <div class="player-inner">
+      <div class="player-header">
+        <span id="player-title" class="player-title"></span>
+        <button id="player-close" class="player-close">✕ close</button>
+      </div>
+      <iframe id="player-frame" class="player-frame" src="about:blank"
+        allow="autoplay *; clipboard-write; encrypted-media"></iframe>
+      <p class="player-hint">Ctrl+Enter to play · Ctrl+. to stop</p>
     </div>
   </div>
 

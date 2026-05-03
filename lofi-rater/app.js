@@ -24,6 +24,21 @@ function strudelUrl(code) {
   return 'https://strudel.cc/#' + btoa(unescape(encodeURIComponent(code)));
 }
 
+function embedUrl(code) {
+  return 'https://strudel.cc/?embed#' + btoa(unescape(encodeURIComponent(code)));
+}
+
+function openPlayer(song) {
+  document.getElementById('player-title').textContent = song.title;
+  document.getElementById('player-frame').src = embedUrl(song.code);
+  document.getElementById('player-modal').classList.add('open');
+}
+
+function closePlayer() {
+  document.getElementById('player-modal').classList.remove('open');
+  document.getElementById('player-frame').src = 'about:blank';
+}
+
 function showView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -54,7 +69,8 @@ function renderCard(song) {
     tagsEl.appendChild(span);
   });
 
-  document.getElementById('card-play').href = strudelUrl(song.code);
+  const playBtn = document.getElementById('card-play');
+  playBtn.onclick = (e) => { e.preventDefault(); openPlayer(song); };
 }
 
 function nextCard() {
@@ -128,13 +144,11 @@ function showResults() {
     meta.className = 'result-meta';
     meta.textContent = song.key + '  ·  ' + song.bpm + ' BPM';
 
-    const playLink = document.createElement('a');
-    playLink.href = strudelUrl(song.code);
-    playLink.target = '_blank';
-    playLink.rel = 'noopener';
+    const playLink = document.createElement('button');
     playLink.className = 'play-btn';
     playLink.textContent = '▶ Play';
     playLink.style.marginTop = '0.4rem';
+    playLink.onclick = () => openPlayer(song);
 
     info.appendChild(name);
     info.appendChild(meta);
@@ -171,8 +185,16 @@ function init() {
   document.getElementById('btn-hot').addEventListener('click', () => vote('hot'));
   document.getElementById('btn-not').addEventListener('click', () => vote('not'));
   document.getElementById('btn-reset').addEventListener('click', reset);
+  document.getElementById('player-close').addEventListener('click', closePlayer);
+  document.getElementById('player-modal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closePlayer();
+  });
 
   document.addEventListener('keydown', e => {
+    if (document.getElementById('player-modal').classList.contains('open')) {
+      if (e.key === 'Escape') closePlayer();
+      return;
+    }
     if (document.getElementById('view-rating').classList.contains('active')) {
       if (e.key === 'ArrowRight' || e.key === 'l' || e.key === 'L') vote('hot');
       if (e.key === 'ArrowLeft'  || e.key === 'j' || e.key === 'J') vote('not');
