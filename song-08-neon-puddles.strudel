@@ -30,10 +30,11 @@ setcpm(36)
 
 stack(
 
-  // ── KICK (syncopated, hip-hop influenced) ────────────────────
-  // Beat 1 + the "and" of 2 + beat 3-and. Creates a stumbling,
-  // urban forward motion — not the clean backbeat of pure jazz.
-  s("bd ~ [~ bd] ~ bd ~ ~ ~")
+  // ── KICK (hip-hop boom-bap) ──────────────────────────────────
+  // Kick on beat 1, the "and" of 2, and the "and" of 3.
+  // Classic lo-fi hip-hop placement — lands between the snare hits,
+  // creating a push-pull groove without clashing with beat 2.
+  s("bd ~ ~ bd ~ bd ~ ~")
     .gain(0.82)
     .lpf(3200),
 
