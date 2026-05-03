@@ -486,17 +486,15 @@ body {
 }
 .player-close:hover { color: var(--accent); }
 
-/* Off-screen Strudel engine — rendered but invisible so CodeMirror
-   can measure its dimensions; audio runs in main-document context. */
+/* Off-screen Strudel engine — physically placed left of viewport so
+   CodeMirror gets real dimensions. No transform (unreliable on iOS). */
 #strudel-engine {
   position: fixed;
   top: 0;
-  left: 0;
+  left: -600px;   /* element is 480px wide → fully off-screen */
   width: 480px;
   height: 360px;
-  transform: translateX(-9999px);
   pointer-events: none;
-  z-index: -100;
 }
 
 /* ── Keyframes ── */

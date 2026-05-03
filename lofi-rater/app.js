@@ -30,7 +30,16 @@ function getEngine() {
   return document.getElementById('strudel-engine');
 }
 
+function resumeAudio() {
+  // iOS Safari: AudioContext must be resumed from within a user gesture.
+  // window._ac is set by the AudioContext intercept in index.html.
+  if (window._ac && window._ac.state === 'suspended') {
+    window._ac.resume();
+  }
+}
+
 function openPlayer(song) {
+  resumeAudio();
   document.getElementById('player-title').textContent = song.title;
   document.getElementById('player-panel').classList.add('open');
   const engine = getEngine();
@@ -50,6 +59,7 @@ function closePlayer() {
 }
 
 function togglePlayStop() {
+  resumeAudio();
   const engine = getEngine();
   if (!engine.editor) return;
   if (playerPlaying) {
