@@ -1,0 +1,115 @@
+// ══════════════════════════════════════════════════════════════
+// "Neon Puddles"
+// Lo-fi jazz — urban, reflective, city after midnight
+//
+// Key:    A Dorian  (A B C D E F# G)
+// Tempo:  ~72 BPM  (setcpm 36)
+// Chords: Am9 → Dm9 → G13 → Cmaj9   (i9 – iv9 – VII13 – III9)
+// Feel:   Rain-slicked streets, neon signs blurred in puddles,
+//         a city that never fully sleeps, something bittersweet
+//         in the air you can't name
+//
+// THEORY NOTE — Dorian and the F# (natural 6th):
+//   A Dorian is identical to A natural minor EXCEPT the 6th degree
+//   is F# (natural) rather than F (flat). This single note changes
+//   everything. It makes the scale sound less "tragic minor" and
+//   more "cool and bittersweet" — the sound of sophisticated jazz.
+//
+//   The G13 chord (a dominant 13th) contains G B D F A C E —
+//   seven notes, all seven degrees of the C major scale.
+//   It's incredibly rich and "jazzy." The 13th (E) and the 7th (F)
+//   create a cluster of colour above the bass note G.
+//
+// RHYTHM NOTE:
+//   This song uses a slightly more complex kick pattern —
+//   a syncopated "hip-hop" feel where the kick falls on the
+//   "and" of beat 2 occasionally. More urban, less straight.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(36)
+
+stack(
+
+  // ── KICK (syncopated, hip-hop influenced) ────────────────────
+  // Beat 1 + the "and" of 2 + beat 3-and. Creates a stumbling,
+  // urban forward motion — not the clean backbeat of pure jazz.
+  s("bd ~ [~ bd] ~ bd ~ ~ ~")
+    .gain(0.82)
+    .lpf(3200),
+
+
+  // ── SNARE ────────────────────────────────────────────────────
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.66)
+    .room(0.12),
+
+
+  // ── HI-HAT (dark swing) ──────────────────────────────────────
+  // Slightly more subdued than other songs — this is a night song.
+  s("[hh [~ hh]]*4")
+    .gain(0.26)
+    .lpf(10000)
+    .pan(0.64),
+
+
+  // ── BASS (jazz, chromatic approach tones) ────────────────────
+  // More jazz-inflected than pure arpeggios — includes the F#
+  // (Dorian 6th) as a passing tone, and chromatic approaches.
+  // Am9: A ~ E ~  |  Dm9: D ~ A ~  |  G13: G ~ D ~  |  Cmaj9: C ~ G ~
+  // With passing tones between chords
+  note("a2 ~ e3 ~ ~ ~  d2 ~ a2 ~ ~ ~  g2 ~ d3 ~ ~ ~  c2 ~ g2 ~ ~ ~")
+    .sound("sawtooth")
+    .lpf(420)
+    .attack(0.006).decay(0.13).sustain(0.45).release(0.09)
+    .gain(0.63)
+    .slow(3),
+
+
+  // ── CHORD VOICINGS (rich 9th and 13th chords) ────────────────
+  // These are the most "jazz" voicings in any of these songs.
+  // Am9:   A  C  E  G  B  → [a3, e4, g4, b4]
+  // Dm9:   D  F  A  C  E  → [d4, a4, c5, e5]
+  // G13:   G  B  F  A  E  → [g3, b3, f4, e5]  (the 13th=E over G bass)
+  // Cmaj9: C  E  G  B  D  → [c4, g4, b4, d5]
+  note("<[a3,e4,g4,b4] [d4,a4,c5,e5] [g3,b3,f4,e5] [c4,g4,b4,d5]>")
+    .sound("sawtooth")
+    .attack(0.06)
+    .release(0.5)
+    .lpf(2000)
+    .room(0.4)
+    .gain(0.27)
+    .pan(0.42)
+    .slow(2),
+
+
+  // ── COUNTER-MELODY (low register, Dorian flavour) ────────────
+  // A second melodic voice — lower and darker. It answers
+  // the main melody like a second instrument in a duo.
+  // Uses the F# (Dorian 6th) prominently — the characteristic note.
+  note("e4 ~ ~ d4 ~ ~ c4 ~ ~ ~ ~ fs3 ~ ~ g3 ~")
+    .sound("sawtooth")
+    .attack(0.02).release(0.25)
+    .lpf(1500)
+    .room(0.3)
+    .gain(0.28)
+    .pan(0.38)
+    .slow(2),
+
+
+  // ── MELODY (A Dorian: A B C D E F# G) ────────────────────────
+  // The F# (6th degree) is used on the peak of the phrase —
+  // that bright moment in an otherwise minor melody.
+  // Sine wave for a clean, glass-like tone.
+  note("a4 ~ c5 ~ e5 ~ fs5 e5  ~ d5 ~ ~ c5 ~ ~ a4")
+    .sound("sine")
+    .attack(0.014)
+    .release(0.32)
+    .delay(0.42)
+    .delaytime(0.375)
+    .delayfeedback(0.27)
+    .room(0.52)
+    .gain(0.48)
+    .pan(0.54)
+    .slow(2)
+
+)
