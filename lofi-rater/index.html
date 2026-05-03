@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lofi rater</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="grain"></div>
+
+  <!-- ── INTRO ── -->
+  <div id="view-intro" class="view active">
+    <div class="intro-content">
+      <div class="intro-icon">📼</div>
+      <h1 class="intro-title">lofi rater</h1>
+      <p class="intro-sub">8 original lo-fi jazz tracks.<br>Rate them hot or not.</p>
+      <button id="btn-start" class="btn-primary">Start Rating</button>
+      <p class="intro-hint">arrow keys work too</p>
+    </div>
+  </div>
+
+  <!-- ── RATING ── -->
+  <div id="view-rating" class="view">
+    <div class="rating-layout">
+
+      <div class="progress-wrap">
+        <div class="progress-track">
+          <div id="progress-bar" class="progress-fill"></div>
+        </div>
+        <span id="progress-text" class="progress-text">1 / 8</span>
+      </div>
+
+      <div id="card-wrap">
+        <div id="card" class="card">
+          <div class="card-inner">
+            <p id="card-subtitle" class="card-subtitle"></p>
+            <h2 id="card-title" class="card-title"></h2>
+            <div class="card-badges">
+              <span id="card-key" class="badge"></span>
+              <span id="card-bpm" class="badge"></span>
+            </div>
+            <blockquote id="card-feel" class="card-feel"></blockquote>
+            <p id="card-chords" class="card-chords"></p>
+            <div id="card-tags" class="card-tags"></div>
+            <a id="card-play" href="#" target="_blank" rel="noopener" class="play-btn">
+              ▶ Open in Strudel
+            </a>
+          </div>
+          <div class="card-hot-flash"></div>
+          <div class="card-not-flash"></div>
+        </div>
+      </div>
+
+      <div class="vote-row">
+        <button id="btn-not" class="vote-btn vote-not">
+          <span class="vote-icon">❄️</span>
+          <span class="vote-label">NOT</span>
+          <kbd>←</kbd>
+        </button>
+        <button id="btn-hot" class="vote-btn vote-hot">
+          <span class="vote-icon">🔥</span>
+          <span class="vote-label">HOT</span>
+          <kbd>→</kbd>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── RESULTS ── -->
+  <div id="view-results" class="view">
+    <div class="results-layout">
+      <h1 class="results-title">Rankings</h1>
+      <p id="results-summary" class="results-summary"></p>
+      <div id="results-list" class="results-list"></div>
+      <button id="btn-reset" class="btn-primary">Rate Again</button>
+    </div>
+  </div>
+
+  <script src="songs.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

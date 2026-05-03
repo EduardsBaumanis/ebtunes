@@ -30,14 +30,19 @@ setcpm(36)
 
 stack(
 
-  // ── KICK (boom-bap, two kicks only) ─────────────────────────
-  // Beat 1 + the "and" of beat 2. The second kick anticipates
-  // beat 3, leaning the groove forward without crowding the
-  // snare on beat 4. Classic lo-fi hip-hop at slow tempos.
-  s("bd ~ ~ bd ~ ~ ~ ~")
-    .gain(0.82)
-    .lpf(3200),
-
+  // ── KICK (lo-fi, beats 1 and 3) ─────────────────────────────
+  // Sparse and simple — just the two downbeats.
+  // Lo-fi character comes from three things:
+  //   lpf(2500)    — muffled, like heard through a wall or on tape
+  //   room(0.2)    — small bedroom ambience, not a concert hall
+  //   distort(0.06)— subtle tape saturation, rounds off the transient
+  // No delay on kicks — delay muddies the low end.
+  s("bd ~ ~ ~ bd ~ ~ ~")
+    .gain(0.8)
+    .lpf(2500)
+    .room(0.2)
+    .size(0.3)
+    .distort(0.06),
 
   // ── SNARE ────────────────────────────────────────────────────
   s("~ ~ sd ~ ~ ~ sd ~")
