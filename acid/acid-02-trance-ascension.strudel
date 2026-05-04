@@ -5,127 +5,164 @@
 // Key:    F minor (relative: Ab major)
 // Tempo:  138 BPM  (setcpm 69)
 // Chords: Fm – Cm – Ab – Eb   (i – v – III – VII)
-// Feel:   100,000 hands in the air. The drop arrives. Lights sweep
-//         across the crowd. You forget your name for eight bars.
+// Feel:   100,000 hands in the air. The drop arrives.
+//         Lights sweep across the crowd. You forget your name.
+//         This is the moment you came for. Eight bars of pure lift.
 //
-// THE SUPERSAW:
+// THE SUPERSAW PRINCIPLE:
 // The Roland JP-8000 supersaw stacks 7 detuned sawtooth oscillators.
-// The beating between slightly-out-of-tune oscillators creates the
-// characteristic shimmer and thickness of trance pads.
-// We approximate with 3 layers: different room/size/pan
-// creates the interference pattern. Layer 3 adds the high sparkle.
+// Beating between slightly-out-of-tune oscillators = shimmer and thickness.
+// We approximate with 3 layers: different room/pan/filter-sweep speeds.
+// Layer 1: foundation. Layer 2: width. Layer 3: sparkle.
 //
-// THE TRANCE ARPEGGIO:
-// n("0 2 4 6 7 6 4 2") cycles through scale degrees: root, min3,
-// perfect 5th, min 7th, octave, then back down.
-// fast(2) = 16th notes = urgency and momentum.
-// This is the most recognizable trance sound.
-//
-// THE STRUCTURE:
-// i–v–III–VII (Fm–Cm–Ab–Eb) is the "uplifting minor" progression.
-// The III chord (Ab) provides the emotional lift — it's major,
-// even though we're in a minor key. That's the trance sound:
-// sadness that keeps reaching upward.
+// EFFECTS ARCHITECTURE:
+// snare    — jux: different room in each ear = stereo reverb depth
+// hats     — degradeBy: organic variation, pan(sine): autopan breathing
+// open hat — phaser: subtle modulation on the "and" accent
+// bass     — off(1/8): ghost note a beat back = bass feels bouncy
+// arp      — jux(rev): reversed arp in right channel = enormous width
+// supersaw — phaser on layer 1: shimmer. vowel on layer 2: vowel breathing
+// supersaw — jux on layer 3: right channel runs brighter filter
+// lead     — sometimes(distort): random grit on the emotional voice
 // ══════════════════════════════════════════════════════════════
 
-setcpm(69)  // ~138 BPM
+setcpm(69)  // 138 BPM
 
 stack(
 
-  // ── KICK — slightly rounder than acid techno ──────────────────
-  // Trance kick has a tiny bit more body. Less distortion.
+  // ── KICK — trance round punch ─────────────────────────────────
+  // Trance kick is rounder than techno. Less distortion.
+  // shape(0.08): very subtle saturation, just adds slight warmth
   s("bd*4")
     .gain(0.92)
+    .shape(0.08)
     .lpf(5000),
 
-  // ── SNARE — roomy, the "air" snare of trance ─────────────────
-  // A tiny reverb tail separates trance from pure techno.
+  // ── SNARE — stereo roomy air ──────────────────────────────────
+  // jux: left runs through original room(0.12), right through room(0.22)
+  //   Different reverb amounts in each ear = natural stereo depth
+  //   The slightly more reverberant right channel makes it feel wider
+  // every(4): every 4th cycle, snare gets crushed (lo-fi drop accent)
   s("~ ~ sd ~ ~ ~ sd ~")
     .gain(0.8)
-    .room(0.12),
+    .room(0.12)
+    .jux(x => x.room(0.22).size(0.4))
+    .every(4, x => x.crush(8).gain(0.9)),
 
-  // ── HI-HAT 8ths — trance breathes more than techno ───────────
-  // 8th note hats (not 16ths) create the characteristic trance air.
-  // The space between hats matters.
+  // ── HI-HAT 8ths — breathing stereo hats ──────────────────────
+  // Trance uses 8th note hats — space between hits matters
+  // degradeBy(0.12): 12% of hits randomly drop = human imprecision
+  // pan(sine.range): hats slowly pan left-right over 6 cycles
+  //   The combination = machine that breathes
   s("hh*8")
     .gain(0.3)
     .hpf(7500)
-    .pan(0.56),
+    .degradeBy(0.12)
+    .pan(sine.range(0.42, 0.65).slow(6)),
 
-  // ── OPEN HAT — the "and" of beat 4 accent ────────────────────
-  // This specific placement is a defining trance marker.
+  // ── OPEN HAT — phased accent ──────────────────────────────────
+  // phaser(0.2): subtle phaser adds modulation character
+  //   The "and of beat 4" placement is the defining trance marker
+  //   Adding phaser makes this accent feel slightly flanged = vintage
   s("~ ~ ~ ~ ~ ~ ~ oh")
     .gain(0.55)
-    .hpf(6500),
+    .hpf(6500)
+    .phaser(0.2),
 
-  // ── CRASH ACCENT — every 4 cycles, signals the drop ─────────
-  // Quarter-volume most of the time, full at the drop (every 4).
+  // ── CRASH ACCENT — drop signal, every 4 cycles ────────────────
+  // Quarter-volume normally, full volume at every 4th cycle
+  // The every(4) accent signals structural changes = the "drop" feeling
+  // sometimes(hpf): occasionally strips the body = variation
   s("oh:1 ~ ~ ~ ~ ~ ~ ~")
     .every(4, x => x.gain(0.9))
+    .sometimes(x => x.hpf(2000))
     .gain(0.25)
     .room(0.3)
     .hpf(5000),
 
-  // ── BASS — punchy sawtooth, follows chord roots ───────────────
-  // Very tight: zero sustain, fast decay. The kick and bass lock.
+  // ── BASS — ghost note groove ──────────────────────────────────
+  // off(1/8): creates a shadow bass note 1/8th cycle behind
+  //   Shadow: lower gain, higher-passed = just the attack, no body
+  //   The original gives the solid thump; the ghost gives the groove
+  //   Together they sound like a two-note bass pattern, not one
   note("<f2 c2 ab2 eb2>")
     .sound("sawtooth")
     .lpf(500)
     .attack(0.008).decay(0.18).sustain(0.0).release(0.1)
     .gain(0.72)
+    .off(1/8, x => x.gain(0.18).hpf(400))
     .slow(2),
 
-  // ── ARPEGGIO — 16th note F minor, the trance signature ───────
-  // 0=F 2=Ab 4=C 6=Eb 7=F(oct) — chord tones cycling up and down
-  // fast(2) doubles to 16th notes. lpq(4) adds just a hint of filter
+  // ── TRANCE ARPEGGIO — stereo acid signature ───────────────────
+  // 0=F 2=Ab 4=C 6=Eb 7=F(oct) — chord tones cycling
+  // jux(rev): reversed arp sequence plays in right channel
+  //   Left = ascending: F Ab C Eb F(oct)...
+  //   Right = descending: ...F(oct) Eb C Ab F
+  //   Together = enormous stereo field, the arp fills the entire space
+  // shape(0.1): slight saturation gives the arp some edge
   n("0 2 4 6 7 6 4 2").scale("F:minor")
     .sound("sawtooth")
     .lpf(sine.range(2000, 5500).slow(4))
     .lpq(4)
+    .shape(0.1)
     .attack(0.001).release(0.07)
     .gain(0.5)
     .room(0.2)
+    .jux(rev)
     .fast(2),
 
-  // ── SUPERSAW LAYER 1 — wide, deep, enormous reverb ───────────
-  // The trance foundation. Extremely slow attack = swells in.
-  // Filter automation (slow 6) = the pad breathes with the track.
+  // ── SUPERSAW LAYER 1 — foundation with shimmer ────────────────
+  // phaser(0.15)/phaserdepth(0.6)/phaserrate(0.2): very slow phaser
+  //   Creates a subtle shimmer on the pad — like interference between
+  //   slightly detuned oscillators, simulating real supersaw character
+  // Filter automation (slow 6): pad breathes with the track
   note("<[f3,ab3,c4] [c3,eb3,g3] [ab2,c3,eb3] [eb3,g3,bb3]>")
     .sound("sawtooth")
     .attack(0.15).decay(0.5).sustain(0.8).release(1.5)
     .lpf(sine.range(1500, 3500).slow(6))
     .room(0.6).size(0.75)
+    .phaser(0.15).phaserdepth(0.6).phaserrate(0.2)
     .gain(0.28)
     .pan(0.38)
     .slow(2),
 
-  // ── SUPERSAW LAYER 2 — narrower, panned right ────────────────
-  // Slightly different room/pan/speed = stereo width and shimmer
+  // ── SUPERSAW LAYER 2 — vowel-breathing width ──────────────────
+  // vowel("<a e>"): alternates between "a" and "e" formants
+  //   "a" = open, warm. "e" = slightly brighter, nasal.
+  //   Cycling every 2 cycles = the pad subtly changes character
+  //   This is what makes supersaw pads feel "alive" vs static
+  // Different room/pan/speed to layer 1 = stereo width via interference
   note("<[f3,ab3,c4] [c3,eb3,g3] [ab2,c3,eb3] [eb3,g3,bb3]>")
     .sound("sawtooth")
     .attack(0.22).decay(0.4).sustain(0.7).release(1.8)
     .lpf(sine.range(1200, 2800).slow(5))
     .room(0.45).size(0.65)
+    .vowel("<a e>")
     .gain(0.22)
     .pan(0.62)
     .slow(2),
 
-  // ── SUPERSAW LAYER 3 — high sparkle, just the tops ───────────
-  // Upper chord tones shimmer above the main pad mass.
-  // This is the brightness that makes trance feel "uplifting."
+  // ── SUPERSAW LAYER 3 — stereo sparkle ────────────────────────
+  // jux: right channel runs through tighter lpf(2000)
+  //   Left channel is bright (lpf 4000), right is slightly darker
+  //   The brightness difference between ears = natural stereo shimmer
+  //   This is the effect of mic placement in a real recording
   note("<[f4,ab4] [eb4,g4] [c4,eb4] [bb3,eb4]>")
     .sound("sawtooth")
     .attack(0.3).decay(0.6).sustain(0.6).release(2.0)
     .lpf(4000)
     .room(0.7).size(0.8)
+    .jux(x => x.lpf(2000).room(0.5))
     .gain(0.16)
     .pan(0.5)
     .slow(2),
 
-  // ── LEAD MELODY — soaring sine, the emotional voice ──────────
-  // This is the melody people sing on the way home at dawn.
-  // Delay synced to tempo (0.5 cycle = dotted quarter echo).
-  // Sparse: the rests are as important as the notes.
+  // ── LEAD MELODY — emotional voice with organic grit ──────────
+  // sometimes(distort(0.08)): ~50% of cycles the lead gets slightly gritty
+  //   Clean lead = emotional but slightly sterile
+  //   Occasional distortion = humanity, imperfection, vulnerability
+  //   The randomness means you never know when it'll happen — surprise
+  // delay synced to tempo (0.5 cycle = dotted quarter echo)
   note("c5 ~ ~ ~ ab4 ~ bb4 ~  f5 ~ ~ ~ eb5 ~ ~ ~  ~ c5 ~ ~ ab4 ~ ~ ~  g4 ~ bb4 ~ c5 ~ ~ ~")
     .sound("sine")
     .attack(0.02).decay(0.3).sustain(0.4).release(0.8)
@@ -133,6 +170,7 @@ stack(
     .delaytime(0.5)
     .delayfeedback(0.22)
     .room(0.5).size(0.6)
+    .sometimes(x => x.distort(0.08))
     .gain(0.52)
     .pan(0.5)
     .slow(4)

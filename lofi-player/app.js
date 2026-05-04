@@ -16,7 +16,8 @@
 // ── Constants ─────────────────────────────────────────────────────────────────
 
 const CIRCUMFERENCE = 2 * Math.PI * 80; // 502.65
-const FADE_MS = 800;
+const FADE_MS       = 800;              // auto-advance crossfade
+const BUILDUP_MS    = 4000;             // slow build-up on user-triggered play
 
 // ── State ─────────────────────────────────────────────────────────────────────
 
@@ -36,9 +37,15 @@ let tickId          = null;
 
 let playlistVersion = 0; // bumped on every playlist switch to cancel stale async ops
 
+// Board state
+const BOARD_REFRESH_MS = 30 * 60 * 1000;
+let boardActive      = false;
+let boardTimerMs     = 0;
+let boardCountdownId = null;
+
 // ── DOM refs ──────────────────────────────────────────────────────────────────
 
-let elPlayerPane, elCodePane, elSongList;
+let elPlayerPane, elCodePane, elBoardPane, elSongList;
 let elPlayerInfo, elPCounter, elPSubtitle, elPTitle, elPKey, elPBpm, elPFeel, elPChords;
 let elRingFill, elRingTime;
 let elBtnPlay, elBtnShuffle, elTimerSlider, elTimerVal;
@@ -192,6 +199,17 @@ function updateSongUI(entry, idx) {
   });
 }
 
+// ── Vote handler ──────────────────────────────────────────────────────────────
+
+function handleVote(songId, value, clickedBtn, otherBtn) {
+  const current = getVote(songId);
+  const next    = current === value ? null : value; // toggle off if already voted
+  setVote(songId, next);
+  clickedBtn.classList.toggle('active', next === value);
+  otherBtn.classList.remove('active');
+  submitVote(songId, next);
+}
+
 // ── Sidebar ───────────────────────────────────────────────────────────────────
 
 function buildSidebar(playlist) {
@@ -214,6 +232,33 @@ function buildSidebar(playlist) {
 
     item.appendChild(num);
     item.appendChild(title);
+
+    // +/- vote buttons on player-mode playlists
+    if (playlist.mode === 'player') {
+      const songId  = playlist.id + '/' + filename;
+      const current = getVote(songId);
+
+      const voteWrap = document.createElement('div');
+      voteWrap.className = 'si-votes';
+
+      const btnMinus = document.createElement('button');
+      btnMinus.className = 'si-vote-btn si-vote-minus';
+      btnMinus.textContent = '-';
+      if (current === -1) btnMinus.classList.add('active');
+
+      const btnPlus = document.createElement('button');
+      btnPlus.className = 'si-vote-btn si-vote-plus';
+      btnPlus.textContent = '+';
+      if (current === 1) btnPlus.classList.add('active');
+
+      btnMinus.addEventListener('click', e => { e.stopPropagation(); handleVote(songId, -1, btnMinus, btnPlus); });
+      btnPlus.addEventListener('click',  e => { e.stopPropagation(); handleVote(songId,  1, btnPlus,  btnMinus); });
+
+      voteWrap.appendChild(btnMinus);
+      voteWrap.appendChild(btnPlus);
+      item.appendChild(voteWrap);
+    }
+
     item.addEventListener('click', () => jumpTo(i));
     elSongList.appendChild(item);
   });
@@ -246,7 +291,8 @@ function startTick() {
 
 // ── Player transitions ────────────────────────────────────────────────────────
 
-async function startPlayback() {
+// fadeMs: BUILDUP_MS on user-triggered play, FADE_MS on auto-advance
+async function startPlayback(fadeMs = FADE_MS) {
   const entry = await fetchSong(currentPlaylist, currentPlaylist.files[currentIdx]);
   setGainImmediate(0);
   loadCode(entry.code);
@@ -260,7 +306,7 @@ async function startPlayback() {
   }
 
   setGainImmediate(0);
-  await fadeTo(1, FADE_MS);
+  await fadeTo(1, fadeMs);
 }
 
 async function advance(dir) {
@@ -290,7 +336,7 @@ async function advance(dir) {
   elPlayerInfo.style.opacity = '1';
 
   if (isPlaying) {
-    await startPlayback();
+    await startPlayback(FADE_MS); // auto-advance uses quick crossfade
     startTick();
   } else {
     loadCode(entry.code);
@@ -331,7 +377,7 @@ async function jumpTo(idx) {
   elPlayerInfo.style.opacity = '1';
 
   if (isPlaying) {
-    await startPlayback();
+    await startPlayback(BUILDUP_MS); // user clicked: slow build-up
     startTick();
   } else {
     loadCode(entry.code);
@@ -366,7 +412,7 @@ async function togglePlay() {
     return;
   }
 
-  await startPlayback();
+  await startPlayback(BUILDUP_MS); // user pressed play: slow build-up
   startTick();
 }
 
@@ -383,7 +429,8 @@ async function runCode() {
   if (!window._masterGain) {
     await new Promise(r => setTimeout(r, 300));
   }
-  setGainImmediate(1);
+  setGainImmediate(0);
+  await fadeTo(1, BUILDUP_MS); // code mode also gets a slow build-up
 }
 
 function stopCode() {
@@ -417,6 +464,9 @@ async function switchPlaylist(playlist) {
   currentIdx      = 0;
   currentMode     = playlist.mode;
 
+  // Apply visual theme
+  document.body.dataset.theme = playlist.theme || 'acid';
+
   // Update tab buttons
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.id === playlist.id);
@@ -445,7 +495,118 @@ async function switchPlaylist(playlist) {
   // Pre-load code into engine (player mode only)
   if (currentMode === 'player') loadCode(entry.code);
 
+  // Re-hide content panes if board is open
+  if (boardActive) {
+    elPlayerPane.classList.add('hidden');
+    elCodePane.classList.add('hidden');
+  }
+
   isFading = false;
+}
+
+// ── Leaderboard ───────────────────────────────────────────────────────────────
+
+async function fetchLeaderboard() {
+  try {
+    const res  = await fetch('/api/leaderboard');
+    const json = await res.json();
+    return json.leaderboard || [];
+  } catch (err) {
+    console.error('Leaderboard fetch:', err);
+    return [];
+  }
+}
+
+function songLabel(songId) {
+  const parts    = songId.split('/');
+  const playlist = (parts[0] || '').toUpperCase();
+  const raw      = (parts[1] || songId).replace(/\.strudel$/, '');
+  // strip leading "type-NN-" prefix (song-01-, acid-03-, rim-02-, etc.)
+  const name     = raw.replace(/^[a-z]+-\d+-/, '').replace(/-/g, ' ').toUpperCase();
+  return { playlist, name };
+}
+
+function renderLeaderboard(entries) {
+  const content = document.getElementById('board-content');
+  if (!entries.length) {
+    content.innerHTML = '<div class="board-empty">NO VOTES YET</div>';
+    return;
+  }
+  const rows = entries.map((e, i) => {
+    const { playlist, name } = songLabel(e.song_id);
+    const sign = e.score > 0 ? '+' : '';
+    const cls  = e.score > 0 ? 'positive' : e.score < 0 ? 'negative' : '';
+    return `<div class="lb-row">
+      <span class="lb-rank">${String(i + 1).padStart(2, '0')}</span>
+      <span class="lb-name">${name}</span>
+      <span class="lb-tag">${playlist}</span>
+      <span class="lb-up">+${e.up}</span>
+      <span class="lb-down">-${e.down}</span>
+      <span class="lb-score ${cls}">${sign}${e.score}</span>
+    </div>`;
+  }).join('');
+  content.innerHTML = `<div class="lb-table">
+    <div class="lb-head">
+      <span class="lb-rank">#</span>
+      <span class="lb-name">SONG</span>
+      <span class="lb-tag">LIST</span>
+      <span class="lb-up">+</span>
+      <span class="lb-down">-</span>
+      <span class="lb-score">NET</span>
+    </div>${rows}</div>`;
+}
+
+function updateBoardTimer() {
+  const el   = document.getElementById('board-refresh-timer');
+  if (!el) return;
+  const secs = Math.ceil(boardTimerMs / 1000);
+  const m    = Math.floor(secs / 60);
+  const s    = secs % 60;
+  el.textContent = 'REFRESH IN ' + m + ':' + String(s).padStart(2, '0');
+}
+
+async function refreshBoard() {
+  const entries = await fetchLeaderboard();
+  renderLeaderboard(entries);
+  boardTimerMs = BOARD_REFRESH_MS;
+  updateBoardTimer();
+}
+
+function startBoardCountdown() {
+  if (boardCountdownId) clearInterval(boardCountdownId);
+  boardCountdownId = setInterval(async () => {
+    boardTimerMs = Math.max(0, boardTimerMs - 1000);
+    updateBoardTimer();
+    if (boardTimerMs === 0) await refreshBoard();
+  }, 1000);
+}
+
+function stopBoardCountdown() {
+  if (boardCountdownId) { clearInterval(boardCountdownId); boardCountdownId = null; }
+}
+
+function showBoard() {
+  boardActive = true;
+  document.getElementById('btn-board').classList.add('active');
+  elBoardPane.classList.remove('hidden');
+  elPlayerPane.classList.add('hidden');
+  elCodePane.classList.add('hidden');
+  refreshBoard();
+  startBoardCountdown();
+}
+
+function hideBoard() {
+  boardActive = false;
+  document.getElementById('btn-board').classList.remove('active');
+  elBoardPane.classList.add('hidden');
+  stopBoardCountdown();
+  if (currentMode === 'player') elPlayerPane.classList.remove('hidden');
+  else                          elCodePane.classList.remove('hidden');
+}
+
+function toggleBoard() {
+  if (boardActive) hideBoard();
+  else             showBoard();
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -461,6 +622,7 @@ function fmtSecs(secs) {
 function init() {
   elPlayerPane  = document.getElementById('player-pane');
   elCodePane    = document.getElementById('code-pane');
+  elBoardPane   = document.getElementById('board-pane');
   elSongList    = document.getElementById('song-list');
 
   elPlayerInfo  = document.getElementById('player-info');
@@ -516,6 +678,8 @@ function init() {
     shuffleMode = !shuffleMode;
     elBtnShuffle.classList.toggle('active', shuffleMode);
   });
+
+  document.getElementById('btn-board').addEventListener('click', toggleBoard);
 
   // Code controls
   document.getElementById('btn-run').addEventListener('click', runCode);

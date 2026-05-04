@@ -23,11 +23,6 @@ setcpm(19)
 
 stack(
 
-  // ── NO KICK — just a very soft rim pulse ─────────────────────
-  s("~ ~ ~ rim ~ ~ ~ rim")
-    .gain(0.42)
-    .room(0.12),
-
 
   // ── TRAVIS PICK PATTERN (guitar, lower register) ─────────────
   // Alternating bass + chord tone = Travis picking simulation.

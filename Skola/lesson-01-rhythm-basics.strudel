@@ -34,7 +34,7 @@
 //   *n         →  repeat n times within the same slot
 // ============================================================
 
-setcpm(60)
+setcpm(90)
 
 // --- EXAMPLE 1: Single kick ---
 // One bass drum on beat 1. Press Ctrl+Enter to play. Ctrl+. to stop.

@@ -6,125 +6,174 @@
 // Tempo:  144 BPM  (setcpm 72)
 // Chords: Bm – G – D – A   (i – VI – III – VII, natural minor)
 // Feel:   Illegal warehouse, laser beams, 500 people, no rules.
-//         Before the genres separated — before techno was techno
-//         and trance was trance. Just: LOUD. FASTER. MORE.
+//         Before the genres separated. Before techno was techno.
+//         Just: LOUD. FASTER. MORE. The floor is shaking.
 //
 // OLD SCHOOL RAVE PHILOSOPHY:
-// The early 90s didn't have genre boundaries. A rave track had:
-//   - The hardest kick you could find (120-145 BPM)
-//   - A HUGE reverbed snare (the 90s snare was a room event)
+// Early 90s tracks had no genre boundaries. Everything at once:
+//   - Hardest kick (120–145 BPM)
+//   - HUGE reverbed snare (the 90s snare was a room event)
 //   - Fast 303 acid lines (sometimes two)
 //   - Euphoric pad (the emotional reason for being there)
-//   - A melodic arp that GOES somewhere, over two octaves
-//   - A lead melody you'll hear in your sleep for a week
+//   - Two-octave arp that GOES somewhere
+//   - Lead melody you'll hear in your sleep
 //   - Too many layers. That was correct.
 //
-// THIS TRACK — 12 LAYERS:
-// Real 90s tracks did this. The mix was often muddy.
-// That was fine. The energy was the point.
-//
-// i–VI–III–VII (Bm–G–D–A):
-// The same progression in every direction — B minor aeolian.
-// The VII chord (A) is a major chord that reaches upward
-// but resolves back to the minor root. Euphoric but never resolved.
-// That tension is the whole emotional trip.
+// EFFECTS ARCHITECTURE:
+// kick     — shape: extra punch in the physical range
+// snare    — jux: different reverb = wider stone room
+// hats     — degradeBy + pan(sine): organic stereo pulse
+// open hat — phaser: 90s modulation character
+// clap     — every(2, crush): alternating lo-fi clap = vintage 90s
+// rim      — jux: stereo split on the euclidean rhythm
+// acid     — shape + jux(lpf): distorted stereo acid
+// rave bass — off(3/16): ghost bass note = groove and movement
+// euphoric pad — jux(rev): stereo pad wraps both ears
+// high pad — phaser: shimmer on the upper sparkle layer
+// arp      — jux(rev) + degradeBy: stereo spiral with drops
 // ══════════════════════════════════════════════════════════════
 
 setcpm(72)  // 144 BPM
 
 stack(
 
-  // ── KICK — the floor, the heartbeat, the law ─────────────────
-  // Heavy distort — 90s kicks were loud and slightly broken.
+  // ── KICK — physical floor punch ──────────────────────────────
+  // shape(0.35): waveshaper adds harmonic distortion in the kick body
+  //   90s kicks were often slightly distorted on the tape machine
+  //   This saturation makes the kick feel more physical — you feel it
+  //   crush(10): subtle digital edge, adds to the "tape then digital" feel
   s("bd*4")
     .gain(0.95)
     .distort(0.15)
+    .shape(0.35)
+    .crush(10)
     .lpf(5000),
 
-  // ── SNARE — the 90s room event ───────────────────────────────
-  // room(0.35) size(0.45) = this snare echoes. It's a sound event.
-  // You can hear it 3 beats before it arrives.
+  // ── SNARE — wide stone room event ────────────────────────────
+  // room(0.35)/size(0.45): cavernous room — the 90s snare was a ROOM
+  // jux: right channel has even bigger room (0.45/0.55)
+  //   Left = large room. Right = enormous room.
+  //   The difference: the snare sounds like it was recorded in a space
+  //   that was itself inside an even larger space. Gothic scale.
   s("~ ~ sd ~ ~ ~ sd ~")
     .gain(0.85)
-    .room(0.35)
-    .size(0.45),
+    .room(0.35).size(0.45)
+    .jux(x => x.room(0.45).size(0.55)),
 
-  // ── HI-HAT 16ths — relentless, machinelike ───────────────────
+  // ── HI-HAT 16ths — organic stereo pulse ──────────────────────
+  // degradeBy(0.08): 8% random drops = the machine breathes
+  // pan(sine.range): hats pulse across the stereo field over 5 cycles
+  //   This pan automation was common in early 90s rave tracks
+  //   Combined with degradeBy = felt, not just heard
   s("hh*16")
     .gain(0.2)
     .hpf(9000)
-    .pan(0.56),
+    .degradeBy(0.08)
+    .pan(sine.range(0.42, 0.62).slow(5)),
 
-  // ── OPEN HAT — stabs, off-grid ───────────────────────────────
+  // ── OPEN HAT — 90s phased accent ─────────────────────────────
+  // phaser(0.25)/phaserrate(0.8): faster phaser = more obvious modulation
+  //   In the early 90s, phasers were used heavily on percussion
+  //   That slightly flanged/phased quality is part of the era's sound
   s("~ ~ ~ ~ oh ~ ~ ~  ~ ~ ~ ~ oh ~ ~ oh")
     .gain(0.42)
-    .hpf(7000),
+    .hpf(7000)
+    .phaser(0.25).phaserrate(0.8),
 
-  // ── CLAP — layers with the snare, adds crack ──────────────────
-  // Together: snare handles the body, clap handles the crack.
+  // ── CLAP — alternating lo-fi accent ──────────────────────────
+  // every(2, crush(6)): every second cycle, the clap gets bit-crushed
+  //   Cycle 1: clean clap. Cycle 2: lo-fi crushed clap.
+  //   This alternation creates a call-and-response between clean and dirty
+  //   Early 90s samples were often lo-fi — this celebrates that
   s("~ ~ cp ~ ~ ~ cp ~")
     .gain(0.6)
-    .hpf(3000),
+    .hpf(3000)
+    .every(2, x => x.crush(6)),
 
-  // ── RIM SYNCOPATION — chaos in the fills ─────────────────────
-  // E(5,16,3) rotated by 3 steps = doesn't start on beat 1.
-  // Adds movement in the gaps between the major drum hits.
+  // ── RIM — stereo euclidean syncopation ───────────────────────
+  // E(5,16,3): rotated 3 = doesn't start on beat 1 = perpetual surprise
+  // jux: right channel gets extra hpf(5000) = thinner, airier
+  //   Left = full rim body, right = only the attack click
+  //   The stereo split makes the euclidean rhythm feel wide and scattered
   s("rim").euclid(5, 16, 3)
     .gain(0.28)
     .hpf(4000)
     .room(0.05)
+    .jux(x => x.hpf(5000).gain(0.7))
     .pan(0.44),
 
-  // ── ACID BASS — fast, aggressive, attacking ───────────────────
-  // High register (b2-d3), tight decay, filter sweeps fast (slow 1.6).
-  // This 303 is angry. It goes up rather than down — attacking, not lurking.
+  // ── ACID BASS — distorted stereo aggressor ───────────────────
+  // shape(0.3): aggressive waveshaper on the high-register 303
+  //   High register (b2-d3) + shape = piercing, attacking
+  // jux(x => x.lpf(1500)): right channel has tighter filter
+  //   Left = full filter sweep from 300 to 3500Hz
+  //   Right = filter sweep capped at 1500Hz = darker in right ear
+  //   The asymmetric filter = the acid seems to lean left, reaching right
   note("b2 ~ b2 d3 b2 ~ a2 ~  g2 ~ b2 ~ fs2 ~ a2 ~")
     .sound("sawtooth")
     .lpf(sine.range(300, 3500).slow(1.6))
     .lpq(14)
+    .shape(0.3)
+    .jux(x => x.lpf(1500))
     .attack(0.001).decay(0.1).sustain(0.0).release(0.05)
     .gain(0.85)
     .slow(2),
 
-  // ── RAVE BASS — chord root, punchy ───────────────────────────
-  // Follows the chord progression. Zero sustain = tight punch.
-  // The acid bass floats above; this is the locked-in root below.
+  // ── RAVE BASS — ghost groove ──────────────────────────────────
+  // off(3/16): ghost note 3/16ths behind the main rave bass
+  //   Ghost: gain(0.22), no filter = just a hint of bass at an
+  //   unexpected rhythmic position. Creates a triplet-like groove feel
+  //   without actually using triplets. The bass feels bouncy, alive.
   note("<b2 g2 d2 a2>")
     .sound("sawtooth")
     .lpf(400)
     .attack(0.003).decay(0.15).sustain(0.0).release(0.08)
     .gain(0.68)
+    .off(3/16, x => x.gain(0.22))
     .slow(2),
 
-  // ── EUPHORIC PAD — the reason people went to raves ───────────
-  // Wide attack (0.2s), tons of reverb, minor chords reaching upward.
-  // This is the emotional center of the track — everything else
-  // exists to support this pad arriving and hitting you.
-  // Filter automation: slowly opens over 5 cycles = swell effect.
+  // ── EUPHORIC PAD — stereo emotional center ────────────────────
+  // jux(rev): the chord sequence reversed in the right channel
+  //   Left = Bm→G→D→A progression forward
+  //   Right = A→D→G→Bm progression (reversed chord order)
+  //   The reversed right channel means chords come from a different
+  //   direction in each ear — the emotional center fills all space
+  //   This is the pad that people came for. Everything else exists
+  //   to make this pad's arrival feel inevitable and huge.
   note("<[b3,d4,fs4] [g3,b3,d4] [d3,fs3,a3] [a3,cs4,e4]>")
     .sound("sawtooth")
     .attack(0.2).decay(0.5).sustain(0.8).release(2.0)
     .lpf(sine.range(1500, 4000).slow(5))
     .room(0.7).size(0.8)
+    .jux(rev)
     .gain(0.24)
     .pan(0.4)
     .slow(2),
 
-  // ── HIGH PAD — sparkle layer above the main pad ──────────────
-  // Upper chord tones, panned slightly right. Adds air and width.
+  // ── HIGH PAD — phased sparkle ─────────────────────────────────
+  // phaser(0.2)/phaserdepth(0.65)/phaserrate(0.25): slow deep phaser
+  //   The upper harmonics of the high pad shimmer with the phaser
+  //   Against the main pad's reverb, this shimmer = the laser beams
+  //   Visual synesthesia in audio: phaser here sounds like light moving
   note("<[fs5,a4] [d5,g4] [a4,d5] [e5,cs5]>")
     .sound("sawtooth")
     .attack(0.3).decay(0.4).sustain(0.7).release(2.5)
     .lpf(5000)
     .room(0.65).size(0.75)
+    .phaser(0.2).phaserdepth(0.65).phaserrate(0.25)
     .gain(0.14)
     .pan(0.6)
     .slow(2),
 
-  // ── FAST ARP — two octaves of B minor, ascending and back ─────
-  // 16 notes: B D E G A B(oct) C# D# E F# G A B(oct+) ...
-  // This arp GOES somewhere — two full octaves and back.
-  // The filter opens as it climbs (slow 2.5) = the arp grows.
+  // ── FAST ARP — stereo two-octave spiral ──────────────────────
+  // 16 notes: B D E G A B(oct) ... ascending then descending
+  // jux(rev): reversed arp in right channel
+  //   Left = ascending THEN descending
+  //   Right = descending THEN ascending (reversed)
+  //   The arp starts going up in your left ear while going down in right
+  //   = spiraling, psychedelic, perpetual motion machine
+  // degradeBy(0.03): barely perceptible 3% note drops = barely organic
+  //   Just enough to remind you a human wrote this. Almost.
   n("0 2 3 5 7 9 10 12 14 12 10 9 7 5 3 2").scale("B:minor")
     .sound("sawtooth")
     .lpf(sine.range(2500, 8000).slow(2.5))
@@ -132,12 +181,17 @@ stack(
     .attack(0.001).release(0.05)
     .gain(0.48)
     .room(0.2)
+    .jux(rev)
+    .degradeBy(0.03)
     .pan(0.5),
 
-  // ── LEAD MELODY — the hook ────────────────────────────────────
-  // B minor pentatonic. This is the melody you'll wake up with.
-  // delay(0.4) with delayfeedback(0.2) = 3-4 echo repeats.
-  // Sparse: the rests create anticipation for the next note.
+  // ── LEAD MELODY — lo-fi artifacts on emotional peak ──────────
+  // sometimes(crush(8)): randomly bit-crushes the lead melody
+  //   Clean lead = euphoric and smooth
+  //   Crushed lead = lo-fi, raw, the original 90s sample quality
+  //   The randomness means: sometimes you get the clean version,
+  //   sometimes the lo-fi version. Like a tape that degrades mid-note.
+  //   This is not a mistake — it's the sound of music being lived in.
   note("fs5 ~ ~ ~ a5 ~ b5 ~  ~ ~ g5 ~ ~ fs5 ~ ~  d5 ~ ~ ~ e5 ~ ~ fs5  ~ ~ ~ a4 ~ ~ b4 ~")
     .sound("sine")
     .attack(0.015).decay(0.28).sustain(0.35).release(0.7)
@@ -145,6 +199,7 @@ stack(
     .delaytime(0.5)
     .delayfeedback(0.2)
     .room(0.45).size(0.5)
+    .sometimes(x => x.crush(8))
     .gain(0.5)
     .pan(0.5)
     .slow(4)

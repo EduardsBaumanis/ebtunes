@@ -1,14 +1,71 @@
 /* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── Tokens ── */
+/* ── Base tokens (ACID default — cold, harsh, pure contrast) ── */
 :root {
-  --black:  #000000;
-  --white:  #f2f2f2;
-  --grey:   #666666;
-  --dim:    #222222;
-  --mid:    #444444;
-  --font:   'Courier New', Courier, monospace;
+  --black:    #000000;
+  --white:    #f2f2f2;
+  --grey:     #666666;
+  --dim:      #222222;
+  --mid:      #444444;
+  --code-bg:  #050505;
+  --code-fg:  #cccccc;
+  --font:     'Courier New', Courier, monospace;
+}
+
+/* ── LOFI theme — warm coffee, amber, analogue tape ── */
+[data-theme="lofi"] {
+  --black:    #0c0906;
+  --white:    #f0e6cc;
+  --grey:     #8a7055;
+  --dim:      #281a0c;
+  --mid:      #584030;
+  --code-bg:  #100c06;
+  --code-fg:  #c8b898;
+}
+
+/* ── RIM theme — western dust, parchment, terracotta ── */
+[data-theme="rim"] {
+  --black:    #0e0a04;
+  --white:    #e2cfa8;
+  --grey:     #906040;
+  --dim:      #2a1808;
+  --mid:      #604020;
+  --code-bg:  #120d04;
+  --code-fg:  #c0a870;
+}
+
+/* ── ACID theme — inherits :root (pure black/white) ── */
+[data-theme="acid"] {
+  --black:    #000000;
+  --white:    #f2f2f2;
+  --grey:     #666666;
+  --dim:      #222222;
+  --mid:      #444444;
+  --code-bg:  #050505;
+  --code-fg:  #cccccc;
+}
+
+/* ── SKOLA theme — educational, terminal blue ── */
+[data-theme="skola"] {
+  --black:    #050810;
+  --white:    #dce8ff;
+  --grey:     #4a6898;
+  --dim:      #0a1525;
+  --mid:      #183060;
+  --code-bg:  #040810;
+  --code-fg:  #88b8e8;
+}
+
+/* ── TECHNO theme — industrial, deep crimson ── */
+[data-theme="techno"] {
+  --black:    #090506;
+  --white:    #f0e0e0;
+  --grey:     #703040;
+  --dim:      #1a0808;
+  --mid:      #380c14;
+  --code-bg:  #080404;
+  --code-fg:  #cc8888;
 }
 
 html, body { height: 100%; overflow: hidden; }
@@ -19,6 +76,7 @@ body {
   font-family: var(--font);
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
 /* ── App shell ── */
@@ -35,6 +93,7 @@ body {
   height: 44px;
   border-bottom: 1px solid var(--dim);
   flex-shrink: 0;
+  transition: border-color 0.4s ease;
 }
 
 .logo {
@@ -46,6 +105,7 @@ body {
   border-right: 1px solid var(--dim);
   letter-spacing: 0.05em;
   user-select: none;
+  transition: color 0.4s ease, border-color 0.4s ease;
 }
 
 .playlist-tabs {
@@ -64,10 +124,10 @@ body {
   font-size: 10px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  transition: color 0.1s, background 0.1s;
+  transition: color 0.15s, background 0.15s, border-color 0.4s;
   height: 100%;
 }
-.tab-btn:hover  { color: var(--white); background: #0a0a0a; }
+.tab-btn:hover  { color: var(--white); background: rgba(255,255,255,0.04); }
 .tab-btn.active { color: var(--black); background: var(--white); }
 
 .shuffle-btn {
@@ -79,7 +139,7 @@ body {
   padding: 0 20px;
   font-size: 16px;
   font-family: var(--font);
-  transition: color 0.1s;
+  transition: color 0.1s, border-color 0.4s;
   height: 100%;
 }
 .shuffle-btn:hover   { color: var(--white); }
@@ -98,6 +158,7 @@ body {
   border-right: 1px solid var(--dim);
   overflow-y: auto;
   flex-shrink: 0;
+  transition: border-color 0.4s ease;
 }
 
 .sidebar::-webkit-scrollbar { width: 4px; }
@@ -108,16 +169,16 @@ body {
 
 .song-item {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding: 9px 14px 9px 12px;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px 9px 12px;
   cursor: pointer;
   border-left: 2px solid transparent;
   transition: background 0.08s, border-color 0.08s;
 }
-.song-item:hover  { background: #0d0d0d; }
+.song-item:hover  { background: rgba(255,255,255,0.03); }
 .song-item.active {
-  background: #0d0d0d;
+  background: rgba(255,255,255,0.04);
   border-left-color: var(--white);
 }
 
@@ -138,7 +199,36 @@ body {
   white-space: nowrap;
   line-height: 1.4;
   transition: color 0.08s;
+  flex: 1;
 }
+
+/* ── Sidebar vote buttons ── */
+.si-votes {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.si-vote-btn {
+  background: none;
+  border: 1px solid var(--dim);
+  color: var(--dim);
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.1s, border-color 0.1s;
+  flex-shrink: 0;
+}
+.song-item:hover .si-vote-btn       { color: var(--mid); border-color: var(--mid); }
+.si-vote-btn:hover                  { color: var(--grey) !important; border-color: var(--grey) !important; }
+.si-vote-btn.active                 { color: var(--white); border-color: var(--grey); }
 .song-item:hover  .si-title { color: var(--white); }
 .song-item.active .si-title { color: var(--white); }
 
@@ -204,6 +294,7 @@ body {
   color: var(--grey);
   border: 1px solid var(--dim);
   padding: 3px 10px;
+  transition: border-color 0.4s ease;
 }
 
 .p-sep {
@@ -310,6 +401,7 @@ body {
   font-size: 18px;
   border-color: var(--white);
   color: var(--white);
+  transition: color 0.1s, border-color 0.1s, background 0.1s;
 }
 .ctrl-play:hover { background: var(--white); color: var(--black); }
 
@@ -417,8 +509,8 @@ body {
 
 .code-area {
   flex: 1;
-  background: #050505;
-  color: #cccccc;
+  background: var(--code-bg);
+  color: var(--code-fg);
   border: none;
   border-bottom: 1px solid var(--dim);
   font-family: var(--font);
@@ -428,6 +520,7 @@ body {
   resize: none;
   outline: none;
   tab-size: 2;
+  transition: background 0.4s ease, color 0.4s ease;
   /* subtle scanline overlay */
   background-image: repeating-linear-gradient(
     0deg,
@@ -478,6 +571,138 @@ body {
   transition: color 0.1s, border-color 0.1s;
 }
 .cnav-btn:hover { color: var(--white); border-color: var(--mid); }
+
+/* ── Board button ── */
+.board-btn {
+  background: none;
+  border: none;
+  border-left: 1px solid var(--dim);
+  color: var(--grey);
+  cursor: pointer;
+  padding: 0 18px;
+  font-family: var(--font);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  transition: color 0.1s, border-color 0.4s;
+  height: 100%;
+}
+.board-btn:hover  { color: var(--white); }
+.board-btn.active { color: var(--white); }
+
+/* ── Board pane ── */
+.board-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.board-pane.hidden { display: none; }
+
+.board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px 12px;
+  border-bottom: 1px solid var(--dim);
+  flex-shrink: 0;
+}
+
+.board-title {
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  color: var(--grey);
+  font-weight: normal;
+}
+
+.board-refresh-timer {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--dim);
+}
+
+.board-content {
+  flex: 1;
+  overflow-y: auto;
+}
+.board-content::-webkit-scrollbar { width: 4px; }
+.board-content::-webkit-scrollbar-track { background: transparent; }
+.board-content::-webkit-scrollbar-thumb { background: var(--dim); }
+
+.board-empty, .board-loading {
+  padding: 40px 24px;
+  color: var(--dim);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-align: center;
+}
+
+/* ── Leaderboard table ── */
+.lb-table { padding: 4px 0; }
+
+.lb-head, .lb-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 64px 32px 32px 52px;
+  padding: 8px 24px;
+  gap: 0 8px;
+}
+
+.lb-head {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: var(--mid);
+  border-bottom: 1px solid var(--dim);
+  padding-bottom: 10px;
+}
+
+.lb-row {
+  font-size: 11px;
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+  transition: background 0.08s;
+}
+.lb-row:hover { background: rgba(255,255,255,0.025); }
+
+.lb-rank {
+  font-size: 9px;
+  color: var(--dim);
+  letter-spacing: 0.05em;
+  align-self: center;
+}
+
+.lb-name {
+  color: var(--white);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+  align-self: center;
+}
+
+.lb-tag {
+  font-size: 9px;
+  color: var(--grey);
+  letter-spacing: 0.2em;
+  text-align: center;
+  align-self: center;
+}
+
+.lb-up, .lb-down {
+  font-size: 10px;
+  color: var(--grey);
+  text-align: center;
+  align-self: center;
+  letter-spacing: 0.05em;
+}
+
+.lb-score {
+  font-size: 12px;
+  text-align: right;
+  letter-spacing: 0.05em;
+  align-self: center;
+  color: var(--grey);
+}
+.lb-score.positive { color: var(--white); }
+.lb-score.negative { color: var(--mid); }
 
 /* ── Off-screen Strudel engine ── */
 #engine {

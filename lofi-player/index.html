@@ -49,6 +49,7 @@
     <header class="header">
       <span class="logo">◈</span>
       <nav class="playlist-tabs" id="playlist-tabs"></nav>
+      <button id="btn-board" class="board-btn">BOARD</button>
       <button id="btn-shuffle" class="shuffle-btn">⇄</button>
     </header>
 
@@ -103,6 +104,17 @@
         <p class="hints">SPACE · J / L · ← →</p>
       </main>
 
+      <!-- ── BOARD PANE ── -->
+      <main id="board-pane" class="board-pane hidden">
+        <div class="board-header">
+          <h2 class="board-title">LEADERBOARD</h2>
+          <span id="board-refresh-timer" class="board-refresh-timer"></span>
+        </div>
+        <div id="board-content" class="board-content">
+          <div class="board-loading">LOADING...</div>
+        </div>
+      </main>
+
       <!-- ── CODE PANE ── -->
       <main id="code-pane" class="code-pane hidden">
 
@@ -139,6 +151,7 @@ s("bd")
   --></strudel-editor>
 
   <script src="playlists.js"></script>
+  <script src="supabase.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

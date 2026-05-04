@@ -2,6 +2,7 @@ const PLAYLISTS = [
   {
     id: 'lofi',
     label: 'LOFI',
+    theme: 'lofi',
     path: '../lofi/',
     mode: 'player',
     files: [
@@ -35,6 +36,7 @@ const PLAYLISTS = [
   {
     id: 'rim',
     label: 'RIM',
+    theme: 'rim',
     path: '../rim/',
     mode: 'player',
     files: [
@@ -53,6 +55,7 @@ const PLAYLISTS = [
   {
     id: 'acid',
     label: 'ACID',
+    theme: 'acid',
     path: '../acid/',
     mode: 'player',
     files: [
@@ -66,6 +69,7 @@ const PLAYLISTS = [
   {
     id: 'skola',
     label: 'SKOLA',
+    theme: 'skola',
     path: '../Skola/',
     mode: 'code',
     files: [
@@ -84,12 +88,14 @@ const PLAYLISTS = [
       'cheat-03-sound-and-effects.strudel',
       'cheat-04-advanced-modifiers.strudel',
       'cheat-05-advanced-effects.strudel',
+      'cheat-06-effects-library.strudel',
       'example.strudel',
     ],
   },
   {
     id: 'techno',
     label: 'TECHNO',
+    theme: 'techno',
     path: '../TehnoSkola/',
     mode: 'code',
     files: [
