@@ -4,6 +4,24 @@ Personīgs eksperimentu lauks, lai apgūtu [Strudel](https://strudel.cc) — pā
 
 ---
 
+## Licence
+
+Šis projekts ir licencēts ar **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+
+### AGPL-3.0 prasības šim projektam:
+
+1. **Avota koda pieejamība**: Ja jūs modificējat šo kodu un padarāt to pieejamu citiem (piemēram, publicējot tīmeklī), jums jānodrošina pilns avota kods zem AGPL-3.0 licences.
+
+2. **Tīkla servisa klauzula**: Ja jūs darbināt modificētu versiju kā tīmekļa servisu (piemēram, hostojot Strudel lietotni ar saviem skaņdarbjiem), lietotājiem jābūt pieejamai avota kodam.
+
+3. **Autortiesības**: Oriģinālais saturs (skaņdarbi, mācību materiāli) ir autortiesīgs Eduarda Baumaņa, 2024.
+
+### Strudel atkarība:
+
+Šis projekts izmanto [Strudel](https://strudel.cc), kas ir licencēts zem AGPL-3.0. Tādēļ viss saturs, kas ir atkarīgs no Strudel izpildes vides, ir pakļauts AGPL-3.0 prasībām.
+
+---
+
 ## Kas šeit ir
 
 ### [Skola/](Skola/) — Strudel kurss
