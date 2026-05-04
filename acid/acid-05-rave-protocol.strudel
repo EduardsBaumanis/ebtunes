@@ -1,0 +1,152 @@
+// ══════════════════════════════════════════════════════════════
+// "Rave Protocol"
+// Old school rave — 1992–1995, maximum energy, euphoric chaos
+//
+// Key:    B minor
+// Tempo:  144 BPM  (setcpm 72)
+// Chords: Bm – G – D – A   (i – VI – III – VII, natural minor)
+// Feel:   Illegal warehouse, laser beams, 500 people, no rules.
+//         Before the genres separated — before techno was techno
+//         and trance was trance. Just: LOUD. FASTER. MORE.
+//
+// OLD SCHOOL RAVE PHILOSOPHY:
+// The early 90s didn't have genre boundaries. A rave track had:
+//   - The hardest kick you could find (120-145 BPM)
+//   - A HUGE reverbed snare (the 90s snare was a room event)
+//   - Fast 303 acid lines (sometimes two)
+//   - Euphoric pad (the emotional reason for being there)
+//   - A melodic arp that GOES somewhere, over two octaves
+//   - A lead melody you'll hear in your sleep for a week
+//   - Too many layers. That was correct.
+//
+// THIS TRACK — 12 LAYERS:
+// Real 90s tracks did this. The mix was often muddy.
+// That was fine. The energy was the point.
+//
+// i–VI–III–VII (Bm–G–D–A):
+// The same progression in every direction — B minor aeolian.
+// The VII chord (A) is a major chord that reaches upward
+// but resolves back to the minor root. Euphoric but never resolved.
+// That tension is the whole emotional trip.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(72)  // 144 BPM
+
+stack(
+
+  // ── KICK — the floor, the heartbeat, the law ─────────────────
+  // Heavy distort — 90s kicks were loud and slightly broken.
+  s("bd*4")
+    .gain(0.95)
+    .distort(0.15)
+    .lpf(5000),
+
+  // ── SNARE — the 90s room event ───────────────────────────────
+  // room(0.35) size(0.45) = this snare echoes. It's a sound event.
+  // You can hear it 3 beats before it arrives.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.85)
+    .room(0.35)
+    .size(0.45),
+
+  // ── HI-HAT 16ths — relentless, machinelike ───────────────────
+  s("hh*16")
+    .gain(0.2)
+    .hpf(9000)
+    .pan(0.56),
+
+  // ── OPEN HAT — stabs, off-grid ───────────────────────────────
+  s("~ ~ ~ ~ oh ~ ~ ~  ~ ~ ~ ~ oh ~ ~ oh")
+    .gain(0.42)
+    .hpf(7000),
+
+  // ── CLAP — layers with the snare, adds crack ──────────────────
+  // Together: snare handles the body, clap handles the crack.
+  s("~ ~ cp ~ ~ ~ cp ~")
+    .gain(0.6)
+    .hpf(3000),
+
+  // ── RIM SYNCOPATION — chaos in the fills ─────────────────────
+  // E(5,16,3) rotated by 3 steps = doesn't start on beat 1.
+  // Adds movement in the gaps between the major drum hits.
+  s("rim").euclid(5, 16, 3)
+    .gain(0.28)
+    .hpf(4000)
+    .room(0.05)
+    .pan(0.44),
+
+  // ── ACID BASS — fast, aggressive, attacking ───────────────────
+  // High register (b2-d3), tight decay, filter sweeps fast (slow 1.6).
+  // This 303 is angry. It goes up rather than down — attacking, not lurking.
+  note("b2 ~ b2 d3 b2 ~ a2 ~  g2 ~ b2 ~ fs2 ~ a2 ~")
+    .sound("sawtooth")
+    .lpf(sine.range(300, 3500).slow(1.6))
+    .lpq(14)
+    .attack(0.001).decay(0.1).sustain(0.0).release(0.05)
+    .gain(0.85)
+    .slow(2),
+
+  // ── RAVE BASS — chord root, punchy ───────────────────────────
+  // Follows the chord progression. Zero sustain = tight punch.
+  // The acid bass floats above; this is the locked-in root below.
+  note("<b2 g2 d2 a2>")
+    .sound("sawtooth")
+    .lpf(400)
+    .attack(0.003).decay(0.15).sustain(0.0).release(0.08)
+    .gain(0.68)
+    .slow(2),
+
+  // ── EUPHORIC PAD — the reason people went to raves ───────────
+  // Wide attack (0.2s), tons of reverb, minor chords reaching upward.
+  // This is the emotional center of the track — everything else
+  // exists to support this pad arriving and hitting you.
+  // Filter automation: slowly opens over 5 cycles = swell effect.
+  note("<[b3,d4,fs4] [g3,b3,d4] [d3,fs3,a3] [a3,cs4,e4]>")
+    .sound("sawtooth")
+    .attack(0.2).decay(0.5).sustain(0.8).release(2.0)
+    .lpf(sine.range(1500, 4000).slow(5))
+    .room(0.7).size(0.8)
+    .gain(0.24)
+    .pan(0.4)
+    .slow(2),
+
+  // ── HIGH PAD — sparkle layer above the main pad ──────────────
+  // Upper chord tones, panned slightly right. Adds air and width.
+  note("<[fs5,a4] [d5,g4] [a4,d5] [e5,cs5]>")
+    .sound("sawtooth")
+    .attack(0.3).decay(0.4).sustain(0.7).release(2.5)
+    .lpf(5000)
+    .room(0.65).size(0.75)
+    .gain(0.14)
+    .pan(0.6)
+    .slow(2),
+
+  // ── FAST ARP — two octaves of B minor, ascending and back ─────
+  // 16 notes: B D E G A B(oct) C# D# E F# G A B(oct+) ...
+  // This arp GOES somewhere — two full octaves and back.
+  // The filter opens as it climbs (slow 2.5) = the arp grows.
+  n("0 2 3 5 7 9 10 12 14 12 10 9 7 5 3 2").scale("B:minor")
+    .sound("sawtooth")
+    .lpf(sine.range(2500, 8000).slow(2.5))
+    .lpq(4)
+    .attack(0.001).release(0.05)
+    .gain(0.48)
+    .room(0.2)
+    .pan(0.5),
+
+  // ── LEAD MELODY — the hook ────────────────────────────────────
+  // B minor pentatonic. This is the melody you'll wake up with.
+  // delay(0.4) with delayfeedback(0.2) = 3-4 echo repeats.
+  // Sparse: the rests create anticipation for the next note.
+  note("fs5 ~ ~ ~ a5 ~ b5 ~  ~ ~ g5 ~ ~ fs5 ~ ~  d5 ~ ~ ~ e5 ~ ~ fs5  ~ ~ ~ a4 ~ ~ b4 ~")
+    .sound("sine")
+    .attack(0.015).decay(0.28).sustain(0.35).release(0.7)
+    .delay(0.4)
+    .delaytime(0.5)
+    .delayfeedback(0.2)
+    .room(0.45).size(0.5)
+    .gain(0.5)
+    .pan(0.5)
+    .slow(4)
+
+)

@@ -1,0 +1,116 @@
+// ══════════════════════════════════════════════════════════════
+// "Storm Warning"
+// Hard acid techno — warehouse, underground, relentless
+//
+// Key:    A minor
+// Tempo:  140 BPM  (setcpm 70)
+// Feel:   Dark concrete warehouse, 3am, sweat on the walls.
+//         Two 303s arguing. One wins, then the other does.
+//
+// ACID TECHNIQUE — THE TB-303:
+// The Roland TB-303 was meant to simulate a bass guitar. It failed.
+// Second-hand units ended up in Chicago, where DJs discovered that
+// cranking the RESONANCE and sweeping the CUTOFF made something
+// no one had heard before: the acid squelch.
+//
+// Two 303 voices is a classic technique (Josh Wink, Emmanuel Top):
+//   Voice 1: sawtooth, low octave, slow filter sweep (creeping)
+//   Voice 2: square, mid octave, fast sweep (manic, answering)
+// Together they interlock like two machines arguing in the dark.
+//
+// lpq(15) — at 15+ the filter begins to self-oscillate.
+// The filter *sings* on its own above the note. This is the acid.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(70)  // 140 BPM
+
+stack(
+
+  // ── KICK — four on the floor, distorted edge ─────────────────
+  // distort(0.12) adds a subtle clip that makes it cut harder
+  s("bd*4")
+    .gain(0.96)
+    .distort(0.12)
+    .lpf(4200),
+
+  // ── CLAP — crisp, dry, no reverb ─────────────────────────────
+  // Techno claps are close-mic'd and unforgiving. No room.
+  s("~ ~ cp ~ ~ ~ cp ~")
+    .gain(0.82),
+
+  // ── HI-HAT 16ths — extremely thin, just air and attack ───────
+  s("hh*16")
+    .gain(0.2)
+    .hpf(10000)
+    .pan(0.55),
+
+  // ── OPEN HAT — offbeat stab, adds forward drive ──────────────
+  s("~ ~ ~ oh ~ ~ ~ oh  ~ ~ ~ oh ~ ~ ~ ~")
+    .gain(0.45)
+    .hpf(7000)
+    .pan(0.46),
+
+  // ── RIM / PERC — euclidean syncopation ───────────────────────
+  // E(5,16): 5 hits spread across 16 steps = organic, asymmetric
+  s("rim").euclid(5, 16)
+    .gain(0.3)
+    .room(0.06)
+    .pan(0.62)
+    .hpf(3000),
+
+  // ── MAIN ACID BASS (303 voice 1) — sawtooth, low octave ─────
+  // Slow filter sweep (slow 3.3) creates an out-of-phase cycle:
+  // the sweep doesn't repeat on bar lines = always evolving
+  // A minor with chromatic approach: a bb a e g
+  note("a1 ~ c2 ~ a1 e2 ~ g2  ~ a1 ~ bb1 a1 ~ e2 ~")
+    .sound("sawtooth")
+    .lpf(sine.range(260, 2600).slow(3.3))
+    .lpq(15)
+    .attack(0.001).decay(0.12).sustain(0.0).release(0.06)
+    .gain(0.9)
+    .slow(2),
+
+  // ── SECOND ACID LINE (303 voice 2) — square, higher ─────────
+  // Square wave = hollow, nasal acid. Different flavor to sawtooth.
+  // Faster sweep (slow 1.9) and erratic pattern = the manic voice
+  note("~ a2 ~ ~ e3 ~ c3 ~  ~ ~ a2 ~ bb2 ~ ~ ~")
+    .sound("square")
+    .lpf(sine.range(350, 3200).slow(1.9))
+    .lpq(13)
+    .attack(0.001).decay(0.09).sustain(0.0).release(0.04)
+    .gain(0.55)
+    .pan(0.42)
+    .slow(2),
+
+  // ── SUB BASS — pure sine, below 120Hz ───────────────────────
+  // Felt more than heard. The physical weight under everything.
+  // Follows chord changes: A → A → E → G
+  note("<a1 a1 e2 g2>")
+    .sound("sine")
+    .lpf(120)
+    .attack(0.005).decay(0.3).sustain(0.35).release(0.2)
+    .gain(0.78),
+
+  // ── DARK ATMOSPHERE PAD — cathedral reverb, minor chords ─────
+  // Very slow attack (0.7s) — swells in underneath everything.
+  // The sound of an empty industrial tunnel at night.
+  // Slow filter automation (slow 8) = breathing, alien quality
+  note("<[a2,c3,e3] [e2,g2,b2] [f2,a2,c3] [g2,b2,d3]>")
+    .sound("sawtooth")
+    .attack(0.7).decay(0.5).sustain(0.8).release(2.5)
+    .lpf(sine.range(500, 1000).slow(8))
+    .room(0.8).size(0.9)
+    .gain(0.16)
+    .pan(0.38)
+    .slow(4),
+
+  // ── METALLIC TEXTURE — industrial scrape ─────────────────────
+  // High-passed open-hat variant hits: not musical, just texture.
+  // Fills the space between elements with industrial grit.
+  s("~ ~ ~ ~ oh:2 ~ ~ ~  ~ ~ ~ ~ ~ oh:2 ~ ~")
+    .gain(0.22)
+    .hpf(6000)
+    .room(0.15)
+    .pan(0.48)
+
+)

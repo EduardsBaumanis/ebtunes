@@ -1,23 +1,33 @@
+// ── Constants ─────────────────────────────────────────────────────────────────
+
 const CIRCUMFERENCE = 2 * Math.PI * 80; // 502.65
+const FADE_MS = 800;
 
-let songs       = [];
-let currentIdx  = 0;
-let isPlaying   = false;
-let shuffleMode = false;
-let totalMs     = 120_000;
-let remainingMs = totalMs;
-let tickId      = null;
-let isFading    = false;
+// ── State ─────────────────────────────────────────────────────────────────────
 
-const FADE_MS = 1000;
+const codeCache     = new Map(); // url → { filename, code, meta }
+
+let currentPlaylist = null;
+let currentIdx      = 0;
+let currentMode     = 'player'; // 'player' | 'code'
+
+let isPlaying       = false;
+let isFading        = false;
+let shuffleMode     = false;
+
+let totalMs         = 120_000;
+let remainingMs     = totalMs;
+let tickId          = null;
+
+let playlistVersion = 0; // bumped on every playlist switch to cancel stale async ops
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
 
-let elSongInfo, elSongNumber, elSongSubtitle, elSongTitle;
-let elSongKey, elSongBpm, elSongFeel, elSongChords;
+let elPlayerPane, elCodePane, elSongList;
+let elPlayerInfo, elPCounter, elPSubtitle, elPTitle, elPKey, elPBpm, elPFeel, elPChords;
 let elRingFill, elRingTime;
 let elBtnPlay, elBtnShuffle, elTimerSlider, elTimerVal;
-let elPlaylist;
+let elCodeTitle, elCodeCounter, elCodeArea;
 
 // ── Audio helpers ─────────────────────────────────────────────────────────────
 
@@ -26,8 +36,6 @@ function fadeTo(target, ms) {
     const node = window._masterGain;
     const ac   = window._ac;
     if (!node || !ac) { resolve(); return; }
-    // Always try to resume — critical when called from async continuations
-    // where the user gesture chain may have been broken by an earlier await.
     ac.resume();
     const t = ac.currentTime;
     node.gain.cancelScheduledValues(t);
@@ -37,8 +45,8 @@ function fadeTo(target, ms) {
   });
 }
 
-function setGainImmediate(value) {
-  if (window._masterGain) window._masterGain.gain.value = value;
+function setGainImmediate(v) {
+  if (window._masterGain) window._masterGain.gain.value = v;
 }
 
 // ── Engine helpers ────────────────────────────────────────────────────────────
@@ -58,9 +66,9 @@ function waitForEditor(timeoutMs = 8000) {
   });
 }
 
-function loadCode(song) {
+function loadCode(code) {
   const e = engine();
-  if (e && e.editor) e.editor.setCode(song.code);
+  if (e && e.editor) e.editor.setCode(code);
 }
 
 function startEngine() {
@@ -73,24 +81,61 @@ function stopEngine() {
   if (e && e.editor) { try { e.editor.stop(); } catch (_) {} }
 }
 
-// Start a song and fade in. Handles the case where AudioContext is created
-// lazily inside evaluate() — polls briefly until _masterGain appears.
-async function startPlayback() {
-  setGainImmediate(0);
-  loadCode(songs[currentIdx]);
-  startEngine();
+// ── File loading & metadata ───────────────────────────────────────────────────
 
-  // evaluate() may create the AudioContext synchronously or shortly after.
-  // Poll until _masterGain is available (max ~1 s).
-  if (!window._masterGain) {
-    const deadline = Date.now() + 1000;
-    while (!window._masterGain && Date.now() < deadline) {
-      await new Promise(r => setTimeout(r, 30));
-    }
+function parseMeta(filename, code) {
+  // Song files (lofi / rim / acid) have: // "Title"
+  const quotedTitle = code.match(/^\/\/\s*"([^"]+)"/m);
+
+  if (quotedTitle) {
+    const afterTitle  = code.match(/^\/\/\s*"[^"]+"\n\/\/\s*(.+)/m);
+    const keyMatch    = code.match(/^\/\/\s*Key:\s*(.+)/m);
+    const bpmMatch    = code.match(/~?(\d+)\s*BPM/i);
+    const feelMatch   = code.match(/^\/\/\s*Feel:\s*(.+)/m);
+    const chordsMatch = code.match(/^\/\/\s*Chords:\s*(.+)/m);
+
+    return {
+      title:    quotedTitle[1],
+      subtitle: afterTitle   ? afterTitle[1].trim()          : '',
+      key:      keyMatch     ? keyMatch[1].trim()             : '',
+      bpm:      bpmMatch     ? parseInt(bpmMatch[1], 10)      : 0,
+      feel:     feelMatch    ? feelMatch[1].trim()            : '',
+      chords:   chordsMatch  ? chordsMatch[1].trim()          : '',
+    };
   }
 
-  setGainImmediate(0); // ensure gain is 0 before ramp (context just created)
-  await fadeTo(1, FADE_MS); // fadeTo calls ac.resume() internally
+  // Lesson / cheat / techno lesson files — derive from second comment line
+  const lessonLine = code.match(/^\/\/\s*((?:TECHNO\s+)?LESSON\s+\d+\s*:\s*[^\n]+)/m);
+  const cheatLine  = code.match(/^\/\/\s*[║╠]\s*(STRUDEL\s+CHEAT\s+SHEET[^\n║╣]+)/m);
+
+  let title = filename
+    .replace(/\.strudel$/, '')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+
+  if (lessonLine)     title = lessonLine[1].trim();
+  else if (cheatLine) title = cheatLine[1].trim().replace(/\s+—\s+/, ' — ');
+
+  return { title, subtitle: '', key: '', bpm: 0, feel: '', chords: '' };
+}
+
+async function fetchSong(playlist, filename) {
+  const url = playlist.path + filename;
+  if (codeCache.has(url)) return codeCache.get(url);
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const code  = await res.text();
+    const meta  = parseMeta(filename, code);
+    const entry = { filename, code, meta };
+    codeCache.set(url, entry);
+    return entry;
+  } catch (err) {
+    console.error('fetch failed:', url, err);
+    const meta = { title: filename.replace(/\.strudel$/, '').replace(/-/g, ' '), subtitle: '', key: '', bpm: 0, feel: '', chords: '' };
+    return { filename, code: '// Could not load file.\n// Make sure you are running a local web server.', meta };
+  }
 }
 
 // ── Ring ──────────────────────────────────────────────────────────────────────
@@ -108,22 +153,67 @@ function updateRing() {
 
 // ── Song UI ───────────────────────────────────────────────────────────────────
 
-function updateSongUI(song, idx) {
-  elSongNumber.textContent   = String(idx + 1).padStart(2, '0') + ' / ' + songs.length;
-  elSongSubtitle.textContent = song.subtitle || '';
-  elSongTitle.textContent    = song.title;
-  elSongKey.textContent      = song.key;
-  elSongBpm.textContent      = song.bpm + ' BPM';
-  elSongFeel.textContent     = song.feel   || '';
-  elSongChords.textContent   = song.chords || '';
+function updateSongUI(entry, idx) {
+  const { meta } = entry;
+  const total    = currentPlaylist.files.length;
 
-  document.querySelectorAll('.playlist-item').forEach((el, i) => {
+  if (currentMode === 'player') {
+    elPCounter.textContent  = String(idx + 1).padStart(2, '0') + ' · ' + String(total).padStart(2, '0');
+    elPSubtitle.textContent = meta.subtitle || '';
+    elPTitle.textContent    = meta.title;
+    elPKey.textContent      = meta.key  || '—';
+    elPBpm.textContent      = meta.bpm  ? meta.bpm + ' BPM' : '—';
+    elPFeel.textContent     = meta.feel   || '';
+    elPChords.textContent   = meta.chords || '';
+  } else {
+    elCodeTitle.textContent   = meta.title;
+    elCodeCounter.textContent = String(idx + 1).padStart(2, '0') + ' · ' + String(total).padStart(2, '0');
+    elCodeArea.value          = entry.code;
+  }
+
+  document.querySelectorAll('.song-item').forEach((el, i) => {
     el.classList.toggle('active', i === idx);
     if (i === idx) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 }
 
-// ── Tick (countdown) ──────────────────────────────────────────────────────────
+// ── Sidebar ───────────────────────────────────────────────────────────────────
+
+function buildSidebar(playlist) {
+  const version = ++playlistVersion;
+  elSongList.innerHTML = '';
+
+  playlist.files.forEach((filename, i) => {
+    const item = document.createElement('div');
+    item.className = 'song-item' + (i === 0 ? ' active' : '');
+    item.dataset.idx = i;
+
+    const num   = document.createElement('span');
+    num.className = 'si-num';
+    num.textContent = String(i + 1).padStart(2, '0');
+
+    const title = document.createElement('span');
+    title.className = 'si-title';
+    // Placeholder from filename until meta loads
+    title.textContent = filename.replace(/\.strudel$/, '').replace(/-/g, ' ');
+
+    item.appendChild(num);
+    item.appendChild(title);
+    item.addEventListener('click', () => jumpTo(i));
+    elSongList.appendChild(item);
+  });
+
+  // Update titles from fetched metadata as they arrive
+  playlist.files.forEach((filename, i) => {
+    fetchSong(playlist, filename).then(entry => {
+      if (playlistVersion !== version) return; // playlist changed
+      const items = elSongList.querySelectorAll('.song-item');
+      if (items[i]) items[i].querySelector('.si-title').textContent = entry.meta.title;
+    });
+  });
+}
+
+// ── Tick ──────────────────────────────────────────────────────────────────────
 
 function clearTick() {
   if (tickId) { clearInterval(tickId); tickId = null; }
@@ -139,7 +229,24 @@ function startTick() {
   }, 100);
 }
 
-// ── Core transitions ──────────────────────────────────────────────────────────
+// ── Player transitions ────────────────────────────────────────────────────────
+
+async function startPlayback() {
+  const entry = await fetchSong(currentPlaylist, currentPlaylist.files[currentIdx]);
+  setGainImmediate(0);
+  loadCode(entry.code);
+  startEngine();
+
+  if (!window._masterGain) {
+    const deadline = Date.now() + 1000;
+    while (!window._masterGain && Date.now() < deadline) {
+      await new Promise(r => setTimeout(r, 30));
+    }
+  }
+
+  setGainImmediate(0);
+  await fadeTo(1, FADE_MS);
+}
 
 async function advance(dir) {
   if (isFading) return;
@@ -147,41 +254,55 @@ async function advance(dir) {
   clearTick();
 
   if (isPlaying) {
-    elSongInfo.style.opacity = '0';
+    elPlayerInfo.style.opacity = '0';
     await fadeTo(0, FADE_MS);
     stopEngine();
   }
 
-  if (shuffleMode && songs.length > 1) {
+  if (shuffleMode && currentPlaylist.files.length > 1) {
     let next;
-    do { next = Math.floor(Math.random() * songs.length); } while (next === currentIdx);
+    do { next = Math.floor(Math.random() * currentPlaylist.files.length); } while (next === currentIdx);
     currentIdx = next;
   } else {
-    currentIdx = ((currentIdx + dir) % songs.length + songs.length) % songs.length;
+    currentIdx = ((currentIdx + dir) % currentPlaylist.files.length + currentPlaylist.files.length) % currentPlaylist.files.length;
   }
 
   remainingMs = totalMs;
   updateRing();
-  updateSongUI(songs[currentIdx], currentIdx);
-  elSongInfo.style.opacity = '1';
+
+  const entry = await fetchSong(currentPlaylist, currentPlaylist.files[currentIdx]);
+  updateSongUI(entry, currentIdx);
+  elPlayerInfo.style.opacity = '1';
 
   if (isPlaying) {
     await startPlayback();
     startTick();
   } else {
-    loadCode(songs[currentIdx]);
+    loadCode(entry.code);
   }
 
   isFading = false;
 }
 
 async function jumpTo(idx) {
+  if (currentMode === 'code') {
+    if (isFading) return;
+    isFading = true;
+    stopEngine();
+    setGainImmediate(0);
+    currentIdx = idx;
+    const entry = await fetchSong(currentPlaylist, currentPlaylist.files[idx]);
+    updateSongUI(entry, idx);
+    isFading = false;
+    return;
+  }
+
   if (idx === currentIdx || isFading) return;
   isFading = true;
   clearTick();
 
   if (isPlaying) {
-    elSongInfo.style.opacity = '0';
+    elPlayerInfo.style.opacity = '0';
     await fadeTo(0, FADE_MS);
     stopEngine();
   }
@@ -189,22 +310,22 @@ async function jumpTo(idx) {
   currentIdx  = idx;
   remainingMs = totalMs;
   updateRing();
-  updateSongUI(songs[currentIdx], currentIdx);
-  elSongInfo.style.opacity = '1';
+
+  const entry = await fetchSong(currentPlaylist, currentPlaylist.files[idx]);
+  updateSongUI(entry, idx);
+  elPlayerInfo.style.opacity = '1';
 
   if (isPlaying) {
     await startPlayback();
     startTick();
   } else {
-    loadCode(songs[currentIdx]);
+    loadCode(entry.code);
   }
 
   isFading = false;
 }
 
 async function togglePlay() {
-  // Resume any existing context synchronously — must happen in the click
-  // handler before any await breaks the user-gesture chain.
   if (window._ac) window._ac.resume();
 
   if (isPlaying) {
@@ -224,7 +345,6 @@ async function togglePlay() {
   try {
     await waitForEditor();
   } catch (_) {
-    // Editor timed out — reset UI and give up
     isPlaying = false;
     elBtnPlay.textContent = '▶';
     elRingFill.classList.remove('playing');
@@ -235,39 +355,85 @@ async function togglePlay() {
   startTick();
 }
 
-// ── Playlist ──────────────────────────────────────────────────────────────────
+// ── Code mode actions ─────────────────────────────────────────────────────────
 
-function buildPlaylist() {
-  elPlaylist.innerHTML = '';
-  songs.forEach((song, i) => {
-    const item = document.createElement('div');
-    item.className = 'playlist-item';
+async function runCode() {
+  if (window._ac) window._ac.resume();
+  const code = elCodeArea.value;
+  try { await waitForEditor(); } catch (_) {}
+  loadCode(code);
+  startEngine();
 
-    const num = document.createElement('span');
-    num.className = 'pl-num';
-    num.textContent = String(i + 1).padStart(2, '0');
-
-    const info = document.createElement('div');
-    info.className = 'pl-info';
-
-    const title = document.createElement('span');
-    title.className = 'pl-title';
-    title.textContent = song.title;
-
-    const meta = document.createElement('span');
-    meta.className = 'pl-meta';
-    meta.textContent = song.key + ' · ' + song.bpm + ' BPM';
-
-    info.appendChild(title);
-    info.appendChild(meta);
-    item.appendChild(num);
-    item.appendChild(info);
-    item.addEventListener('click', () => jumpTo(i));
-    elPlaylist.appendChild(item);
-  });
+  // AudioContext may be created during evaluate() — wait briefly
+  if (!window._masterGain) {
+    await new Promise(r => setTimeout(r, 300));
+  }
+  setGainImmediate(1);
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+function stopCode() {
+  stopEngine();
+  setGainImmediate(0);
+}
+
+async function codeAdvance(dir) {
+  if (isFading) return;
+  stopCode();
+  isFading = true;
+  currentIdx = ((currentIdx + dir) % currentPlaylist.files.length + currentPlaylist.files.length) % currentPlaylist.files.length;
+  const entry = await fetchSong(currentPlaylist, currentPlaylist.files[currentIdx]);
+  updateSongUI(entry, currentIdx);
+  isFading = false;
+}
+
+// ── Playlist switching ────────────────────────────────────────────────────────
+
+async function switchPlaylist(playlist) {
+  if (currentPlaylist === playlist) return;
+
+  // Stop everything cleanly
+  isFading = true;
+  clearTick();
+  setGainImmediate(0);
+  stopEngine();
+  isPlaying = false;
+
+  currentPlaylist = playlist;
+  currentIdx      = 0;
+  currentMode     = playlist.mode;
+
+  // Update tab buttons
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.id === playlist.id);
+  });
+
+  // Switch pane
+  if (currentMode === 'player') {
+    elPlayerPane.classList.remove('hidden');
+    elCodePane.classList.add('hidden');
+    elBtnPlay.textContent = '▶';
+    elRingFill.classList.remove('playing');
+    remainingMs = totalMs;
+    updateRing();
+  } else {
+    elPlayerPane.classList.add('hidden');
+    elCodePane.classList.remove('hidden');
+  }
+
+  // Build sidebar (async title updates)
+  buildSidebar(playlist);
+
+  // Load first file
+  const entry = await fetchSong(playlist, playlist.files[0]);
+  updateSongUI(entry, 0);
+
+  // Pre-load code into engine (player mode only)
+  if (currentMode === 'player') loadCode(entry.code);
+
+  isFading = false;
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function fmtSecs(secs) {
   const m = Math.floor(secs / 60);
@@ -275,46 +441,58 @@ function fmtSecs(secs) {
   return m + ':' + String(s).padStart(2, '0');
 }
 
+// ── Init ──────────────────────────────────────────────────────────────────────
+
 function init() {
-  songs = typeof SONGS !== 'undefined' ? SONGS : [];
-  if (!songs.length) {
-    document.body.innerHTML =
-      '<p style="color:#d97a48;padding:2rem;font-family:monospace">' +
-      'No songs found — make sure ../lofi-rater/songs.js is reachable.</p>';
-    return;
-  }
+  elPlayerPane  = document.getElementById('player-pane');
+  elCodePane    = document.getElementById('code-pane');
+  elSongList    = document.getElementById('song-list');
 
-  elSongInfo     = document.getElementById('song-info');
-  elSongNumber   = document.getElementById('song-number');
-  elSongSubtitle = document.getElementById('song-subtitle');
-  elSongTitle    = document.getElementById('song-title');
-  elSongKey      = document.getElementById('song-key');
-  elSongBpm      = document.getElementById('song-bpm');
-  elSongFeel     = document.getElementById('song-feel');
-  elSongChords   = document.getElementById('song-chords');
-  elRingFill     = document.getElementById('ring-fill');
-  elRingTime     = document.getElementById('ring-time');
-  elBtnPlay      = document.getElementById('btn-play');
-  elBtnShuffle   = document.getElementById('btn-shuffle');
-  elTimerSlider  = document.getElementById('timer-slider');
-  elTimerVal     = document.getElementById('timer-val');
-  elPlaylist     = document.getElementById('playlist');
+  elPlayerInfo  = document.getElementById('player-info');
+  elPCounter    = document.getElementById('p-counter');
+  elPSubtitle   = document.getElementById('p-subtitle');
+  elPTitle      = document.getElementById('p-title');
+  elPKey        = document.getElementById('p-key');
+  elPBpm        = document.getElementById('p-bpm');
+  elPFeel       = document.getElementById('p-feel');
+  elPChords     = document.getElementById('p-chords');
 
+  elRingFill    = document.getElementById('ring-fill');
+  elRingTime    = document.getElementById('ring-time');
+  elBtnPlay     = document.getElementById('btn-play');
+  elBtnShuffle  = document.getElementById('btn-shuffle');
+  elTimerSlider = document.getElementById('timer-slider');
+  elTimerVal    = document.getElementById('timer-val');
+
+  elCodeTitle   = document.getElementById('code-title');
+  elCodeCounter = document.getElementById('code-counter');
+  elCodeArea    = document.getElementById('code-area');
+
+  // Ring setup
   elRingFill.style.strokeDasharray  = CIRCUMFERENCE;
   elRingFill.style.strokeDashoffset = 0;
 
-  buildPlaylist();
-  updateSongUI(songs[currentIdx], currentIdx);
-  updateRing();
+  // Build playlist tab buttons
+  const tabsEl = document.getElementById('playlist-tabs');
+  PLAYLISTS.forEach(pl => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn';
+    btn.dataset.id = pl.id;
+    btn.textContent = pl.label;
+    btn.addEventListener('click', () => switchPlaylist(pl));
+    tabsEl.appendChild(btn);
+  });
 
+  // Timer slider
   elTimerSlider.addEventListener('input', () => {
-    const secs  = parseInt(elTimerSlider.value);
+    const secs  = parseInt(elTimerSlider.value, 10);
     totalMs     = secs * 1000;
     remainingMs = totalMs;
     elTimerVal.textContent = fmtSecs(secs);
     updateRing();
   });
 
+  // Player controls
   elBtnPlay.addEventListener('click', togglePlay);
   document.getElementById('btn-next').addEventListener('click', () => advance(1));
   document.getElementById('btn-prev').addEventListener('click', () => advance(-1));
@@ -324,13 +502,31 @@ function init() {
     elBtnShuffle.classList.toggle('active', shuffleMode);
   });
 
+  // Code controls
+  document.getElementById('btn-run').addEventListener('click', runCode);
+  document.getElementById('btn-stop').addEventListener('click', stopCode);
+  document.getElementById('code-prev').addEventListener('click', () => codeAdvance(-1));
+  document.getElementById('code-next').addEventListener('click', () => codeAdvance(1));
+
+  // Code textarea keyboard shortcuts
+  elCodeArea.addEventListener('keydown', e => {
+    if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); runCode(); }
+    if (e.ctrlKey && e.key === '.')     { e.preventDefault(); stopCode(); }
+  });
+
+  // Global keyboard (player mode only)
   document.addEventListener('keydown', e => {
-    if (e.target.tagName === 'INPUT') return;
+    if (e.target === elCodeArea)       return;
+    if (e.target.tagName === 'INPUT')  return;
+    if (currentMode !== 'player')      return;
     if (e.key === ' ' || e.key === 'k')                            { e.preventDefault(); togglePlay(); }
     if (e.key === 'ArrowRight' || e.key === 'l' || e.key === 'L') advance(1);
     if (e.key === 'ArrowLeft'  || e.key === 'j' || e.key === 'J') advance(-1);
     if (e.key === 's' || e.key === 'S') elBtnShuffle.click();
   });
+
+  // Load first playlist
+  switchPlaylist(PLAYLISTS[0]);
 }
 
 document.addEventListener('DOMContentLoaded', init);

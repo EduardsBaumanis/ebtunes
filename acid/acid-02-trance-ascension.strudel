@@ -1,0 +1,140 @@
+// ══════════════════════════════════════════════════════════════
+// "Trance Ascension"
+// Peak-time trance — festival mainstage, euphoric, enormous
+//
+// Key:    F minor (relative: Ab major)
+// Tempo:  138 BPM  (setcpm 69)
+// Chords: Fm – Cm – Ab – Eb   (i – v – III – VII)
+// Feel:   100,000 hands in the air. The drop arrives. Lights sweep
+//         across the crowd. You forget your name for eight bars.
+//
+// THE SUPERSAW:
+// The Roland JP-8000 supersaw stacks 7 detuned sawtooth oscillators.
+// The beating between slightly-out-of-tune oscillators creates the
+// characteristic shimmer and thickness of trance pads.
+// We approximate with 3 layers: different room/size/pan
+// creates the interference pattern. Layer 3 adds the high sparkle.
+//
+// THE TRANCE ARPEGGIO:
+// n("0 2 4 6 7 6 4 2") cycles through scale degrees: root, min3,
+// perfect 5th, min 7th, octave, then back down.
+// fast(2) = 16th notes = urgency and momentum.
+// This is the most recognizable trance sound.
+//
+// THE STRUCTURE:
+// i–v–III–VII (Fm–Cm–Ab–Eb) is the "uplifting minor" progression.
+// The III chord (Ab) provides the emotional lift — it's major,
+// even though we're in a minor key. That's the trance sound:
+// sadness that keeps reaching upward.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(69)  // ~138 BPM
+
+stack(
+
+  // ── KICK — slightly rounder than acid techno ──────────────────
+  // Trance kick has a tiny bit more body. Less distortion.
+  s("bd*4")
+    .gain(0.92)
+    .lpf(5000),
+
+  // ── SNARE — roomy, the "air" snare of trance ─────────────────
+  // A tiny reverb tail separates trance from pure techno.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.8)
+    .room(0.12),
+
+  // ── HI-HAT 8ths — trance breathes more than techno ───────────
+  // 8th note hats (not 16ths) create the characteristic trance air.
+  // The space between hats matters.
+  s("hh*8")
+    .gain(0.3)
+    .hpf(7500)
+    .pan(0.56),
+
+  // ── OPEN HAT — the "and" of beat 4 accent ────────────────────
+  // This specific placement is a defining trance marker.
+  s("~ ~ ~ ~ ~ ~ ~ oh")
+    .gain(0.55)
+    .hpf(6500),
+
+  // ── CRASH ACCENT — every 4 cycles, signals the drop ─────────
+  // Quarter-volume most of the time, full at the drop (every 4).
+  s("oh:1 ~ ~ ~ ~ ~ ~ ~")
+    .every(4, x => x.gain(0.9))
+    .gain(0.25)
+    .room(0.3)
+    .hpf(5000),
+
+  // ── BASS — punchy sawtooth, follows chord roots ───────────────
+  // Very tight: zero sustain, fast decay. The kick and bass lock.
+  note("<f2 c2 ab2 eb2>")
+    .sound("sawtooth")
+    .lpf(500)
+    .attack(0.008).decay(0.18).sustain(0.0).release(0.1)
+    .gain(0.72)
+    .slow(2),
+
+  // ── ARPEGGIO — 16th note F minor, the trance signature ───────
+  // 0=F 2=Ab 4=C 6=Eb 7=F(oct) — chord tones cycling up and down
+  // fast(2) doubles to 16th notes. lpq(4) adds just a hint of filter
+  n("0 2 4 6 7 6 4 2").scale("F:minor")
+    .sound("sawtooth")
+    .lpf(sine.range(2000, 5500).slow(4))
+    .lpq(4)
+    .attack(0.001).release(0.07)
+    .gain(0.5)
+    .room(0.2)
+    .fast(2),
+
+  // ── SUPERSAW LAYER 1 — wide, deep, enormous reverb ───────────
+  // The trance foundation. Extremely slow attack = swells in.
+  // Filter automation (slow 6) = the pad breathes with the track.
+  note("<[f3,ab3,c4] [c3,eb3,g3] [ab2,c3,eb3] [eb3,g3,bb3]>")
+    .sound("sawtooth")
+    .attack(0.15).decay(0.5).sustain(0.8).release(1.5)
+    .lpf(sine.range(1500, 3500).slow(6))
+    .room(0.6).size(0.75)
+    .gain(0.28)
+    .pan(0.38)
+    .slow(2),
+
+  // ── SUPERSAW LAYER 2 — narrower, panned right ────────────────
+  // Slightly different room/pan/speed = stereo width and shimmer
+  note("<[f3,ab3,c4] [c3,eb3,g3] [ab2,c3,eb3] [eb3,g3,bb3]>")
+    .sound("sawtooth")
+    .attack(0.22).decay(0.4).sustain(0.7).release(1.8)
+    .lpf(sine.range(1200, 2800).slow(5))
+    .room(0.45).size(0.65)
+    .gain(0.22)
+    .pan(0.62)
+    .slow(2),
+
+  // ── SUPERSAW LAYER 3 — high sparkle, just the tops ───────────
+  // Upper chord tones shimmer above the main pad mass.
+  // This is the brightness that makes trance feel "uplifting."
+  note("<[f4,ab4] [eb4,g4] [c4,eb4] [bb3,eb4]>")
+    .sound("sawtooth")
+    .attack(0.3).decay(0.6).sustain(0.6).release(2.0)
+    .lpf(4000)
+    .room(0.7).size(0.8)
+    .gain(0.16)
+    .pan(0.5)
+    .slow(2),
+
+  // ── LEAD MELODY — soaring sine, the emotional voice ──────────
+  // This is the melody people sing on the way home at dawn.
+  // Delay synced to tempo (0.5 cycle = dotted quarter echo).
+  // Sparse: the rests are as important as the notes.
+  note("c5 ~ ~ ~ ab4 ~ bb4 ~  f5 ~ ~ ~ eb5 ~ ~ ~  ~ c5 ~ ~ ab4 ~ ~ ~  g4 ~ bb4 ~ c5 ~ ~ ~")
+    .sound("sine")
+    .attack(0.02).decay(0.3).sustain(0.4).release(0.8)
+    .delay(0.38)
+    .delaytime(0.5)
+    .delayfeedback(0.22)
+    .room(0.5).size(0.6)
+    .gain(0.52)
+    .pan(0.5)
+    .slow(4)
+
+)

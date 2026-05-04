@@ -3,17 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>lofi player</title>
+  <title>strudel</title>
   <link rel="stylesheet" href="style.css">
   <script>
     (function () {
       var Orig = window.AudioContext || window.webkitAudioContext;
       if (!Orig) return;
-
-      // Intercept AudioNode.prototype.connect so that any node Strudel connects
-      // directly to the real AudioDestinationNode is silently redirected through
-      // our master GainNode instead. This avoids the fragile Object.defineProperty
-      // approach on AudioContext.destination, which Chrome can reject.
       var origConnect = AudioNode.prototype.connect;
       AudioNode.prototype.connect = function (dest, out, inp) {
         if (window._realDest && dest === window._realDest && this !== window._masterGain) {
@@ -23,22 +18,17 @@
         if (arguments.length >= 2) return origConnect.call(this, dest, out);
         return origConnect.call(this, dest);
       };
-
-      // Capture the AudioContext on creation and wire up the master GainNode.
       function Patched() {
         var ctx = new Orig();
-        // Only set up once (Strudel reuses the same context across evaluate calls).
         if (!window._ac) {
           var descProto = Object.getOwnPropertyDescriptor(AudioContext.prototype, 'destination');
           var realDest  = descProto ? descProto.get.call(ctx) : ctx.destination;
           var master    = ctx.createGain();
-          master.gain.value = 0; // start silent; fadeTo(1) on play
-          // Set globals BEFORE connecting so the interceptor above can identify
-          // master → realDest and leave it alone (avoids an infinite redirect).
+          master.gain.value = 0;
           window._ac         = ctx;
           window._masterGain = master;
           window._realDest   = realDest;
-          origConnect.call(master, realDest); // bypass our interceptor
+          origConnect.call(master, realDest);
         } else {
           window._ac = ctx;
         }
@@ -52,76 +42,103 @@
   <script src="https://unpkg.com/@strudel/repl@1.3.0" defer></script>
 </head>
 <body>
-  <div class="grain"></div>
 
-  <div class="layout">
+  <div class="app">
 
-    <!-- Header -->
+    <!-- ── HEADER ── -->
     <header class="header">
-      <span class="logo">◈ lofi player</span>
-      <div class="header-controls">
-        <button id="btn-shuffle" class="icon-btn" title="Toggle shuffle (S)">⇄ shuffle</button>
-      </div>
+      <span class="logo">◈</span>
+      <nav class="playlist-tabs" id="playlist-tabs"></nav>
+      <button id="btn-shuffle" class="shuffle-btn">⇄</button>
     </header>
 
-    <!-- Playlist sidebar -->
-    <aside class="playlist-wrap">
-      <div id="playlist" class="playlist"></div>
-    </aside>
+    <!-- ── BODY ── -->
+    <div class="body">
 
-    <!-- Main player -->
-    <main class="main">
+      <!-- ── SIDEBAR ── -->
+      <aside class="sidebar">
+        <div id="song-list" class="song-list"></div>
+      </aside>
 
-      <div id="song-info" class="song-info">
-        <p id="song-number" class="song-number">01</p>
-        <p id="song-subtitle" class="song-subtitle">—</p>
-        <h1 id="song-title" class="song-title">—</h1>
-        <div class="song-badges">
-          <span id="song-key" class="badge">—</span>
-          <span id="song-bpm" class="badge">—</span>
+      <!-- ── PLAYER PANE ── -->
+      <main id="player-pane" class="player-pane">
+
+        <div class="player-info" id="player-info">
+          <div class="p-counter" id="p-counter">01 · 01</div>
+          <div class="p-subtitle" id="p-subtitle"></div>
+          <h1 class="p-title" id="p-title">—</h1>
+          <div class="p-meta">
+            <span class="p-badge" id="p-key">—</span>
+            <span class="p-sep">·</span>
+            <span class="p-badge" id="p-bpm">—</span>
+          </div>
+          <p class="p-feel" id="p-feel"></p>
+          <p class="p-chords" id="p-chords"></p>
         </div>
-        <p id="song-feel" class="song-feel">—</p>
-        <p id="song-chords" class="song-chords">—</p>
-      </div>
 
-      <!-- Countdown ring -->
-      <div class="ring-wrap">
-        <svg class="ring-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <circle class="ring-track" cx="100" cy="100" r="80"/>
-          <circle id="ring-fill" class="ring-fill" cx="100" cy="100" r="80"/>
-        </svg>
-        <div class="ring-center">
-          <div id="ring-time" class="ring-time">2:00</div>
-          <div class="ring-label">next song</div>
+        <div class="ring-wrap">
+          <svg class="ring-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <circle class="ring-track" cx="100" cy="100" r="80"/>
+            <circle id="ring-fill" class="ring-fill" cx="100" cy="100" r="80"/>
+          </svg>
+          <div class="ring-center">
+            <div id="ring-time" class="ring-time">2:00</div>
+            <div class="ring-label">NEXT</div>
+          </div>
         </div>
-      </div>
 
-      <!-- Transport controls -->
-      <div class="controls">
-        <button id="btn-prev" class="ctrl-btn" title="Previous (J / ←)">⏮</button>
-        <button id="btn-play" class="ctrl-btn ctrl-play" title="Play / Pause (Space)">▶</button>
-        <button id="btn-next" class="ctrl-btn" title="Next (L / →)">⏭</button>
-      </div>
+        <div class="controls">
+          <button id="btn-prev" class="ctrl">⏮</button>
+          <button id="btn-play" class="ctrl ctrl-play">▶</button>
+          <button id="btn-next" class="ctrl">⏭</button>
+        </div>
 
-      <!-- Auto-advance timer -->
-      <div class="timer-row">
-        <span class="timer-label">auto-advance</span>
-        <input type="range" id="timer-slider" class="timer-slider"
-               min="15" max="600" step="5" value="120">
-        <span id="timer-val" class="timer-val">2:00</span>
-      </div>
+        <div class="timer-row">
+          <span class="timer-label">AUTO</span>
+          <input type="range" id="timer-slider" class="timer-slider"
+                 min="15" max="600" step="5" value="120">
+          <span id="timer-val" class="timer-val">2:00</span>
+        </div>
 
-      <p class="hint">space · j/l · ← →</p>
-    </main>
+        <p class="hints">SPACE · J / L · ← →</p>
+      </main>
 
+      <!-- ── CODE PANE ── -->
+      <main id="code-pane" class="code-pane hidden">
+
+        <div class="code-header">
+          <h2 id="code-title" class="code-title">—</h2>
+          <span id="code-counter" class="code-counter">01 · 01</span>
+        </div>
+
+        <div class="code-hints-bar">
+          <span>CTRL+ENTER — run</span>
+          <span class="dot">·</span>
+          <span>CTRL+. — stop</span>
+        </div>
+
+        <textarea id="code-area" class="code-area" spellcheck="false" autocorrect="off" autocapitalize="off"></textarea>
+
+        <div class="code-controls">
+          <button id="btn-run"  class="code-btn run-btn">▶ RUN</button>
+          <button id="btn-stop" class="code-btn stop-btn">■ STOP</button>
+          <div class="code-nav">
+            <button id="code-prev" class="cnav-btn">← PREV</button>
+            <button id="code-next" class="cnav-btn">NEXT →</button>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
   </div>
 
-  <!-- Off-screen Strudel engine — needs real dimensions for CodeMirror -->
+  <!-- Off-screen Strudel engine -->
   <strudel-editor id="engine"><!--
 s("bd")
   --></strudel-editor>
 
-  <script src="../lofi-rater/songs.js"></script>
+  <script src="playlists.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
