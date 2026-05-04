@@ -167,16 +167,65 @@ body {
 .sidebar {
   width: 260px;
   border-right: 1px solid var(--dim);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: border-color 0.4s ease;
+}
+
+.song-list {
+  padding: 4px 0;
+  flex: 1;
   overflow-y: auto;
+}
+
+.song-list::-webkit-scrollbar { width: 4px; }
+.song-list::-webkit-scrollbar-track { background: transparent; }
+.song-list::-webkit-scrollbar-thumb { background: var(--dim); }
+
+/* ── Sidebar footer (submit ratings) ── */
+.sidebar-footer {
+  border-top: 1px solid var(--dim);
+  padding: 9px 10px 9px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex-shrink: 0;
   transition: border-color 0.4s ease;
 }
 
-.sidebar::-webkit-scrollbar { width: 4px; }
-.sidebar::-webkit-scrollbar-track { background: transparent; }
-.sidebar::-webkit-scrollbar-thumb { background: var(--dim); }
+.submit-count {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--dim);
+  min-width: 34px;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.2s;
+}
 
-.song-list { padding: 4px 0; }
+.submit-btn {
+  flex: 1;
+  background: none;
+  border: 1px solid var(--dim);
+  color: var(--dim);
+  cursor: default;
+  padding: 6px 8px;
+  font-family: var(--font);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.submit-btn:disabled { opacity: 0.45; }
+.submit-btn.ready {
+  border-color: var(--grey);
+  color: var(--white);
+  cursor: pointer;
+}
+.submit-btn.ready:hover { background: var(--white); color: var(--black); }
+.submit-btn.submitted { border-color: var(--grey); color: var(--white); cursor: default; }
+.submit-btn.error { border-color: var(--mid); color: var(--mid); cursor: pointer; }
 
 .song-item {
   display: flex;

@@ -16,13 +16,14 @@
 // lpq(15) = filter at self-oscillation threshold — the filter sings.
 //
 // EFFECTS ARCHITECTURE:
-// kick    — distort + shape + crush: three layers of saturation
-// hats    — jux: right channel thinner, creates stereo width
-//           degradeBy: random drops, sounds like a human machine
-// main 303 — shape on top of lpq = "distorted 303" (industrial)
-// counter 303 — jux(rev): reversed pattern in right = stereo acid
-// dark pad — vowel cycling: alien, inhuman texture underneath
-// texture  — crush(2): 4-bit noise in the gaps, fills the air
+// kick     — distort + shape + crush: three layers of saturation
+// hats     — jux: right channel thinner, degradeBy: human machine
+// main 303 — shape on top of lpq = distorted 303 (industrial)
+// counter 303 — off(3/8): echo shadow creates third layer of acid
+// dark pad 1 — vowel cycling: alien breathing underneath
+// dark pad 2 — phaser: shimmer against pad 1's motion (different rate)
+// industrial arp — jux(rev): stereo acid spiral fills the gaps
+// texture  — crush(2): 4-bit noise in the air
 // ══════════════════════════════════════════════════════════════
 
 setcpm(70)  // 140 BPM
@@ -30,11 +31,8 @@ setcpm(70)  // 140 BPM
 stack(
 
   // ── KICK — three layers of saturation ────────────────────────
-  // distort(0.2): first stage, soft clipping adds body
-  // shape(0.3): second stage, waveshaper adds harmonic content
-  // crush(10): third stage, digital crunch without destroying sub
-  // Together these simulate a kick pushed through analogue tape
-  // then a digital converter — industrial and physical.
+  // distort + shape + crush: soft clip → waveshaper → digital crunch
+  // Simulates a kick pushed through analogue tape then a digital converter
   s("bd*4")
     .gain(0.95)
     .distort(0.2)
@@ -44,9 +42,7 @@ stack(
 
   // ── CLAP — surgical crack, sterile ───────────────────────────
   // hpf(4000): removes all boxy low-mids, leaves only crack
-  // room(0.05)/size(0.1): barely-there smear, industrial not ambient
-  // every(4): every 4th cycle the clap gets brutal (shape 0.5)
-  // — this creates a predictable tension point in the arrangement
+  // every(4): every 4th cycle the clap gets brutal — predictable tension
   s("~ ~ cp ~ ~ ~ cp ~")
     .gain(0.82)
     .hpf(4000)
@@ -54,10 +50,8 @@ stack(
     .every(4, x => x.shape(0.5).gain(1.0)),
 
   // ── HI-HAT 16ths — stereo machine pulse ──────────────────────
-  // degradeBy(0.06): randomly drops 6% of hits — machine with humanity
-  // jux: right channel runs through extra hpf — sounds thinner
-  //   This difference between ears = natural stereo width
-  // pan(sine.range): slow autopan breathes the hats across the field
+  // degradeBy(0.06): 6% of hits randomly drop — machine with humanity
+  // jux: right channel thinner (extra hpf) = natural stereo width
   s("hh*16")
     .gain(0.22)
     .hpf(10000)
@@ -65,20 +59,16 @@ stack(
     .jux(x => x.gain(0.7).hpf(12000))
     .pan(sine.range(0.4, 0.6).slow(7)),
 
-  // ── OPEN HAT — with ghost echo ────────────────────────────────
-  // off(1/16): creates a shadow hit 1/16th note after the hat
-  // The shadow runs through extra hpf — higher, thinner, quieter
-  // This is the "ghost hit" technique, suggests a human behind the kit
+  // ── OPEN HAT — ghost echo ─────────────────────────────────────
+  // off(1/16): shadow hit 1/16th after — ghost hit technique
   s("~ ~ ~ ~ oh ~ ~ ~  ~ ~ ~ ~ oh ~ ~ oh")
     .gain(0.45)
     .hpf(7000)
     .off(1/16, x => x.gain(0.12).hpf(9000)),
 
   // ── EUCLIDEAN RIM — mathematical syncopation ──────────────────
-  // E(5,16,3): 5 hits in 16 steps, rotated 3 = never lands on beat 1
-  // phaser(0.3): slight phaser adds metallic shimmer to the rim
-  // This phaser makes the transients feel slightly out of phase
-  // — creates that "flanged" industrial percussion character
+  // E(5,16,3): 5 hits in 16, rotated 3 = never lands on beat 1
+  // phaser(0.3): metallic shimmer, flanged industrial character
   s("rim").euclid(5, 16, 3)
     .gain(0.3)
     .hpf(4000)
@@ -87,12 +77,10 @@ stack(
     .pan(0.46),
 
   // ── MAIN ACID 303 (voice 1) — distorted sawtooth ─────────────
-  // lpq(15): at this resonance the filter sings on its own
-  // shape(0.4): waveshaper distortion on top of the filtered sound
-  //   = the "distorted 303" sound used in industrial acid tracks
-  //   The distortion feeds into the resonance peak, creating grit
-  //   that changes as the filter sweeps. Every cycle sounds different.
-  // jux(x => x.hpf(600)): right channel is brighter = stereo acid
+  // lpq(15): filter at self-oscillation — the filter itself sings
+  // shape(0.4): distortion feeds into the resonance peak = industrial grit
+  //   The grit changes as the filter sweeps. Every cycle sounds different.
+  // jux(hpf(600)): right channel brighter — the 303 spins in stereo
   note("a1 ~ c2 ~ a1 e2 ~ g2  ~ a1 ~ bb1 a1 ~ e2 ~")
     .sound("sawtooth")
     .lpf(sine.range(260, 2600).slow(3.3))
@@ -103,26 +91,24 @@ stack(
     .gain(0.88)
     .slow(2),
 
-  // ── COUNTER ACID 303 (voice 2) — reversed in right ear ───────
-  // Square wave = hollow, nasal — different flavor from sawtooth
-  // jux(rev): the note sequence plays BACKWARDS in the right ear
-  //   Left ear = forward sequence, right ear = reversed sequence
-  //   The two sequences create a call-and-response between ears
-  //   This is stereo acid: the same notes from two directions
+  // ── COUNTER ACID 303 (voice 2) — echo shadow ─────────────────
+  // Square wave: hollow, nasal — different flavor from voice 1
+  // off(3/8): creates a shadow note delayed 3/8 cycle
+  //   Shadow: hpf(1800) = only upper harmonics of the squelch
+  //   Result: voice 1, voice 2, and voice 2's ghost — three layers of acid
+  //   The ghost fills the rhythmic gaps between voice 1's hits
   note("~ a2 ~ ~ e3 ~ c3 ~  ~ ~ a2 ~ bb2 ~ ~ ~")
     .sound("square")
     .lpf(sine.range(350, 3200).slow(1.9))
     .lpq(13)
     .attack(0.001).decay(0.09).sustain(0.0).release(0.04)
-    .gain(0.55)
-    .jux(rev)
+    .gain(0.52)
+    .off(3/8, x => x.gain(0.18).hpf(1800))
+    .pan(0.4)
     .slow(2),
 
   // ── SUB BASS — the physical weight ───────────────────────────
-  // Pure sine = no harmonics = only sub frequencies
-  // shape(0.1): just enough saturation to be audible on small speakers
-  //   Without this, sub disappears entirely in earbuds and laptops
-  // lpf(120): strictly below 120Hz — below everything else
+  // shape(0.1): just enough saturation to survive laptop speakers
   note("<a1 a1 e2 g2>")
     .sound("sine")
     .lpf(120)
@@ -130,31 +116,58 @@ stack(
     .attack(0.005).decay(0.3).sustain(0.35).release(0.2)
     .gain(0.78),
 
-  // ── DARK ATMOSPHERE — alien void ─────────────────────────────
-  // room(0.8)/size(0.9): maximum reverb = sound of an empty tunnel
-  // vowel("<a e i>"): cycles through formants every 2 cycles
-  //   Formants are the resonant frequencies of the vocal tract
-  //   Running a pad through vowel filters = the pad gains human quality
-  //   "a" = open, "e" = bright, "i" = dark and nasal
-  //   Cycling through them gives the pad an alien breathing motion
-  // lpf(800): keeps the pad dark and under the 303 lines
+  // ── DARK PAD 1 — alien void with vowel breath ─────────────────
+  // vowel("<a e i>"): cycles through formants — human but wrong
+  //   "a" = open, "e" = bright, "i" = dark nasal. Cycling = alien breathing.
+  // room(0.8)/size(0.9): maximum reverb = empty tunnel sound
+  // lpf sweeps very slowly (slow 10): the pad barely moves — oppressive
   note("<[a2,c3,e3] [e2,g2,b2] [f2,a2,c3] [g2,b2,d3]>")
     .sound("sawtooth")
     .attack(0.7).decay(0.5).sustain(0.8).release(2.5)
-    .lpf(800)
+    .lpf(sine.range(600, 1800).slow(10))
     .room(0.8).size(0.9)
     .vowel("<a e i>")
     .gain(0.16)
     .pan(0.38)
     .slow(4),
 
+  // ── DARK PAD 2 — phaser shimmer against pad 1 ────────────────
+  // Pad 1 breathes with vowel (slow 10). Pad 2 shimmers with phaser
+  // at a different rate (phaserrate 0.18). Two modulations, two speeds
+  // = the texture shifts constantly without ever repeating. Psychedelic.
+  // High partial voicing: floats above pad 1's darkness.
+  note("<[e4,a4] [b3,d4] [a3,c4] [d4,g4]>")
+    .sound("sawtooth")
+    .attack(0.6).decay(0.5).sustain(0.7).release(2.0)
+    .lpf(sine.range(1200, 3500).slow(5.5))
+    .room(0.75).size(0.85)
+    .phaser(0.2).phaserdepth(0.65).phaserrate(0.18)
+    .gain(0.13)
+    .pan(0.62)
+    .slow(4),
+
+  // ── INDUSTRIAL ARP — stereo acid spiral ──────────────────────
+  // A minor: 0=A 2=B 3=C 5=D 7=E — five-note fragment ascending/descending
+  // jux(rev): reversed in right channel — left ascending, right descending
+  //   Both simultaneously = the arp spirals around your head in stereo
+  // degradeBy(0.08): 8% of notes drop — rigid machine that occasionally breathes
+  // Tight filter (600-2500Hz): industrial, dark, not bright like trance arps
+  n("0 2 3 5 7 5 3 2").scale("A:minor")
+    .sound("sawtooth")
+    .lpf(sine.range(600, 2500).slow(3.5))
+    .lpq(5)
+    .attack(0.001).release(0.08)
+    .gain(0.38)
+    .room(0.15)
+    .jux(rev)
+    .degradeBy(0.08)
+    .pan(0.5)
+    .fast(2),
+
   // ── METALLIC TEXTURE — 4-bit noise layer ─────────────────────
   // crush(2): extreme bit reduction = 4-bit audio = raw digital noise
-  //   This is NOT a musical sound. It's texture that fills the air.
-  //   In industrial techno, unmusical noise is part of the vocabulary.
   // degradeBy(0.5): half the hits don't play = random texture, not pattern
-  // pan(sine.range): wild autopan moves the texture around the field
-  //   The combined effect: a noise that randomly appears, moves, disappears
+  // pan(sine.range): wild autopan moves the texture across the field
   s("hh*8")
     .gain(0.09)
     .hpf(8000)

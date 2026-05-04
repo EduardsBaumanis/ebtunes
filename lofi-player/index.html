@@ -59,6 +59,10 @@
       <!-- ── SIDEBAR ── -->
       <aside class="sidebar">
         <div id="song-list" class="song-list"></div>
+        <div class="sidebar-footer">
+          <span id="submit-count" class="submit-count">0 / 5</span>
+          <button id="btn-submit-votes" class="submit-btn" disabled>SUBMIT RATINGS</button>
+        </div>
       </aside>
 
       <!-- ── PLAYER PANE ── -->
@@ -150,6 +154,7 @@
 s("bd")
   --></strudel-editor>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="playlists.js"></script>
   <script src="supabase.js"></script>
   <script src="app.js"></script>

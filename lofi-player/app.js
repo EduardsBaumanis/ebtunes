@@ -506,16 +506,7 @@ async function switchPlaylist(playlist) {
 
 // ── Leaderboard ───────────────────────────────────────────────────────────────
 
-async function fetchLeaderboard() {
-  try {
-    const res  = await fetch('/api/leaderboard');
-    const json = await res.json();
-    return json.leaderboard || [];
-  } catch (err) {
-    console.error('Leaderboard fetch:', err);
-    return [];
-  }
-}
+// fetchLeaderboard is defined in supabase.js (uses Supabase client directly)
 
 function songLabel(songId) {
   const parts    = songId.split('/');
@@ -681,6 +672,20 @@ function init() {
 
   document.getElementById('btn-board').addEventListener('click', toggleBoard);
 
+  // Submit ratings button
+  document.getElementById('btn-submit-votes').addEventListener('click', async () => {
+    const btn = document.getElementById('btn-submit-votes');
+    btn.textContent = 'SENDING...';
+    btn.disabled = true;
+    const ok = await submitAllVotes();
+    btn.classList.add(ok ? 'submitted' : 'error');
+    btn.textContent = ok ? 'SUBMITTED ✓' : 'ERROR — RETRY';
+    setTimeout(() => {
+      btn.classList.remove('submitted', 'error');
+      updateSubmitButton();
+    }, 2500);
+  });
+
   // Code controls
   document.getElementById('btn-run').addEventListener('click', runCode);
   document.getElementById('btn-stop').addEventListener('click', stopCode);
@@ -706,6 +711,9 @@ function init() {
 
   // Load first playlist
   switchPlaylist(PLAYLISTS[0]);
+
+  // Init submit button state from any pending votes carried over from last session
+  updateSubmitButton();
 }
 
 document.addEventListener('DOMContentLoaded', init);

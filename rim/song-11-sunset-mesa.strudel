@@ -1,0 +1,61 @@
+// ══════════════════════════════════════════════════════════════
+// "Sunset Mesa"
+// Chill cowboy — last orange light on the red rock
+//
+// Key:    D major
+// Tempo:  ~72 BPM  (setcpm 18)
+// Chords: D – G – A – G   (I – IV – V – IV)
+// Feel:   The valley goes dark below. The horse knows the way home.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(18)
+
+stack(
+
+  // ── KICK — distant thud, sparse ──────────────────────────────
+  s("bd ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.42)
+    .lpf(2600),
+
+  // ── BRUSH RIM ─────────────────────────────────────────────────
+  s("~ ~ rim ~ ~ ~ rim ~")
+    .gain(0.32)
+    .room(0.1),
+
+  // ── BANJO ROLL — D G A G ─────────────────────────────────────
+  note("d4 fs4 a4 fs4 d4 fs4 a4 fs4  g4 b4 d5 b4 g4 b4 d5 b4  a4 cs5 e5 cs5 a4 cs5 e5 cs5  g4 b4 d5 b4 g4 b4 d5 b4")
+    .sound("triangle")
+    .attack(0.001).decay(0.08).sustain(0.0).release(0.04)
+    .room(0.12)
+    .gain(0.48)
+    .pan(0.58)
+    .slow(4),
+
+  // ── GUITAR BASS ───────────────────────────────────────────────
+  note("d2 ~ a2 ~ ~ ~ ~ ~  g2 ~ d3 ~ ~ ~ ~ ~  a2 ~ e3 ~ ~ ~ ~ ~  g2 ~ d3 ~ ~ ~ g2 ~")
+    .sound("sine")
+    .attack(0.005).decay(0.2).sustain(0.08).release(0.12)
+    .lpf(500)
+    .gain(0.65)
+    .slow(4),
+
+  // ── STEEL GUITAR PAD ──────────────────────────────────────────
+  note("<[d3,fs3,a3] [g3,b3,d4] [a3,cs4,e4] [g3,b3,d4]>")
+    .sound("sawtooth")
+    .attack(0.15).decay(0.35).sustain(0.48).release(0.95)
+    .lpf(1600)
+    .room(0.42)
+    .gain(0.18)
+    .pan(0.4),
+
+  // ── MELODY — D pentatonic: D E F# A B ────────────────────────
+  note("~ ~ a4 ~ ~ ~ fs4 ~  d5 ~ ~ ~ ~ ~ b4 ~  ~ ~ a4 ~ ~ fs4 ~ ~  e4 ~ ~ ~ ~ d4 ~ ~")
+    .sound("sine")
+    .attack(0.014).decay(0.22).sustain(0.14).release(0.3)
+    .delay(0.25).delaytime(0.5).delayfeedback(0.18)
+    .room(0.38)
+    .gain(0.44)
+    .pan(0.5)
+    .slow(4)
+
+)

@@ -1,0 +1,79 @@
+// ══════════════════════════════════════════════════════════════
+// "Idle Process"
+// Programmer jazz — CPU at 2%, nothing urgent, let it breathe
+//
+// Key:    C minor (Dorian)
+// Tempo:  ~88 BPM  (setcpm 22)
+// Chords: Cm7 – Fm7 – Bbmaj7 – Abmaj7
+// Feel:   Nothing queued. Nothing waiting. Just the hum of the machine.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(22)
+
+stack(
+
+  // ── KICK ──────────────────────────────────────────────────────
+  s("bd ~ ~ ~ ~ bd ~ ~")
+    .gain(0.72)
+    .lpf(2600)
+    .shape(0.06),
+
+  // ── SNARE ─────────────────────────────────────────────────────
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.55)
+    .room(0.16)
+    .pan(0.52),
+
+  // ── HI-HAT swing ─────────────────────────────────────────────
+  s("[hh [~ hh]]*4")
+    .gain(0.22)
+    .lpf(8500)
+    .degradeBy(0.12)
+    .room(0.06)
+    .pan(0.6),
+
+  // ── OPEN HAT ─────────────────────────────────────────────────
+  s("~ ~ ~ ~ ~ ~ oh ~")
+    .gain(0.40)
+    .pan(0.55),
+
+  // ── WALKING BASS — Cm7 Fm7 Bbmaj7 Abmaj7 ─────────────────────
+  note("c2 eb2 g2 bb2  f2 ab2 c3 eb3  bb2 d3 f3 a3  ab2 c3 eb3 g3")
+    .sound("sawtooth")
+    .lpf(250)
+    .attack(0.007).decay(0.12).sustain(0.46).release(0.1)
+    .gain(0.66)
+    .slow(4),
+
+  // ── RHODES PAD — with phaser warble ──────────────────────────
+  note("<[c4,eb4,g4,bb4] [f3,ab3,c4,eb4] [bb3,d4,f4,a4] [ab3,c4,eb4,g4]>")
+    .sound("sawtooth")
+    .attack(0.09).decay(0.32).sustain(0.58).release(0.6)
+    .lpf(2100)
+    .phaser(0.18).phaserdepth(0.35).phaserrate(0.12)
+    .room(0.3)
+    .gain(0.22)
+    .pan(0.42)
+    .slow(2),
+
+  // ── UPPER EXTENSIONS ──────────────────────────────────────────
+  note("<[d5,f5] [ab4,c5] [f4,a4] [eb4,g4]>")
+    .sound("triangle")
+    .attack(0.2).sustain(0.6).release(0.9)
+    .lpf(3800)
+    .jux(x => x.lpf(1800).room(0.5))
+    .room(0.36)
+    .gain(0.14)
+    .pan(0.55),
+
+  // ── MELODY — C Dorian: C Eb F G Bb ───────────────────────────
+  note("~ g4 ~ ~ eb4 ~ ~ ~  ~ ~ ~ f4 ~ ~ ~ ~  c5 ~ ~ ~ bb4 ~ g4 ~  ~ ~ ~ ~ ~ eb4 ~ ~")
+    .sound("triangle")
+    .attack(0.012).decay(0.42).sustain(0.2).release(0.55)
+    .delay(0.3).delaytime(0.375).delayfeedback(0.22)
+    .room(0.5)
+    .gain(0.44)
+    .pan(0.5)
+    .slow(4)
+
+)

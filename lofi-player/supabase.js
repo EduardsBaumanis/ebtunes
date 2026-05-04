@@ -1,22 +1,17 @@
-// Copyright (C) 2024 Eduarda Baumaņa
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// ── Supabase config ───────────────────────────────────────────────────────────
 
-// ── Local vote storage ────────────────────────────────────────────────────────
+const SUPABASE_URL     = 'https://herfqtxnhouywwqaifkh.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_rRkHWWdhxXRYY64yxGpnxA_DJoSdFV0';
 
-const VOTES_STORAGE_KEY = 'lofi-player-votes';
-const SESSION_ID_KEY    = 'lofi-player-session-id';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ── Storage keys ──────────────────────────────────────────────────────────────
+
+const VOTES_STORAGE_KEY   = 'lofi-player-votes';
+const SESSION_ID_KEY      = 'lofi-player-session-id';
+const PENDING_VOTES_KEY   = 'lofi-player-pending';
+
+// ── Session ID ────────────────────────────────────────────────────────────────
 
 function getSessionId() {
   let id = localStorage.getItem(SESSION_ID_KEY);
@@ -27,6 +22,8 @@ function getSessionId() {
   return id;
 }
 
+// ── Local votes ───────────────────────────────────────────────────────────────
+
 function getLocalVotes() {
   try { return JSON.parse(localStorage.getItem(VOTES_STORAGE_KEY) || '{}'); }
   catch { return {}; }
@@ -36,35 +33,148 @@ function saveLocalVotes(votes) {
   localStorage.setItem(VOTES_STORAGE_KEY, JSON.stringify(votes));
 }
 
-// Get persisted vote for a song (1, -1, or null)
 function getVote(songId) {
   const votes = getLocalVotes();
   return votes[songId] !== undefined ? votes[songId] : null;
 }
 
-// Save vote locally (null removes the vote)
 function setVote(songId, value) {
   const votes = getLocalVotes();
-  if (value === null) {
-    delete votes[songId];
-  } else {
-    votes[songId] = value;
-  }
+  if (value === null) delete votes[songId];
+  else votes[songId] = value;
   saveLocalVotes(votes);
 }
 
-// ── Server submission ─────────────────────────────────────────────────────────
+// ── Pending set (votes not yet submitted to Supabase) ─────────────────────────
 
-// Fire-and-forget: sends a single vote to the server immediately.
-async function submitVote(songId, value) {
+function getPendingSet() {
+  try { return new Set(JSON.parse(localStorage.getItem(PENDING_VOTES_KEY) || '[]')); }
+  catch { return new Set(); }
+}
+
+function savePendingSet(s) {
+  localStorage.setItem(PENDING_VOTES_KEY, JSON.stringify([...s]));
+}
+
+function addPending(songId) {
+  const s = getPendingSet();
+  s.add(songId);
+  savePendingSet(s);
+}
+
+function removePending(songId) {
+  const s = getPendingSet();
+  s.delete(songId);
+  savePendingSet(s);
+}
+
+function clearPending() {
+  localStorage.removeItem(PENDING_VOTES_KEY);
+}
+
+// Count pending entries that still carry an active vote (not null)
+function pendingCount() {
+  const votes   = getLocalVotes();
+  const pending = getPendingSet();
+  let count = 0;
+  for (const id of pending) {
+    if (votes[id] === 1 || votes[id] === -1) count++;
+  }
+  return count;
+}
+
+// ── Submit button state ───────────────────────────────────────────────────────
+
+function updateSubmitButton() {
+  const btn     = document.getElementById('btn-submit-votes');
+  const counter = document.getElementById('submit-count');
+  if (!btn || !counter) return;
+  const count = pendingCount();
+  counter.textContent = count + ' / 5';
+  btn.disabled = count < 5;
+  btn.classList.toggle('ready', count >= 5);
+  if (!btn.classList.contains('submitted') && !btn.classList.contains('error')) {
+    btn.textContent = 'SUBMIT RATINGS';
+  }
+}
+
+// ── Mark vote as pending (called on every click, no immediate send) ───────────
+
+function submitVote(songId, value) {
+  if (value !== null) {
+    addPending(songId);
+  } else {
+    removePending(songId);
+  }
+  updateSubmitButton();
+}
+
+// ── Batch submit to Supabase ──────────────────────────────────────────────────
+
+async function submitAllVotes() {
+  const pending   = getPendingSet();
+  const votes     = getLocalVotes();
   const sessionId = getSessionId();
+
+  const toUpsert = [];
+  const toDelete = [];
+
+  for (const songId of pending) {
+    const vote = votes[songId];
+    if (vote === 1 || vote === -1) {
+      const now = new Date().toISOString();
+      toUpsert.push({ session_id: sessionId, song_id: songId, vote, created_at: now, updated_at: now });
+    } else {
+      toDelete.push(songId);
+    }
+  }
+
   try {
-    await fetch('/api/vote', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ songId, vote: value, sessionId }),
-    });
+    if (toUpsert.length > 0) {
+      const { error } = await supabaseClient
+        .from('song_votes')
+        .upsert(toUpsert, { onConflict: 'session_id,song_id' });
+      if (error) throw error;
+    }
+    for (const songId of toDelete) {
+      const { error } = await supabaseClient
+        .from('song_votes')
+        .delete()
+        .eq('session_id', sessionId)
+        .eq('song_id', songId);
+      if (error) throw error;
+    }
+    clearPending();
+    return true;
   } catch (err) {
-    console.error('Vote submit error:', err);
+    console.error('Submit error:', err);
+    return false;
+  }
+}
+
+// ── Leaderboard fetch direct from Supabase ────────────────────────────────────
+
+async function fetchLeaderboard() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('song_votes')
+      .select('song_id, vote');
+
+    if (error) throw error;
+
+    const map = {};
+    for (const { song_id, vote } of data) {
+      if (!map[song_id]) map[song_id] = { song_id, up: 0, down: 0 };
+      if (vote ===  1) map[song_id].up++;
+      if (vote === -1) map[song_id].down++;
+    }
+
+    return Object.values(map)
+      .map(s => ({ ...s, score: s.up - s.down }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 20);
+  } catch (err) {
+    console.error('Leaderboard fetch error:', err);
+    return [];
   }
 }
