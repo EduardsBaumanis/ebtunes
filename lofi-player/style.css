@@ -57,6 +57,17 @@
   --code-fg:  #88b8e8;
 }
 
+/* ── PROG theme — dark IDE, indigo-violet, deep focus ── */
+[data-theme="prog"] {
+  --black:    #070510;
+  --white:    #dcd5f5;
+  --grey:     #6855a8;
+  --dim:      #18103a;
+  --mid:      #382868;
+  --code-bg:  #040312;
+  --code-fg:  #9885d0;
+}
+
 /* ── TECHNO theme — industrial, deep crimson ── */
 [data-theme="techno"] {
   --black:    #090506;

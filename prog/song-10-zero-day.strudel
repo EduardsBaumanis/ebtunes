@@ -1,0 +1,125 @@
+// ══════════════════════════════════════════════════════════════
+// "Zero Day"
+// Hypnotic groove — the exploit nobody knew about, quietly grooving
+//
+// Key:    D minor vamp (two-chord oscillation — tension / release)
+// Tempo:  ~86 BPM  (setcpm 29)
+// Chords: Dm7 – A7sus4 – Dm7 – A7  (i–V7sus – i–V7 resolution)
+// Feel:   One vulnerability. Hidden for years. It works perfectly.
+//         The groove runs quietly underneath everything.
+//         Nobody knows. The beat goes on.
+// Chords: Dm7  A7sus4  Dm7  A7
+// ══════════════════════════════════════════════════════════════
+
+setcpm(29)
+
+stack(
+
+  // ── KICK (relentless, confident) ─────────────────────────────
+  // This is the most confident kick in the set.
+  // Four on the floor with a pickup kick on the "and of 4".
+  // shape(0.14) = warm saturation. Not harsh — groovy.
+  s("bd ~ ~ bd ~ ~ ~ bd")
+    .gain(0.86)
+    .lpf(3800)
+    .shape(0.14),
+
+  // ── SNARE (snappy, precise) ───────────────────────────────────
+  // Tight snare on 2 and 4. every(4) bar gets a rimshot variation.
+  // This is the element you don't know is there until it's gone.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.66)
+    .room(0.10)
+    .every(4, x => x.crush(8).gain(0.72)),
+
+  // ── HI-HAT (tight machine groove) ────────────────────────────
+  // 16ths, very precise. This track doesn't breathe — it executes.
+  // degradeBy(0.05) = minimal drops. Almost mechanical. Almost.
+  s("hh*8")
+    .gain(0.24)
+    .hpf(8000)
+    .degradeBy(0.05)
+    .pan(sine.range(0.50, 0.68).slow(6)),
+
+  // ── OPEN HAT (the signal) ─────────────────────────────────────
+  // Open hat on the "and of 3" — an accent that signals the turn.
+  // Like a zero-day: you notice it once you know where to look.
+  s("~ ~ ~ ~ ~ oh ~ ~")
+    .gain(0.44)
+    .pan(0.56),
+
+  // ── BASS VAMP (two-note oscillation) ─────────────────────────
+  // The whole song rests on D and A alternating.
+  // D = home. A = tension. Home. Tension. Home. Tension.
+  // This is the exploit: a simple two-state machine,
+  // cycling perfectly, exploiting the gap between 1 and the next.
+  // off(3/16, x => ...) = ghost note adds groove.
+  note("d2 d3 ~ d2  a2 ~ a2 ~  d2 d3 ~ d2  a2 e2 a2 ~")
+    .sound("sawtooth")
+    .lpf(360)
+    .attack(0.005)
+    .decay(0.15)
+    .sustain(0.50)
+    .release(0.08)
+    .off(3/16, x => x.gain(0.20).lpf(600))
+    .gain(0.72)
+    .slow(4),
+
+  // ── CHORD PAD (the two chords, oscillating) ───────────────────
+  // Dm7 = [D F A C]. A7 = [A C# E G]. The C# (Db) in A7 is the
+  // chromatic needle — that half-step from C to C# is the zero-day.
+  // It only moves by one note but changes everything.
+  // jux(x => x.hpf(800).room(0.5)) = right channel is filtered.
+  note("<[d4,f4,a4,c5] [a3,cs4,e4,g4] [d4,f4,a4,c5] [a3,cs4,e4,g4]>")
+    .sound("sawtooth")
+    .attack(0.08)
+    .decay(0.3)
+    .sustain(0.65)
+    .release(0.55)
+    .lpf(2500)
+    .jux(x => x.hpf(800).room(0.45))
+    .room(0.25)
+    .gain(0.22)
+    .pan(0.45),
+
+  // ── UPPER ARP (spinning) ──────────────────────────────────────
+  // Arpeggio spinning over the two chords.
+  // phaser(0.2) = the notes shimmer, slightly out of phase.
+  // jux(rev) = left goes up, right goes down — creates dizziness.
+  // This is the exploit propagating: quiet, spinning, everywhere.
+  note("d5 f5 a5 c6  a4 cs5 e5 g5  d5 f5 a5 c6  a4 cs5 e5 g5")
+    .sound("triangle")
+    .attack(0.002)
+    .decay(0.20)
+    .sustain(0.0)
+    .release(0.25)
+    .jux(rev)
+    .phaser(0.2)
+    .phaserdepth(0.55)
+    .phaserrate(0.22)
+    .degradeBy(0.04)
+    .room(0.38)
+    .gain(0.22)
+    .pan(0.5)
+    .slow(4),
+
+  // ── LEAD (the zero-day melody) ────────────────────────────────
+  // D minor pentatonic: D F G A C.
+  // The A7 chord's C# appears in the harmony but never in the melody.
+  // That's the gap: the melody doesn't know the exploit exists.
+  // The track grooves on, unaware. Beautiful. Dangerous. Perfect.
+  note("~ d5 ~ ~ f5 ~ ~ a4  ~ ~ c5 ~ d5 ~ ~ ~  ~ a4 ~ g4 ~ ~ f4 ~  ~ ~ ~ ~ d5 ~ ~ ~")
+    .sound("triangle")
+    .attack(0.008)
+    .decay(0.35)
+    .sustain(0.28)
+    .release(0.5)
+    .delay(0.38)
+    .delaytime(0.375)
+    .delayfeedback(0.25)
+    .room(0.45)
+    .gain(0.44)
+    .pan(0.5)
+    .slow(4)
+
+)
