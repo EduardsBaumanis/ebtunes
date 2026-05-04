@@ -1,0 +1,110 @@
+// ══════════════════════════════════════════════════════════════
+// "Sagebrush Sunset"
+// Chill cowboy / pedal steel — slow fade, golden hour
+//
+// Key:    G major
+// Tempo:  ~48 BPM  (setcpm 16)
+// Chords: G – Em – C – D   (I – vi – IV – V)
+// Feel:   Sun dropping behind a ridge, long shadows, purple sage
+//
+// G major: G B D
+// E minor: E G B
+// C major: C E G
+// D major: D F# A
+//
+// I–vi–IV–V is the "golden hour" progression — the vi (Em) is
+// the emotional turn, the shadow side of G major. It's the same
+// notes rearranged around a new root, changing the light entirely.
+// At 48 BPM the chords breathe for 5 seconds each. Cinematic.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(16)
+
+stack(
+
+  // ── NO KICK — just soft rim, like a brush stroke ─────────────
+  s("~ ~ rim ~ ~ ~ rim ~")
+    .gain(0.35)
+    .room(0.2),
+
+
+  // ── BANJO (sparse picking, not a full roll) ───────────────────
+  // At this slow tempo a full roll is too busy.
+  // Single note picks — each note has time to sing.
+  //   Bar 1 G:  G4  ~  D5  ~  B4  ~  D5  ~
+  //   Bar 2 Em: E4  ~  B4  ~  G4  ~  B4  ~
+  //   Bar 3 C:  C5  ~  G4  ~  E5  ~  G4  ~
+  //   Bar 4 D:  D5  ~  A4  ~  F#4 ~  A4  ~
+  note("g4 ~ d5 ~ b4 ~ d5 ~  e4 ~ b4 ~ g4 ~ b4 ~  c5 ~ g4 ~ e5 ~ g4 ~  d5 ~ a4 ~ fs4 ~ a4 ~")
+    .sound("triangle")
+    .attack(0.001)
+    .decay(0.14)
+    .sustain(0.0)
+    .release(0.06)
+    .room(0.18)
+    .gain(0.5)
+    .pan(0.58)
+    .slow(4),
+
+
+  // ── GUITAR BASS (deep and slow) ──────────────────────────────
+  // One root note per chord, held long — the landscape itself.
+  note("g2 ~ ~ ~ ~ ~ ~ ~  e2 ~ ~ ~ ~ ~ ~ ~  c2 ~ ~ ~ ~ ~ ~ ~  d2 ~ ~ ~ a2 ~ ~ ~")
+    .sound("sine")
+    .attack(0.008)
+    .decay(0.35)
+    .sustain(0.2)
+    .release(0.25)
+    .lpf(420)
+    .gain(0.7)
+    .slow(4),
+
+
+  // ── PEDAL STEEL CHORD (the emotional center of this song) ────
+  // Very slow attack + long release + heavy reverb = pedal steel
+  // shimmer. The chord swells in like light through clouds.
+  // Em (e3,g3,b3) is the dark heart — not sad, but wise.
+  note("<[g3,b3,d4] [e3,g3,b3] [c3,e4,g4] [d3,fs3,a3]>")
+    .sound("sawtooth")
+    .attack(0.25)
+    .decay(0.4)
+    .sustain(0.55)
+    .release(1.5)
+    .lpf(1500)
+    .room(0.6)
+    .size(0.7)
+    .gain(0.22)
+    .pan(0.4),
+
+
+  // ── SECOND STEEL LAYER (higher voicing, panned right) ────────
+  // Two steel voices gives the wide, lap-steel stereo spread.
+  note("<[b4,d5] [g4,b4] [e4,g4] [fs4,a4]>")
+    .sound("sawtooth")
+    .attack(0.35)
+    .decay(0.3)
+    .sustain(0.45)
+    .release(1.8)
+    .lpf(2000)
+    .room(0.65)
+    .size(0.8)
+    .gain(0.14)
+    .pan(0.62),
+
+
+  // ── MELODY (G major pentatonic: G A B D E) ───────────────────
+  // Very sparse. Each note is a statement. Long rests are not
+  // emptiness — they're the sound of the prairie at sunset.
+  note("~ b4 ~ ~ d5 ~ ~ ~  ~ g4 ~ ~ ~ e4 ~ ~  ~ ~ g4 ~ a4 ~ ~ ~  d5 ~ ~ ~ ~ ~ g4 ~")
+    .sound("sine")
+    .attack(0.02)
+    .decay(0.35)
+    .sustain(0.2)
+    .release(0.6)
+    .room(0.55)
+    .size(0.65)
+    .gain(0.42)
+    .pan(0.5)
+    .slow(4)
+
+)

@@ -1,0 +1,102 @@
+// ══════════════════════════════════════════════════════════════
+// "Dusty Trail"
+// Chill cowboy / western strings — slow ride into the horizon
+//
+// Key:    G major
+// Tempo:  ~66 BPM  (setcpm 22)
+// Chords: G – C – G – D   (I – IV – I – V)
+// Feel:   A lone rider, afternoon heat, wide-open plains
+//
+// G major: G B D
+// C major: C E G
+// D major: D F# A
+//
+// I–IV–I–V is the oldest cowboy progression — the backbone of
+// folk, country, and western music. G and D share the note D,
+// giving smooth voice-leading. C adds brightness before the drop
+// back home through D.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(22)
+
+stack(
+
+  // ── KICK (sparse, distant thud — horse's slow plod) ──────────
+  s("bd ~ ~ ~ ~ ~ bd ~")
+    .gain(0.45)
+    .lpf(2800),
+
+
+  // ── RIM (brushed backbeat, soft and dry) ─────────────────────
+  s("~ ~ rim ~ ~ ~ rim ~")
+    .gain(0.35)
+    .room(0.08),
+
+
+  // ── BANJO ROLL ───────────────────────────────────────────────
+  // Triangle wave + instant attack + zero sustain = banjo pluck.
+  // 8 notes per bar, rolling up through each chord's arpeggio.
+  //   Bar 1 G:  G4 B4 D5 B4 G4 B4 D5 B4
+  //   Bar 2 C:  C5 E5 G5 E5 C5 E5 G5 E5
+  //   Bar 3 G:  G4 B4 D5 B4 G4 B4 D5 B4
+  //   Bar 4 D:  D5 F#5 A5 F#5 D5 A4 F#4 D4
+  note("g4 b4 d5 b4 g4 b4 d5 b4  c5 e5 g5 e5 c5 e5 g5 e5  g4 b4 d5 b4 g4 b4 d5 b4  d5 fs5 a5 fs5 d5 a4 fs4 d4")
+    .sound("triangle")
+    .attack(0.001)
+    .decay(0.09)
+    .sustain(0.0)
+    .release(0.04)
+    .room(0.1)
+    .gain(0.52)
+    .pan(0.58)
+    .slow(4),
+
+
+  // ── GUITAR BASS (warm low string) ────────────────────────────
+  // Sine wave + heavy LPF = gut-string warmth.
+  // Root on beat 1, 5th on beat 3 — classic cowboy bass motion.
+  note("g2 ~ d3 ~ ~ ~ ~ ~  c2 ~ g2 ~ ~ ~ ~ ~  g2 ~ d3 ~ ~ ~ ~ ~  d2 ~ a2 ~ ~ ~ d2 ~")
+    .sound("sine")
+    .attack(0.004)
+    .decay(0.22)
+    .sustain(0.08)
+    .release(0.12)
+    .lpf(500)
+    .gain(0.68)
+    .slow(4),
+
+
+  // ── STEEL GUITAR CHORD PAD ───────────────────────────────────
+  // Sawtooth + slow attack + warm LPF ≈ pedal steel shimmer.
+  // One chord per cycle, panned slightly left for width.
+  note("<[g3,b3,d4] [c3,e4,g4] [g3,b3,d4] [d3,fs3,a3]>")
+    .sound("sawtooth")
+    .attack(0.12)
+    .decay(0.3)
+    .sustain(0.5)
+    .release(0.9)
+    .lpf(1700)
+    .room(0.38)
+    .size(0.5)
+    .gain(0.19)
+    .pan(0.4),
+
+
+  // ── MELODY (G major pentatonic: G A B D E) ───────────────────
+  // Sparse lead guitar — lots of silence between phrases.
+  // Sine for round warmth. Delay on the half-beat fills empty space.
+  note("d5 ~ ~ ~ b4 ~ ~ ~  e5 ~ ~ g5 ~ ~ ~ ~  d5 ~ b4 ~ ~ g4 ~ ~  a4 ~ ~ ~ ~ ~ g4 ~")
+    .sound("sine")
+    .attack(0.012)
+    .decay(0.24)
+    .sustain(0.15)
+    .release(0.3)
+    .delay(0.28)
+    .delaytime(0.5)
+    .delayfeedback(0.18)
+    .room(0.35)
+    .gain(0.46)
+    .pan(0.5)
+    .slow(4)
+
+)
