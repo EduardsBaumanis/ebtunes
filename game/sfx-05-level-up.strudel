@@ -1,0 +1,44 @@
+// ══════════════════════════════════════════════════════════════
+// "Level Up"
+// Videogame — character gains a level / new tier
+//
+// Key:    D major
+// Tempo:  160 BPM  (setcpm 80)
+// Chords: D – A   (I – V)
+// Feel:   Triumphant short fanfare. RPG stat-up vibes.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(80)
+
+stack(
+
+  // ── FANFARE ──────────────────────────────────────────────────
+  // Five-note ascending fanfare ending on the tonic high.
+  note("d5 fs5 a5 d6 a5 d6 ~ ~")
+    .sound("square")
+    .attack(0.002)
+    .decay(0.12)
+    .sustain(0.3)
+    .release(0.1)
+    .gain(0.45),
+
+
+  // ── HARMONY ──────────────────────────────────────────────────
+  // Lower third harmony for body.
+  note("a4 d5 fs5 a5 fs5 a5 ~ ~")
+    .sound("triangle")
+    .attack(0.003)
+    .release(0.12)
+    .gain(0.28),
+
+
+  // ── BASS PUNCTUATION ─────────────────────────────────────────
+  // Bass on the strong beats reinforces the "I → V" feel.
+  note("d3 ~ ~ a3 ~ d3 ~ ~")
+    .sound("sawtooth")
+    .lpf(800)
+    .attack(0.003)
+    .release(0.18)
+    .gain(0.3)
+
+)

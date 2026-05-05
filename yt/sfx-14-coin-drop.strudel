@@ -1,0 +1,42 @@
+// ══════════════════════════════════════════════════════════════
+// "Coin Drop"
+// YouTube — small reward / monetary cue
+//
+// Key:    A major
+// Tempo:  120 BPM  (setcpm 60)
+// Chords: —
+// Feel:   Light metallic clink with a quick double-bounce.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(60)
+
+stack(
+
+  // ── CLINK ────────────────────────────────────────────────────
+  // Two-note bounce — coin landing and rolling slightly.
+  note("e7 a7 ~ ~ ~ ~ ~ ~")
+    .sound("triangle")
+    .attack(0.001)
+    .decay(0.18)
+    .sustain(0)
+    .release(0.08)
+    .gain(0.55),
+
+
+  // ── METALLIC RING ────────────────────────────────────────────
+  // Faint sine harmonic for the metal shimmer.
+  note("e8 a8 ~ ~ ~ ~ ~ ~")
+    .sound("sine")
+    .attack(0.002)
+    .release(0.4)
+    .gain(0.18)
+    .room(0.5),
+
+
+  // ── SETTLE TICK ──────────────────────────────────────────────
+  // Final little tap when the coin finishes spinning.
+  s("~ ~ rim ~ ~ ~ ~ ~")
+    .gain(0.22)
+    .hpf(4000)
+
+)

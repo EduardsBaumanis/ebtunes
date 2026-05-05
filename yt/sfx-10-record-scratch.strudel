@@ -1,0 +1,38 @@
+// ══════════════════════════════════════════════════════════════
+// "Record Scratch"
+// YouTube — "wait, what?" comedic stop
+//
+// Key:    —
+// Tempo:  120 BPM  (setcpm 60)
+// Chords: —
+// Feel:   Vinyl scratch — abrupt, gritty, ironic punctuation.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(60)
+
+stack(
+
+  // ── SCRATCH ──────────────────────────────────────────────────
+  // Pitched noise sweep with bandpass — back-and-forth motion.
+  s("white*4")
+    .bpf("800 2400 1200 600")
+    .gain("0.6 0.55 0.45 0.3")
+    .pan("0.4 0.6 0.45 0.55"),
+
+
+  // ── GROAN ────────────────────────────────────────────────────
+  // Pitched-down body to simulate the platter dragging.
+  note("e3 c3 g2 ~")
+    .sound("sawtooth")
+    .lpf(900)
+    .attack(0.005)
+    .release(0.18)
+    .gain(0.4),
+
+
+  // ── STOP ─────────────────────────────────────────────────────
+  // Final silence-marker click.
+  s("~ ~ ~ rim")
+    .gain(0.35)
+
+)

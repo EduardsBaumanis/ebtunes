@@ -1,0 +1,48 @@
+// ══════════════════════════════════════════════════════════════
+// "Success Ding"
+// YouTube — bright bell ding for completed step
+//
+// Key:    C major
+// Tempo:  120 BPM  (setcpm 60)
+// Chords: C maj
+// Feel:   "Got it!" — a clean glassy bell on the downbeat.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(60)
+
+stack(
+
+  // ── BELL TONE ────────────────────────────────────────────────
+  // Sine + triangle stack. Long release for that ringing tail.
+  note("c6 ~ ~ ~ ~ ~ ~ ~")
+    .sound("sine")
+    .attack(0.001)
+    .decay(0.4)
+    .sustain(0)
+    .release(0.6)
+    .gain(0.55)
+    .room(0.6),
+
+
+  // ── HARMONIC ─────────────────────────────────────────────────
+  // Major third above to give it that "yes!" colour.
+  note("e6 ~ ~ ~ ~ ~ ~ ~")
+    .sound("triangle")
+    .attack(0.001)
+    .decay(0.5)
+    .sustain(0)
+    .release(0.5)
+    .gain(0.32)
+    .room(0.5),
+
+
+  // ── FIFTH SHIMMER ────────────────────────────────────────────
+  // Bright G7 octave above for sparkle.
+  note("g7 ~ ~ ~ ~ ~ ~ ~")
+    .sound("sine")
+    .attack(0.002)
+    .release(0.3)
+    .gain(0.18)
+    .room(0.55)
+
+)

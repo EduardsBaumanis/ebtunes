@@ -1,0 +1,40 @@
+// ══════════════════════════════════════════════════════════════
+// "Sword Swing"
+// Videogame — slash through air
+//
+// Key:    —
+// Tempo:  140 BPM  (setcpm 70)
+// Chords: —
+// Feel:   Sharp metallic whoosh. Steel cuts wind.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(70)
+
+stack(
+
+  // ── AIR SLASH ────────────────────────────────────────────────
+  // Filtered noise sweep with tight bandpass — wind cutting.
+  s("white*4")
+    .bpf("600 1800 4000 1500")
+    .gain("0.4 0.55 0.45 0.2")
+    .pan("0.2 0.4 0.6 0.8"),
+
+
+  // ── METALLIC EDGE ────────────────────────────────────────────
+  // Sawtooth glide adds the "blade ring" component.
+  note("a5 c6 e5 ~")
+    .sound("sawtooth")
+    .lpf(3500)
+    .attack(0.003)
+    .decay(0.06)
+    .release(0.1)
+    .gain(0.22),
+
+
+  // ── CONNECT ──────────────────────────────────────────────────
+  // Final accent — could be the moment the swing finishes.
+  s("~ ~ ~ rim")
+    .gain(0.32)
+    .hpf(2000)
+
+)
