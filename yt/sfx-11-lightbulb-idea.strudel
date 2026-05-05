@@ -1,0 +1,46 @@
+// ══════════════════════════════════════════════════════════════
+// "Lightbulb Idea"
+// YouTube — "aha moment" sparkle
+//
+// Key:    G major
+// Tempo:  120 BPM  (setcpm 60)
+// Chords: —
+// Feel:   Sudden bright idea. High shimmer that lingers.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(60)
+
+stack(
+
+  // ── PING ─────────────────────────────────────────────────────
+  // High glassy bell — bright, instant, glowing.
+  note("d7 ~ ~ ~ ~ ~ ~ ~")
+    .sound("sine")
+    .attack(0.001)
+    .decay(0.5)
+    .sustain(0)
+    .release(0.6)
+    .gain(0.42)
+    .room(0.7),
+
+
+  // ── SHIMMER ──────────────────────────────────────────────────
+  // Cluster of higher partials that fade in slowly.
+  note("g7 b7 d8 ~ ~ ~ ~ ~")
+    .sound("triangle")
+    .attack(0.05)
+    .release(0.4)
+    .gain(0.18)
+    .room(0.65)
+    .delay(0.2)
+    .delaytime(0.25),
+
+
+  // ── DUST ─────────────────────────────────────────────────────
+  // Faint noise pulses — like specks of dust around the bulb.
+  s("hh*16")
+    .gain(0.06)
+    .hpf(7000)
+    .degradeBy(0.6)
+
+)

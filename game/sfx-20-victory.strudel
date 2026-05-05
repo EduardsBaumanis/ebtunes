@@ -1,0 +1,51 @@
+// ══════════════════════════════════════════════════════════════
+// "Victory"
+// Videogame — stage clear / you win
+//
+// Key:    C major
+// Tempo:  150 BPM  (setcpm 75)
+// Chords: C – G – C   (I – V – I)
+// Feel:   Triumphant rising fanfare. CHAMPION.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(75)
+
+stack(
+
+  // ── MELODY ───────────────────────────────────────────────────
+  // C major fanfare climbing through the triad and resolving.
+  note("c5 e5 g5 c6 g5 c6 e6 c6")
+    .sound("square")
+    .attack(0.002)
+    .decay(0.16)
+    .sustain(0.4)
+    .release(0.12)
+    .gain(0.45),
+
+
+  // ── HARMONY ──────────────────────────────────────────────────
+  // Lower third and fifth harmony — full triad vibe.
+  note("e4 g4 c5 e5 c5 e5 g5 e5")
+    .sound("triangle")
+    .attack(0.003)
+    .release(0.14)
+    .gain(0.3),
+
+
+  // ── BASS ─────────────────────────────────────────────────────
+  // Bass moves I → V → I, classic cadence under the melody.
+  note("c3 c3 g2 c3 g2 c3 c3 c3")
+    .sound("sawtooth")
+    .lpf(800)
+    .attack(0.003)
+    .release(0.16)
+    .gain(0.3),
+
+
+  // ── SHIMMER ──────────────────────────────────────────────────
+  // Hi-hat pulses on every beat for energy.
+  s("hh*8")
+    .gain(0.18)
+    .hpf(5000)
+
+)

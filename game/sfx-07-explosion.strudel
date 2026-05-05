@@ -1,0 +1,38 @@
+// ══════════════════════════════════════════════════════════════
+// "Explosion"
+// Videogame — boom / destructive impact
+//
+// Key:    —
+// Tempo:  100 BPM  (setcpm 50)
+// Chords: —
+// Feel:   Big noisy blast with rumbling tail. KABOOM.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(50)
+
+stack(
+
+  // ── BLAST ────────────────────────────────────────────────────
+  // Wide-spectrum noise burst, fading quickly.
+  s("white ~ ~ ~ ~ ~ ~ ~")
+    .lpf(4500)
+    .gain(0.7)
+    .release(0.6),
+
+
+  // ── RUMBLE ───────────────────────────────────────────────────
+  // Sub-bass kick with extra-long decay for the shockwave.
+  s("bd ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.85)
+    .lpf(120)
+    .room(0.4),
+
+
+  // ── TAIL DEBRIS ──────────────────────────────────────────────
+  // Crackling debris noise echoes after the blast.
+  s("hh*8")
+    .gain("0.18 0.13 0.1 0.07 0.05 0.04 0.03 0")
+    .hpf(3000)
+    .degradeBy(0.4)
+
+)

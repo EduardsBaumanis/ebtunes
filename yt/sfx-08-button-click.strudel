@@ -1,0 +1,33 @@
+// ══════════════════════════════════════════════════════════════
+// "Button Click"
+// YouTube — UI tap / mouse click highlight
+//
+// Key:    —
+// Tempo:  120 BPM  (setcpm 60)
+// Chords: —
+// Feel:   Sharp, precise, neutral click. UI-style.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(60)
+
+stack(
+
+  // ── CLICK ────────────────────────────────────────────────────
+  // High-pitched short blip — like a mechanical mouse click.
+  note("c7 ~ ~ ~ ~ ~ ~ ~")
+    .sound("square")
+    .attack(0.001)
+    .decay(0.025)
+    .sustain(0)
+    .release(0.02)
+    .gain(0.4)
+    .lpf(5000),
+
+
+  // ── DOWN-EDGE ────────────────────────────────────────────────
+  // A second tiny click an instant later — gives it tactile depth.
+  s("~ rim ~ ~ ~ ~ ~ ~")
+    .gain(0.28)
+    .hpf(3500)
+
+)

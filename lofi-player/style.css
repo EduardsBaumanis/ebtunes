@@ -79,6 +79,28 @@
   --code-fg:  #cc8888;
 }
 
+/* ── YT theme — youtube studio, warm red on cream paper ── */
+[data-theme="yt"] {
+  --black:    #14080a;
+  --white:    #fbe9d8;
+  --grey:     #b85c4a;
+  --dim:      #2a1014;
+  --mid:      #582028;
+  --code-bg:  #18090b;
+  --code-fg:  #f0c8a0;
+}
+
+/* ── GAME theme — arcade neon, magenta on deep purple ── */
+[data-theme="game"] {
+  --black:    #050018;
+  --white:    #ffd0ff;
+  --grey:     #c850e0;
+  --dim:      #150038;
+  --mid:      #3a0870;
+  --code-bg:  #04001a;
+  --code-fg:  #80f0c8;
+}
+
 html, body { height: 100%; overflow: hidden; }
 
 body {
@@ -773,4 +795,99 @@ body {
   height: 400px;
   pointer-events: none;
   opacity: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Mobile (≤ 768px) — stacked layout, compact controls
+   ══════════════════════════════════════════════════════════════
+   On phones the 260px sidebar swallowed the whole screen. We:
+   - flip body to column, sidebar above the player
+   - cap sidebar at 30vh so the player is always visible
+   - shrink padding, ring, badges, buttons to fit
+   - allow header tabs to scroll horizontally (more playlists than fit)
+   - tighten code pane and leaderboard for narrow widths
+   ══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  body { font-size: 13px; }
+
+  /* Header: scroll horizontally if needed, smaller logo / buttons. */
+  .header {
+    height: 40px;
+  }
+  .logo       { padding: 0 12px; font-size: 16px; }
+  .playlist-tabs {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .playlist-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn    { padding: 0 14px; font-size: 9px; letter-spacing: 0.18em; flex-shrink: 0; }
+  .board-btn  { padding: 0 12px; font-size: 9px; letter-spacing: 0.18em; }
+  .shuffle-btn{ padding: 0 14px; font-size: 14px; }
+
+  /* Body becomes column so sidebar sits above the player. */
+  .body { flex-direction: column; }
+
+  /* Sidebar: full width, capped height. Song list and footer share a row. */
+  .sidebar {
+    width: 100%;
+    max-height: 30vh;
+    border-right: none;
+    border-bottom: 1px solid var(--dim);
+  }
+  .song-item     { padding: 7px 10px; }
+  .si-title      { font-size: 11px; }
+  .si-vote-btn   { width: 22px; height: 22px; } /* easier to tap */
+  .sidebar-footer { padding: 7px 10px; }
+  .submit-btn    { font-size: 9px; padding: 7px 6px; }
+
+  /* Player pane: smaller everything. */
+  .player-pane {
+    padding: 16px 18px 20px;
+    gap: 16px;
+    justify-content: flex-start;
+    overflow-y: auto;
+  }
+  .player-info { max-width: 100%; }
+  .p-title     { font-size: clamp(1.5rem, 7vw, 2.4rem); margin-bottom: 10px; }
+  .p-counter   { margin-bottom: 6px; }
+  .p-subtitle  { margin-bottom: 8px; }
+  .p-feel      { font-size: 11px; }
+  .p-chords    { font-size: 10px; }
+
+  .ring-wrap   { width: 140px; height: 140px; }
+  .ring-time   { font-size: 1.4rem; }
+  .ring-label  { font-size: 8px; }
+
+  .controls    { gap: 12px; }
+  .ctrl        { width: 40px; height: 40px; }
+  .ctrl-play   { width: 52px; height: 52px; }
+
+  .timer-row     { gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .timer-slider  { width: 60vw; max-width: 220px; }
+  .hints         { display: none; } /* keyboard shortcuts irrelevant on phone */
+
+  /* Code pane: full-width textarea, smaller padding. */
+  .code-header   { padding: 12px 14px 10px; }
+  .code-hints-bar{ padding: 6px 14px; font-size: 9px; }
+  .code-area     { padding: 14px 14px; font-size: 12px; }
+  .code-controls { padding: 10px 14px; gap: 8px; flex-wrap: wrap; }
+  .code-btn      { padding: 6px 12px; font-size: 9px; }
+  .cnav-btn      { padding: 6px 10px; font-size: 9px; }
+
+  /* Leaderboard: collapse to essential columns on narrow screens. */
+  .lb-head, .lb-row {
+    grid-template-columns: 28px 1fr 28px 28px 44px;
+    padding: 7px 14px;
+    font-size: 10px;
+  }
+  .lb-head .lb-tag, .lb-row .lb-tag { display: none; }
+}
+
+/* Very narrow (≤ 380px, e.g. iPhone SE): tighten further. */
+@media (max-width: 380px) {
+  .tab-btn   { padding: 0 10px; }
+  .p-title   { font-size: clamp(1.3rem, 6.5vw, 2rem); }
+  .ring-wrap { width: 120px; height: 120px; }
+  .ring-time { font-size: 1.2rem; }
 }

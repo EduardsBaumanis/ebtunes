@@ -1,0 +1,30 @@
+// ══════════════════════════════════════════════════════════════
+// "Paper Flip"
+// YouTube — page turn / chapter break
+//
+// Key:    —
+// Tempo:  120 BPM  (setcpm 60)
+// Chords: —
+// Feel:   A quick paper rustle. Soft, dry, organic.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(60)
+
+stack(
+
+  // ── RUSTLE ───────────────────────────────────────────────────
+  // White noise burst with bandpass for paper-like character.
+  s("white*8")
+    .hpf(1800)
+    .lpf(6000)
+    .gain("0.45 0.3 0.2 0.15 0.1 0.08 0.05 0")
+    .pan("0.4 0.55 0.45 0.6"),
+
+
+  // ── EDGE ─────────────────────────────────────────────────────
+  // Single click to mark the actual flip moment.
+  s("~ ~ rim ~ ~ ~ ~ ~")
+    .gain(0.32)
+    .hpf(3000)
+
+)

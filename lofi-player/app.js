@@ -53,6 +53,39 @@ let elCodeTitle, elCodeCounter, elCodeArea;
 
 // ── Audio helpers ─────────────────────────────────────────────────────────────
 
+// iOS Safari requires AudioContext.resume() and a silent buffer to be triggered
+// synchronously inside a user gesture handler. ensureAudio() must be called as
+// the FIRST thing in any click/touch handler — before any await — otherwise the
+// browser will not unlock audio output and the page stays silent.
+let audioUnlocked = false;
+
+function ensureAudio() {
+  try {
+    // Lazily create the AudioContext via the patched constructor in index.html.
+    // The patch wires up a master gain node the first time a context is built.
+    if (!window._ac) {
+      const Ctor = window.AudioContext || window.webkitAudioContext;
+      if (Ctor) new Ctor();
+    }
+    if (window._ac && window._ac.state !== 'running') {
+      // resume() returns a Promise, but iOS only counts the synchronous call as
+      // the user-gesture activation — the promise can resolve later.
+      window._ac.resume().catch(() => {});
+    }
+    if (window._ac && !audioUnlocked) {
+      // iOS unlock: play a 1-sample silent buffer connected to the real
+      // destination. After this, scheduled audio actually reaches the speaker.
+      const ctx = window._ac;
+      const buf = ctx.createBuffer(1, 1, 22050);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      try { src.start(0); } catch (_) {}
+      audioUnlocked = true;
+    }
+  } catch (_) { /* ignore: any failure means audio simply won't play */ }
+}
+
 function fadeTo(target, ms) {
   return new Promise(resolve => {
     const node = window._masterGain;
@@ -346,6 +379,7 @@ async function advance(dir) {
 }
 
 async function jumpTo(idx) {
+  ensureAudio();
   if (currentMode === 'code') {
     if (isFading) return;
     isFading = true;
@@ -387,7 +421,7 @@ async function jumpTo(idx) {
 }
 
 async function togglePlay() {
-  if (window._ac) window._ac.resume();
+  ensureAudio();
 
   if (isPlaying) {
     clearTick();
@@ -419,7 +453,7 @@ async function togglePlay() {
 // ── Code mode actions ─────────────────────────────────────────────────────────
 
 async function runCode() {
-  if (window._ac) window._ac.resume();
+  ensureAudio();
   const code = elCodeArea.value;
   try { await waitForEditor(); } catch (_) {}
   loadCode(code);
@@ -708,6 +742,23 @@ function init() {
     if (e.key === 'ArrowLeft'  || e.key === 'j' || e.key === 'J') advance(-1);
     if (e.key === 's' || e.key === 'S') elBtnShuffle.click();
   });
+
+  // First-touch global audio unlock — iOS requires a user-gesture-synchronous
+  // resume() before any sound can come out. Fires once on the first interaction
+  // so audio is already unlocked by the time the user taps Play.
+  const unlockOnce = () => {
+    ensureAudio();
+    if (audioUnlocked) {
+      window.removeEventListener('touchstart', unlockOnce, true);
+      window.removeEventListener('touchend',   unlockOnce, true);
+      window.removeEventListener('mousedown',  unlockOnce, true);
+      window.removeEventListener('keydown',    unlockOnce, true);
+    }
+  };
+  window.addEventListener('touchstart', unlockOnce, true);
+  window.addEventListener('touchend',   unlockOnce, true);
+  window.addEventListener('mousedown',  unlockOnce, true);
+  window.addEventListener('keydown',    unlockOnce, true);
 
   // Load first playlist
   switchPlaylist(PLAYLISTS[0]);

@@ -1,0 +1,45 @@
+// ══════════════════════════════════════════════════════════════
+// "Laser Shot"
+// Videogame — pew-pew weapon fire
+//
+// Key:    —
+// Tempo:  160 BPM  (setcpm 80)
+// Chords: —
+// Feel:   Quick descending zap. Sci-fi weaponry.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(80)
+
+stack(
+
+  // ── ZAP ──────────────────────────────────────────────────────
+  // Sawtooth glide from high to mid — pitched-down effect.
+  note("c8 g7 c7 g6 ~ ~ ~ ~")
+    .sound("sawtooth")
+    .attack(0.001)
+    .decay(0.06)
+    .sustain(0)
+    .release(0.04)
+    .lpf(8000)
+    .gain(0.45),
+
+
+  // ── BURST ────────────────────────────────────────────────────
+  // Square wave layer with the same descent — adds bite.
+  note("c7 g6 c6 g5 ~ ~ ~ ~")
+    .sound("square")
+    .attack(0.001)
+    .decay(0.06)
+    .sustain(0)
+    .release(0.03)
+    .gain(0.28),
+
+
+  // ── SHIMMER ──────────────────────────────────────────────────
+  // High noise click for the muzzle flash.
+  s("white ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.18)
+    .hpf(5000)
+    .release(0.04)
+
+)

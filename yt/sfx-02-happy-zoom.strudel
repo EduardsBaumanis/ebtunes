@@ -1,0 +1,39 @@
+// ══════════════════════════════════════════════════════════════
+// "Happy Zoom"
+// YouTube transition — bright rising pitch zoom-in
+//
+// Key:    C major
+// Tempo:  120 BPM  (setcpm 60)
+// Chords: —
+// Feel:   Cheerful zoom into a key point. Bouncy and bright.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(60)
+
+stack(
+
+  // ── PITCH RISE ───────────────────────────────────────────────
+  // Triangle wave climbing C → E → G → C across the bar.
+  note("c4 e4 g4 c5 e5 g5 c6 ~")
+    .sound("triangle")
+    .attack(0.005)
+    .release(0.18)
+    .gain(0.42)
+    .room(0.18),
+
+
+  // ── GLISS BODY ───────────────────────────────────────────────
+  // A second saw layer with LPF opening, like a filter zoom.
+  note("c3 g3 c4 g4 c5 g5 c6 ~")
+    .sound("sawtooth")
+    .lpf("400 800 1500 3000 5000 8000 12000 ~")
+    .gain(0.28),
+
+
+  // ── ACCENT ───────────────────────────────────────────────────
+  // Final pop accent on the last hit.
+  s("~ ~ ~ ~ ~ ~ ~ cp")
+    .gain(0.5)
+    .room(0.3)
+
+)

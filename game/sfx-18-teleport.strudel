@@ -1,0 +1,44 @@
+// ══════════════════════════════════════════════════════════════
+// "Teleport"
+// Videogame — warp / portal travel
+//
+// Key:    —
+// Tempo:  120 BPM  (setcpm 60)
+// Chords: —
+// Feel:   Whooshing pitch sweep and shimmer. Reality bends.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(60)
+
+stack(
+
+  // ── WARP RISE ────────────────────────────────────────────────
+  // Fast ascending sawtooth glide — pulled into the portal.
+  note("c4 e4 g4 b4 d5 fs5 a5 c6")
+    .sound("sawtooth")
+    .lpf("400 800 1500 2500 4000 6000 8000 ~")
+    .attack(0.005)
+    .release(0.1)
+    .gain(0.35),
+
+
+  // ── DELAY SHIMMER ────────────────────────────────────────────
+  // Sine layer with delay creates a "tunnel echo" effect.
+  note("c5 e5 g5 b5 d6 fs6 a6 c7")
+    .sound("sine")
+    .attack(0.003)
+    .release(0.1)
+    .gain(0.22)
+    .delay(0.45)
+    .delaytime(0.166)
+    .delayfeedback(0.5),
+
+
+  // ── DISSIPATE ────────────────────────────────────────────────
+  // Final whoosh of noise as the portal collapses.
+  s("white ~ ~ ~ ~ ~ ~ white")
+    .hpf("200 ~ ~ ~ ~ ~ ~ 4000")
+    .gain(0.3)
+    .release(0.4)
+
+)

@@ -1,0 +1,46 @@
+// ══════════════════════════════════════════════════════════════
+// "Wrong Buzzer"
+// YouTube — game-show "WRONG!" buzzer
+//
+// Key:    —
+// Tempo:  120 BPM  (setcpm 60)
+// Chords: —
+// Feel:   Big harsh dissonant buzz. Comically wrong.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(60)
+
+stack(
+
+  // ── BUZZ TONE A ──────────────────────────────────────────────
+  // Sawtooth at e2 — gritty low foundation.
+  note("e2 ~ ~ ~ ~ ~ ~ ~")
+    .sound("sawtooth")
+    .attack(0.001)
+    .decay(0.7)
+    .sustain(0.6)
+    .release(0.05)
+    .lpf(1200)
+    .gain(0.45),
+
+
+  // ── BUZZ TONE B ──────────────────────────────────────────────
+  // Slightly detuned for that nasty beating dissonance.
+  note("f2 ~ ~ ~ ~ ~ ~ ~")
+    .sound("square")
+    .attack(0.001)
+    .decay(0.7)
+    .sustain(0.6)
+    .release(0.05)
+    .lpf(1400)
+    .gain(0.38),
+
+
+  // ── EDGE ─────────────────────────────────────────────────────
+  // Crunchy noise overlay for grit.
+  s("white ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.18)
+    .hpf(800)
+    .release(0.5)
+
+)

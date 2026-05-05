@@ -1,0 +1,32 @@
+// ══════════════════════════════════════════════════════════════
+// "Swoosh"
+// YouTube transition — filtered noise sweep
+//
+// Key:    —
+// Tempo:  120 BPM  (setcpm 60)
+// Chords: —
+// Feel:   Quick whoosh between cuts. Stereo sweep, soft.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(60)
+
+stack(
+
+  // ── NOISE BODY ───────────────────────────────────────────────
+  // White noise filtered with a sweeping LPF for the swoosh body.
+  s("white")
+    .lpf("200 800 3000 6000 3000 800 200 ~")
+    .hpf(120)
+    .gain(0.55)
+    .pan("0 0.25 0.5 0.75 0.5 0.25 0 ~"),
+
+
+  // ── AIR TAIL ─────────────────────────────────────────────────
+  // High shimmer that lingers slightly behind the body.
+  s("~ ~ white ~")
+    .hpf(4000)
+    .gain(0.22)
+    .room(0.5)
+    .release(0.4)
+
+)
