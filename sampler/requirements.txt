@@ -1,0 +1,8 @@
+# Core audio processing — required.
+librosa>=0.10
+soundfile>=0.12
+numpy>=1.24
+
+# AI classification — optional. Skip these if you only run with --no-ai.
+transformers>=4.40
+torch>=2.0
