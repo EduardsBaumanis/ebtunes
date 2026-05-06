@@ -1,0 +1,30 @@
+// ══════════════════════════════════════════════════════════════
+// "VCSL — Long Horizon (Reprise)"
+// Ambient drone pattern using the VCSL sample pack
+//
+// Key:    E♭ major
+// Tempo:  60 BPM  (setcpm 15)
+// Chords: Ebmaj9 – Cm9 – Abmaj9 – Bb9
+// Feel:   Slow-evolving pad, breathy texture, sparse percussion.
+// Loads:  github:sgossner/VCSL
+// Tip:    after the pack loads, swap any s("...") name above for one
+//         from the pack to hear the same pattern through it.
+// ══════════════════════════════════════════════════════════════
+
+samples('github:sgossner/VCSL')
+
+setcpm(15)
+
+stack(
+  note("<[eb3,g3,bb3,d4,f4] [c3,eb3,g3,bb3,d4] [ab2,c3,eb3,g3,bb3] [bb2,d3,f3,ab3,c4]>")
+    .sound("sawtooth").attack(0.8).release(2.0)
+    .lpf(1600).gain(0.32).room(0.7).pan(0.5).slow(4),
+  note("<eb5 g5 bb5 c6>")
+    .sound("triangle").attack(0.4).release(1.5)
+    .delay(0.55).delaytime(0.5).delayfeedback(0.5)
+    .gain(0.22).pan(0.55).slow(4),
+  s("~ ~ ~ ~ ~ ~ ~ bd").gain(0.4).lpf(140).slow(2),
+  s("hh ~ ~ hh").gain(0.1).hpf(7000).degradeBy(0.6),
+  note("eb2 ~ ~ ~ ~ ~ ~ ~").sound("sine")
+    .attack(0.4).release(2).gain(0.28)
+)
