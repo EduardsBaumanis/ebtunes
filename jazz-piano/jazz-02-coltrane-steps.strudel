@@ -1,0 +1,38 @@
+// ══════════════════════════════════════════════════════════════
+// "Coltrane Steps"
+// Major-thirds cycle (Giant Steps changes)
+//
+// Key:    Three tonal centres a major 3rd apart — B / G / Eb
+// Tempo:  ~70 BPM ballad pace  (setcpm 17.5)
+// Chords: Bmaj7 — D7 — Gmaj7 — Bb7 — Ebmaj7 — F#7 — Bmaj7
+// Theory: Coltrane Matrix — the octave divided in three equal
+//         major thirds (B → G → Eb → B). Each tonic is preceded
+//         by its V7 (D7→G, Bb7→Eb, F#7→B), creating a constant
+//         shift of key centres every two beats. Voicings use
+//         drop-2 maj7 stacks (root-7-3-5).
+// Feel:   Beautiful but vertigo-inducing. Modulation as melody.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(17.5)
+
+stack(
+
+  // ── BASS — root motion through the cycle ─────────────────────
+  // Bmaj7 D7 | Gmaj7 Bb7 | Ebmaj7 F#7 | Bmaj7 ~
+  note("b1 ~ d2 ~  g1 ~ bb1 ~  eb2 ~ fs2 ~  b1 ~ ~ ~")
+    .s("piano").gain(0.6).attack(0.006).slow(2),
+
+  // ── COMPING — drop-2 maj7 / dom7 voicings ────────────────────
+  // Bmaj7: ds-fs-as-b   D7: fs-a-c-d  (third inversion sound)
+  // Gmaj7: b-d-fs-g     Bb7: d-f-ab-bb
+  // Ebmaj7: g-bb-d-eb   F#7: as-cs-e-fs
+  note("<[ds4,fs4,as4,b4] [fs4,a4,c5,d5] [b3,d4,fs4,g4] [d4,f4,ab4,bb4] [g3,bb3,d4,eb4] [as3,cs4,e4,fs4] [ds4,fs4,as4,b4] ~>")
+    .s("piano").attack(0.04).release(0.55).gain(0.42).slow(8),
+
+  // ── MELODY — outlines each new tonic with 3-5-9 ──────────────
+  // The melody hits the chord-tones each time the key moves so
+  // your ear can hear the modulation as it happens.
+  note("ds5 fs5 cs6 b5  fs5 a5 e6 d6  b5 d6 a6 g6  d6 f6 c7 bb6  g6 bb6 f7 eb7  cs6 e6 b6 a6  ds5 fs5 cs6 b5  ~")
+    .s("piano").attack(0.005).release(0.4).gain(0.5).slow(4)
+
+)

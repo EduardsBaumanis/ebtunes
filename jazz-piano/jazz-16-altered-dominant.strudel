@@ -1,0 +1,43 @@
+// ══════════════════════════════════════════════════════════════
+// "Altered Dominant"
+// Slow ii-V-I featuring V7alt (super-Locrian / altered scale)
+//
+// Key:    F major
+// Tempo:  ~62 BPM  (setcpm 15.5)
+// Chords: Gm9 — C7alt — Fmaj9 — Fmaj9
+// Theory: V7alt = the altered (super-Locrian) scale = melodic
+//         minor a half-step above the chord. C7alt uses the
+//         Db melodic-minor scale: C Db D# E Gb Ab Bb C
+//         which contains every possible alteration:
+//             1 b9 #9 3 b5/#11 b13 b7
+//         Voicing: c#-e-g#-bb (= b9, 3, b13, b7) — every
+//         note is a tension. Resolution to Fmaj9 is dramatic
+//         because the b9/b13 collapse onto chord tones.
+// Feel:   Tension piling on tension, then a held breath.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(15.5)
+
+stack(
+
+  // ── BASS — long-tone roots ───────────────────────────────────
+  note("g2 ~ ~ ~  c2 ~ ~ ~  f2 ~ ~ ~  f2 ~ ~ ~")
+    .s("piano").gain(0.6).attack(0.008).slow(2),
+
+  // ── COMPING — Gm9 → C7alt (every-tension voicing) → Fmaj9 ────
+  // Gm9:    bb-d-f-a
+  // C7alt:  e-bb-cs-g#  (3, b7, b9, b13) — the "altered cluster"
+  //         alt option:  e-bb-d#-ab  (3, b7, #9, #5)
+  // Fmaj9:  a-c-e-g
+  // Fmaj9:  e-a-c-g     (Bill-Evans wide voicing)
+  note("<[bb3,d4,f4,a4] [e4,bb4,cs5,gs5] [a3,c4,e4,g4] [e4,a4,c5,g5]>")
+    .s("piano").attack(0.06).release(0.85).gain(0.42).slow(4),
+
+  // ── MELODY — uses C altered over the V7, resolves to F maj ──
+  // Over Gm9: g dorian (g-a-bb-c-d-e-f)
+  // Over C7alt: C altered (c-db-d#-e-gb-ab-bb)
+  // Over Fmaj9: F major / lydian (f-g-a-bb-c-d-e or with B nat)
+  note("d5 f5 a5 c6  ~ bb5 a5 g5  e5 g#5 bb5 c#6  d#6 c#6 bb5 ab5  a5 c6 e6 g6  ~ f6 e6 c6  a5 c6 e6 a6  ~ ~ ~ ~")
+    .s("piano").attack(0.005).release(0.4).gain(0.5).slow(4)
+
+)

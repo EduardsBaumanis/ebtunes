@@ -1,0 +1,47 @@
+// ══════════════════════════════════════════════════════════════
+// "Modal Interchange"
+// C major borrowing from C minor (parallel modal mixture)
+//
+// Key:    C major (with modal-borrowed colour chords)
+// Tempo:  ~74 BPM  (setcpm 18.5)
+// Chords: Cmaj9 — Fm9 — Bb13 — Cmaj9 — Abmaj7 — Dm7b5 — G7b9 — Cmaj9
+// Theory: Modal interchange = borrowing chords from the parallel
+//         minor (or other parallel modes) without modulating.
+//         From C minor we steal:
+//             iv  = Fm  (instead of F major)
+//             bVII = Bb (instead of Bdim)
+//             bVI  = Ab (instead of Am)
+//             iiø  = Dm7b5 (instead of Dm7)
+//         This colours the C major key with melancholy without
+//         actually leaving it. The melody continues over both
+//         major and minor fragments using common tones.
+// Feel:   Bittersweet. Sun setting through the same window.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(18.5)
+
+stack(
+
+  // ── BASS — root motion: C F Bb C Ab D G C ────────────────────
+  note("c2 ~ g2 ~  f2 ~ c3 ~  bb1 ~ f2 ~  c2 ~ g2 ~  ab1 ~ eb2 ~  d2 ~ ab2 ~  g1 ~ d2 ~  c2 ~ g2 ~")
+    .s("piano").gain(0.58).attack(0.006).slow(2),
+
+  // ── COMPING — mix of major & borrowed minor voicings ────────
+  // Cmaj9:   e-g-b-d
+  // Fm9:     ab-c-eb-g    (borrowed iv)
+  // Bb13:    d-ab-c-g     (borrowed bVII7)
+  // Cmaj9:   e-g-b-d
+  // Abmaj9:  c-eb-g-bb    (borrowed bVI)
+  // Dm7b5:   f-ab-c-eb    (borrowed iiø)
+  // G7b9:    f-ab-b-eb    (V from harmonic minor)
+  // Cmaj9:   e-g-b-d
+  note("<[e4,g4,b4,d5] [ab3,c4,eb4,g4] [d4,ab4,c5,g5] [e4,g4,b4,d5] [c4,eb4,g4,bb4] [f4,ab4,c5,eb5] [f4,ab4,b4,eb5] [e4,g4,b4,d5]>")
+    .s("piano").attack(0.05).release(0.6).gain(0.42).slow(8),
+
+  // ── MELODY — uses common-tone pivots between major/minor ────
+  // The G is a common tone in C major + Cm + Fm + Eb major,
+  // so we anchor on it across the modal shift.
+  note("e5 g5 c6 b5  ~ a5 g5 ~  eb5 g5 c6 bb5  ~ ab5 g5 ~  d5 f5 bb5 a5  ~ g5 f5 ~  c5 e5 g5 b5  ~ ~ ~ ~  c5 eb5 g5 bb5  ~ ab5 g5 ~  ab4 c5 eb5 ab5  ~ g5 f5 ~  f5 ab5 b5 eb6  ~ d5 c5 ~  e5 g5 b5 d6  ~ ~ ~ ~")
+    .s("piano").attack(0.005).release(0.45).gain(0.52).slow(4)
+
+)

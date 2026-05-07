@@ -1,0 +1,30 @@
+// ══════════════════════════════════════════════════════════════
+// "MS Teams — Glitch Garden (Reprise)"
+// IDM / glitch pattern using the MS Teams sample pack
+//
+// Key:    C minor
+// Tempo:  128 BPM  (setcpm 32)
+// Chords: Cm – Eb – Ab – G
+// Feel:   Broken rhythms, stutter, tape-stop fragments.
+// Loads:  github:AustinOliverHaskell/ms-teams-sounds-strudel
+// Tip:    after the pack loads, swap any s("...") name above for one
+//         from the pack to hear the same pattern through it.
+// ══════════════════════════════════════════════════════════════
+
+samples('github:AustinOliverHaskell/ms-teams-sounds-strudel')
+
+setcpm(32)
+
+stack(
+  s("bd ~ [~ bd] ~  ~ [bd bd] ~ ~").gain(0.82).lpf(320),
+  s("~ ~ sd [sd*2 ~] ~ ~ sd ~").gain(0.6).hpf(800).shape(0.3),
+  s("hh*16").gain(0.3).hpf(5000).degradeBy(0.4)
+    .speed(rand.range(0.8, 1.4)),
+  s("~ ~ rim ~ ~ rim ~ ~").gain(0.35).hpf(3200),
+  note("c2 ~ ~ ~  eb2 ~ ~ ~  ab1 ~ ~ ~  g1 ~ ~ ~")
+    .sound("sawtooth").lpf(280).gain(0.5)
+    .attack(0.003).release(0.1),
+  note("<[c5 eb5 g5] [eb5 g5 bb5] [ab4 c5 eb5] [g4 b4 d5]>")
+    .sound("triangle").attack(0.005).release(0.18)
+    .gain(0.3).delay(0.4).delaytime(0.166).delayfeedback(0.45)
+)

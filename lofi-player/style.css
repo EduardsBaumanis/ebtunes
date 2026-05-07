@@ -101,6 +101,17 @@
   --code-fg:  #80f0c8;
 }
 
+/* ── JAZZ theme — speakeasy: brass on walnut, dim lamp ── */
+[data-theme="jazz"] {
+  --black:    #0a0604;
+  --white:    #f0d8a8;
+  --grey:     #a07840;
+  --dim:      #281808;
+  --mid:      #503820;
+  --code-bg:  #0e0805;
+  --code-fg:  #d8b878;
+}
+
 html, body { height: 100%; overflow: hidden; }
 
 body {

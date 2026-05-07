@@ -1,0 +1,39 @@
+// ══════════════════════════════════════════════════════════════
+// "Diminished Rain"
+// Half-whole diminished scale over dominants
+//
+// Key:    A minor
+// Tempo:  ~68 BPM  (setcpm 17)
+// Chords: Am9 — D7(b9,#9,#11,13) — Am9 — Bm7b5 — E7(alt) — Am9
+// Theory: The half-whole diminished scale (over a dominant V7)
+//         contains: 1 b9 #9 3 #11 5 13 b7 (8 notes total).
+//         It's symmetrical — same intervals every minor 3rd —
+//         so any diminished phrase repeats up the m3 cycle.
+//         Here the D7 chord scale: D Eb F F# G# A B C — every
+//         tension is "in" the chord. Same for E7alt.
+// Feel:   Slow rainfall. Tension dripping into release.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(17)
+
+stack(
+
+  // ── BASS — half-note motion across the changes ───────────────
+  note("a2 ~ a2 e3  d2 ~ d2 a2  a2 ~ a2 e3  b2 ~ b2 fs3  e2 ~ e2 b2  a2 ~ a2 ~")
+    .s("piano").gain(0.6).attack(0.005).slow(2),
+
+  // ── COMPING — altered dominant voicings ─────────────────────
+  // Am9: c-e-g-b   D7(b9,#11,13): f#-c-eb-g#  (the "diminished cluster")
+  // Bm7b5: d-f-a-c     E7alt: g#-d-f-c (3-b7-b9-b13)
+  note("<[c4,e4,g4,b4] [fs3,c4,eb4,gs4] [c4,e4,g4,b4] [d4,f4,a4,c5] [gs3,d4,f4,c5] [c4,e4,g4,b4]>")
+    .s("piano").attack(0.05).release(0.6).gain(0.42).slow(8),
+
+  // ── MELODY — diminished arpeggio shapes ─────────────────────
+  // Over D7: D-half-whole-dim = D Eb F F# G# A B C
+  //   minor arpeggio shapes a m3 apart all sit inside it
+  //   (Cm-arp, Ebm-arp, F#m-arp, Am-arp = same notes)
+  // Over E7alt: E altered = E F G G# A# B# D = E F G Ab Bb C D
+  note("a4 c5 e5 g5  ~ ~ ~ ~  d5 f5 fs5 ab5  c6 ab5 fs5 eb5  e5 g5 b5 d6  ~ ~ ~ ~  d5 f5 a5 c6  ~ a5 fs5 d5  e5 g5 ab5 c6  bb5 ab5 g5 e5  a4 c5 e5 g5  ~ ~ ~ ~")
+    .s("piano").attack(0.005).release(0.4).gain(0.5).slow(4)
+
+)
