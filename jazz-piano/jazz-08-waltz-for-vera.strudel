@@ -1,0 +1,37 @@
+// ══════════════════════════════════════════════════════════════
+// "Waltz for Vera"
+// Slow 3/4 jazz waltz à la Bill Evans
+//
+// Key:    Eb major
+// Tempo:  ~66 BPM in 3  (setcpm 22)
+// Chords: Ebmaj9 — Cm9 — Fm9 — Bb13 — Gm7 — C7alt — Fm9 — Bb7 — Eb
+// Theory: Jazz waltz — beat 1 strong, beats 2-3 lifted on the
+//         off-beat. Walks a I-vi-ii-V with each chord a 9th and
+//         a deceptive C7alt going to Fm (V/Fm tritone-substituted
+//         with #9/b13 alterations). Inner voices walk by half
+//         step (Bb→A→Ab→G under each new chord).
+// Feel:   Soft, bittersweet, a portrait of someone who left.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(22)
+
+stack(
+
+  // ── BASS — strong-1, lifted-2, bouncing-3 (3/4 feel) ─────────
+  // Each chord is one bar of 3 beats: ROOT - 5 - 3
+  note("eb2 bb2 g2  c2 g2 eb2  f2 c3 ab2  bb1 f2 d2  g2 d3 bb2  c2 g2 eb2  f2 c3 ab2  bb1 f2 ab2  eb2 bb2 g2 ~")
+    .s("piano").gain(0.6).attack(0.005).slow(3),
+
+  // ── COMPING — rich 9th voicings landing on beats 2 & 3 ──────
+  // Ebmaj9: g-bb-d-f   Cm9: eb-g-bb-d
+  // Fm9:    ab-c-eb-g  Bb13: d-ab-c-g
+  // Gm7:    bb-d-f-a   C7alt: e-bb-c#-ab
+  // Fm9:    ab-c-eb-g  Bb7: d-ab-c-f
+  note("<[~ [g4,bb4,d5,f5] [g4,bb4,d5,f5]] [~ [eb4,g4,bb4,d5] [eb4,g4,bb4,d5]] [~ [ab3,c4,eb4,g4] [ab3,c4,eb4,g4]] [~ [d4,ab4,c5,g5] [d4,ab4,c5,g5]] [~ [bb3,d4,f4,a4] [bb3,d4,f4,a4]] [~ [e4,bb4,cs5,ab5] [e4,bb4,cs5,ab5]] [~ [ab3,c4,eb4,g4] [ab3,c4,eb4,g4]] [~ [d4,ab4,c5,f5] [d4,ab4,c5,f5]] [~ [g4,bb4,d5,f5] [g4,bb4,d5,f5]]>")
+    .s("piano").attack(0.04).release(0.4).gain(0.42).slow(3),
+
+  // ── MELODY — long-breath waltz lines, mostly on beat 1 ──────
+  note("g5 ~ ~  bb5 ~ ~  eb6 ~ d6  c6 bb5 g5  ab5 ~ ~  c6 ~ bb5  d6 ~ c6  bb5 ab5 g5  bb5 ~ ~  c#6 c6 bb5  ab5 ~ g5  f5 ~ ~  eb5 g5 bb5  d6 c6 bb5  ab5 g5 f5  eb5 ~ ~")
+    .s("piano").attack(0.006).release(0.5).gain(0.52).slow(3)
+
+)

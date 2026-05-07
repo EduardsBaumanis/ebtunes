@@ -1,0 +1,39 @@
+// ══════════════════════════════════════════════════════════════
+// "Phrygian Twilight"
+// E Phrygian — Spanish-tinged jazz modal
+//
+// Key:    E Phrygian (E F G A B C D) — third mode of C major
+// Tempo:  ~64 BPM  (setcpm 16)
+// Chords: Em — F (bII) — Em — Dm7 — Em
+// Theory: Phrygian's signature is the b2 (F over E), which gives
+//         the I → bII move its haunting Spanish flavour.
+//         We voice the bII as a maj7#11 (Fmaj7#11 over E pedal)
+//         to stretch out the half-step tension. Coda uses the
+//         Phrygian-dominant scale (E F G# A B C D) for an
+//         Andalusian colour.
+// Feel:   Long evening shadow. Half-step that won't resolve.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(16)
+
+stack(
+
+  // ── BASS — E pedal with bII (F) accent ───────────────────────
+  note("e2 ~ ~ ~  e2 ~ f2 ~  e2 ~ ~ ~  d2 ~ e2 ~")
+    .s("piano").gain(0.6).attack(0.008),
+
+  // ── COMPING — Phrygian colour chords ─────────────────────────
+  // Em(add9):  e-g-b-d-f#  but f# is OUT of phrygian; use F natural
+  // Em9 phrygian: e-g-b-d-f (the f is the b9 — phrygian's b2)
+  // Fmaj7#11 over E: e-a-c-e-b  (slash giving the b2 colour)
+  // Dm9 (bVII): d-f-a-c-e
+  note("<[e3,g3,b3,d4,f4] [e3,a3,c4,e4,b4] [e3,g3,b3,d4,f4] [d3,f3,a3,c4,e4] [e3,g3,b3,d4,f4]>")
+    .s("piano").attack(0.06).release(0.75).gain(0.4).slow(8),
+
+  // ── MELODY — phrygian + Phrygian-dominant on the V cadence ──
+  // E F G A B C D = phrygian; the brief G# at the end = Phrygian
+  // dominant (harmonic minor of A) used as a V→i pull to E.
+  note("e5 ~ f5 g5  ~ a5 g5 f5  e5 ~ ~ ~  ~ d5 c5 ~  e5 g5 b5 c6  ~ b5 a5 g5  f5 e5 ~ ~  ~ d5 e5 ~  e5 a5 c6 b5  ~ a5 g5 f5  e5 ~ d5 c5  ~ b4 e5 ~  e5 g#5 b5 c6  ~ b5 a5 g#5  e5 ~ ~ ~  ~ ~ ~ ~")
+    .s("piano").attack(0.005).release(0.5).gain(0.52).slow(4)
+
+)
