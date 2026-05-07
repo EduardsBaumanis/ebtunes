@@ -112,6 +112,17 @@
   --code-fg:  #d8b878;
 }
 
+/* ── DEMOS theme — showcase gallery: cool slate + cyan accent ── */
+[data-theme="demos"] {
+  --black:    #06090e;
+  --white:    #d8eef0;
+  --grey:     #5090a0;
+  --dim:      #11181f;
+  --mid:      #244048;
+  --code-bg:  #050a0e;
+  --code-fg:  #a0d0d8;
+}
+
 html, body { height: 100%; overflow: hidden; }
 
 body {
