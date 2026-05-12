@@ -6,14 +6,35 @@
   <title>lofi rater</title>
   <link rel="stylesheet" href="style.css">
   <script>
-    // Intercept AudioContext creation so we can call resume() from
-    // our own click handlers — required for iOS Safari audio unlock.
+    // Same AudioContext patch as lofi-player: every audio path is forced
+    // through a shared master gain so we can fade in/out smoothly and
+    // unlock the context from a synchronous user-gesture handler on iOS.
     (function () {
       var Orig = window.AudioContext || window.webkitAudioContext;
       if (!Orig) return;
+      var origConnect = AudioNode.prototype.connect;
+      AudioNode.prototype.connect = function (dest, out, inp) {
+        if (window._realDest && dest === window._realDest && this !== window._masterGain) {
+          dest = window._masterGain;
+        }
+        if (arguments.length >= 3) return origConnect.call(this, dest, out, inp);
+        if (arguments.length >= 2) return origConnect.call(this, dest, out);
+        return origConnect.call(this, dest);
+      };
       function Patched() {
         var ctx = new Orig();
-        window._ac = ctx;
+        if (!window._ac) {
+          var descProto = Object.getOwnPropertyDescriptor(AudioContext.prototype, 'destination');
+          var realDest  = descProto ? descProto.get.call(ctx) : ctx.destination;
+          var master    = ctx.createGain();
+          master.gain.value = 0;
+          window._ac         = ctx;
+          window._masterGain = master;
+          window._realDest   = realDest;
+          origConnect.call(master, realDest);
+        } else {
+          window._ac = ctx;
+        }
         return ctx;
       }
       Patched.prototype = Orig.prototype;
@@ -23,94 +44,90 @@
   </script>
   <script src="https://unpkg.com/@strudel/repl@1.3.0" defer></script>
 </head>
-<body>
+<body data-theme="rater">
 
-  <div class="grain"></div>
+  <div class="app">
 
-  <!-- ── INTRO ── -->
-  <div id="view-intro" class="view active">
-    <div class="intro-content">
-      <div class="intro-icon">📼</div>
-      <h1 class="intro-title">lofi rater</h1>
-      <p class="intro-sub">8 original lo-fi jazz tracks.<br>Rate them hot or not.</p>
-      <button id="btn-start" class="btn-primary">Start Rating</button>
-      <p class="intro-hint">arrow keys work too</p>
-    </div>
-  </div>
+    <!-- HEADER -->
+    <header class="header">
+      <span class="logo">◈</span>
+      <nav class="playlist-tabs">
+        <button id="tab-rate"  class="tab-btn active" data-view="rate">RATE</button>
+        <button id="tab-board" class="tab-btn"        data-view="board">BOARD</button>
+      </nav>
+      <button id="btn-skip" class="shuffle-btn" title="Skip this song (S)">SKIP</button>
+    </header>
 
-  <!-- ── RATING ── -->
-  <div id="view-rating" class="view">
-    <div class="rating-layout">
+    <div class="body">
 
-      <div class="progress-wrap">
-        <div class="progress-track">
-          <div id="progress-bar" class="progress-fill"></div>
-        </div>
-        <span id="progress-text" class="progress-text">1 / 8</span>
-      </div>
+      <!-- RATE PANE -->
+      <main id="rate-pane" class="rate-pane">
 
-      <div id="card-wrap">
-        <div id="card" class="card">
-          <div class="card-inner">
-            <p id="card-subtitle" class="card-subtitle"></p>
-            <h2 id="card-title" class="card-title"></h2>
-            <div class="card-badges">
-              <span id="card-key" class="badge"></span>
-              <span id="card-bpm" class="badge"></span>
-            </div>
-            <blockquote id="card-feel" class="card-feel"></blockquote>
-            <p id="card-chords" class="card-chords"></p>
-            <div id="card-tags" class="card-tags"></div>
-            <button id="card-play" class="play-btn">▶ Play</button>
+        <div class="rate-counter" id="rate-counter">— / —</div>
+
+        <div class="rate-info" id="rate-info">
+          <div class="p-subtitle" id="r-subtitle"></div>
+          <h1 class="p-title"    id="r-title">LOADING</h1>
+          <div class="p-meta">
+            <span class="p-badge" id="r-key">—</span>
+            <span class="p-sep">·</span>
+            <span class="p-badge" id="r-bpm">—</span>
+            <span class="p-sep">·</span>
+            <span class="p-badge" id="r-pack">—</span>
           </div>
-          <div class="card-hot-flash"></div>
-          <div class="card-not-flash"></div>
+          <p class="p-feel"   id="r-feel"></p>
+          <p class="p-chords" id="r-chords"></p>
         </div>
-      </div>
 
-      <!-- ── INLINE PLAYER ── -->
-      <div id="player-panel" class="player-panel">
-        <div class="player-panel-inner">
-          <span id="player-title" class="player-title"></span>
-          <div class="player-controls">
-            <button id="player-play-stop" class="player-play-stop">▶</button>
-            <button id="player-close" class="player-close">✕</button>
-          </div>
+        <div class="rate-transport">
+          <button id="btn-play" class="ctrl ctrl-play" title="Play / stop (Space)">▶</button>
         </div>
-      </div>
 
-      <div class="vote-row">
-        <button id="btn-not" class="vote-btn vote-not">
-          <span class="vote-icon">❄️</span>
-          <span class="vote-label">NOT</span>
-          <kbd>←</kbd>
-        </button>
-        <button id="btn-hot" class="vote-btn vote-hot">
-          <span class="vote-icon">🔥</span>
-          <span class="vote-label">HOT</span>
-          <kbd>→</kbd>
-        </button>
-      </div>
+        <div class="vote-row">
+          <button id="btn-not" class="vote-btn vote-not">
+            <span class="vote-kbd">←</span>
+            <span class="vote-label">NOT</span>
+          </button>
+          <button id="btn-hot" class="vote-btn vote-hot">
+            <span class="vote-label">HOT</span>
+            <span class="vote-kbd">→</span>
+          </button>
+        </div>
+
+        <p class="hints">SPACE · ← / → · S to skip · B for board</p>
+
+        <div id="rate-done" class="rate-done hidden">
+          <h2>ALL RATED</h2>
+          <p>You've voted on every song in the demos folder.</p>
+          <button id="btn-go-board" class="ctrl">SEE LEADERBOARD</button>
+          <button id="btn-reset-votes" class="ctrl secondary">RESET LOCAL HISTORY</button>
+        </div>
+      </main>
+
+      <!-- BOARD PANE -->
+      <main id="board-pane" class="board-pane hidden">
+        <div class="board-header">
+          <h2 class="board-title">LEADERBOARD</h2>
+          <span id="board-status" class="board-refresh-timer"></span>
+        </div>
+        <div id="board-content" class="board-content">
+          <div class="board-loading">LOADING...</div>
+        </div>
+      </main>
 
     </div>
   </div>
 
-  <!-- ── RESULTS ── -->
-  <div id="view-results" class="view">
-    <div class="results-layout">
-      <h1 class="results-title">Rankings</h1>
-      <p id="results-summary" class="results-summary"></p>
-      <div id="results-list" class="results-list"></div>
-      <button id="btn-reset" class="btn-primary">Rate Again</button>
-    </div>
-  </div>
-
-  <!-- Pre-initialized off-screen Strudel engine -->
-  <strudel-editor id="strudel-engine"><!--
+  <!-- Off-screen Strudel engine -->
+  <strudel-editor id="engine"><!--
 s("bd")
   --></strudel-editor>
 
-  <script src="songs.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- Re-use the lofi-player playlist registry so adding files to
+       pack-demos automatically expands the rater's song pool. -->
+  <script src="../lofi-player/playlists.js"></script>
+  <script src="supabase.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
