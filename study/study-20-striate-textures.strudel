@@ -1,0 +1,42 @@
+// ══════════════════════════════════════════════════════════════
+// "Striate Textures"
+// Granular re-construction — each event plays a different
+// fragment of a sample, interleaved
+//
+// Key:    C minor
+// Tempo:  ~70 BPM  (setcpm 17.5)
+// Theory: Granular composition. Whereas chop plays slice 0,
+//         then slice 1, then slice 2 (linear), striate plays
+//         slice 0 of beat 1, slice 0 of beat 2, ... slice 0
+//         of beat N, then slice 1 of beat 1, ... — i.e.
+//         interleaved. The source breaks into a textural
+//         shimmer rather than a re-ordered loop.
+// Strudel: .striate(N) — granular slicing. Best on sustained
+//          source material (a pad, a vocal). Here we apply it
+//          to "casio" (a buzzy synth sample in the default
+//          bank) for a glassy texture.
+// Pack:   Default Dirt-Samples (uses `casio`).
+// ══════════════════════════════════════════════════════════════
+
+setcpm(17.5)
+
+stack(
+
+  // Striated sample — 32 grains per cycle, smeared.
+  s("casio").striate(32)
+    .gain(0.55).hpf(800).lpf(4500)
+    .room(0.6).size(0.85)
+    .pan("0.3 0.7 0.4 0.6"),
+
+  // Bass drone
+  note("c2").s("sawtooth").lpf(220).attack(2).release(4).gain(0.42),
+
+  // Minor 9th chord pad underneath the granular texture
+  note("[c4,eb4,g4,bb4,d5]")
+    .s("sawtooth").attack(0.8).release(3)
+    .lpf(1500).gain(0.22).pan(0.5).slow(4),
+
+  // Sparse marker
+  s("bd").gain(0.5).lpf(180).slow(2)
+
+)

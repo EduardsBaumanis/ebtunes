@@ -1,0 +1,50 @@
+// ══════════════════════════════════════════════════════════════
+// "Almost Never"
+// Aleatoric music — events happen, but very rarely
+//
+// Key:    A minor (the underlying tonal centre)
+// Tempo:  ~58 BPM  (setcpm 14.5)
+// Theory: Aleatoric / chance music. Cage and Stockhausen built
+//         entire compositions where the score guarantees the
+//         *type* of event but lets the performer or randomness
+//         decide if/when it happens. Listening becomes patient.
+// Strudel: .almostNever(fn) applies `fn` ~10% of the time;
+//          .almostAlways(fn) ~90% of the time; .rarely / .often
+//          / .sometimes are the intermediate flavours. Layered
+//          probabilistic transformations make every cycle unique.
+// Pack:   github:felixroos/dough-samples (piano).
+// ══════════════════════════════════════════════════════════════
+
+samples('github:felixroos/dough-samples')
+
+setcpm(14.5)
+
+stack(
+
+  // Slow chord pad — almost always present, very rarely silent
+  note("<[a3,c4,e4,g4] [d4,f4,a4,c5] [e3,g3,b3,d4] [a3,c4,e4,g4]>")
+    .s("piano").attack(0.5).release(2.5)
+    .gain(0.4).pan(0.5).slow(8)
+    .almostNever(x => x.gain(0))   // very rarely drop out completely
+    .room(0.55),
+
+  // Soft melody — sometimes ornamented up an octave, rarely
+  // doubled at the fifth
+  note("a4 ~ ~ ~ c5 ~ ~ ~  e5 ~ ~ d5 ~ ~ a4 ~")
+    .s("piano").gain(0.45)
+    .sometimes(x => x.add(12))       // ~50% — octave up
+    .rarely(x => x.add(7))           // ~25% — fifth doubled
+    .almostNever(x => x.fast(2))     // ~10% — sudden rapid pair
+    .room(0.5).slow(2),
+
+  // Almost-never bass accent
+  note("a2").s("piano").gain(0.65)
+    .almostAlways(x => x.gain(0))    // most of the time silent
+    .slow(4),
+
+  // Very-rare cymbal hit for the rare big moment
+  s("cy").gain(0.4).hpf(3000).room(0.5)
+    .almostNever(x => x.gain(0.5))
+    .slow(4)
+
+)

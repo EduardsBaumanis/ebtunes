@@ -1,0 +1,52 @@
+// ══════════════════════════════════════════════════════════════
+// "TR-808 Study"
+// Minimal study beat — TR-808 drum-machine samples + sub bass
+//
+// Key:    F minor
+// Tempo:  ~76 BPM  (setcpm 19)
+// Theory: Minimalism in beats. The 808 is reductive by design —
+//         one kick, one snare, one hat, one cowbell. Each sound
+//         carries its full identity, so arrangements live or die
+//         on placement and decay length, not layering.
+// Strudel: samples('github:geikha/tidal-drum-machines') exposes
+//          every classic drum machine including the RolandTR808.
+//          Sample names there usually have a brand prefix, e.g.
+//          `RolandTR808_BD`. Until those load, the default 808
+//          samples that ship with Strudel cover the same names.
+// Pack:   github:geikha/tidal-drum-machines
+// ══════════════════════════════════════════════════════════════
+
+samples('github:geikha/tidal-drum-machines')
+
+setcpm(19)
+
+stack(
+
+  // 808 sub-kick — long decay is the entire point of an 808.
+  s("bd ~ ~ ~ bd ~ ~ ~")
+    .gain(0.92).lpf(120)
+    .attack(0.005).release(0.85)
+    .room(0.18),
+
+  // 808 snare/clap on backbeat
+  s("~ ~ cp ~ ~ ~ cp ~").gain(0.55).hpf(220).room(0.2),
+
+  // 808 hats — closed, tight
+  s("hh*8").gain(0.32).hpf(5500).pan("0.4 0.6"),
+
+  // 808 open hat splash on the off-beat of bar 2
+  s("~ ~ ~ ~ ~ ~ ~ oh").gain(0.42).hpf(4500),
+
+  // 808 cowbell — the unmistakable accent
+  s("~ ~ ~ ~ cb ~ ~ ~").gain(0.32).slow(2),
+
+  // 808 sub-bass (sine) — moves in long held tones
+  note("<f1 ab1 c2 eb2>")
+    .s("sine").attack(0.01).release(2).gain(0.7),
+
+  // Soft pad to round the spectrum
+  note("<[f3,ab3,c4,eb4] [ab3,c4,eb4,g4] [c4,eb4,g4,bb4] [eb4,g4,bb4,db5]>")
+    .s("sawtooth").lpf(1400).attack(0.5).release(2)
+    .gain(0.2).pan(0.5).slow(4)
+
+)

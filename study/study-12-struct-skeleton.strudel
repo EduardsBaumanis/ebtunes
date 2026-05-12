@@ -1,0 +1,45 @@
+// ══════════════════════════════════════════════════════════════
+// "Struct Skeleton"
+// Rhythmic recomposition — borrow the timing of one pattern
+// and apply it to a different pitch sequence
+//
+// Key:    G Mixolydian
+// Tempo:  ~72 BPM  (setcpm 18)
+// Theory: Rhythm and pitch are independent dimensions. .struct()
+//         separates them — you can write a "rhythm skeleton"
+//         once and pour different note sequences through it.
+//         Same approach as Steve Reich's "Music for Pieces of
+//         Wood" or any rhythm-first composition method.
+// Strudel: .struct(binary_pattern) — uses x/~ rests in the
+//          binary pattern to gate the carrier. Where the
+//          skeleton says x, the next pitch from the carrier
+//          plays; where ~, silence.
+// Pack:   Default Dirt-Samples.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(18)
+
+stack(
+
+  // Rhythm skeleton — a tresillo-derived pattern, applied to the melody
+  note("g4 a4 b4 d5 f5 d5 b4 a4")
+    .s("triangle")
+    .struct("x ~ x ~ x x ~ x  ~ x x ~ x ~ x ~")
+    .attack(0.02).release(0.4).gain(0.45)
+    .room(0.4).pan(0.55),
+
+  // Bass — different skeleton, same idea
+  note("g2 d3 g2 c3")
+    .s("sawtooth").lpf(280).attack(0.005).release(0.3).gain(0.55)
+    .struct("x ~ ~ x  ~ x ~ ~"),
+
+  // Pad
+  note("[g3,b3,d4,f4]").s("sawtooth")
+    .attack(0.4).release(2).lpf(1500).gain(0.22).slow(4),
+
+  // Drums — also struct-driven so the whole piece breathes together
+  s("bd").struct("x ~ ~ x  ~ x x ~").gain(0.7).lpf(220),
+  s("sd").struct("~ ~ x ~  ~ ~ x ~").gain(0.55).hpf(220).room(0.18),
+  s("hh").struct("x x ~ x  x ~ x x").gain(0.32).hpf(5000)
+
+)

@@ -1,0 +1,43 @@
+// ══════════════════════════════════════════════════════════════
+// "Chunk Variations"
+// Theme + 4 variations, cycling through automatically
+//
+// Key:    C major (variations transpose to G, D, A then back)
+// Tempo:  ~68 BPM  (setcpm 17)
+// Theory: Theme and variation form. A short subject (the theme)
+//         is presented, then transformed in successive bars —
+//         here, transposed up by 7 semitones (perfect 5th) each
+//         time the chunk advances. Echoes the circle-of-fifths
+//         motion used in Bach's Goldberg Variations.
+// Strudel: .chunk(N, fn) — divides the cycle into N parts and
+//          applies `fn` to one part per cycle, cycling through
+//          which part is transformed. After N cycles every part
+//          has been transformed once.
+// Pack:   github:felixroos/dough-samples (piano).
+// ══════════════════════════════════════════════════════════════
+
+samples('github:felixroos/dough-samples')
+
+setcpm(17)
+
+stack(
+
+  // Theme: four-bar phrase, each beat = one chord. .chunk(4, ...)
+  // transposes one chord up a 5th per cycle, marching around the
+  // circle of fifths.
+  note("c4 e4 g4 b4")
+    .s("piano").attack(0.04).release(0.45).gain(0.5)
+    .chunk(4, x => x.add(7))         // ← per-cycle transposition
+
+    .room(0.4),
+
+  // Bass — root motion, same chunk treatment so harmony aligns.
+  note("c2 e2 g2 b2")
+    .s("piano").gain(0.55)
+    .chunk(4, x => x.add(7)),
+
+  // Soft drum bed underneath
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.55).lpf(200),
+  s("~ ~ hh ~ ~ ~ hh ~").gain(0.22).hpf(5000)
+
+)

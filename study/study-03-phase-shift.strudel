@@ -1,0 +1,44 @@
+// ══════════════════════════════════════════════════════════════
+// "Phase Shift"
+// Steve Reich-style phasing — same melody at two slightly
+// different rates, drifting in and out of unison
+//
+// Key:    D Dorian
+// Tempo:  ~80 BPM nominal  (setcpm 20)
+// Theory: Phase music. Reich's Piano Phase (1967) is two pianists
+//         playing the same line; one gradually accelerates. The
+//         "rhythm" you hear is the interference pattern. We fake
+//         this by stacking the same pattern at slow(4) and
+//         slow(4.05) — the second drifts ~1.25% slower per cycle.
+// Strudel: two-rate layering. Identical .note() with different
+//          .slow() arguments. Also .pan() to separate the streams
+//          so the ear can track them.
+// Pack:   Default Dirt-Samples.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(20)
+
+const motif = "d4 e4 f4 g4 a4 g4 f4 e4  d4 e4 f4 g4 a4 g4 d4 a3"
+
+stack(
+
+  // Voice A — clean, panned left.
+  note(motif).sound("triangle")
+    .attack(0.005).release(0.32).gain(0.42)
+    .pan(0.25).slow(4)
+    .delay(0.2).delaytime(0.5).delayfeedback(0.15),
+
+  // Voice B — same melody, slow(4.05) so it drifts apart.
+  note(motif).sound("triangle")
+    .attack(0.005).release(0.32).gain(0.38)
+    .pan(0.75).slow(4.05)
+    .delay(0.2).delaytime(0.5).delayfeedback(0.15),
+
+  // Anchor — bass on the cycle boundary so you can hear the drift.
+  note("d2 ~ a2 ~").sound("sawtooth")
+    .lpf(280).attack(0.005).release(0.3).gain(0.5).slow(2),
+
+  // Tape hiss bed — keeps the ear engaged during phase nulls.
+  s("white*16").gain(0.06).hpf(6000).degradeBy(0.6)
+
+)
