@@ -55,7 +55,6 @@
         <button id="tab-rate"  class="tab-btn active" data-view="rate">RATE</button>
         <button id="tab-board" class="tab-btn"        data-view="board">BOARD</button>
       </nav>
-      <button id="btn-skip" class="shuffle-btn" title="Skip this song (S)">SKIP</button>
     </header>
 
     <div class="body">
@@ -86,13 +85,15 @@
         <div class="vote-row">
           <button id="btn-not" class="vote-btn vote-not">
             <span class="vote-kbd">←</span>
-            <span class="vote-label">NOT</span>
+            <span class="vote-label">−</span>
           </button>
           <button id="btn-hot" class="vote-btn vote-hot">
-            <span class="vote-label">HOT</span>
+            <span class="vote-label">+</span>
             <span class="vote-kbd">→</span>
           </button>
         </div>
+
+        <button id="btn-skip" class="skip-btn" title="Skip this song (S)">SKIP</button>
 
         <p class="hints">SPACE · ← / → · S to skip · B for board</p>
 
