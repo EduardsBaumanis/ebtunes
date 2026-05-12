@@ -1,263 +1,425 @@
 // Copyright (C) 2024 Eduarda Baumaņa
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// AGPL-3.0 — see LICENSE.
 
-const STORAGE_KEY = 'lofi-rater-votes';
+// ── State ─────────────────────────────────────────────────────────────────────
 
-let queue = [];
-let current = null;
-let votes = {};
+const FADE_MS    = 400;
+const FLASH_MS   = 220;
 
-function loadVotes() {
+const codeCache  = new Map();   // url → { filename, code, meta }
+let SONG_POOL    = [];          // list of { filename, pack, songId } from pack-demos
+let currentSong  = null;
+let isPlaying    = false;
+let audioUnlocked = false;
+
+// ── DOM refs ──────────────────────────────────────────────────────────────────
+
+let elRatePane, elBoardPane;
+let elCounter, elInfo, elSubtitle, elTitle, elKey, elBpm, elPack, elFeel, elChords;
+let elBtnPlay, elBtnNot, elBtnHot, elBtnSkip, elDone;
+let elBoardContent, elBoardStatus;
+let elTabRate, elTabBoard;
+
+// ── Audio helpers (same iOS-unlock dance as lofi-player) ──────────────────────
+
+function ensureAudio() {
   try {
-    votes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-  } catch {
-    votes = {};
-  }
+    if (!window._ac) {
+      const Ctor = window.AudioContext || window.webkitAudioContext;
+      if (Ctor) new Ctor();
+    }
+    if (window._ac && window._ac.state !== 'running') {
+      window._ac.resume().catch(() => {});
+    }
+    if (window._ac && !audioUnlocked) {
+      const ctx = window._ac;
+      const buf = ctx.createBuffer(1, 1, 22050);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      try { src.start(0); } catch (_) {}
+      audioUnlocked = true;
+    }
+  } catch (_) {}
 }
 
-function saveVotes() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(votes));
-}
-
-function buildQueue() {
-  queue = SONGS.filter(s => !(s.id in votes));
-}
-
-function strudelUrl(code) {
-  return 'https://strudel.cc/#' + btoa(unescape(encodeURIComponent(code)));
-}
-
-let playerPlaying = false;
-
-function getEngine() {
-  return document.getElementById('strudel-engine');
-}
-
-function resumeAudio() {
-  // iOS Safari: AudioContext must be resumed from within a user gesture.
-  // window._ac is set by the AudioContext intercept in index.html.
-  if (window._ac && window._ac.state === 'suspended') {
-    window._ac.resume();
-  }
-}
-
-function openPlayer(song) {
-  resumeAudio();
-  document.getElementById('player-title').textContent = song.title;
-  document.getElementById('player-panel').classList.add('open');
-  const engine = getEngine();
-  if (engine.editor) {
-    engine.editor.setCode(song.code);
-    try { engine.editor.evaluate(); playerPlaying = true; } catch (e) {}
-  }
-  document.getElementById('player-play-stop').textContent = playerPlaying ? '■' : '▶';
-}
-
-function closePlayer() {
-  document.getElementById('player-panel').classList.remove('open');
-  const engine = getEngine();
-  if (engine.editor) { try { engine.editor.stop(); } catch (e) {} }
-  playerPlaying = false;
-  document.getElementById('player-play-stop').textContent = '▶';
-}
-
-function togglePlayStop() {
-  resumeAudio();
-  const engine = getEngine();
-  if (!engine.editor) return;
-  if (playerPlaying) {
-    try { engine.editor.stop(); } catch (e) {}
-    playerPlaying = false;
-    document.getElementById('player-play-stop').textContent = '▶';
-  } else {
-    try { engine.editor.evaluate(); } catch (e) {}
-    playerPlaying = true;
-    document.getElementById('player-play-stop').textContent = '■';
-  }
-}
-
-function showView(id) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-function updateProgress() {
-  const total = SONGS.length;
-  const done = total - queue.length;
-  const pct = done / total * 100;
-  document.getElementById('progress-bar').style.width = pct + '%';
-  document.getElementById('progress-text').textContent = (done + 1) + ' / ' + total;
-}
-
-function renderCard(song) {
-  document.getElementById('card-subtitle').textContent = song.subtitle;
-  document.getElementById('card-title').textContent = song.title;
-  document.getElementById('card-key').textContent = song.key;
-  document.getElementById('card-bpm').textContent = song.bpm + ' BPM';
-  document.getElementById('card-feel').textContent = song.feel;
-  document.getElementById('card-chords').textContent = song.chords;
-
-  const tagsEl = document.getElementById('card-tags');
-  tagsEl.innerHTML = '';
-  song.tags.forEach(t => {
-    const span = document.createElement('span');
-    span.className = 'tag';
-    span.textContent = t;
-    tagsEl.appendChild(span);
+function fadeTo(target, ms) {
+  return new Promise(resolve => {
+    const node = window._masterGain;
+    const ac   = window._ac;
+    if (!node || !ac) { resolve(); return; }
+    ac.resume();
+    const t = ac.currentTime;
+    node.gain.cancelScheduledValues(t);
+    node.gain.setValueAtTime(node.gain.value, t);
+    node.gain.linearRampToValueAtTime(target, t + ms / 1000);
+    setTimeout(resolve, ms);
   });
-
-  const playBtn = document.getElementById('card-play');
-  playBtn.onclick = (e) => { e.preventDefault(); openPlayer(song); };
 }
 
-function nextCard() {
-  closePlayer();
-  if (queue.length === 0) {
-    showResults();
+function setGainImmediate(v) {
+  if (window._masterGain) window._masterGain.gain.value = v;
+}
+
+function engine() { return document.getElementById('engine'); }
+
+function waitForEditor(timeoutMs = 8000) {
+  return new Promise((resolve, reject) => {
+    const t0 = Date.now();
+    const id = setInterval(() => {
+      const e = engine();
+      if (e && e.editor) { clearInterval(id); resolve(); }
+      else if (Date.now() - t0 > timeoutMs) { clearInterval(id); reject(new Error('editor timeout')); }
+    }, 100);
+  });
+}
+
+function loadCode(code)  { const e = engine(); if (e && e.editor) e.editor.setCode(code); }
+function startEngine()   { const e = engine(); if (e && e.editor) { try { e.editor.evaluate(); } catch (_) {} } }
+function stopEngine()    { const e = engine(); if (e && e.editor) { try { e.editor.stop();     } catch (_) {} } }
+
+// ── Metadata parser (same shape lofi-player uses) ─────────────────────────────
+
+function parseMeta(filename, code) {
+  const quotedTitle = code.match(/^\/\/\s*"([^"]+)"/m);
+  if (quotedTitle) {
+    const afterTitle  = code.match(/^\/\/\s*"[^"]+"\n\/\/\s*(.+)/m);
+    const keyMatch    = code.match(/^\/\/\s*Key:\s*(.+)/m);
+    const bpmMatch    = code.match(/~?(\d+)\s*BPM/i);
+    const feelMatch   = code.match(/^\/\/\s*Feel:\s*(.+)/m);
+    const chordsMatch = code.match(/^\/\/\s*Chords:\s*(.+)/m);
+    return {
+      title:    quotedTitle[1],
+      subtitle: afterTitle   ? afterTitle[1].trim() : '',
+      key:      keyMatch     ? keyMatch[1].trim()    : '',
+      bpm:      bpmMatch     ? parseInt(bpmMatch[1], 10) : 0,
+      feel:     feelMatch    ? feelMatch[1].trim()   : '',
+      chords:   chordsMatch  ? chordsMatch[1].trim() : '',
+    };
+  }
+  const title = filename
+    .replace(/\.strudel$/, '')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+  return { title, subtitle: '', key: '', bpm: 0, feel: '', chords: '' };
+}
+
+async function fetchSong(filename) {
+  const url = '../pack-demos/' + filename;
+  if (codeCache.has(url)) return codeCache.get(url);
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const code  = await res.text();
+    const meta  = parseMeta(filename, code);
+    const entry = { filename, code, meta };
+    codeCache.set(url, entry);
+    return entry;
+  } catch (err) {
+    console.error('fetch failed:', url, err);
+    return {
+      filename,
+      code: '// Could not load file.\n// Run a local server (npx serve .) so fetch() works.',
+      meta: { title: filename, subtitle: '', key: '', bpm: 0, feel: '', chords: '' },
+    };
+  }
+}
+
+// ── Song pool ─────────────────────────────────────────────────────────────────
+//
+// Read the `demos` playlist from lofi-player so adding files to pack-demos/
+// auto-grows the rater's pool. Filenames stay namespaced "demos/<file>"
+// in song_id space so leaderboard rows from the rater align with the ones
+// the lofi-player DEMOS tab uses.
+
+function packLabel(filename) {
+  // `dirt-1-boom_bap.strudel` → `DIRT` (the slug before the first dash + digit)
+  const m = filename.match(/^([a-z0-9-]+?)-\d+-/i);
+  return (m ? m[1] : filename.replace(/\.strudel$/, '')).toUpperCase();
+}
+
+function buildPool() {
+  if (typeof PLAYLISTS === 'undefined') {
+    console.error('PLAYLISTS not loaded; check ../lofi-player/playlists.js include');
+    return [];
+  }
+  const demos = PLAYLISTS.find(p => p.id === 'demos');
+  if (!demos) return [];
+  return demos.files.map(filename => ({
+    filename,
+    pack:   packLabel(filename),
+    songId: 'demos/' + filename,    // matches lofi-player's song_id namespace
+  }));
+}
+
+function pickRandom() {
+  const rated = getRatedSet();
+  const left  = SONG_POOL.filter(s => !rated.has(s.songId));
+  if (left.length === 0) return null;
+  if (left.length === 1) return left[0];
+  // Avoid showing the same song twice in a row.
+  let pick;
+  do { pick = left[Math.floor(Math.random() * left.length)]; }
+  while (currentSong && left.length > 1 && pick.songId === currentSong.songId);
+  return pick;
+}
+
+// ── Rate UI ───────────────────────────────────────────────────────────────────
+
+function updateCounter() {
+  const rated = getRatedSet().size;
+  const total = SONG_POOL.length;
+  elCounter.textContent = String(rated).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+}
+
+function showDone() {
+  elInfo.classList.add('hidden');
+  document.querySelector('.rate-transport').classList.add('hidden');
+  document.querySelector('.vote-row').classList.add('hidden');
+  document.querySelector('.hints').classList.add('hidden');
+  elDone.classList.remove('hidden');
+}
+
+function hideDone() {
+  elInfo.classList.remove('hidden');
+  document.querySelector('.rate-transport').classList.remove('hidden');
+  document.querySelector('.vote-row').classList.remove('hidden');
+  document.querySelector('.hints').classList.remove('hidden');
+  elDone.classList.add('hidden');
+}
+
+async function loadSong(song) {
+  if (!song) { showDone(); return; }
+  hideDone();
+  currentSong = song;
+
+  // Crossfade out the previous one if anything was playing.
+  if (isPlaying) {
+    await fadeTo(0, FADE_MS);
+    stopEngine();
+    isPlaying = false;
+    elBtnPlay.textContent = '▶';
+  }
+
+  elInfo.style.opacity = '0';
+  const entry = await fetchSong(song.filename);
+  const m     = entry.meta;
+  elSubtitle.textContent = m.subtitle || '';
+  elTitle.textContent    = m.title;
+  elKey.textContent      = m.key || '—';
+  elBpm.textContent      = m.bpm ? m.bpm + ' BPM' : '—';
+  elPack.textContent     = song.pack;
+  elFeel.textContent     = m.feel   || '';
+  elChords.textContent   = m.chords || '';
+  elInfo.style.opacity = '1';
+
+  // Pre-load code into the engine so pressing play has a tighter start.
+  loadCode(entry.code);
+  updateCounter();
+}
+
+async function togglePlay() {
+  ensureAudio();
+  if (!currentSong) return;
+  if (isPlaying) {
+    await fadeTo(0, 350);
+    stopEngine();
+    isPlaying = false;
+    elBtnPlay.textContent = '▶';
     return;
   }
-  current = queue.shift();
-  renderCard(current);
-  updateProgress();
-
-  const card = document.getElementById('card');
-  card.classList.remove('exit-hot', 'exit-not', 'flash-hot', 'flash-not', 'entering');
-  void card.offsetWidth;
-  card.classList.add('entering');
+  try { await waitForEditor(); } catch (_) { return; }
+  isPlaying = true;
+  elBtnPlay.textContent = '■';
+  setGainImmediate(0);
+  startEngine();
+  if (!window._masterGain) {
+    const deadline = Date.now() + 1000;
+    while (!window._masterGain && Date.now() < deadline) {
+      await new Promise(r => setTimeout(r, 30));
+    }
+  }
+  setGainImmediate(0);
+  await fadeTo(1, 1200);   // user-triggered play gets a softer build-up
 }
 
-function vote(choice) {
-  if (!current) return;
+async function vote(value) {
+  if (!currentSong) return;
 
-  const card = document.getElementById('card');
-  const flashClass = choice === 'hot' ? 'flash-hot' : 'flash-not';
-  const exitClass  = choice === 'hot' ? 'exit-hot'  : 'exit-not';
+  const btn = value === 1 ? elBtnHot : elBtnNot;
+  btn.classList.add('flash');
 
-  card.classList.add(flashClass);
+  // Optimistic local mark + Supabase submit in parallel with the visual flash.
+  const songId = currentSong.songId;
+  markRated(songId);
+  const submitted = submitVote(songId, value);
 
-  setTimeout(() => {
-    card.classList.remove(flashClass);
-    card.classList.add(exitClass);
+  await new Promise(r => setTimeout(r, FLASH_MS));
+  btn.classList.remove('flash');
 
-    votes[current.id] = choice;
-    saveVotes();
+  const ok = await submitted;
+  if (!ok) {
+    // Failed to reach Supabase. Keep the local mark so the user isn't shown
+    // the same song again right away, but log so it shows in console.
+    console.warn('vote not saved to supabase — kept locally');
+  }
 
-    setTimeout(() => {
-      nextCard();
-    }, 320);
-  }, 150);
+  await loadSong(pickRandom());
 }
 
-function showResults() {
-  showView('view-results');
-
-  const hot  = SONGS.filter(s => votes[s.id] === 'hot');
-  const not  = SONGS.filter(s => votes[s.id] === 'not');
-
-  document.getElementById('results-summary').textContent =
-    hot.length + ' hot · ' + not.length + ' not';
-
-  const list = document.getElementById('results-list');
-  list.innerHTML = '';
-
-  const ranked = [...hot, ...not];
-
-  ranked.forEach((song, i) => {
-    const isHot = votes[song.id] === 'hot';
-    const item = document.createElement('div');
-    item.className = 'result-item';
-
-    const rank = document.createElement('span');
-    rank.className = 'result-rank';
-    rank.textContent = i < hot.length ? '🔥' : '❄️';
-
-    const info = document.createElement('div');
-    info.className = 'result-info';
-
-    const name = document.createElement('div');
-    name.className = 'result-name';
-    name.textContent = song.title;
-
-    const meta = document.createElement('div');
-    meta.className = 'result-meta';
-    meta.textContent = song.key + '  ·  ' + song.bpm + ' BPM';
-
-    const playLink = document.createElement('button');
-    playLink.className = 'play-btn';
-    playLink.textContent = '▶ Play';
-    playLink.style.marginTop = '0.4rem';
-    playLink.onclick = () => openPlayer(song);
-
-    info.appendChild(name);
-    info.appendChild(meta);
-    info.appendChild(playLink);
-
-    item.appendChild(rank);
-    item.appendChild(info);
-
-    list.appendChild(item);
-  });
+async function skip() {
+  ensureAudio();
+  await loadSong(pickRandom());
 }
 
-function reset() {
-  votes = {};
-  saveVotes();
-  buildQueue();
-  showView('view-rating');
-  nextCard();
+function resetLocalHistory() {
+  clearRated();
+  hideDone();
+  loadSong(pickRandom());
 }
+
+// ── Board (same shape as lofi-player) ─────────────────────────────────────────
+
+function songLabel(songId) {
+  const parts    = songId.split('/');
+  const playlist = (parts[0] || '').toUpperCase();
+  const raw      = (parts[1] || songId).replace(/\.strudel$/, '');
+  const name     = raw.replace(/^[a-z]+-\d+-/i, '').replace(/[-_]/g, ' ').toUpperCase();
+  return { playlist, name };
+}
+
+function renderLeaderboard(entries) {
+  if (!entries.length) {
+    elBoardContent.innerHTML = '<div class="board-empty">NO VOTES YET</div>';
+    return;
+  }
+  const rows = entries.map((e, i) => {
+    const { playlist, name } = songLabel(e.song_id);
+    const sign = e.score > 0 ? '+' : '';
+    const cls  = e.score > 0 ? 'positive' : e.score < 0 ? 'negative' : '';
+    return `<div class="lb-row">
+      <span class="lb-rank">${String(i + 1).padStart(2, '0')}</span>
+      <span class="lb-name">${name}</span>
+      <span class="lb-tag">${playlist}</span>
+      <span class="lb-up">+${e.up}</span>
+      <span class="lb-down">-${e.down}</span>
+      <span class="lb-score ${cls}">${sign}${e.score}</span>
+    </div>`;
+  }).join('');
+  elBoardContent.innerHTML = `<div class="lb-table">
+    <div class="lb-head">
+      <span class="lb-rank">#</span>
+      <span class="lb-name">SONG</span>
+      <span class="lb-tag">PACK</span>
+      <span class="lb-up">+</span>
+      <span class="lb-down">-</span>
+      <span class="lb-score">NET</span>
+    </div>${rows}</div>`;
+}
+
+function setBoardStatus(state) {
+  if (!elBoardStatus) return;
+  elBoardStatus.classList.toggle('live',    state === 'live');
+  elBoardStatus.classList.toggle('loading', state === 'loading');
+  elBoardStatus.textContent = state === 'live' ? '● LIVE' : state === 'loading' ? 'REFRESHING…' : '';
+}
+
+async function refreshBoard() {
+  setBoardStatus('loading');
+  const entries = await fetchLeaderboard();
+  renderLeaderboard(entries);
+  setBoardStatus('live');
+}
+
+function showRate() {
+  elTabRate.classList.add('active');
+  elTabBoard.classList.remove('active');
+  elRatePane.classList.remove('hidden');
+  elBoardPane.classList.add('hidden');
+  unsubscribeLeaderboard();
+  setBoardStatus('');
+}
+
+function showBoard() {
+  elTabBoard.classList.add('active');
+  elTabRate.classList.remove('active');
+  elBoardPane.classList.remove('hidden');
+  elRatePane.classList.add('hidden');
+  refreshBoard();
+  subscribeLeaderboard(refreshBoard);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
 
 function init() {
-  loadVotes();
-  buildQueue();
+  elRatePane     = document.getElementById('rate-pane');
+  elBoardPane    = document.getElementById('board-pane');
 
-  document.getElementById('btn-start').addEventListener('click', () => {
-    if (queue.length === 0) {
-      showResults();
-    } else {
-      showView('view-rating');
-      nextCard();
+  elCounter      = document.getElementById('rate-counter');
+  elInfo         = document.getElementById('rate-info');
+  elSubtitle     = document.getElementById('r-subtitle');
+  elTitle        = document.getElementById('r-title');
+  elKey          = document.getElementById('r-key');
+  elBpm          = document.getElementById('r-bpm');
+  elPack         = document.getElementById('r-pack');
+  elFeel         = document.getElementById('r-feel');
+  elChords       = document.getElementById('r-chords');
+
+  elBtnPlay      = document.getElementById('btn-play');
+  elBtnNot       = document.getElementById('btn-not');
+  elBtnHot       = document.getElementById('btn-hot');
+  elBtnSkip      = document.getElementById('btn-skip');
+  elDone         = document.getElementById('rate-done');
+
+  elBoardContent = document.getElementById('board-content');
+  elBoardStatus  = document.getElementById('board-status');
+
+  elTabRate      = document.getElementById('tab-rate');
+  elTabBoard     = document.getElementById('tab-board');
+
+  SONG_POOL = buildPool();
+
+  // Wiring
+  elBtnPlay.addEventListener('click',  togglePlay);
+  elBtnNot.addEventListener('click',   () => { ensureAudio(); vote(-1); });
+  elBtnHot.addEventListener('click',   () => { ensureAudio(); vote(1);  });
+  elBtnSkip.addEventListener('click',  skip);
+
+  document.getElementById('btn-go-board').addEventListener('click', showBoard);
+  document.getElementById('btn-reset-votes').addEventListener('click', resetLocalHistory);
+
+  elTabRate.addEventListener('click',  showRate);
+  elTabBoard.addEventListener('click', showBoard);
+
+  // One-shot audio unlock on first interaction (iOS Safari).
+  const unlockOnce = () => {
+    ensureAudio();
+    if (audioUnlocked) {
+      window.removeEventListener('touchstart', unlockOnce, true);
+      window.removeEventListener('touchend',   unlockOnce, true);
+      window.removeEventListener('mousedown',  unlockOnce, true);
+      window.removeEventListener('keydown',    unlockOnce, true);
     }
-  });
+  };
+  window.addEventListener('touchstart', unlockOnce, true);
+  window.addEventListener('touchend',   unlockOnce, true);
+  window.addEventListener('mousedown',  unlockOnce, true);
+  window.addEventListener('keydown',    unlockOnce, true);
 
-  document.getElementById('btn-hot').addEventListener('click', () => vote('hot'));
-  document.getElementById('btn-not').addEventListener('click', () => vote('not'));
-  document.getElementById('btn-reset').addEventListener('click', reset);
-  document.getElementById('player-close').addEventListener('click', closePlayer);
-  document.getElementById('player-play-stop').addEventListener('click', togglePlayStop);
-
+  // Keyboard shortcuts (rate pane only).
   document.addEventListener('keydown', e => {
-    if (document.getElementById('player-panel').classList.contains('open')) {
-      if (e.key === 'Escape') closePlayer();
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (!elRatePane.classList.contains('hidden')) {
+      if (e.key === 'ArrowRight' || e.key === 'l' || e.key === 'L') { e.preventDefault(); ensureAudio(); vote(1);  }
+      if (e.key === 'ArrowLeft'  || e.key === 'j' || e.key === 'J') { e.preventDefault(); ensureAudio(); vote(-1); }
+      if (e.key === ' '          || e.key === 'k' || e.key === 'K') { e.preventDefault(); togglePlay(); }
+      if (e.key === 's'          || e.key === 'S')                  { e.preventDefault(); skip(); }
     }
-    if (document.getElementById('view-rating').classList.contains('active')) {
-      if (e.key === 'ArrowRight' || e.key === 'l' || e.key === 'L') vote('hot');
-      if (e.key === 'ArrowLeft'  || e.key === 'j' || e.key === 'J') vote('not');
-    }
-    if (document.getElementById('view-intro').classList.contains('active')) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        document.getElementById('btn-start').click();
-      }
-    }
+    if (e.key === 'b' || e.key === 'B') showBoard();
+    if (e.key === 'r' || e.key === 'R') showRate();
   });
 
-  if (Object.keys(votes).length === SONGS.length) {
-    const introHint = document.querySelector('.intro-hint');
-    if (introHint) introHint.textContent = 'you\'ve rated all 8 — click to see results';
-  }
+  loadSong(pickRandom());
 }
 
 document.addEventListener('DOMContentLoaded', init);
