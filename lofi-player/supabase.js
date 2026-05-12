@@ -160,16 +160,42 @@ async function submitAllVotes() {
 // egress comfortably fits hundreds of thousands of refreshes.
 
 async function fetchLeaderboard() {
+  // 1) Try the v2 pre-aggregated `leaderboard` view (Postgres does the
+  //    SUM/COUNT; we transfer ~20 rows).
   try {
     const { data, error } = await supabaseClient
       .from('leaderboard')
       .select('song_id, up, down, score')
       .order('score', { ascending: false })
       .limit(20);
+    if (!error && Array.isArray(data)) return data;
+    if (error) {
+      console.warn('leaderboard view unavailable — falling back to client-side tally. ' +
+                   'Re-run supabase-setup.sql to add the view. (', error.message, ')');
+    }
+  } catch (e) {
+    console.warn('leaderboard view query threw, falling back:', e);
+  }
+
+  // 2) v1 fallback: pull every vote row and tally in the browser. Less
+  //    efficient on egress but works on a fresh-from-v1 schema with no view.
+  try {
+    const { data, error } = await supabaseClient
+      .from('song_votes')
+      .select('song_id, vote');
     if (error) throw error;
-    return data || [];
+    const map = {};
+    for (const { song_id, vote } of data || []) {
+      if (!map[song_id]) map[song_id] = { song_id, up: 0, down: 0 };
+      if (vote ===  1) map[song_id].up++;
+      if (vote === -1) map[song_id].down++;
+    }
+    return Object.values(map)
+      .map(s => ({ ...s, score: s.up - s.down }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 20);
   } catch (err) {
-    console.error('Leaderboard fetch error:', err);
+    console.error('Leaderboard fetch error (both view and table failed):', err);
     return [];
   }
 }
@@ -182,11 +208,12 @@ async function fetchLeaderboard() {
 // only while the BOARD pane is visible so idle tabs don't keep a connection
 // open (Supabase free tier caps concurrent Realtime connections at 200).
 
-let realtimeChannel  = null;
-let realtimeDebounce = null;
+let realtimeChannel   = null;
+let realtimeDebounce  = null;
+let realtimeFallback  = null;     // setInterval poll, only if Realtime fails
 
 function subscribeLeaderboard(onChange, debounceMs = 600) {
-  if (realtimeChannel) return;            // already subscribed
+  if (realtimeChannel) return;
   realtimeChannel = supabaseClient
     .channel('song_votes_live')
     .on(
@@ -197,10 +224,21 @@ function subscribeLeaderboard(onChange, debounceMs = 600) {
         realtimeDebounce = setTimeout(onChange, debounceMs);
       }
     )
-    .subscribe();
+    .subscribe((status) => {
+      if (status === 'SUBSCRIBED') {
+        // Realtime is live — drop any fallback poll we set up earlier.
+        if (realtimeFallback) { clearInterval(realtimeFallback); realtimeFallback = null; }
+      } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+        console.warn('Realtime channel status:', status,
+                     '— check `song_votes` is in the supabase_realtime publication. ' +
+                     'Falling back to 60s polling.');
+        if (!realtimeFallback) realtimeFallback = setInterval(onChange, 60_000);
+      }
+    });
 }
 
 function unsubscribeLeaderboard() {
   if (realtimeDebounce) { clearTimeout(realtimeDebounce); realtimeDebounce = null; }
+  if (realtimeFallback) { clearInterval(realtimeFallback); realtimeFallback = null; }
   if (realtimeChannel)  { supabaseClient.removeChannel(realtimeChannel); realtimeChannel = null; }
 }

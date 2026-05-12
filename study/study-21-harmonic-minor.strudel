@@ -1,0 +1,46 @@
+// ══════════════════════════════════════════════════════════════
+// "Harmonic Minor Arabesque"
+// A scale-aware composition using Strudel's built-in scale
+// system — note degrees expressed as 0..7
+//
+// Key:    A harmonic minor (A B C D E F G#)
+// Tempo:  ~68 BPM  (setcpm 17)
+// Theory: Harmonic minor scale. Natural minor with a raised 7th,
+//         creating a strong leading-tone pull to the tonic and
+//         the characteristic augmented 2nd (F → G#) between
+//         degrees 6 and 7. The interval gives the scale its
+//         "Middle Eastern" / "Klezmer" colour.
+// Strudel: .scale("A:harmonicMinor") — degree numbers in
+//          note() are interpreted against the named scale, so
+//          "0 2 4 6" automatically yields A, C, E, G# (not the
+//          chromatic semitone steps). Pitch logic stays
+//          expressed at the right level of abstraction.
+// Pack:   Default Dirt-Samples.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(17)
+
+stack(
+
+  // Bass — root + dominant of the scale (note: not the harmonic
+  // minor scale this time, we want bass on i and V).
+  note("a2 ~ ~ e3 a2 ~ ~ e3")
+    .s("sawtooth").lpf(280).attack(0.005).release(0.32).gain(0.6),
+
+  // Drone fifth
+  note("a3").s("sine").attack(2).release(4).gain(0.28),
+
+  // Melodic line — degrees 0..7 interpreted as A harmonic minor.
+  // The note "6 7 0" plays F→G#→A, hitting the characteristic
+  // augmented 2nd resolution.
+  note("0 2 4 5 6 7 0 -1  -2 0 2 4 6 5 4 2")
+    .scale("A:harmonicMinor")
+    .s("triangle").attack(0.02).release(0.4).gain(0.45)
+    .delay(0.4).delaytime(0.333).delayfeedback(0.3)
+    .room(0.5).pan(0.55).slow(2),
+
+  // Soft beat
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.5).lpf(180),
+  s("hh*8").gain(0.18).hpf(5500).pan("0.4 0.6")
+
+)

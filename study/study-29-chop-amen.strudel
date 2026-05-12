@@ -1,0 +1,44 @@
+// ══════════════════════════════════════════════════════════════
+// "Chop Amen"
+// The Amen break — chopped, re-ordered, slow-played for study
+//
+// Key:    D minor (the chord bed)
+// Tempo:  ~70 BPM  (setcpm 17.5) — half the usual jungle tempo
+// Theory: Breakbeat science (study-tempo edition). The Amen
+//         break is jungle / DnB's foundational sample; we slow
+//         it to half speed and chop it into 16 slices, then
+//         play those slices in an irregular order so the rhythm
+//         feels new while the timbre is unmistakably Amen.
+// Strudel: .chop(N) chunks the source into N equal pieces; the
+//          struct() then chooses which pieces play. At slow(2)
+//          the break is half-speed — every slice feels twice as
+//          long, perfect for a focus track.
+// Pack:   github:Bubobubobubobubo/Dough-Amen
+// ══════════════════════════════════════════════════════════════
+
+samples('github:Bubobubobubobubo/Dough-Amen')
+
+setcpm(17.5)
+
+stack(
+
+  // The break, chopped 16 ways, played at half speed. The struct
+  // picks 12 of 16 slots — a sparse re-arrangement.
+  s("amen").chop(16).slow(2)
+    .struct("x ~ x x  x ~ x ~  ~ x x ~  x x ~ x")
+    .gain(0.75)
+    .lpf(4500),                      // mellower than original break
+
+  // Dm9 chord pad, very slow
+  note("[d3,f3,a3,c4,e4]")
+    .s("sawtooth").lpf(1300).attack(1).release(3).gain(0.22)
+    .pan(0.45).slow(4),
+
+  // Sub bass — root pedal so the broken break feels grounded
+  note("d1 ~ ~ ~ a1 ~ ~ ~")
+    .s("sine").attack(0.005).release(0.7).gain(0.75),
+
+  // Light atmospheric noise bed
+  s("white*32").gain(0.05).hpf(7000).degradeBy(0.6)
+
+)

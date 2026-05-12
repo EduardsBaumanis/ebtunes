@@ -1,0 +1,40 @@
+// ══════════════════════════════════════════════════════════════
+// "Swing Shuffle"
+// Quiet swing study — eighth-note triplet feel applied via
+// the .swingBy() modifier
+//
+// Key:    F major
+// Tempo:  ~66 BPM  (setcpm 16.5)
+// Theory: Swing feel. Pairs of eighth notes are played as
+//         long-short instead of equal — typically 2:1 (triplet
+//         swing) or 3:2 (shuffle). Originated in 1930s jazz,
+//         survived into hip-hop via the MPC swing knob.
+// Strudel: .swingBy(amount, beats) — delays the off-beats by
+//          `amount` of a beat. .swingBy(1/3, 4) = classic
+//          jazz triplet swing. Tiny syntactic change, huge
+//          rhythmic difference.
+// Pack:   github:felixroos/dough-samples (piano).
+// ══════════════════════════════════════════════════════════════
+
+samples('github:felixroos/dough-samples')
+
+setcpm(16.5)
+
+stack(
+
+  // Brushed kit with swing applied
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.7).lpf(220),
+  s("~ ~ sd ~ ~ ~ sd ~").gain(0.55).room(0.18),
+  s("hh*8").gain(0.32).hpf(2500).swingBy(1/3, 4),  // ← swing the hi-hats
+
+  // Walking bass with the same swing applied
+  note("f2 a2 c3 eb3  d3 c3 a2 f2  bb1 d2 f2 a2  c2 e2 g2 bb2")
+    .s("piano").gain(0.55)
+    .swingBy(1/3, 4),
+
+  // Comping — rich 9th voicings, also swung
+  note("<[a3,c4,eb4,g4] [bb3,d4,f4,a4] [d4,f4,a4,c5] [c4,e4,g4,bb4]>")
+    .s("piano").attack(0.04).release(0.5).gain(0.4)
+    .swingBy(1/3, 4).slow(2)
+
+)

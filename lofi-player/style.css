@@ -112,6 +112,17 @@
   --code-fg:  #d8b878;
 }
 
+/* ── STUDY theme — desk-lamp sage on dark wood, focus mode ── */
+[data-theme="study"] {
+  --black:    #0a0e0a;
+  --white:    #cce6c8;
+  --grey:     #608a60;
+  --dim:      #142014;
+  --mid:      #28442c;
+  --code-bg:  #0a100a;
+  --code-fg:  #a8c8a8;
+}
+
 /* ── DEMOS theme — showcase gallery: cool slate + cyan accent ── */
 [data-theme="demos"] {
   --black:    #06090e;

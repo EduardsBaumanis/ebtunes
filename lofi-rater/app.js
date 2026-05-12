@@ -176,6 +176,7 @@ function showDone() {
   elInfo.classList.add('hidden');
   document.querySelector('.rate-transport').classList.add('hidden');
   document.querySelector('.vote-row').classList.add('hidden');
+  elBtnSkip.classList.add('hidden');
   document.querySelector('.hints').classList.add('hidden');
   elDone.classList.remove('hidden');
 }
@@ -184,6 +185,7 @@ function hideDone() {
   elInfo.classList.remove('hidden');
   document.querySelector('.rate-transport').classList.remove('hidden');
   document.querySelector('.vote-row').classList.remove('hidden');
+  elBtnSkip.classList.remove('hidden');
   document.querySelector('.hints').classList.remove('hidden');
   elDone.classList.add('hidden');
 }

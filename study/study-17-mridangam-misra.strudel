@@ -1,0 +1,42 @@
+// ══════════════════════════════════════════════════════════════
+// "Mridangam Misra"
+// Indian classical rhythm cycle — Misra Chapu (7 beats, 3+4)
+//
+// Key:    Raag Yaman (D Lydian / F# major-ish): D E F# G# A B C# D
+// Tempo:  ~80 BPM  (setcpm 20)
+// Theory: Hindustani tala. Misra Chapu is a 7-beat cycle grouped
+//         3 + 4 (or 3 + 2 + 2). Each cycle ends on sam (beat 1
+//         of the next cycle). Melodic instrument plays raga;
+//         tabla / mridangam articulate the cycle. Raag Yaman
+//         is bright and devotional — appropriate for study.
+// Strudel: samples('github:felixroos/dough-samples') brings in
+//          the mridangam sample bank. {x x x x x x x}%4 syntax
+//          fits 7 beats into 4 cycles' worth of grid, giving
+//          the characteristic asymmetric cycle.
+// Pack:   github:felixroos/dough-samples (mridangam).
+// ══════════════════════════════════════════════════════════════
+
+samples('github:felixroos/dough-samples')
+
+setcpm(20)
+
+stack(
+
+  // Tanpura drone — open D and A
+  note("d2").s("sawtooth").lpf(220).attack(2).release(4).gain(0.4),
+  note("a2").s("sawtooth").lpf(300).attack(2).release(4).gain(0.32),
+  note("d3").s("triangle").attack(2).release(4).gain(0.22).pan(0.4),
+
+  // Mridangam tala — 7 beats grouped 3+4. The {}%2 puts 7 events
+  // across 2 cycles worth of grid for a relaxed pace.
+  s("{bd lt lt sd lt sd lt}%2").gain(0.62).lpf(800),
+
+  // Sam (cycle-start) accent — light cymbal on beat 1
+  s("cp ~ ~ ~ ~ ~ ~").slow(2).gain(0.4).hpf(2500).room(0.3),
+
+  // Raag Yaman melodic line — sa re ga ma pa dha ni
+  note("d4 e4 fs4 gs4 a4 b4 cs5 d5  cs5 b4 a4 gs4 fs4 e4 d4 ~")
+    .s("triangle").attack(0.08).release(0.5).gain(0.4)
+    .room(0.45).pan(0.55).slow(2)
+
+)

@@ -1,0 +1,43 @@
+// ══════════════════════════════════════════════════════════════
+// "Clean Break Chop"
+// Sample slicing — take one break and re-arrange its slices
+//
+// Key:    A minor (the chord pad)
+// Tempo:  ~84 BPM  (setcpm 21)
+// Theory: Breakbeat science. A long drum sample is sliced into
+//         N equal pieces; rhythmic interest comes from playing
+//         the slices in non-original order. Birth of jungle,
+//         drum-and-bass, and most hip-hop drum programming.
+// Strudel: .chop(N) cuts the source sample into N equal-length
+//          slices and triggers them sequentially. Combined with
+//          a rearranged trigger pattern, each cycle hears the
+//          break in a different order.
+// Pack:   github:yaxu/clean-breaks
+// ══════════════════════════════════════════════════════════════
+
+samples('github:yaxu/clean-breaks')
+
+setcpm(21)
+
+stack(
+
+  // The break, chopped into 8 pieces and played in a non-linear
+  // order. Falls back to default "break" sample if the pack
+  // isn't loaded yet.
+  s("break").chop(8)
+    .gain(0.78)
+    .struct("x ~ x x  ~ x ~ x  x x ~ x  ~ x x ~"),
+
+  // Sub bass underneath — stable while the break dances
+  note("a1 ~ ~ ~ a1 ~ ~ ~  e2 ~ ~ ~ a1 ~ ~ ~")
+    .s("sine").attack(0.005).release(0.5).gain(0.7),
+
+  // Minor 9th pad, very slow and quiet behind the chop
+  note("<[a3,c4,e4,g4,b4] [d3,f3,a3,c4,e4]>")
+    .s("sawtooth").lpf(1400).attack(0.6).release(2)
+    .gain(0.2).pan(0.55).slow(4),
+
+  // Light percussion accent — not on every cycle
+  s("rim").euclid(3, 8).gain(0.32).hpf(3000).pan(0.4)
+
+)
