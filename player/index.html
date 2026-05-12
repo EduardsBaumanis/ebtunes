@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>strudel player</title>
+  <link rel="stylesheet" href="style.css">
+  <script>
+    // Same AudioContext patch as lofi-player / lofi-rater: every node
+    // that wants to talk to the speakers is rerouted through a shared
+    // master gain so we can fade smoothly and unlock iOS audio from
+    // within a synchronous user-gesture handler.
+    (function () {
+      var Orig = window.AudioContext || window.webkitAudioContext;
+      if (!Orig) return;
+      var origConnect = AudioNode.prototype.connect;
+      AudioNode.prototype.connect = function (dest, out, inp) {
+        if (window._realDest && dest === window._realDest && this !== window._masterGain) {
+          dest = window._masterGain;
+        }
+        if (arguments.length >= 3) return origConnect.call(this, dest, out, inp);
+        if (arguments.length >= 2) return origConnect.call(this, dest, out);
+        return origConnect.call(this, dest);
+      };
+      function Patched() {
+        var ctx = new Orig();
+        if (!window._ac) {
+          var descProto = Object.getOwnPropertyDescriptor(AudioContext.prototype, 'destination');
+          var realDest  = descProto ? descProto.get.call(ctx) : ctx.destination;
+          var master    = ctx.createGain();
+          master.gain.value = 1;
+          window._ac         = ctx;
+          window._masterGain = master;
+          window._realDest   = realDest;
+          origConnect.call(master, realDest);
+        } else {
+          window._ac = ctx;
+        }
+        return ctx;
+      }
+      Patched.prototype = Orig.prototype;
+      window.AudioContext = Patched;
+      if (window.webkitAudioContext) window.webkitAudioContext = Patched;
+    })();
+  </script>
+  <script src="https://unpkg.com/@strudel/repl@1.3.0" defer></script>
+</head>
+<body data-theme="studio">
+
+  <div class="app">
+
+    <!-- HEADER -->
+    <header class="header">
+      <button id="menu-toggle" class="menu-toggle" title="Playlists">≡</button>
+      <span class="logo">◈</span>
+      <nav class="view-tabs">
+        <button id="tab-play"  class="tab-btn active" data-view="play">PLAY</button>
+        <button id="tab-board" class="tab-btn"        data-view="board">BOARD</button>
+      </nav>
+    </header>
+
+    <!-- BODY -->
+    <div class="body">
+
+      <!-- SIDEBAR (playlist tree) -->
+      <aside id="sidebar" class="sidebar">
+        <div id="playlist-tree" class="playlist-tree"></div>
+      </aside>
+
+      <!-- Mobile backdrop, captures taps outside the drawer -->
+      <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+      <!-- PLAY PANE: song header + editor -->
+      <main id="play-pane" class="play-pane">
+
+        <div class="song-info" id="song-info">
+          <div class="si-row">
+            <div class="si-meta-block">
+              <div class="si-counter" id="si-counter">— · —</div>
+              <h1 class="si-title" id="si-title">Pick a song from the sidebar</h1>
+              <div class="si-meta">
+                <span class="si-badge" id="si-key">—</span>
+                <span class="si-sep">·</span>
+                <span class="si-badge" id="si-bpm">—</span>
+                <span class="si-sep">·</span>
+                <span class="si-badge" id="si-pack">—</span>
+              </div>
+              <p class="si-feel"   id="si-feel"></p>
+              <p class="si-chords" id="si-chords"></p>
+            </div>
+            <div class="vote-bar" id="vote-bar">
+              <button id="btn-not" class="vote-btn vote-not" title="Vote down (-)">−</button>
+              <button id="btn-hot" class="vote-btn vote-hot" title="Vote up (+)">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visible strudel editor — the main thing on the page.
+             Built-in CodeMirror + transport. Sized to fill the rest of the pane. -->
+        <strudel-editor id="engine" class="editor"><!--
+// Pick a song from the sidebar to load it here.
+// CTRL+ENTER runs · CTRL+. stops.
+s("bd")
+        --></strudel-editor>
+
+        <div class="hints">
+          <span>CTRL+ENTER · run</span>
+          <span class="sep">·</span>
+          <span>CTRL+. · stop</span>
+          <span class="sep">·</span>
+          <span>Edit the code freely — it's a real Strudel IDE</span>
+        </div>
+      </main>
+
+      <!-- BOARD PANE: leaderboard -->
+      <main id="board-pane" class="board-pane hidden">
+        <div class="board-header">
+          <h2 class="board-title">LEADERBOARD</h2>
+          <span id="board-status" class="board-refresh-timer"></span>
+        </div>
+        <div id="board-content" class="board-content">
+          <div class="board-loading">LOADING...</div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- Re-use the lofi-player playlist registry so every folder in the
+       repo shows up in the sidebar tree automatically. -->
+  <script src="../lofi-player/playlists.js"></script>
+  <script src="supabase.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

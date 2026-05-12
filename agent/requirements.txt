@@ -1,0 +1,6 @@
+# Required: Anthropic SDK for the Claude API
+anthropic>=0.40
+
+# Optional: Playwright + headless Chromium, only used by --validate.
+# Skip if you don't plan to run patterns through the validator.
+playwright>=1.45
