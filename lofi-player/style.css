@@ -254,9 +254,9 @@ body {
   border: 1px solid var(--dim);
   color: var(--dim);
   cursor: default;
-  padding: 6px 8px;
+  padding: 10px 10px;
   font-family: var(--font);
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   transition: color 0.15s, border-color 0.15s, background 0.15s;
