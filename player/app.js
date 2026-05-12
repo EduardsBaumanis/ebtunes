@@ -1,0 +1,453 @@
+// Copyright (C) 2024 Eduarda Baumaņa. AGPL-3.0.
+
+// ── State ────────────────────────────────────────────────────────────────────
+
+const codeCache       = new Map();   // url → { filename, code, meta }
+const expandedGroups  = new Set();   // sidebar groups currently expanded
+let currentPlaylist   = null;        // playlist object
+let currentFilename   = null;        // string
+let currentSongId     = null;        // "playlist_id/filename" — supabase key
+let audioUnlocked     = false;
+let boardActive       = false;
+
+// ── DOM refs (resolved in init) ──────────────────────────────────────────────
+
+let elPlayPane, elBoardPane;
+let elTree, elSidebar, elBackdrop, elMenuToggle;
+let elTabPlay, elTabBoard;
+let elCounter, elTitle, elKey, elBpm, elPack, elFeel, elChords;
+let elBtnNot, elBtnHot;
+let elBoardContent, elBoardStatus;
+
+// ── Audio unlock (same dance as lofi-player / lofi-rater) ────────────────────
+
+function ensureAudio() {
+  try {
+    if (!window._ac) {
+      const Ctor = window.AudioContext || window.webkitAudioContext;
+      if (Ctor) new Ctor();
+    }
+    if (window._ac && window._ac.state !== 'running') {
+      window._ac.resume().catch(() => {});
+    }
+    if (window._ac && !audioUnlocked) {
+      const ctx = window._ac;
+      const buf = ctx.createBuffer(1, 1, 22050);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      try { src.start(0); } catch (_) {}
+      audioUnlocked = true;
+    }
+  } catch (_) {}
+}
+
+function engine() { return document.getElementById('engine'); }
+
+function waitForEditor(timeoutMs = 12000) {
+  return new Promise((resolve, reject) => {
+    const t0 = Date.now();
+    const id = setInterval(() => {
+      const e = engine();
+      if (e && e.editor) { clearInterval(id); resolve(e); }
+      else if (Date.now() - t0 > timeoutMs) {
+        clearInterval(id);
+        reject(new Error('editor timeout'));
+      }
+    }, 100);
+  });
+}
+
+// ── Metadata parser (same shape as lofi-player) ──────────────────────────────
+
+function humanize(filename) {
+  return filename
+    .replace(/\.strudel$/, '')
+    .replace(/^[a-z]+-\d+-/i, '')
+    .replace(/[-_]/g, ' ');
+}
+
+function parseMeta(filename, code) {
+  const quoted = code.match(/^\/\/\s*"([^"]+)"/m);
+  if (quoted) {
+    const afterTitle  = code.match(/^\/\/\s*"[^"]+"\n\/\/\s*(.+)/m);
+    const keyMatch    = code.match(/^\/\/\s*Key:\s*(.+)/m);
+    const bpmMatch    = code.match(/~?(\d+)\s*BPM/i);
+    const feelMatch   = code.match(/^\/\/\s*Feel:\s*(.+)/m);
+    const chordsMatch = code.match(/^\/\/\s*Chords:\s*(.+)/m);
+    return {
+      title:    quoted[1],
+      subtitle: afterTitle   ? afterTitle[1].trim()         : '',
+      key:      keyMatch     ? keyMatch[1].trim()           : '',
+      bpm:      bpmMatch     ? parseInt(bpmMatch[1], 10)    : 0,
+      feel:     feelMatch    ? feelMatch[1].trim()          : '',
+      chords:   chordsMatch  ? chordsMatch[1].trim()        : '',
+    };
+  }
+  return {
+    title:    humanize(filename),
+    subtitle: '', key: '', bpm: 0, feel: '', chords: '',
+  };
+}
+
+async function fetchSong(playlist, filename) {
+  const url = playlist.path + filename;
+  if (codeCache.has(url)) return codeCache.get(url);
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const code  = await res.text();
+    const meta  = parseMeta(filename, code);
+    const entry = { filename, code, meta };
+    codeCache.set(url, entry);
+    return entry;
+  } catch (err) {
+    console.error('fetch failed:', url, err);
+    return {
+      filename,
+      code: '// Could not load file. Run a local server (npx serve .) so fetch() works.\nsilence',
+      meta: parseMeta(filename, ''),
+    };
+  }
+}
+
+// ── Sidebar (collapsible playlist tree) ──────────────────────────────────────
+
+function buildSidebar() {
+  if (typeof PLAYLISTS === 'undefined') {
+    elTree.innerHTML = '<div class="board-empty">PLAYLISTS not loaded</div>';
+    return;
+  }
+
+  elTree.innerHTML = '';
+  PLAYLISTS.forEach(pl => {
+    const group = document.createElement('div');
+    group.className = 'pl-group';
+    group.dataset.id = pl.id;
+
+    // Header — click to expand/collapse
+    const header = document.createElement('button');
+    header.className = 'pl-header';
+    header.innerHTML = `
+      <span class="pl-toggle">▸</span>
+      <span class="pl-label">${pl.label}</span>
+      <span class="pl-count">${String(pl.files.length).padStart(2, '0')}</span>
+    `;
+    header.addEventListener('click', () => toggleGroup(pl.id));
+
+    // Song list (hidden until group is expanded)
+    const list = document.createElement('div');
+    list.className = 'pl-list';
+    pl.files.forEach((filename, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'pl-song';
+      btn.dataset.playlist = pl.id;
+      btn.dataset.filename = filename;
+      btn.innerHTML = `
+        <span class="pl-num">${String(i + 1).padStart(2, '0')}</span>
+        <span class="pl-name">${humanize(filename)}</span>
+      `;
+      btn.addEventListener('click', () => {
+        selectSong(pl, filename, i);
+        // Lazy-fetch title from the file for nicer labels
+        fetchSong(pl, filename).then(entry => {
+          btn.querySelector('.pl-name').textContent = entry.meta.title;
+        });
+      });
+      list.appendChild(btn);
+    });
+
+    group.appendChild(header);
+    group.appendChild(list);
+    elTree.appendChild(group);
+  });
+}
+
+function toggleGroup(plId) {
+  const group = elTree.querySelector(`.pl-group[data-id="${plId}"]`);
+  if (!group) return;
+  if (group.classList.contains('expanded')) {
+    group.classList.remove('expanded');
+    expandedGroups.delete(plId);
+  } else {
+    group.classList.add('expanded');
+    expandedGroups.add(plId);
+  }
+}
+
+function expandGroup(plId) {
+  const group = elTree.querySelector(`.pl-group[data-id="${plId}"]`);
+  if (group && !group.classList.contains('expanded')) {
+    group.classList.add('expanded');
+    expandedGroups.add(plId);
+  }
+}
+
+function highlightActiveSong() {
+  elTree.querySelectorAll('.pl-song').forEach(el => {
+    el.classList.toggle(
+      'active',
+      el.dataset.playlist === (currentPlaylist && currentPlaylist.id) &&
+        el.dataset.filename === currentFilename,
+    );
+  });
+  elTree.querySelectorAll('.pl-header').forEach(h => {
+    const id = h.parentElement.dataset.id;
+    h.classList.toggle('active', id === (currentPlaylist && currentPlaylist.id));
+  });
+}
+
+// ── Selecting a song ─────────────────────────────────────────────────────────
+
+async function selectSong(playlist, filename, idx) {
+  ensureAudio();
+  currentPlaylist = playlist;
+  currentFilename = filename;
+  currentSongId   = playlist.id + '/' + filename;
+
+  highlightActiveSong();
+  closeSidebarIfMobile();
+
+  // Fetch + render meta
+  const entry = await fetchSong(playlist, filename);
+  const m     = entry.meta;
+  const total = playlist.files.length;
+
+  elCounter.textContent = `${String(idx + 1).padStart(2, '0')} · ${String(total).padStart(2, '0')}`;
+  elTitle.textContent   = m.title;
+  elKey.textContent     = m.key || '—';
+  elBpm.textContent     = m.bpm ? m.bpm + ' BPM' : '—';
+  elPack.textContent    = playlist.label;
+  elFeel.textContent    = m.feel   || '';
+  elChords.textContent  = m.chords || '';
+
+  // Reflect any existing local vote on the +/- buttons
+  refreshVoteButtons();
+
+  // Push the code into the visible editor so it shows up as the main thing.
+  // The editor's built-in transport (CTRL+ENTER / play button) handles play.
+  try {
+    const e = await waitForEditor();
+    if (e && e.editor) e.editor.setCode(entry.code);
+  } catch (_) {}
+}
+
+// ── Voting ───────────────────────────────────────────────────────────────────
+
+function refreshVoteButtons() {
+  if (!currentSongId) {
+    elBtnNot.classList.remove('active');
+    elBtnHot.classList.remove('active');
+    return;
+  }
+  const v = getLocalVote(currentSongId);
+  elBtnNot.classList.toggle('active', v === -1);
+  elBtnHot.classList.toggle('active', v ===  1);
+}
+
+async function vote(value) {
+  if (!currentSongId) return;
+  ensureAudio();
+
+  // Toggle — clicking the active vote a second time removes it
+  const current = getLocalVote(currentSongId);
+  const next    = current === value ? null : value;
+
+  setLocalVote(currentSongId, next);
+  refreshVoteButtons();
+
+  // Flash whichever button was just engaged
+  const btn = value === 1 ? elBtnHot : elBtnNot;
+  btn.classList.add('flash');
+  setTimeout(() => btn.classList.remove('flash'), 220);
+
+  await submitVote(currentSongId, next);
+}
+
+// ── Board (leaderboard) ──────────────────────────────────────────────────────
+
+function songLabel(songId) {
+  const parts    = songId.split('/');
+  const playlist = (parts[0] || '').toUpperCase();
+  const raw      = (parts[1] || songId).replace(/\.strudel$/, '');
+  const name     = raw.replace(/^[a-z]+-\d+-/i, '').replace(/[-_]/g, ' ').toUpperCase();
+  return { playlist, name };
+}
+
+function renderLeaderboard(entries) {
+  if (!entries.length) {
+    elBoardContent.innerHTML = '<div class="board-empty">NO VOTES YET</div>';
+    return;
+  }
+  const rows = entries.map((e, i) => {
+    const { playlist, name } = songLabel(e.song_id);
+    const sign = e.score > 0 ? '+' : '';
+    const cls  = e.score > 0 ? 'positive' : e.score < 0 ? 'negative' : '';
+    return `<div class="lb-row" data-song-id="${e.song_id}">
+      <span class="lb-rank">${String(i + 1).padStart(2, '0')}</span>
+      <span class="lb-name">${name}</span>
+      <span class="lb-tag">${playlist}</span>
+      <span class="lb-up">+${e.up}</span>
+      <span class="lb-down">-${e.down}</span>
+      <span class="lb-score ${cls}">${sign}${e.score}</span>
+    </div>`;
+  }).join('');
+  elBoardContent.innerHTML = `<div class="lb-table">
+    <div class="lb-head">
+      <span class="lb-rank">#</span>
+      <span class="lb-name">SONG</span>
+      <span class="lb-tag">PLAYLIST</span>
+      <span class="lb-up">+</span>
+      <span class="lb-down">-</span>
+      <span class="lb-score">NET</span>
+    </div>${rows}</div>`;
+
+  // Click a leaderboard row to jump to that song in the player
+  elBoardContent.querySelectorAll('.lb-row').forEach(row => {
+    row.addEventListener('click', () => {
+      const songId = row.dataset.songId;
+      const [plId, filename] = songId.split('/');
+      const pl  = PLAYLISTS.find(p => p.id === plId);
+      if (!pl) return;
+      const idx = pl.files.indexOf(filename);
+      if (idx < 0) return;
+      expandGroup(plId);
+      showPlay();
+      selectSong(pl, filename, idx);
+    });
+  });
+}
+
+function setBoardStatus(state) {
+  if (!elBoardStatus) return;
+  elBoardStatus.classList.toggle('live',    state === 'live');
+  elBoardStatus.classList.toggle('loading', state === 'loading');
+  elBoardStatus.textContent = state === 'live' ? '● LIVE' : state === 'loading' ? 'REFRESHING…' : '';
+}
+
+async function refreshBoard() {
+  setBoardStatus('loading');
+  const entries = await fetchLeaderboard();
+  renderLeaderboard(entries);
+  setBoardStatus('live');
+}
+
+function showPlay() {
+  boardActive = false;
+  elTabPlay.classList.add('active');
+  elTabBoard.classList.remove('active');
+  elPlayPane.classList.remove('hidden');
+  elBoardPane.classList.add('hidden');
+  unsubscribeLeaderboard();
+  setBoardStatus('');
+}
+
+function showBoard() {
+  boardActive = true;
+  elTabBoard.classList.add('active');
+  elTabPlay.classList.remove('active');
+  elBoardPane.classList.remove('hidden');
+  elPlayPane.classList.add('hidden');
+  refreshBoard();
+  subscribeLeaderboard(refreshBoard);
+}
+
+// ── Mobile sidebar drawer ────────────────────────────────────────────────────
+
+function isMobile() { return window.matchMedia('(max-width: 768px)').matches; }
+
+function openSidebar() {
+  elSidebar.classList.add('open');
+  elBackdrop.classList.add('open');
+}
+function closeSidebar() {
+  elSidebar.classList.remove('open');
+  elBackdrop.classList.remove('open');
+}
+function toggleSidebar() {
+  if (elSidebar.classList.contains('open')) closeSidebar();
+  else                                       openSidebar();
+}
+function closeSidebarIfMobile() {
+  if (isMobile()) closeSidebar();
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+
+function init() {
+  elPlayPane     = document.getElementById('play-pane');
+  elBoardPane    = document.getElementById('board-pane');
+  elTree         = document.getElementById('playlist-tree');
+  elSidebar      = document.getElementById('sidebar');
+  elBackdrop     = document.getElementById('sidebar-backdrop');
+  elMenuToggle   = document.getElementById('menu-toggle');
+  elTabPlay      = document.getElementById('tab-play');
+  elTabBoard     = document.getElementById('tab-board');
+
+  elCounter      = document.getElementById('si-counter');
+  elTitle        = document.getElementById('si-title');
+  elKey          = document.getElementById('si-key');
+  elBpm          = document.getElementById('si-bpm');
+  elPack         = document.getElementById('si-pack');
+  elFeel         = document.getElementById('si-feel');
+  elChords       = document.getElementById('si-chords');
+
+  elBtnNot       = document.getElementById('btn-not');
+  elBtnHot       = document.getElementById('btn-hot');
+
+  elBoardContent = document.getElementById('board-content');
+  elBoardStatus  = document.getElementById('board-status');
+
+  // Sidebar tree
+  buildSidebar();
+
+  // Default open state: expand the first playlist
+  if (typeof PLAYLISTS !== 'undefined' && PLAYLISTS.length) {
+    expandGroup(PLAYLISTS[0].id);
+    // Pre-select the first song so the editor has something to show
+    selectSong(PLAYLISTS[0], PLAYLISTS[0].files[0], 0);
+  }
+
+  // Tab switching
+  elTabPlay.addEventListener('click',  showPlay);
+  elTabBoard.addEventListener('click', showBoard);
+
+  // Voting
+  elBtnNot.addEventListener('click', () => vote(-1));
+  elBtnHot.addEventListener('click', () => vote(1));
+
+  // Mobile drawer
+  elMenuToggle.addEventListener('click', toggleSidebar);
+  elBackdrop.addEventListener('click',   closeSidebar);
+
+  // One-shot audio unlock on first interaction (iOS Safari)
+  const unlockOnce = () => {
+    ensureAudio();
+    if (audioUnlocked) {
+      window.removeEventListener('touchstart', unlockOnce, true);
+      window.removeEventListener('touchend',   unlockOnce, true);
+      window.removeEventListener('mousedown',  unlockOnce, true);
+      window.removeEventListener('keydown',    unlockOnce, true);
+    }
+  };
+  window.addEventListener('touchstart', unlockOnce, true);
+  window.addEventListener('touchend',   unlockOnce, true);
+  window.addEventListener('mousedown',  unlockOnce, true);
+  window.addEventListener('keydown',    unlockOnce, true);
+
+  // Keyboard shortcuts (page-level; the editor swallows them when focused)
+  document.addEventListener('keydown', e => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.target.closest('.editor')) return;       // let CodeMirror handle its own
+    if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault(); showBoard();
+    }
+    if ((e.key === 'p' || e.key === 'P') && !e.ctrlKey && !e.metaKey) {
+      e.preventDefault(); showPlay();
+    }
+    if ((e.key === '+' || e.key === '=') && !e.ctrlKey && !e.metaKey) vote(1);
+    if ((e.key === '-' || e.key === '_') && !e.ctrlKey && !e.metaKey) vote(-1);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', init);
