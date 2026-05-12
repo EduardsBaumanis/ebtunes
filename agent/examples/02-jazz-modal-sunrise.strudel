@@ -1,0 +1,41 @@
+// ══════════════════════════════════════════════════════════════
+// "Modal Sunrise"
+// D Dorian modal jazz with quartal voicings
+//
+// Key:    D Dorian (D E F G A B C)
+// Tempo:  ~80 BPM  (setcpm 20)
+// Chords: Dm11 — Gm11  (i11 — IV11 vamp)
+// Theory: Modal jazz à la "So What" — two chord vamp instead of
+//         functional cadences. Voicings are quartals (stacked
+//         perfect 4ths): D-G-C-F-Bb for Dm11 — McCoy Tyner sound.
+//         Quartals avoid 3rds, so they don't resolve anywhere;
+//         the mode is the "tonality", not the chord.
+// Feel:   Open, modal, suspended. Light at the horizon.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(20)
+
+stack(
+
+  // ── BASS — modal pedal on D, occasional G ────────────────────
+  note("d2 ~ ~ ~  d2 ~ a2 ~  g1 ~ ~ ~  g1 ~ d2 ~")
+    .s("piano").gain(0.6).attack(0.008),
+
+  // ── QUARTAL COMPING — stacked perfect 4ths ───────────────────
+  // Dm11 quartal:  D-G-C-F  (1-4-b7-b3 of D Dorian)
+  // Gm11 quartal:  G-C-F-Bb (1-4-b7-b3 of G Dorian)
+  note("<[d4,g4,c5,f5,bb5] [g4,c5,f5,bb5,eb6]>")
+    .s("piano").attack(0.06).release(0.7).gain(0.4).slow(4),
+
+  // ── MELODY — D Dorian, motivic development ───────────────────
+  // The b7 (C) and natural 6 (B) are the Dorian colour notes.
+  // We highlight them and use quartal leaps in the melody too.
+  note("d5 a5 g5 d5  e5 a5 c6 b5  a5 g5 e5 d5  ~ c5 d5 ~  d5 a5 c6 e6  d6 c6 a5 g5  e5 d5 c5 d5  ~ ~ ~ ~")
+    .s("piano").attack(0.005).release(0.4).gain(0.5).slow(2),
+
+  // ── INNER VOICE — slow ascending fourths ─────────────────────
+  // A counter-line drifting in pure 4ths above the comping.
+  note("<a4 d5 g5 c6>")
+    .s("piano").attack(0.1).release(1.2).gain(0.22).slow(8)
+
+)

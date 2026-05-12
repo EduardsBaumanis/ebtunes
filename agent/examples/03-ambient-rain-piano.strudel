@@ -1,0 +1,47 @@
+// ══════════════════════════════════════════════════════════════
+// "Rain Piano"
+// Ambient piano + filtered noise rain
+//
+// Key:    F# minor (with iiø–V cadence)
+// Tempo:  ~64 BPM  (setcpm 16)
+// Theory: Ambient. "Music as Furniture" (Eno). Sparse melodic
+//         events placed unpredictably so the listener never
+//         settles into a beat. Sound design = composition.
+// Strudel: .sometimes(x => x.add(12)) — randomly transpose a
+//          note up an octave; .degradeBy() — randomly drop events
+//          so the rain feels organic rather than gridded.
+// Pack:   github:felixroos/dough-samples (piano).
+// ══════════════════════════════════════════════════════════════
+
+samples('github:felixroos/dough-samples')
+
+setcpm(16)
+
+stack(
+
+  // Rain bed — filtered white noise, irregular through degradeBy.
+  s("white*32")
+    .bpf("400 800 1500 600")        // wandering bandpass = wind
+    .gain("0.18 0.12 0.22 0.10")
+    .pan(rand)
+    .degradeBy(0.55),
+
+  // Distant thunder — extremely rare sub kick.
+  s("bd").gain(0.65).lpf(110).room(0.6).slow(8).degradeBy(0.75),
+
+  // Piano chord wash — sustained voicings, every 2 cycles.
+  note("<[fs3,a3,cs4,e4] [b3,d4,fs4,a4] [cs4,e4,gs4,b4] [d4,fs4,a4,cs5]>")
+    .s("piano").attack(0.06).release(2.0)
+    .room(0.7).size(0.85)
+    .gain(0.36).pan(0.5).slow(4),
+
+  // Single piano notes raining down — sometimes transposed up.
+  note("<fs4 a4 cs5 e5 fs5>")
+    .s("piano").gain(0.4)
+    .sometimes(x => x.add(12))      // random octave displacement
+    .room(0.55)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.45)
+    .degradeBy(0.4)
+    .slow(2)
+
+)
