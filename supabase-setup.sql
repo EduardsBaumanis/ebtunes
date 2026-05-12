@@ -40,10 +40,11 @@ CREATE INDEX IF NOT EXISTS idx_song_votes_song_id
 
 -- 4. Pre-aggregated leaderboard view
 -- The browser queries this instead of pulling every vote row, so each
--- refresh fetches ~20 rows instead of N. security_invoker = true (PG
--- 15+) keeps the underlying RLS in force when the view is read.
-CREATE OR REPLACE VIEW public.leaderboard
-  WITH (security_invoker = true) AS
+-- refresh fetches ~20 rows regardless of how many votes exist. The view
+-- runs as its definer (the postgres owner) and reads song_votes whose
+-- anon SELECT policy is already open, so the explicit GRANT to anon
+-- below is all that's needed for the public REPL.
+CREATE OR REPLACE VIEW public.leaderboard AS
 SELECT
   song_id,
   COUNT(*) FILTER (WHERE vote =  1)::int AS up,
