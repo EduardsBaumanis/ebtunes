@@ -37,11 +37,10 @@ let tickId          = null;
 
 let playlistVersion = 0; // bumped on every playlist switch to cancel stale async ops
 
-// Board state
-const BOARD_REFRESH_MS = 30 * 60 * 1000;
-let boardActive      = false;
-let boardTimerMs     = 0;
-let boardCountdownId = null;
+// Board state — Realtime subscription, no polling. The leaderboard updates
+// instantly via Supabase Realtime while the BOARD pane is open, then the
+// subscription closes again when the user navigates away.
+let boardActive = false;
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
 
@@ -581,33 +580,20 @@ function renderLeaderboard(entries) {
     </div>${rows}</div>`;
 }
 
-function updateBoardTimer() {
-  const el   = document.getElementById('board-refresh-timer');
+function setBoardStatus(state) {
+  // state: 'loading' | 'live' | 'offline'
+  const el = document.getElementById('board-refresh-timer');
   if (!el) return;
-  const secs = Math.ceil(boardTimerMs / 1000);
-  const m    = Math.floor(secs / 60);
-  const s    = secs % 60;
-  el.textContent = 'REFRESH IN ' + m + ':' + String(s).padStart(2, '0');
+  el.classList.toggle('live',    state === 'live');
+  el.classList.toggle('loading', state === 'loading');
+  el.textContent = state === 'live' ? '● LIVE' : state === 'loading' ? 'REFRESHING…' : '';
 }
 
 async function refreshBoard() {
+  setBoardStatus('loading');
   const entries = await fetchLeaderboard();
   renderLeaderboard(entries);
-  boardTimerMs = BOARD_REFRESH_MS;
-  updateBoardTimer();
-}
-
-function startBoardCountdown() {
-  if (boardCountdownId) clearInterval(boardCountdownId);
-  boardCountdownId = setInterval(async () => {
-    boardTimerMs = Math.max(0, boardTimerMs - 1000);
-    updateBoardTimer();
-    if (boardTimerMs === 0) await refreshBoard();
-  }, 1000);
-}
-
-function stopBoardCountdown() {
-  if (boardCountdownId) { clearInterval(boardCountdownId); boardCountdownId = null; }
+  setBoardStatus('live');
 }
 
 function showBoard() {
@@ -617,14 +603,16 @@ function showBoard() {
   elPlayerPane.classList.add('hidden');
   elCodePane.classList.add('hidden');
   refreshBoard();
-  startBoardCountdown();
+  // Subscribe to live vote changes. Any insert/update/delete triggers a
+  // debounced refetch of the (DB-aggregated, ~20-row) leaderboard view.
+  subscribeLeaderboard(refreshBoard);
 }
 
 function hideBoard() {
   boardActive = false;
   document.getElementById('btn-board').classList.remove('active');
   elBoardPane.classList.add('hidden');
-  stopBoardCountdown();
+  unsubscribeLeaderboard();
   if (currentMode === 'player') elPlayerPane.classList.remove('hidden');
   else                          elCodePane.classList.remove('hidden');
 }
@@ -714,6 +702,9 @@ function init() {
     const ok = await submitAllVotes();
     btn.classList.add(ok ? 'submitted' : 'error');
     btn.textContent = ok ? 'SUBMITTED ✓' : 'ERROR — RETRY';
+    // If the leaderboard is open, refresh immediately so the user sees
+    // their votes reflected without waiting for the Realtime echo.
+    if (ok && boardActive) refreshBoard();
     setTimeout(() => {
       btn.classList.remove('submitted', 'error');
       updateSubmitButton();

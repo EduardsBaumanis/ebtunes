@@ -723,6 +723,14 @@ body {
   font-size: 9px;
   letter-spacing: 0.2em;
   color: var(--dim);
+  transition: color 0.2s;
+}
+.board-refresh-timer.live    { color: var(--white); animation: live-pulse 1.6s ease-in-out infinite; }
+.board-refresh-timer.loading { color: var(--grey); }
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
 }
 
 .board-content {

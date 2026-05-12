@@ -152,29 +152,55 @@ async function submitAllVotes() {
   }
 }
 
-// ── Leaderboard fetch direct from Supabase ────────────────────────────────────
+// ── Leaderboard fetch (Postgres-aggregated `leaderboard` view) ───────────────
+//
+// The view does SUM/COUNT in the database, so each refresh transfers ~20 rows
+// (the visible leaderboard) instead of every vote row ever cast. With 5 KB
+// total payload regardless of how many votes exist, the free-tier 5 GB/month
+// egress comfortably fits hundreds of thousands of refreshes.
 
 async function fetchLeaderboard() {
   try {
     const { data, error } = await supabaseClient
-      .from('song_votes')
-      .select('song_id, vote');
-
+      .from('leaderboard')
+      .select('song_id, up, down, score')
+      .order('score', { ascending: false })
+      .limit(20);
     if (error) throw error;
-
-    const map = {};
-    for (const { song_id, vote } of data) {
-      if (!map[song_id]) map[song_id] = { song_id, up: 0, down: 0 };
-      if (vote ===  1) map[song_id].up++;
-      if (vote === -1) map[song_id].down++;
-    }
-
-    return Object.values(map)
-      .map(s => ({ ...s, score: s.up - s.down }))
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 20);
+    return data || [];
   } catch (err) {
     console.error('Leaderboard fetch error:', err);
     return [];
   }
+}
+
+// ── Realtime subscription ────────────────────────────────────────────────────
+//
+// One websocket channel to `song_votes`. Any insert / update / delete fires
+// `onChange` — debounced by 600 ms so a batch UPSERT (multiple rows in one
+// HTTP call) results in a single refetch instead of one per row. Subscribe
+// only while the BOARD pane is visible so idle tabs don't keep a connection
+// open (Supabase free tier caps concurrent Realtime connections at 200).
+
+let realtimeChannel  = null;
+let realtimeDebounce = null;
+
+function subscribeLeaderboard(onChange, debounceMs = 600) {
+  if (realtimeChannel) return;            // already subscribed
+  realtimeChannel = supabaseClient
+    .channel('song_votes_live')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'song_votes' },
+      () => {
+        clearTimeout(realtimeDebounce);
+        realtimeDebounce = setTimeout(onChange, debounceMs);
+      }
+    )
+    .subscribe();
+}
+
+function unsubscribeLeaderboard() {
+  if (realtimeDebounce) { clearTimeout(realtimeDebounce); realtimeDebounce = null; }
+  if (realtimeChannel)  { supabaseClient.removeChannel(realtimeChannel); realtimeChannel = null; }
 }
