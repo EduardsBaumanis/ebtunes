@@ -5,44 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>strudel player</title>
   <link rel="stylesheet" href="style.css">
-  <script>
-    // Same AudioContext patch as lofi-player / lofi-rater: every node
-    // that wants to talk to the speakers is rerouted through a shared
-    // master gain so we can fade smoothly and unlock iOS audio from
-    // within a synchronous user-gesture handler.
-    (function () {
-      var Orig = window.AudioContext || window.webkitAudioContext;
-      if (!Orig) return;
-      var origConnect = AudioNode.prototype.connect;
-      AudioNode.prototype.connect = function (dest, out, inp) {
-        if (window._realDest && dest === window._realDest && this !== window._masterGain) {
-          dest = window._masterGain;
-        }
-        if (arguments.length >= 3) return origConnect.call(this, dest, out, inp);
-        if (arguments.length >= 2) return origConnect.call(this, dest, out);
-        return origConnect.call(this, dest);
-      };
-      function Patched() {
-        var ctx = new Orig();
-        if (!window._ac) {
-          var descProto = Object.getOwnPropertyDescriptor(AudioContext.prototype, 'destination');
-          var realDest  = descProto ? descProto.get.call(ctx) : ctx.destination;
-          var master    = ctx.createGain();
-          master.gain.value = 1;
-          window._ac         = ctx;
-          window._masterGain = master;
-          window._realDest   = realDest;
-          origConnect.call(master, realDest);
-        } else {
-          window._ac = ctx;
-        }
-        return ctx;
-      }
-      Patched.prototype = Orig.prototype;
-      window.AudioContext = Patched;
-      if (window.webkitAudioContext) window.webkitAudioContext = Patched;
-    })();
-  </script>
   <script src="https://unpkg.com/@strudel/repl@1.3.0" defer></script>
 </head>
 <body data-theme="studio">

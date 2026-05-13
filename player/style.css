@@ -493,25 +493,34 @@ body {
   .si-meta  { gap: 6px; }
   .si-feel  { font-size: 10px; }
 
-  /* Mobile: drop the flex column for the play pane and let the whole
-     thing scroll naturally. Pin the editor to a definite height so it
-     always renders — flex resolution against a custom element with
-     internal-only layout collapses to zero on some mobile browsers,
-     producing the "black rectangle" failure mode. A definite height
-     + the pane being scrollable means the editor is always visible
-     and the rest of the page can scroll past it. */
-  .play-pane {
-    overflow-y: auto;
+  /* Mobile: switch the whole page to natural document flow. The desktop
+     "everything is one viewport-locked flex column" model was trapping
+     touch scrolls inside the editor's internal scroller (CodeMirror
+     captures touchmove), which is why scrolling didn't work. Letting
+     the body scroll like a normal webpage avoids the nested-scroll
+     problem entirely — the editor still has its own internal scroll
+     for long code, but the page above and below it scrolls naturally. */
+  html, body {
+    height: auto;
+    overflow: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
   }
+  .app  { height: auto; min-height: 100vh; }
+  .body { display: block; overflow: visible; }
+  .play-pane, .board-pane {
+    display: block;
+    overflow: visible;
+  }
+  .play-pane.hidden, .board-pane.hidden { display: none; }
+
   .editor {
     flex: 0 0 auto;
-    height: 60vh;
-    min-height: 380px;
+    height: 65vh;
+    min-height: 420px;
   }
   .editor .cm-content { font-size: 12px !important; }
 
-  .song-info, .hints { flex-shrink: 0; }
   .hints { font-size: 9px; letter-spacing: 0.12em; }
 
   /* Tighten leaderboard columns for narrow screens */

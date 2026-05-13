@@ -7,7 +7,6 @@ const expandedGroups  = new Set();   // sidebar groups currently expanded
 let currentPlaylist   = null;        // playlist object
 let currentFilename   = null;        // string
 let currentSongId     = null;        // "playlist_id/filename" — supabase key
-let audioUnlocked     = false;
 let boardActive       = false;
 
 // ── DOM refs (resolved in init) ──────────────────────────────────────────────
@@ -19,28 +18,12 @@ let elCounter, elTitle, elKey, elBpm, elPack, elFeel, elChords;
 let elBtnNot, elBtnHot;
 let elBoardContent, elBoardStatus;
 
-// ── Audio unlock (same dance as lofi-player / lofi-rater) ────────────────────
-
-function ensureAudio() {
-  try {
-    if (!window._ac) {
-      const Ctor = window.AudioContext || window.webkitAudioContext;
-      if (Ctor) new Ctor();
-    }
-    if (window._ac && window._ac.state !== 'running') {
-      window._ac.resume().catch(() => {});
-    }
-    if (window._ac && !audioUnlocked) {
-      const ctx = window._ac;
-      const buf = ctx.createBuffer(1, 1, 22050);
-      const src = ctx.createBufferSource();
-      src.buffer = buf;
-      src.connect(ctx.destination);
-      try { src.start(0); } catch (_) {}
-      audioUnlocked = true;
-    }
-  } catch (_) {}
-}
+// ── Strudel editor helpers ───────────────────────────────────────────────────
+//
+// We don't patch AudioContext or run our own iOS unlock logic in this player
+// — the <strudel-editor> custom element handles audio routing and the
+// user-gesture audio unlock itself when you tap its play button. Less code
+// for us, fewer cross-context audio bugs on mobile.
 
 function engine() { return document.getElementById('engine'); }
 
@@ -200,7 +183,6 @@ function highlightActiveSong() {
 // ── Selecting a song ─────────────────────────────────────────────────────────
 
 async function selectSong(playlist, filename, idx) {
-  ensureAudio();
   currentPlaylist = playlist;
   currentFilename = filename;
   currentSongId   = playlist.id + '/' + filename;
@@ -247,7 +229,6 @@ function refreshVoteButtons() {
 
 async function vote(value) {
   if (!currentSongId) return;
-  ensureAudio();
 
   // Toggle — clicking the active vote a second time removes it
   const current = getLocalVote(currentSongId);
@@ -419,21 +400,6 @@ function init() {
   // Mobile drawer
   elMenuToggle.addEventListener('click', toggleSidebar);
   elBackdrop.addEventListener('click',   closeSidebar);
-
-  // One-shot audio unlock on first interaction (iOS Safari)
-  const unlockOnce = () => {
-    ensureAudio();
-    if (audioUnlocked) {
-      window.removeEventListener('touchstart', unlockOnce, true);
-      window.removeEventListener('touchend',   unlockOnce, true);
-      window.removeEventListener('mousedown',  unlockOnce, true);
-      window.removeEventListener('keydown',    unlockOnce, true);
-    }
-  };
-  window.addEventListener('touchstart', unlockOnce, true);
-  window.addEventListener('touchend',   unlockOnce, true);
-  window.addEventListener('mousedown',  unlockOnce, true);
-  window.addEventListener('keydown',    unlockOnce, true);
 
   // Keyboard shortcuts (page-level; the editor swallows them when focused)
   document.addEventListener('keydown', e => {
