@@ -18,27 +18,25 @@ let elCounter, elTitle, elKey, elBpm, elPack, elFeel, elChords;
 let elBtnNot, elBtnHot;
 let elBoardContent, elBoardStatus;
 
-// ── Strudel editor helpers ───────────────────────────────────────────────────
+// ── Strudel iframe ───────────────────────────────────────────────────────────
 //
-// We don't patch AudioContext or run our own iOS unlock logic in this player
-// — the <strudel-editor> custom element handles audio routing and the
-// user-gesture audio unlock itself when you tap its play button. Less code
-// for us, fewer cross-context audio bugs on mobile.
+// We embed strudel.cc itself via an iframe instead of hosting the
+// strudel-editor web component locally. Hand the song's code to
+// strudel.cc as base64 in the URL hash and it loads with the code
+// pre-filled and its native transport bar (▶ ⟳ ⏮ ⏭). This is the
+// same trick the old lofi-rater used and the only setup we've
+// confirmed works reliably on mobile.
 
-function engine() { return document.getElementById('engine'); }
+function strudelUrlFor(code) {
+  // btoa(unescape(encodeURIComponent(...))) is the standard "base64
+  // a UTF-8 string" recipe — handles non-ASCII chord names, accented
+  // comments, etc., without throwing on btoa's Latin-1 limitation.
+  return 'https://strudel.cc/#' + btoa(unescape(encodeURIComponent(code)));
+}
 
-function waitForEditor(timeoutMs = 12000) {
-  return new Promise((resolve, reject) => {
-    const t0 = Date.now();
-    const id = setInterval(() => {
-      const e = engine();
-      if (e && e.editor) { clearInterval(id); resolve(e); }
-      else if (Date.now() - t0 > timeoutMs) {
-        clearInterval(id);
-        reject(new Error('editor timeout'));
-      }
-    }, 100);
-  });
+function loadIntoFrame(code) {
+  const frame = document.getElementById('strudel-frame');
+  if (frame) frame.src = strudelUrlFor(code);
 }
 
 // ── Metadata parser (same shape as lofi-player) ──────────────────────────────
@@ -206,12 +204,10 @@ async function selectSong(playlist, filename, idx) {
   // Reflect any existing local vote on the +/- buttons
   refreshVoteButtons();
 
-  // Push the code into the visible editor so it shows up as the main thing.
-  // The editor's built-in transport (CTRL+ENTER / play button) handles play.
-  try {
-    const e = await waitForEditor();
-    if (e && e.editor) e.editor.setCode(entry.code);
-  } catch (_) {}
+  // Push the code into the embedded strudel.cc iframe. Changing src
+  // triggers a fresh strudel.cc load with the new code — the user
+  // sees the same player they're used to from the docs.
+  loadIntoFrame(entry.code);
 }
 
 // ── Voting ───────────────────────────────────────────────────────────────────
