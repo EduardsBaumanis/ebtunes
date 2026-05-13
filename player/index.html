@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>strudel player</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://unpkg.com/@strudel/repl@1.3.0" defer></script>
 </head>
 <body data-theme="studio">
 
@@ -57,22 +56,25 @@
           </div>
         </div>
 
-        <!-- Visible strudel editor — the main thing on the page.
-             Built-in CodeMirror + transport. Sized to fill the rest of the pane. -->
-        <strudel-editor id="engine" class="editor"><!--
-// Pick a song from the sidebar to load it here.
-// CTRL+ENTER runs · CTRL+. stops.
-s("bd")
-        --></strudel-editor>
+        <!-- Embedded strudel.cc — the same default player that the
+             strudel docs use. We pass the song's code as base64 in
+             the URL hash; strudel.cc loads with that code pre-filled
+             and shows its native transport bar (play / restart /
+             prev / next). Iframe avoids every CSS / AudioContext /
+             mobile-touch issue we hit trying to host the editor
+             ourselves — strudel.cc is already proven to work on
+             phone, so we embed it as-is. -->
+        <iframe id="strudel-frame"
+                class="editor"
+                title="Strudel REPL"
+                src="https://strudel.cc/"
+                allow="autoplay; clipboard-read; clipboard-write"
+                loading="lazy"></iframe>
 
         <div class="hints">
-          <span class="hint-desktop">CTRL+ENTER · run</span>
-          <span class="hint-desktop sep">·</span>
-          <span class="hint-desktop">CTRL+. · stop</span>
-          <span class="hint-desktop sep">·</span>
-          <span class="hint-mobile">Use the play / stop controls inside the editor</span>
+          <span>Tap the ▶ button inside the player to start</span>
           <span class="sep">·</span>
-          <span>Edit the code freely — it's a real Strudel IDE</span>
+          <span>You can edit the code freely</span>
         </div>
       </main>
 
