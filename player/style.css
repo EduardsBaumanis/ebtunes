@@ -340,21 +340,21 @@ body {
 .vote-btn.active { background: var(--white); color: var(--black); border-color: var(--white); }
 .vote-btn.flash  { background: var(--white); color: var(--black); border-color: var(--white); }
 
-/* ── Strudel editor — the main thing on the page ── */
+/* ── Strudel editor — the main thing on the page ──
+   The strudel-editor custom element renders a CodeMirror surface +
+   transport controls. We give the host element a *definite height*
+   instead of relying on flex sizing alone, because mobile Safari /
+   Chromium don't reliably resolve flex:1 against a custom element
+   that has its own internal layout — the editor would sometimes
+   collapse to zero height and show as a black rectangle.
+   Min-height keeps it visible no matter how small the viewport. */
 .editor {
-  flex: 1;
   display: block;
-  min-height: 0;
   width: 100%;
+  flex: 1 1 0;
+  min-height: 320px;
   background: var(--code-bg);
-  overflow: hidden;
 }
-/* The strudel-editor web component renders a CodeMirror instance + controls
-   inside its shadow tree. Force it to fill all available space, and give
-   its inner panels generous height — the cm-content height fix matters
-   on mobile, where CM otherwise collapses to its content height. */
-.editor, .editor > * { height: 100%; }
-.editor .cm-editor, .editor .cm-scroller { height: 100% !important; }
 .editor .cm-content { font-family: var(--font) !important; font-size: 13px !important; }
 
 .hints {
@@ -370,6 +370,12 @@ body {
   flex-wrap: wrap;
 }
 .hints .sep { color: var(--dim); }
+/* Show keyboard hints on desktop, touch hint on phone */
+.hints .hint-mobile  { display: none; }
+@media (max-width: 768px) {
+  .hints .hint-desktop { display: none; }
+  .hints .hint-mobile  { display: inline; }
+}
 
 /* ── Board pane (same shape as lofi-player) ── */
 .board-pane {
@@ -487,8 +493,25 @@ body {
   .si-meta  { gap: 6px; }
   .si-feel  { font-size: 10px; }
 
+  /* Mobile: drop the flex column for the play pane and let the whole
+     thing scroll naturally. Pin the editor to a definite height so it
+     always renders — flex resolution against a custom element with
+     internal-only layout collapses to zero on some mobile browsers,
+     producing the "black rectangle" failure mode. A definite height
+     + the pane being scrollable means the editor is always visible
+     and the rest of the page can scroll past it. */
+  .play-pane {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .editor {
+    flex: 0 0 auto;
+    height: 60vh;
+    min-height: 380px;
+  }
   .editor .cm-content { font-size: 12px !important; }
 
+  .song-info, .hints { flex-shrink: 0; }
   .hints { font-size: 9px; letter-spacing: 0.12em; }
 
   /* Tighten leaderboard columns for narrow screens */
