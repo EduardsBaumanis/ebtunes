@@ -1,0 +1,83 @@
+// ══════════════════════════════════════════════════════════════
+// "Slow Crescendo Sky"
+// Post-rock — Mogwai, Sigur Rós, Explosions in the Sky
+//
+// Key:    F# minor (rising to F# major at the climax)
+// Tempo:  82 BPM  (setcpm 20.5)
+// Chords: F#m — D — A — E  (i — VI — III — VII, slow ascending build)
+// Feel:   Gradual buildup, layered tremolo guitars, cinematic peak.
+//
+// THEORY NOTES
+//   Post-rock (90s onward — Mogwai, Tortoise, Godspeed You! Black
+//   Emperor, Explosions in the Sky) treats rock instruments as
+//   orchestra. Songs build slowly over 5-10 minutes from quiet
+//   guitar tremolo + soft drums into massive walls of distorted
+//   sound, then back down. No vocals usually. Harmony is simple
+//   minor or major — the journey is dynamic, not harmonic. Common
+//   technique: take a 4-chord cycle and layer it over and over while
+//   adding instruments.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(20.5)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Soft kick on 1 and 3 — drives the cinematic pulse without
+  // dominating.
+  s("bd ~ ~ ~ bd ~ ~ ~")
+    .gain(0.78).lpf(180).shape(0.1),
+
+  // ── SNARE — RAMPS DYNAMIC ───────────────────────────────────
+  // Snare on 2 and 4 with gradually changing intensity. The room
+  // grows over the cycle.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.7).hpf(280).room(0.35).size(0.7).shape(0.1),
+
+  // ── HI-HAT ───────────────────────────────────────────────────
+  // 8ths with gradually increasing gain — feels like a slow build.
+  s("hh*8")
+    .gain("0.18 0.22 0.26 0.32  0.28 0.34 0.40 0.48")
+    .hpf(5500),
+
+  // ── BASS — ARPEGGIATED ───────────────────────────────────────
+  // Bass plays an arpeggio rather than just roots — root, fifth,
+  // octave. The pattern repeats through the chord cycle.
+  note("fs2 ~ cs3 ~ fs2 cs3 ~ ~  d2 ~ a2 ~ d2 a2 ~ ~  a1 ~ e2 ~ a1 e2 ~ ~  e2 ~ b2 ~ e2 b2 ~ ~")
+    .sound("sawtooth").lpf(380).lpq(3)
+    .attack(0.02).decay(0.18).sustain(0.5).release(0.32)
+    .gain(0.7),
+
+  // ── TREMOLO GUITAR #1 — LEFT ─────────────────────────────────
+  // Fast-picked clean guitar arpeggio outlining the chord. Light
+  // chorus via slight detuning, panned left.
+  note("fs4 a4 cs5 a4  d5 a4 cs5 a4  d4 fs4 a4 fs4  d5 fs4 a4 fs4  a3 cs4 e4 cs4  a4 cs4 e4 cs4  e4 gs4 b4 gs4  b4 gs4 e4 gs4")
+    .sound("triangle").attack(0.005).decay(0.06).sustain(0.15).release(0.1)
+    .lpf(3500).gain(0.36).pan(0.3)
+    .room(0.4).size(0.7),
+
+  // ── TREMOLO GUITAR #2 — RIGHT ────────────────────────────────
+  // Counter arpeggio in inversion — pans right. Together with #1
+  // creates the wide stereo "ocean of guitars".
+  note("cs5 a4 fs4 a4  fs5 d5 a4 d5  fs4 d4 a3 d4  a4 d5 fs4 d5  e4 cs4 a3 cs4  e5 cs4 a3 e4  b4 gs4 e4 gs4  e5 b4 gs4 b4")
+    .sound("triangle").attack(0.005).decay(0.06).sustain(0.15).release(0.1)
+    .lpf(3500).gain(0.36).pan(0.7)
+    .room(0.4).size(0.7),
+
+  // ── PAD — SLOW SUSTAINED VOICINGS ────────────────────────────
+  // The "orchestra" underneath. Long attack, long release. Each
+  // chord lasts 2 cycles. As the song builds, this layer becomes
+  // the foundation.
+  note("<[fs3,a3,cs4,e4] [d3,fs3,a3,c#4] [a3,cs4,e4,gs4] [e3,gs3,b3,d4]>")
+    .sound("sawtooth").attack(1).release(3)
+    .lpf(2400).gain(0.32).pan(0.5)
+    .room(0.55).size(0.85).slow(2),
+
+  // ── DISTANT LEAD LINE ────────────────────────────────────────
+  // Slow melodic line in F# minor — emerges with the build.
+  note("a5 ~ ~ ~ ~ ~ cs6 ~  ~ ~ ~ d6 ~ ~ ~ ~  ~ a5 ~ ~ ~ ~ e5 ~  ~ ~ fs5 ~ ~ ~ ~ ~")
+    .sound("sine").attack(0.5).release(2)
+    .delay(0.5).delaytime(0.5).delayfeedback(0.4)
+    .room(0.65).gain(0.28).pan(0.55).slow(2)
+
+)

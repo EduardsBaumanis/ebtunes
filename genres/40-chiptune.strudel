@@ -1,0 +1,76 @@
+// ══════════════════════════════════════════════════════════════
+// "Pixel Forest Adventure"
+// Chiptune — 8-bit Nintendo / Commodore 64 SID, square wave duets
+//
+// Key:    C major (with V/vi modulation for "drama")
+// Tempo:  150 BPM  (setcpm 37.5)
+// Chords: C — G — Am — F  (I — V — vi — IV, video-game pop)
+// Feel:   Square-wave lead duets, triangle bass, noise drums.
+//
+// THEORY NOTES
+//   Chiptune is music produced by retro game console sound chips —
+//   NES (2A03), Game Boy, Commodore 64 SID. The classic NES had FOUR
+//   channels: two SQUARE WAVES (lead + harmony), one TRIANGLE (bass),
+//   one NOISE (percussion). Composers wrote within those constraints
+//   — fast arpeggios on the square channels simulated chords (since
+//   only one note per channel), the triangle played root motion, and
+//   the noise channel was the entire drum kit.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(37.5)
+
+stack(
+
+  // ── NOISE CHANNEL — KICK + SNARE ─────────────────────────────
+  // The NES noise channel was the whole drum kit. We approximate
+  // kick (low filtered noise) and snare (high filtered noise).
+  s("bd ~ ~ ~ bd ~ ~ ~")
+    .gain(0.85).lpf(180),
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.7).hpf(280).room(0.12),
+
+  // ── NOISE HI-HAT ─────────────────────────────────────────────
+  // Tight hi-hat — 8th notes for the energy.
+  s("hh*8")
+    .gain("0.28 0.20 0.30 0.22")
+    .hpf(5800),
+
+  // ── TRIANGLE BASS — NES CHANNEL 3 ────────────────────────────
+  // The triangle channel was the bass on most NES games. Soft
+  // envelope, no aggressive transient (the chip didn't have one).
+  // Outlines C — G — Am — F roots.
+  note("c2 ~ c3 ~  c2 g2 c3 g2  g1 ~ g2 ~  g1 d2 g2 d2  a1 ~ a2 ~  a1 e2 a2 e2  f1 ~ f2 ~  f1 c2 f2 c2")
+    .sound("triangle").attack(0.005).decay(0.08).sustain(0.4).release(0.08)
+    .gain(0.65),
+
+  // ── SQUARE LEAD — MAIN MELODY ────────────────────────────────
+  // First square channel. Fast melodic line in C major. Sharp
+  // envelope (chip had ASCII-square envelope).
+  note("c5 d5 e5 g5  c6 g5 e5 c5  d5 g5 b5 d6  g5 d5 b4 g4  a4 c5 e5 a5  c6 a5 e5 c5  f4 a4 c5 f5  c5 a4 f4 c4")
+    .sound("square").attack(0.001).decay(0.05).sustain(0.3).release(0.04)
+    .gain(0.45).pan(0.45),
+
+  // ── SQUARE HARMONY — SECOND CHANNEL ──────────────────────────
+  // Second square channel — moves in parallel 3rds with the lead.
+  // Chiptune composers used this to fake harmony on a mono channel.
+  note("e4 f4 g4 b4  e5 b4 g4 e4  f4 b4 d5 f5  b4 f4 d4 b3  c4 e4 g4 c5  e5 c5 g4 e4  a3 c4 e4 a4  e4 c4 a3 e3")
+    .sound("square").attack(0.001).decay(0.05).sustain(0.25).release(0.04)
+    .gain(0.36).pan(0.55),
+
+  // ── ARPEGGIO CHORD — FAST CHIP TECHNIQUE ─────────────────────
+  // Chip composers couldn't play chords (one channel = one note),
+  // so they faked them with ultra-fast arpeggios on one channel.
+  // Cycles through chord tones at 16th rate.
+  note("<[c5 e5 g5] [g4 b4 d5] [a4 c5 e5] [f4 a4 c5]>")
+    .sound("square").attack(0.001).decay(0.03).sustain(0).release(0.02)
+    .gain(0.32).pan(0.5).fast(4),
+
+  // ── PWM PAD (mimics PWM modulation on the SID) ───────────────
+  // Sustained square chord — the C64 SID could PWM-modulate its
+  // pulse width. We approximate with a gain pattern.
+  note("[c4,e4,g4]")
+    .sound("square").attack(0.3).release(1.2)
+    .gain("0.18 0.22 0.18 0.24")
+    .lpf(2500).pan(0.4).slow(2)
+
+)

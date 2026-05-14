@@ -1,0 +1,85 @@
+// ══════════════════════════════════════════════════════════════
+// "Cathedral Wash"
+// Shoegaze — My Bloody Valentine, Slowdive lineage
+//
+// Key:    A major (slipping into A Lydian via the #4 G# bend)
+// Tempo:  120 BPM (felt as slower under the wash)  (setcpm 30)
+// Chords: A — E — F#m — D  (I — V — vi — IV, pop changes drowned)
+// Feel:   Walls of distorted guitar, buried drums, melismatic vocal.
+//
+// THEORY NOTES
+//   Shoegaze (UK late 80s — My Bloody Valentine "Loveless", Slowdive
+//   "Souvlaki") buries simple pop progressions in walls of effects.
+//   Multiple layers of heavily-distorted guitars are pitch-shifted
+//   slightly and run through reverb + tremolo + chorus + flanger
+//   until they become a single textural cloud. Drums are pushed
+//   way back in the mix. Vocals are buried in the wall too — they
+//   become another texture rather than a foreground melody. Tempos
+//   range 90-130 BPM. The "glide guitar" (whammy bar pitch-bends
+//   on every note) is the MBV trademark.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(30)
+
+stack(
+
+  // ── BURIED KICK ──────────────────────────────────────────────
+  // Kick on 1+3, but quiet — barely punching through the wall.
+  s("bd ~ ~ ~ bd ~ ~ ~")
+    .gain(0.65).lpf(180),
+
+  // ── BURIED SNARE ─────────────────────────────────────────────
+  // Snare on 2+4, even quieter and very wet.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.45).hpf(280).room(0.55).size(0.8),
+
+  // ── BURIED HI-HAT ────────────────────────────────────────────
+  s("hh*8")
+    .gain(0.16).hpf(5500)
+    .room(0.4),
+
+  // ── BASS — DROPPED, FUZZED ───────────────────────────────────
+  // Distorted bass roots — sustained for shoegaze's "moving wall".
+  // Multiple chord changes per cycle.
+  note("<a1 e1 fs1 d1>")
+    .sound("sawtooth").lpf(380).lpq(6).shape(0.3)
+    .attack(0.05).release(0.7).gain(0.7).slow(2),
+
+  // ── GUITAR WALL #1 — DISTORTED CHORDS, LEFT ──────────────────
+  // First layer of guitar wall. Pitched correctly, heavy chorus and
+  // distortion via shape + phaser.
+  note("<[a3,cs4,e4,a4] [e3,gs3,b3,e4] [fs3,a3,cs4,fs4] [d3,fs3,a3,d4]>")
+    .sound("sawtooth").attack(0.05).release(1.5)
+    .lpf(3000).shape(0.4).phaser(0.5).phaserrate(0.3)
+    .gain(0.36).pan(0.25)
+    .room(0.5).size(0.8).slow(2),
+
+  // ── GUITAR WALL #2 — DETUNED, RIGHT ──────────────────────────
+  // Same chord layer, slightly out of phase, hard-right. Combined
+  // with #1 you get the MBV "chorus wash".
+  note("<[a3,cs4,e4,a4] [e3,gs3,b3,e4] [fs3,a3,cs4,fs4] [d3,fs3,a3,d4]>")
+    .sound("sawtooth").attack(0.06).release(1.55)
+    .lpf(2900).shape(0.4).phaser(0.5).phaserrate(0.32)
+    .gain(0.36).pan(0.75)
+    .room(0.5).size(0.8).slow(2),
+
+  // ── GLIDE LEAD — PITCH-BENDING MELODIC LINE ──────────────────
+  // High guitar lead with heavy vibrato — simulates the MBV
+  // "glide guitar" (whammy-bar bends on every note).
+  note("e5 ~ fs5 ~  ~ cs5 ~ ~  d5 ~ e5 ~  ~ b4 ~ ~  cs5 ~ d5 ~  ~ a4 ~ ~  b4 ~ a4 ~  ~ ~ ~ ~")
+    .sound("sawtooth").attack(0.05).release(0.7)
+    .vib(5).vibmod(0.4)
+    .lpf(3500).shape(0.3)
+    .delay(0.45).delaytime(0.375).delayfeedback(0.45)
+    .room(0.6).size(0.9).gain(0.4).pan(0.5).slow(2),
+
+  // ── BURIED VOCAL TEXTURE ─────────────────────────────────────
+  // Sawtooth + vowel filter "u" = "aah" choir buried in the mix.
+  // Heavy reverb, very wet.
+  note("[a4,cs5,e5]")
+    .sound("sawtooth").vowel("u")
+    .attack(0.8).release(2.5)
+    .lpf(2200).gain(0.22).pan(0.5)
+    .room(0.7).size(0.9).slow(4)
+
+)
