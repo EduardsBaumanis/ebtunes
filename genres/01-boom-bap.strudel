@@ -1,0 +1,76 @@
+// ══════════════════════════════════════════════════════════════
+// "Crate Hunters"
+// Boom bap — classic 90s NY hip-hop
+//
+// Key:    A minor (dorian colour on the b7 dom)
+// Tempo:  92 BPM  (setcpm 23)
+// Chords: Am9 — Dm9 — F7 — Em7  (i — iv — bVI7 — v)
+// Feel:   Crunchy SP-1200 snare, dusty vinyl loop, walking sub.
+//
+// THEORY NOTES
+//   Boom bap is built around a thick low-bandwidth snare on 2 and 4
+//   (Pete Rock taught the world the "fat snare" by layering an SP-1200
+//   sample with crunchy saturation). The kick sits in front (beats 1
+//   and the "and-of-3"), and a swung 16th hat carries the groove —
+//   never on the grid. Bass is a dub-style root-fifth that locks to
+//   the kick. The melody sample is usually a chopped jazz loop with
+//   a lo-pass at ~3 kHz to hide the resampling artefacts.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(23)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Beat 1 and the "and of 3" — the boom-bap signature.
+  s("bd ~ ~ ~ ~ bd ~ ~")
+    .gain(0.92).lpf(160).shape(0.18),
+
+  // ── SNARE ────────────────────────────────────────────────────
+  // Thick crack on 2 and 4. Light room + shape gives the SP-1200
+  // "smacked tape" character without losing the transient.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.75).hpf(180).room(0.16).shape(0.12),
+
+  // ── HI-HAT ───────────────────────────────────────────────────
+  // 16th-note hats with light swing + degradeBy for human feel.
+  s("hh*16")
+    .gain(0.32).hpf(2800).swingBy(0.15, 4)
+    .degradeBy(0.08).pan("0.45 0.55"),
+
+  // ── OPEN HAT ─────────────────────────────────────────────────
+  // Accent on the off-beat of bar 2 — the lift before bar 3 hits.
+  s("~ ~ ~ ~ ~ ~ ~ oh")
+    .gain(0.5).hpf(3500),
+
+  // ── BASS ─────────────────────────────────────────────────────
+  // Walking roots — sub-bass sine with a soft envelope. Moves on
+  // chord changes (Am, Dm, F, Em → roots A E D A F C E B).
+  note("a1 ~ e2 ~  d2 ~ a2 ~  f1 ~ c2 ~  e2 ~ b1 ~")
+    .sound("sine").attack(0.005).release(0.45).gain(0.78),
+
+  // ── DUSTY CHORD STAB ─────────────────────────────────────────
+  // Sawtooth voicing chopped to the off-beats — like a sampled
+  // Rhodes through an MPC. LPF at 2.4 kHz for the "filtered loop"
+  // sound. Slow(2) so each chord rings for 2 bars.
+  note("<[a3,c4,e4,g4] [d4,f4,a4,c5] [f3,a3,c4,eb4] [e3,g3,b3,d4]>")
+    .sound("sawtooth").attack(0.05).release(0.6)
+    .lpf(2400).room(0.22).gain(0.36)
+    .struct("~ x ~ x  ~ x ~ x").slow(2),
+
+  // ── VINYL CRACKLE ────────────────────────────────────────────
+  // Constant noise floor — the "dust" of boom bap. Tight bandpass
+  // + degradeBy randomises the position of each pop.
+  s("hh*32").gain(0.06).hpf(7000).degradeBy(0.55),
+
+  // ── MELODIC SAMPLE (faked) ───────────────────────────────────
+  // A sparse triangle line in A dorian for the soulful hook.
+  // Delay + room paint it back into the mix as if it were sampled
+  // off a vinyl rip.
+  note("e5 ~ g5 ~ c6 ~ b5 a5  ~ g5 e5 ~ d5 ~ c5 ~")
+    .sound("triangle").attack(0.01).release(0.4)
+    .lpf(3200).delay(0.32).delaytime(0.375)
+    .delayfeedback(0.25).room(0.4)
+    .gain(0.48).pan(0.55).slow(2)
+
+)

@@ -1,0 +1,80 @@
+// ══════════════════════════════════════════════════════════════
+// "Calle Tigre"
+// Reggaeton — dembow rhythm at the heart of the world
+//
+// Key:    E minor (with major V — harmonic minor cadence)
+// Tempo:  96 BPM  (setcpm 24)
+// Chords: Em — Am — B7 — Em  (i — iv — V7 — i)
+// Feel:   The dembow. Kick on every beat, snare-rim on the "and".
+//
+// THEORY NOTES
+//   Reggaeton's foundation is the "Dem Bow" riddim — Shabba Ranks's
+//   1990 dancehall track that DJs in Panama and Puerto Rico looped
+//   into a new genre. The pattern: kick on every quarter (BOOM BOOM
+//   BOOM BOOM), with a snare/clap landing on the "and" of beats 2
+//   and 4 (the "che-CHE", "che-CHE"). Hi-hats are usually shaker-
+//   like 8ths. Harmony is minor-key dembow — Em, the i, with a clear
+//   V7 → i cadence to outline the tonality. The melodic vocabulary
+//   draws on Caribbean / Latin idioms (lots of natural minor + V7).
+// ══════════════════════════════════════════════════════════════
+
+setcpm(24)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Quarter-note kick — the four-on-the-floor of reggaeton.
+  s("bd*4")
+    .gain(0.88).lpf(180).shape(0.1),
+
+  // ── SNARE / RIM — THE DEMBOW PATTERN ─────────────────────────
+  // The signature: snare on the "&" of 2 and 4. Cuts through the
+  // four-on-the-floor kick. Layered rim for extra crack.
+  s("~ ~ ~ [sd, rim]  ~ ~ ~ [sd, rim]")
+    .gain(0.7).hpf(280).room(0.16).shape(0.12),
+
+  // ── SHAKER ───────────────────────────────────────────────────
+  // 8th-note shaker (using hi-hat as proxy). Light swing for the
+  // Latin groove.
+  s("hh*8")
+    .gain(0.34).hpf(5200).swingBy(0.12, 4)
+    .pan("0.4 0.6"),
+
+  // ── DEEP BASS ────────────────────────────────────────────────
+  // Sub on the chord roots — Em, Am, B7, Em. Plays on beat 1 and
+  // the "&" of 3 (locks with kick + clave feel).
+  note("e1 ~ ~ ~  e2 ~ ~ ~  a1 ~ ~ ~  a2 ~ ~ ~  b1 ~ ~ ~  b2 ~ ~ ~  e1 ~ ~ ~  e2 ~ ~ ~")
+    .sound("sine").attack(0.005).release(0.4)
+    .gain(0.78).slow(2),
+
+  // ── PIANO STAB ───────────────────────────────────────────────
+  // Latin piano "tumbao" — stabbed chord voicings on the off-beats.
+  // The minor 9 + V7 mix gives the bittersweet reggaeton harmonic
+  // colour. Slow(2) → each chord lasts 2 cycles.
+  note("<[e3,g3,b3,d4] [a3,c4,e4,g4] [b3,d#4,f#4,a4] [e3,g3,b3,d4]>")
+    .sound("sawtooth").attack(0.005).decay(0.18)
+    .sustain(0.3).release(0.25).lpf(2200)
+    .struct("~ x ~ x  x ~ x ~")
+    .gain(0.42).pan(0.45).slow(2),
+
+  // ── PIANO TOPLINE ────────────────────────────────────────────
+  // A simple latin melodic line — minor pentatonic + raised 7th
+  // for the V7 leading tone.
+  note("e5 g5 b5 ~ a5 g5 e5 ~  a5 c6 e6 ~ d6 c6 b5 a5  b5 d#6 f#6 ~ b5 ~ ~ ~  e6 d6 b5 g5 e5 ~ ~ ~")
+    .sound("triangle").attack(0.005).release(0.3)
+    .delay(0.3).delaytime(0.333).delayfeedback(0.2)
+    .room(0.32).gain(0.5).pan(0.55).slow(2),
+
+  // ── PERC ROLL ────────────────────────────────────────────────
+  // Tabla as a substitute for the Latin "timbal" tom roll, only
+  // fires on bar 4 of every 4-bar phrase.
+  s("~ ~ ~ ~  ~ ~ ~ ~  ~ ~ ~ ~  tabla tabla tabla ~")
+    .gain(0.4).hpf(600),
+
+  // ── HORN STAB ────────────────────────────────────────────────
+  // Sawtooth "horn" hits to mark the chord starts. Wide voicings.
+  note("<[e4,g4,b4] ~ ~ ~  [a4,c5,e5] ~ ~ ~  [b4,d#5,f#5] ~ ~ ~  [e4,g4,b4] ~ ~ ~>")
+    .sound("sawtooth").attack(0.005).release(0.12)
+    .lpf(2800).gain(0.32).pan(0.5).slow(4)
+
+)
