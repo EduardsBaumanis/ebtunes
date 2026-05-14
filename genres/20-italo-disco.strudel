@@ -1,0 +1,84 @@
+// ══════════════════════════════════════════════════════════════
+// "Mediterranean Pulse"
+// Italo disco — Italian 80s synth-pop disco
+//
+// Key:    D minor (with major V — the harmonic minor cadence)
+// Tempo:  120 BPM  (setcpm 30)
+// Chords: Dm — Bb — F — A7  (i — VI — III — V7)
+// Feel:   Sequenced 16th-bass, claps and snare, soaring lead.
+//
+// THEORY NOTES
+//   Italo disco came out of late 70s / early 80s Italy — Giorgio
+//   Moroder's Donna Summer productions are its proto-form. The
+//   formula: four-on-the-floor kick, claps and a thin snare on
+//   2 and 4, a 16th-note sequenced synth bass (often modulated by
+//   filter or pitch), big string-pad chords, lead synth solos.
+//   Tempo 118-125 BPM. Harmony is dramatic minor with the V7
+//   cadence (raised 7th to outline the dominant). The hallmark
+//   is the "pumping" bass line that drives the dance.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(30)
+
+stack(
+
+  // ── FOUR-ON-THE-FLOOR KICK ───────────────────────────────────
+  // The disco staple. Tight, punchy.
+  s("bd*4")
+    .gain(0.88).lpf(180).shape(0.12),
+
+  // ── CLAP ─────────────────────────────────────────────────────
+  // Disco clap on 2 and 4.
+  s("~ cp ~ cp")
+    .gain(0.6).hpf(320).room(0.22),
+
+  // ── SNARE ────────────────────────────────────────────────────
+  // Thin snare doubled with the clap — 80s drum machine sound.
+  s("~ sd ~ sd")
+    .gain(0.42).hpf(800).room(0.18),
+
+  // ── HI-HAT 16ths ─────────────────────────────────────────────
+  // 16th-note hats with accent on every off-beat.
+  s("hh*16")
+    .gain("0.26 0.18 0.34 0.18")
+    .hpf(6000),
+
+  // ── OPEN HAT ─────────────────────────────────────────────────
+  s("~ ~ ~ oh ~ ~ ~ oh")
+    .gain(0.38).hpf(4500),
+
+  // ── SEQUENCED 16th BASS — THE HEART ──────────────────────────
+  // The Italo-disco bass: tight 16ths on the root with octave jumps
+  // and chromatic neighbours. Filter sweeps over the cycle for
+  // dynamic interest. lpq(8) gives the resonant pulse.
+  note("d2 d3 d2 d3  d2 d3 c#3 d3  bb1 bb2 bb1 bb2  a1 a2 g#2 a2  f1 f2 f1 f2  f2 a2 c3 a2  a1 a2 a1 a2  a1 c#2 e2 g2")
+    .sound("sawtooth")
+    .lpf("400 600 900 1500 2200 1500 900 500")
+    .lpq(8).attack(0.005).decay(0.08).sustain(0.4).release(0.05)
+    .shape(0.15).gain(0.7),
+
+  // ── BIG STRING PAD ───────────────────────────────────────────
+  // Wide sustained string voicings — the "Donna Summer Mountain
+  // Top" pad. Long attack and release, very wet reverb.
+  note("<[d4,f4,a4,d5] [bb3,d4,f4,bb4] [f3,a3,c4,f4] [a3,c#4,e4,a4]>")
+    .sound("sawtooth").attack(0.4).release(1.8)
+    .lpf(2800).gain(0.36).pan(0.45)
+    .room(0.5).size(0.75).slow(2),
+
+  // ── LEAD MELODY ──────────────────────────────────────────────
+  // Soaring synth lead — natural minor melodic line with raised 7
+  // on the dominant cadence. Delay echoes give the spaciousness.
+  note("a4 ~ d5 f5  a5 ~ ~ g5  ~ f5 ~ d5  ~ ~ ~ ~  d5 ~ f5 a5  d6 ~ ~ c6  ~ bb5 ~ a5  ~ ~ ~ ~")
+    .sound("sawtooth").attack(0.04).release(0.4)
+    .lpf(4500).gain(0.4).pan(0.55)
+    .delay(0.35).delaytime(0.375).delayfeedback(0.3)
+    .room(0.4).slow(2),
+
+  // ── BELL SPARKLE ─────────────────────────────────────────────
+  // 80s bell shimmer over every chord change.
+  note("<d6 ~ ~ ~  bb5 ~ ~ ~  f6 ~ ~ ~  a5 ~ ~ ~>")
+    .sound("triangle").attack(0.005).release(0.4)
+    .delay(0.4).delaytime(0.25).delayfeedback(0.35)
+    .gain(0.2).pan(0.4).slow(2)
+
+)
