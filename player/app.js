@@ -35,8 +35,21 @@ function strudelUrlFor(code) {
 }
 
 function loadIntoFrame(code) {
-  const frame = document.getElementById('strudel-frame');
-  if (frame) frame.src = strudelUrlFor(code);
+  const old = document.getElementById('strudel-frame');
+  if (!old) return;
+  // Setting iframe.src to a URL that differs only in the #fragment is
+  // treated as a fragment-only navigation — the iframe scrolls but does
+  // NOT reload, so the new code never runs. Replace the element instead.
+  // Cloning the old node's attributes keeps the layout identical; we
+  // just swap in a fresh element so the browser does a full load.
+  const fresh = document.createElement('iframe');
+  fresh.id        = old.id;
+  fresh.className = old.className;
+  fresh.title     = old.title || 'Strudel REPL';
+  fresh.allow     = old.allow || 'autoplay; clipboard-read; clipboard-write';
+  fresh.loading   = old.loading || 'lazy';
+  fresh.src       = strudelUrlFor(code);
+  old.replaceWith(fresh);
 }
 
 // ── Metadata parser (same shape as lofi-player) ──────────────────────────────
