@@ -1,0 +1,85 @@
+// ══════════════════════════════════════════════════════════════
+// "Spaceship Echo"
+// Dub — Jamaican space-music in the King Tubby tradition
+//
+// Key:    D minor pentatonic (with bVII to bIII vamp)
+// Tempo:  74 BPM  (setcpm 18.5)
+// Chords: Dm — F — Am — Dm  (i — III — v — i, dub vamp)
+// Feel:   One drop kick, sky-high tape delay, bass that swallows the room.
+//
+// THEORY NOTES
+//   Dub is a remixing tradition out of Kingston (King Tubby, Lee
+//   Perry, Scientist) where you take a roots-reggae rhythm track,
+//   strip it down to drums + bass, and add lavish FX — long tape
+//   delays, spring reverb, EQ sweeps. The drum pattern is "one
+//   drop" — kick on beat 3, snare/rim on the rim shot. Bass is the
+//   main melodic voice. Harmony stays static (one or two chords)
+//   while the FX engineer plays the room.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(18.5)
+
+stack(
+
+  // ── ONE DROP KICK ────────────────────────────────────────────
+  // The signature: NO kick on beat 1. Kick on beat 3.
+  s("~ ~ ~ ~ bd ~ ~ ~")
+    .gain(0.92).lpf(170).shape(0.1),
+
+  // ── RIM SHOT ─────────────────────────────────────────────────
+  // The "skank" — rim on beats 2 and 4. Reggae-tight.
+  s("~ ~ rim ~ ~ ~ rim ~")
+    .gain(0.6).hpf(3000).room(0.18),
+
+  // ── PERCUSSIVE HI-HAT ────────────────────────────────────────
+  // 8th-note shuffle, very low gain. Some sometimes-dub-effects
+  // would gate it — we just keep it dry and supportive.
+  s("hh*8").gain(0.22).hpf(5500)
+    .pan("0.4 0.6"),
+
+  // ── OPEN HAT ECHO ────────────────────────────────────────────
+  // Sparse open-hat with HEAVY tape-delay — the dub trademark.
+  s("~ ~ ~ ~ ~ ~ ~ oh")
+    .gain(0.55).hpf(4000)
+    .delay(0.7).delaytime(0.5).delayfeedback(0.7)
+    .room(0.6).slow(2),
+
+  // ── BASS — THE MAIN VOICE ────────────────────────────────────
+  // Roots-reggae bass: long sustained tones, root + 5th + b7. The
+  // sub end is everything — LPF at 220 Hz keeps it warm and round.
+  // Notice the syncopated rhythm — bass plays through the rest
+  // that beat 1's kick would normally occupy.
+  note("d2 ~ a1 d2  ~ ~ a1 ~  f2 ~ c2 ~  d2 ~ a1 ~")
+    .sound("sawtooth").lpf(220).lpq(4)
+    .attack(0.01).decay(0.15).sustain(0.4).release(0.3)
+    .gain(0.85),
+
+  // ── DUB CHORD STAB ───────────────────────────────────────────
+  // Sparse chord — only on beat 3 of every 2nd bar. Heavy delay
+  // makes it ricochet into the next bar.
+  note("<[d3,f3,a3,c4] ~ ~ ~  [f3,a3,c4,eb4] ~ ~ ~>")
+    .sound("sawtooth").attack(0.005).release(0.18)
+    .lpf(1800).gain(0.4)
+    .delay(0.65).delaytime(0.375).delayfeedback(0.55)
+    .room(0.65).size(0.8).pan(0.55).slow(4),
+
+  // ── PSEUDO-MELODICA (dub trumpet) ────────────────────────────
+  // Very simple riff in D minor pentatonic. Wide reverb, tape
+  // delay to bounce it around the room.
+  note("d4 ~ f4 a4  ~ c5 ~ a4  ~ ~ f4 d4  ~ ~ ~ ~")
+    .sound("triangle").attack(0.04).release(0.4)
+    .delay(0.55).delaytime(0.5).delayfeedback(0.45)
+    .room(0.7).size(0.85).gain(0.36).pan(0.5).slow(2),
+
+  // ── TAPE HISS ────────────────────────────────────────────────
+  // Constant tape noise — the "outside the speakers" feeling.
+  s("hh*32").gain(0.04).hpf(6500).degradeBy(0.45),
+
+  // ── BUBBLE PERC ──────────────────────────────────────────────
+  // Roots-reggae percussion bubble — sparse rim with delay echoes.
+  s("~ ~ ~ ~ ~ rim ~ ~")
+    .gain(0.3).hpf(2500)
+    .delay(0.4).delaytime(0.166).delayfeedback(0.4)
+    .room(0.5).pan(0.35).slow(2)
+
+)

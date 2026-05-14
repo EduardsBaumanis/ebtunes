@@ -1,0 +1,81 @@
+// ══════════════════════════════════════════════════════════════
+// "Bristol Gray"
+// Trip-hop — Massive Attack, Portishead, Tricky lineage
+//
+// Key:    C minor
+// Tempo:  88 BPM  (setcpm 22)
+// Chords: Cm7 — Abmaj7 — Fm9 — Gsus4  (i — VI — iv — V)
+// Feel:   Heavy hip-hop break, vinyl crackle, cinematic strings.
+//
+// THEORY NOTES
+//   Trip-hop is Bristol 1991: hip-hop's slow tempos (85-95 BPM),
+//   sampled jazz / soundtrack loops, dub's reverb, and gothic-pop's
+//   vocal melancholy. Drums are heavy break-style — punchy kick on
+//   1, big snare on 3, off-kilter hats. Bass is jazz-sub. The
+//   harmony stays minor-key with maj7 colour chords lifted from
+//   60s soundtracks. Vocals (if any) sit in their own reverb pool.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(22)
+
+stack(
+
+  // ── HEAVY KICK ───────────────────────────────────────────────
+  // Boom-bap kick — punchy, on 1 and the &-of-3.
+  s("bd ~ ~ ~  ~ bd ~ ~")
+    .gain(0.95).lpf(150).shape(0.2),
+
+  // ── BIG SNARE ────────────────────────────────────────────────
+  // Snare on 3 with heavy room reverb — the cinematic "Portishead
+  // snare" sound.
+  s("~ ~ ~ ~  sd ~ ~ ~")
+    .gain(0.8).hpf(220).room(0.45).size(0.8).shape(0.15),
+
+  // ── OFF-KILTER HATS ──────────────────────────────────────────
+  // 8th-note hats with degradeBy — gives the "human" sample-chop
+  // feel of trip-hop.
+  s("hh*8")
+    .gain(0.3).hpf(5500).degradeBy(0.12)
+    .pan("0.4 0.6"),
+
+  // ── OPEN HAT ─────────────────────────────────────────────────
+  s("~ ~ ~ ~ ~ ~ oh ~")
+    .gain(0.45).hpf(4000),
+
+  // ── VINYL CRACKLE ────────────────────────────────────────────
+  // Constant noise floor — every trip-hop record has it.
+  s("hh*32").gain(0.08).hpf(7000).degradeBy(0.5),
+
+  // ── BASS ─────────────────────────────────────────────────────
+  // Jazz-derived bass line — moves through chord roots with passing
+  // tones. Round LPF, soft attack.
+  note("c2 ~ g2 ~  ab1 ~ eb2 ~  f1 ~ c2 ~  g1 ~ d2 ~")
+    .sound("sawtooth").lpf(280).lpq(4)
+    .attack(0.01).decay(0.15).sustain(0.4).release(0.2)
+    .gain(0.78),
+
+  // ── RHODES-STYLE CHORDS ──────────────────────────────────────
+  // Soulful 7th/9th voicings — Cm7, Abmaj7, Fm9, Gsus4. Each chord
+  // sustains across a full cycle.
+  note("<[c4,eb4,g4,bb4] [ab3,c4,eb4,g4] [f3,ab3,c4,eb4,g4] [g3,c4,d4,f4]>")
+    .sound("sawtooth").attack(0.08).release(0.6)
+    .lpf(1900).room(0.32).size(0.7)
+    .gain(0.32).pan(0.42).slow(2),
+
+  // ── CINEMATIC STRING PAD ─────────────────────────────────────
+  // High sustained voicings — the "soundtrack sample" character.
+  // Long attack, long release; sits behind everything.
+  note("<[eb5,g5,bb5] [c5,eb5,g5] [ab4,c5,eb5] [bb4,d5,f5]>")
+    .sound("sawtooth").attack(0.6).release(2.5)
+    .lpf(2400).gain(0.18).pan(0.55).slow(4)
+    .room(0.6),
+
+  // ── MELODIC HOOK ─────────────────────────────────────────────
+  // Sparse melodic line — singer-style phrasing in C minor pentatonic
+  // with a chromatic neighbour.
+  note("g5 ~ eb5 ~  c5 ~ bb4 ab4  ~ eb5 ~ c5  bb4 ~ ~ ~")
+    .sound("triangle").attack(0.04).release(0.5)
+    .delay(0.45).delaytime(0.5).delayfeedback(0.32)
+    .room(0.55).gain(0.42).pan(0.55).slow(2)
+
+)

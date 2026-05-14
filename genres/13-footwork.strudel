@@ -1,0 +1,85 @@
+// ══════════════════════════════════════════════════════════════
+// "Chicago Pulse 160"
+// Footwork — Chicago juke, 160 BPM, microscopic rhythms
+//
+// Key:    G minor pentatonic
+// Tempo:  160 BPM  (setcpm 40)
+// Chords: Gm vamp (single mode)
+// Feel:   Triplet kick pockets, chopped vocal samples, sub-shake.
+//
+// THEORY NOTES
+//   Footwork is the dance music of Chicago juke battles — DJ Rashad,
+//   DJ Spinn, Traxman. 160 BPM, but the rhythmic content is mostly
+//   in tuplet groupings (3-, 5-, 7-pulse subdivisions inside a 4/4
+//   bar). Kicks land in unexpected micro-positions; chopped vocal
+//   samples loop the same syllable in fast triplets. Bass is sub
+//   only, very sparse. The genre is rhythmically denser than DnB
+//   but melodically minimal — the dance is the composition.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(40)
+
+stack(
+
+  // ── KICK — TRIPLET GROUPS ────────────────────────────────────
+  // Footwork's signature: kicks in 3s inside a 4 grid. This pattern
+  // gives the "stuttering" footwork pulse.
+  s("bd ~ ~ bd ~ bd bd ~  bd ~ bd ~ bd ~ ~ bd")
+    .gain(0.92).lpf(140).shape(0.18),
+
+  // ── 808 CLAP — ON 2 + 4 with TRIPLET FILLS ───────────────────
+  // Backbeat clap. Every other cycle, a triplet fill on beat 4.
+  s("~ ~ cp ~  ~ ~ cp ~")
+    .gain(0.65).hpf(280).room(0.18),
+  s("~ ~ ~ ~  ~ ~ ~ [cp*3]")
+    .gain(0.42).hpf(280).slow(2),
+
+  // ── SUB BASS — VERY SPARSE ───────────────────────────────────
+  // Sub-octave G hit only on beat 1 of every other bar. Footwork's
+  // weight comes from absence as much as presence.
+  note("g0")
+    .sound("sine").attack(0.005).release(0.8)
+    .gain(0.95).slow(2),
+
+  // ── BASS ──────────────────────────────────────────────────────
+  // Slightly higher sub on the "off" cycles — keeps the rhythm
+  // engaged without melodic motion.
+  note("~ ~ ~ ~  ~ ~ g1 ~")
+    .sound("sine").attack(0.005).release(0.4)
+    .gain(0.7).slow(2),
+
+  // ── CHOPPED VOCAL (faux) ─────────────────────────────────────
+  // Sawtooth + vowel filter approximates the chopped vocal samples
+  // ("get-get-get", "go-go-go") that footwork producers loop in
+  // triplet groupings. Heavy syncopation.
+  note("g4 g4 g4 ~  g4 g4 g4 ~  bb4 bb4 bb4 ~  g4 ~ ~ ~")
+    .sound("sawtooth").vowel("e")
+    .attack(0.001).decay(0.05).sustain(0).release(0.03)
+    .lpf(2500).gain(0.55).pan(0.5)
+    .struct("x x x ~  ~ x x x  x ~ x x  ~ x x ~"),
+
+  // ── HI-HAT FILL ──────────────────────────────────────────────
+  // Triplet hi-hat rolls — the rapid-fire footwork hat.
+  s("hh*12")
+    .gain("0.24 0.18 0.24")
+    .hpf(5800).pan("0.4 0.6"),
+
+  // ── SECOND VOX CHOP ──────────────────────────────────────────
+  // Higher chopped vocal layer — different vowel for contrast.
+  note("d5 d5 d5 ~  ~ ~ d5 d5  ~ d5 d5 ~  d5 ~ ~ ~")
+    .sound("sawtooth").vowel("o")
+    .attack(0.005).decay(0.04).sustain(0).release(0.04)
+    .lpf(3500).gain(0.4).pan(0.55).slow(2),
+
+  // ── HIGH PERC ────────────────────────────────────────────────
+  // Sharp rim accent on unexpected positions — keeps the listener
+  // off-balance.
+  s("rim").euclid(5, 16)
+    .gain(0.36).hpf(3200).pan(0.4),
+
+  // ── CRASH (rare) ─────────────────────────────────────────────
+  // Once every 4 cycles, a crash to mark phrase change.
+  s("cy ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.4).hpf(2000).room(0.4).slow(4)
+
+)

@@ -233,12 +233,38 @@ async function vote(value) {
   setLocalVote(currentSongId, next);
   refreshVoteButtons();
 
-  // Flash whichever button was just engaged
+  // Flash whichever button was just engaged, kick off the submission in
+  // the background (don't block the auto-advance on the network).
   const btn = value === 1 ? elBtnHot : elBtnNot;
   btn.classList.add('flash');
-  setTimeout(() => btn.classList.remove('flash'), 220);
+  submitVote(currentSongId, next).catch(err => {
+    console.error('vote submit failed; vote stays in local cache:', err);
+  });
 
-  await submitVote(currentSongId, next);
+  // Brief pause so the user sees the button flash + state change, then
+  // jump to the next song in the current playlist (wraps at the end).
+  await new Promise(r => setTimeout(r, 220));
+  btn.classList.remove('flash');
+
+  const nextSong = nextSongInPlaylist();
+  if (nextSong) {
+    await selectSong(nextSong.playlist, nextSong.filename, nextSong.idx);
+  }
+}
+
+// Find the next song in the current playlist. Wraps to the first song
+// once we hit the end so a long voting session keeps flowing instead
+// of stopping cold on the last track.
+function nextSongInPlaylist() {
+  if (!currentPlaylist || !currentFilename) return null;
+  const idx = currentPlaylist.files.indexOf(currentFilename);
+  if (idx < 0) return null;
+  const nextIdx = (idx + 1) % currentPlaylist.files.length;
+  return {
+    playlist: currentPlaylist,
+    filename: currentPlaylist.files[nextIdx],
+    idx:      nextIdx,
+  };
 }
 
 // ── Board (leaderboard) ──────────────────────────────────────────────────────

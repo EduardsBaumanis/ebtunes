@@ -1,0 +1,85 @@
+// ══════════════════════════════════════════════════════════════
+// "Once Upon a Dust Cloud"
+// Spaghetti western — Morricone scoring tradition
+//
+// Key:    A minor (Dorian and Phrygian mixed)
+// Tempo:  70 BPM  (setcpm 17.5)
+// Chords: Am — F — G — E7  (i — VI — VII — V7)
+// Feel:   Twangy lead, whistled melody, big reverb, ominous bass.
+//
+// THEORY NOTES
+//   Ennio Morricone's spaghetti-western scores (The Good, The Bad
+//   and the Ugly; Once Upon a Time in the West) defined cinematic
+//   western sound. The instrumental palette: twangy electric guitar
+//   (Duane Eddy tremolo), whistled or wordless-vocal lead melody,
+//   electric piano, sparse brushed snare, a single chime/bell for
+//   tension, and HUGE reverb on everything. Harmony is minor with
+//   modal mixture (the Phrygian b2 colour for menace, the major V
+//   for cadence).
+// ══════════════════════════════════════════════════════════════
+
+setcpm(17.5)
+
+stack(
+
+  // ── KICK (very sparse) ───────────────────────────────────────
+  // Morricone's scores often have NO drum. We add the lightest
+  // possible kick on beat 1 for grounding.
+  s("bd ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.6).lpf(170),
+
+  // ── BRUSHED SNARE ────────────────────────────────────────────
+  // Slow brushed snare on 3 — like a campfire pulse.
+  s("~ ~ ~ ~ sd ~ ~ ~")
+    .gain(0.5).hpf(800).lpf(4000).room(0.45),
+
+  // ── BASS — OMINOUS ───────────────────────────────────────────
+  // Sub-bass roots — Morricone often used double bass or fuzz bass
+  // for the low end. Sparse, with chromatic neighbour tone.
+  note("a1 ~ ~ ~ ~ ~ e2 ~  f1 ~ ~ ~ ~ ~ c2 ~  g1 ~ ~ ~ ~ ~ d2 ~  e1 ~ ~ g#1 ~ ~ e2 ~")
+    .sound("sawtooth").lpf(280).lpq(4)
+    .attack(0.01).decay(0.2).sustain(0.45).release(0.3)
+    .gain(0.78),
+
+  // ── TWANGY GUITAR — TREMOLO LEAD ─────────────────────────────
+  // The signature spaghetti-western sound. Sawtooth wave with
+  // tremolo (achieved via gain pattern) + heavy reverb.
+  note("a4 ~ c5 ~  e5 ~ ~ d5  ~ c5 ~ a4  ~ ~ ~ ~  f4 ~ a4 ~  c5 ~ ~ bb4  ~ a4 ~ f4  ~ ~ ~ ~")
+    .sound("sawtooth").attack(0.005).release(0.6)
+    .lpf(3000)
+    .gain("0.5 0.4 0.5 0.45")     // gain modulation = tremolo
+    .delay(0.4).delaytime(0.5).delayfeedback(0.35)
+    .room(0.55).size(0.75).pan(0.45).slow(2),
+
+  // ── WHISTLED MELODY (faked with sine) ────────────────────────
+  // Morricone's "whistler" — pure sine wave with mild vibrato +
+  // heavy reverb. Soaring melodic line in A minor.
+  note("a5 ~ ~ e5  ~ ~ a5 ~  c6 ~ ~ ~  ~ b5 a5 ~  ~ ~ e5 g5  a5 ~ ~ ~  c6 ~ ~ b5  ~ a5 ~ ~")
+    .sound("sine").attack(0.08).release(0.7)
+    .vib(3).vibmod(0.2)
+    .delay(0.5).delaytime(0.5).delayfeedback(0.4)
+    .room(0.6).size(0.85).gain(0.48).pan(0.55).slow(2),
+
+  // ── ELECTRIC PIANO CHORDS ────────────────────────────────────
+  // Sparse mid-range chord stab — adds the harmonic weight.
+  note("<[a3,c4,e4] [f3,a3,c4] [g3,b3,d4] [e3,g#3,b3]>")
+    .sound("sawtooth").vowel("o")
+    .attack(0.05).release(0.6)
+    .struct("~ ~ ~ ~ x ~ ~ ~")
+    .lpf(2400).room(0.4).gain(0.34).pan(0.4).slow(2),
+
+  // ── CHIME / BELL — TENSION ───────────────────────────────────
+  // Single high-pitched bell. Sparse, but iconic of the genre.
+  note("e6 ~ ~ ~ ~ ~ ~ ~")
+    .sound("triangle").attack(0.005).release(2)
+    .delay(0.55).delaytime(0.625).delayfeedback(0.5)
+    .room(0.7).gain(0.25).pan(0.5).slow(4),
+
+  // ── WIND TEXTURE ─────────────────────────────────────────────
+  // Filtered noise — desert wind.
+  s("white*8")
+    .lpf(1500).hpf(400)
+    .gain("0.06 0.04 0.08 0.05  0.07 0.04 0.05 0.06")
+    .pan(rand).slow(4)
+
+)

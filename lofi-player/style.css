@@ -123,6 +123,17 @@
   --code-fg:  #a8c8a8;
 }
 
+/* ── GENRES theme — record-shop magenta on midnight indigo ── */
+[data-theme="genres"] {
+  --black:    #0a071a;
+  --white:    #f0c8e8;
+  --grey:     #b06090;
+  --dim:      #1a0c2e;
+  --mid:      #401a58;
+  --code-bg:  #0c0820;
+  --code-fg:  #d8a8c8;
+}
+
 /* ── DEMOS theme — showcase gallery: cool slate + cyan accent ── */
 [data-theme="demos"] {
   --black:    #06090e;

@@ -1,0 +1,89 @@
+// ══════════════════════════════════════════════════════════════
+// "Sunrise Above the Clouds"
+// Trance — German 90s, melodic euphoric uplifting
+//
+// Key:    A minor
+// Tempo:  138 BPM  (setcpm 34.5)
+// Chords: Am — F — C — G  (i — VI — III — VII, classic trance)
+// Feel:   Driving 4/4, sequenced arp, big sweeping pad, soaring lead.
+//
+// THEORY NOTES
+//   Trance grew out of German techno (early 90s — Sven Väth, Paul
+//   van Dyk, Armin van Buuren). 138-142 BPM, four-on-the-floor with
+//   off-beat bass (the bass plays on the 8th rests between kicks).
+//   Long-form structure with breakdowns and build-ups. The "trance
+//   gate" — 16th-note gated pad — is the signature. Harmony is
+//   simple minor with VI-III-VII the universal "anthemic" progression.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(34.5)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Four-on-the-floor. Punchy with light shape.
+  s("bd*4")
+    .gain(0.92).lpf(160).shape(0.15),
+
+  // ── OFF-BEAT BASS — TRANCE SIGNATURE ─────────────────────────
+  // The "lift" bass plays on the &-of-1, &-of-2, etc. — between
+  // the kicks. Sub-bass on the chord roots.
+  note("<a1 f1 c2 g1>")
+    .sound("sawtooth").lpf(380).lpq(6).shape(0.15)
+    .attack(0.005).decay(0.08).sustain(0.3).release(0.06)
+    .struct("~ x ~ x ~ x ~ x")
+    .gain(0.78),
+
+  // ── CLAP ─────────────────────────────────────────────────────
+  // 2 and 4 — the disco backbone under the trance frame.
+  s("~ cp ~ cp")
+    .gain(0.6).hpf(280).room(0.25),
+
+  // ── HI-HAT 16ths ─────────────────────────────────────────────
+  // 16th-note hat groove with off-beat accent.
+  s("hh*16")
+    .gain("0.30 0.18 0.32 0.20")
+    .hpf(6000),
+
+  // ── OPEN HAT ─────────────────────────────────────────────────
+  s("~ oh ~ oh")
+    .gain(0.38).hpf(4500),
+
+  // ── TRANCE ARPEGGIO — 16th SEQUENCED LEAD ────────────────────
+  // 16th-note arpeggio cycling through chord tones. Filter sweep
+  // gives the dynamic motion. Classic Paul van Dyk arp pattern.
+  note("a4 e5 a5 e5  c5 g5 c6 g5  f4 c5 f5 c5  a4 e5 a5 e5  c4 g4 c5 g4  e4 b4 e5 b4  g4 d5 g5 d5  b4 fs5 b5 fs5")
+    .sound("sawtooth")
+    .lpf("800 1200 2200 3500 2800 1500 900 600")
+    .lpq(6).attack(0.005).decay(0.08).sustain(0.3).release(0.08)
+    .gain(0.4).pan(0.5),
+
+  // ── GATED PAD — THE "TRANCE GATE" ────────────────────────────
+  // Sustained pad chopped to 16th rhythm — the signature "gated"
+  // sound that trance producers love. Vowel filter "u" gives it
+  // the choir character.
+  note("<[a3,c4,e4,a4] [f3,a3,c4,f4] [c4,e4,g4,c5] [g3,b3,d4,g4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(0.3).release(0.18)
+    .struct("x x x x x x x x")
+    .lpf(2400).gain(0.36).pan(0.45)
+    .room(0.4).slow(2),
+
+  // ── SOARING LEAD ─────────────────────────────────────────────
+  // Anthemic lead melody — A minor pentatonic with the major 7
+  // for emotional lift. Comes in over the chord progression.
+  note("a5 ~ c6 ~  e6 ~ ~ d6  ~ c6 ~ a5  ~ ~ ~ ~  c6 ~ e6 ~  g6 ~ ~ e6  ~ d6 ~ c6  ~ ~ a5 ~")
+    .sound("sawtooth").attack(0.04).release(0.5)
+    .lpf(4500).gain(0.42).pan(0.55)
+    .delay(0.32).delaytime(0.375).delayfeedback(0.3)
+    .room(0.4).slow(2),
+
+  // ── REVERSE CRASH RISE ───────────────────────────────────────
+  // Build-up at the end of each 4-bar phrase. White noise with
+  // rising filter.
+  s("white*16")
+    .lpf("400 800 1500 3000 5000 8000 12000 15000")
+    .gain("0.04 0.06 0.08 0.10 0.14 0.18 0.22 0.28")
+    .pan(0.5).slow(4)
+
+)
