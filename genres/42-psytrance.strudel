@@ -1,0 +1,88 @@
+// ══════════════════════════════════════════════════════════════
+// "Forest 145"
+// Psytrance — Goa lineage, 16th-note rolling bass
+//
+// Key:    F# minor (with chromatic neighbour for "trippy" character)
+// Tempo:  145 BPM  (setcpm 36.25)
+// Chords: F#m — one chord vamp (the entire harmonic content)
+// Feel:   Rolling 8th-note bass, hypnotic acid line, alien atmospherics.
+//
+// THEORY NOTES
+//   Psytrance descends from Goa trance (Indian beach raves of the
+//   90s) and developed in Israel and Germany. Faster than regular
+//   trance (140-150 BPM), with the diagnostic 16th-note "rolling
+//   bass" — three sustained 16th notes followed by a rest (BUM-BUM-
+//   BUM-rest, BUM-BUM-BUM-rest). The 303-style acid lead is the
+//   melodic feature. Harmony is single-chord modal — no chord
+//   progressions, just textural shifts. Atmospheric "FX" samples
+//   (alien beeps, whooshes) decorate the texture.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(36.25)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Four-on-the-floor — punchy, distorted.
+  s("bd*4")
+    .gain(0.94).lpf(150).shape(0.2),
+
+  // ── ROLLING 16th BASS — PSYTRANCE SIGNATURE ──────────────────
+  // The pattern: 3 sustained 16ths between each kick. Sustained
+  // root note (F#) with the characteristic "fff-fff-fff" rolling
+  // shape. Filter doesn't move — the bass is mantra-like.
+  note("fs1")
+    .sound("sawtooth").lpf(280).lpq(6).shape(0.25)
+    .attack(0.001).decay(0.04).sustain(0.5).release(0.04)
+    .struct("~ x x x  ~ x x x  ~ x x x  ~ x x x")
+    .gain(0.78),
+
+  // ── HI-HAT 16ths ─────────────────────────────────────────────
+  // Constant 16th-note hat groove.
+  s("hh*16")
+    .gain("0.28 0.20 0.30 0.22")
+    .hpf(6000),
+
+  // ── OPEN HAT ─────────────────────────────────────────────────
+  // Off-beat opens give the dance energy.
+  s("~ oh ~ oh")
+    .gain(0.4).hpf(4500),
+
+  // ── ACID LEAD — 303-STYLE SQUELCH ────────────────────────────
+  // Resonant TB-303 style line in F# minor with chromatic colour
+  // notes. Filter sweeps create the psytrance "wobble".
+  note("fs3 fs4 e4 fs3  a3 fs4 e4 cs4  fs3 fs4 g4 fs3  d4 cs4 a3 e4")
+    .sound("sawtooth")
+    .lpf("400 800 1400 2400 1800 1100 600 350")
+    .lpq(14).shape(0.3)
+    .attack(0.001).decay(0.1).sustain(0.3).release(0.04)
+    .gain(0.55).pan(0.45),
+
+  // ── DARK PAD ─────────────────────────────────────────────────
+  // Slow F#m9 voicing underneath the rolling bass. Very long
+  // attack so it shimmers in and out.
+  note("[fs3,a3,cs4,e4,gs4]")
+    .sound("sawtooth").attack(2).release(3.5)
+    .lpf(1800).gain(0.22).pan(0.5)
+    .room(0.55).slow(4),
+
+  // ── FX BEEP — ALIEN ATMOSPHERIC ─────────────────────────────
+  // High-pitched sustained "alien" tone — sparse trigger pattern,
+  // heavy delay. Pitch slides simulate the "uwu" psytrance FX.
+  note("cs7 ~ ~ ~ ~ ~ ~ ~  ~ ~ ~ ~ gs6 ~ ~ ~")
+    .sound("sine").attack(0.1).release(1.5)
+    .vib(5).vibmod(0.5)
+    .delay(0.55).delaytime(0.5).delayfeedback(0.55)
+    .room(0.7).gain(0.3).pan(rand).slow(4),
+
+  // ── METALLIC PERC ────────────────────────────────────────────
+  // Rim shot perc on euclidean pattern — adds the polyrhythm.
+  s("rim").euclid(5, 16)
+    .gain(0.36).hpf(3500).pan(0.4),
+
+  // ── BUILD CYMBAL ─────────────────────────────────────────────
+  // Crash every 4 cycles for phrase changes.
+  s("cy ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.4).room(0.6).slow(4)
+
+)
