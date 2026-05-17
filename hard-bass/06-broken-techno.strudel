@@ -1,0 +1,86 @@
+// ══════════════════════════════════════════════════════════════
+// "Broken Techno"
+// UK broken techno — Surgeon "Klonk", Function-style displaced beats
+//
+// Key:    E minor
+// Tempo:  140 BPM  (setcpm 35)
+// Feel:   The kick MOVES every few bars — drops off-grid, then back.
+//
+// STRUDEL FUNCTIONS HIGHLIGHTED
+//   .every(N, fn)        — apply fn on every Nth cycle
+//   .sometimes(fn)       — apply fn ~50% of the time
+//   .late(amount)        — delay events by that fraction of a cycle
+// ══════════════════════════════════════════════════════════════
+
+setcpm(slider(35, 30, 42))
+
+stack(
+
+  // ── KICK — displaced on every 4th cycle ───────────────────────
+  // every(4, x => x.late(1/16)) pushes the entire kick pattern late
+  // by a 16th note once every 4 cycles. To the ear it's the same
+  // beat suddenly "dragging" then snapping back — broken-techno
+  // signature.
+  s("bd*4")
+    .every(4, x => x.late(1/16))
+    .shape(slider(0.4, 0, 0.7))
+    .gain(0.95).lpf(170)
+    .color("crimson"),
+
+  // ── CLAP ──────────────────────────────────────────────────────
+  s("~ cp ~ cp")
+    .gain(0.62).hpf(280).room(0.2)
+    .color("orange"),
+
+  // ── HI-HAT 16ths — sometimes a triplet burst ──────────────────
+  s("hh*16")
+    .gain("0.30 0.20 0.30 0.20")
+    .hpf(5800)
+    .sometimes(x => x.fast(1.5))   // ~50% chance of triplet feel
+    .color("yellow"),
+
+  // ── SUB BASS — also gets the broken treatment ─────────────────
+  note("e1")
+    .sound("sine")
+    .struct("x ~ x ~  x x ~ x")
+    .every(4, x => x.late(1/16))
+    .gain(0.85)
+    .color("navy"),
+
+  // ── ACID 303 STAB ─────────────────────────────────────────────
+  note("e2 ~ ~ ~  ~ ~ g2 ~  ~ e2 ~ ~  d2 ~ ~ ~")
+    .sound("sawtooth").lpf(slider(800, 200, 2500)).lpq(10)
+    .shape(0.3)
+    .attack(0.005).release(0.18)
+    .gain(0.55).pan(0.55)
+    .color("purple"),
+
+  // ── METALLIC RIM PATTERN — straight ───────────────────────────
+  // Stays on the grid while the kick is displaced — the contrast is
+  // where broken techno gets its tension.
+  s("rim").euclid(7, 16)
+    .gain(0.4).hpf(3200).pan(0.4)
+    .color("silver"),
+
+  // ── BREAKBEAT GHOST ───────────────────────────────────────────
+  // Snare ghost notes on weak positions for the broken character.
+  s("~ sd ~ ~ ~ ~ sd ~  ~ ~ sd ~ ~ sd ~ ~")
+    .gain(0.32).hpf(280).room(0.18).shape(0.1)
+    .color("gold"),
+
+  // ── DARK PAD ──────────────────────────────────────────────────
+  note("[e3,g3,b3]")
+    .sound("sawtooth")
+    .attack(1).release(2)
+    .lpf(1400).vowel("u")
+    .gain(0.22).pan(0.5)
+    .room(0.5).slow(4)
+    .color("teal"),
+
+  // ── BREAKDOWN BUILD — noise sweep every 4 cycles ──────────────
+  s("white*16")
+    .lpf(slider(1500, 200, 8000))
+    .gain("0.04 0.06 0.10 0.14")
+    .pan(0.5).slow(4)
+    .color("white")
+)

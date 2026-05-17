@@ -134,6 +134,17 @@
   --code-fg:  #d8a8c8;
 }
 
+/* ── HARD BASS theme — blood-red bunker, industrial concrete ── */
+[data-theme="hardbass"] {
+  --black:    #0d0303;
+  --white:    #f0c0c0;
+  --grey:     #a04040;
+  --dim:      #200808;
+  --mid:      #481010;
+  --code-bg:  #0d0303;
+  --code-fg:  #d09898;
+}
+
 /* ── DEMOS theme — showcase gallery: cool slate + cyan accent ── */
 [data-theme="demos"] {
   --black:    #06090e;

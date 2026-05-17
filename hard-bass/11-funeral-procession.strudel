@@ -1,0 +1,80 @@
+// ══════════════════════════════════════════════════════════════
+// "Funeral Procession"
+// Slow dark hard techno — Phase Fatale, Ascion lineage
+//
+// Key:    F# minor (single chord, modal dread)
+// Tempo:  118 BPM  (setcpm 29.5)
+// Feel:   Slow funeral pace, oppressive low-end, sparse percussion.
+//
+// STRUDEL FUNCTIONS HIGHLIGHTED
+//   .room(N)            — reverb amount
+//   .size(N)            — reverb tail length / room size
+//   .attack/.release    — long envelopes for cinematic swells
+// ══════════════════════════════════════════════════════════════
+
+setcpm(slider(29.5, 24, 35))
+
+stack(
+
+  // ── SLOW HEAVY KICK ───────────────────────────────────────────
+  s("bd*4")
+    .shape(slider(0.35, 0, 0.7))
+    .gain(0.93).lpf(140)
+    .room(0.18).size(0.6)
+    .color("crimson"),
+
+  // ── DARK SNARE on the 3 ───────────────────────────────────────
+  s("~ ~ sd ~")
+    .gain(0.7).hpf(220).room(0.45).size(0.8).shape(0.18)
+    .color("orange"),
+
+  // ── HI-HAT 16ths — very wet ───────────────────────────────────
+  s("hh*16")
+    .gain("0.24 0.16 0.26 0.18")
+    .hpf(5800).room(slider(0.3, 0, 0.6)).size(0.7)
+    .color("yellow"),
+
+  // ── SUB DRONE ─────────────────────────────────────────────────
+  note("fs1")
+    .sound("sine")
+    .attack(3).release(5)
+    .gain(0.55)
+    .color("navy"),
+
+  // ── INDUSTRIAL BASS — long sustained ──────────────────────────
+  note("fs2 ~ ~ ~  ~ ~ fs2 ~")
+    .sound("sawtooth").lpf(380).lpq(6)
+    .shape(0.3)
+    .attack(0.05).release(1.2)
+    .gain(0.5).pan(0.5)
+    .color("purple"),
+
+  // ── DARK CHOIR PAD ────────────────────────────────────────────
+  note("[fs3,a3,cs4]")
+    .sound("sawtooth").vowel("o")
+    .attack(2).release(3)
+    .lpf(1300).gain(0.28).pan(0.5)
+    .room(0.7).size(0.9).slow(4)
+    .color("teal"),
+
+  // ── METAL CLANK — sparse, surprising ──────────────────────────
+  s("rim").euclid(3, 16)
+    .shape(0.25).gain(0.4).hpf(2800).pan(0.4)
+    .room(0.5).size(0.75)
+    .color("silver"),
+
+  // ── WIND TEXTURE — filtered noise ─────────────────────────────
+  s("white*8")
+    .lpf("400 700 500 800")
+    .gain("0.04 0.08 0.05 0.10")
+    .pan(rand).slow(4)
+    .color("gray"),
+
+  // ── TUBULAR BELL — every 4 cycles ─────────────────────────────
+  note("fs5")
+    .sound("triangle").attack(0.02).release(2)
+    .delay(0.65).delaytime(0.625).delayfeedback(0.55)
+    .room(0.75).size(0.92).gain(0.32).pan(0.5)
+    .slow(4)
+    .color("white")
+)
