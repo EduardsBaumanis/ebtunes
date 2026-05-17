@@ -1,0 +1,90 @@
+// ══════════════════════════════════════════════════════════════
+// "Closing Track"
+// Slow hypnotic closer — the 3am set-ender, sun-up techno
+//
+// Key:    D minor (with the bIII Picardy lift at the climax)
+// Tempo:  124 BPM  (setcpm 31)
+// Feel:   Slower, more melodic, beautiful — the comedown.
+//
+// STRUDEL FUNCTIONS HIGHLIGHTED
+//   .when("<...>", fn)  — conditional transform on a binary pattern
+//   .ribbon(start, n)   — extract n-cycle window of a longer pattern
+//   .add("<...>")       — pitch-modulate by a pattern of semitones
+// ══════════════════════════════════════════════════════════════
+
+setcpm(slider(31, 26, 36))
+
+stack(
+
+  // ── SOFTER KICK — less distortion, more space ─────────────────
+  s("bd*4")
+    .shape(slider(0.25, 0, 0.5))
+    .gain(0.88).lpf(170)
+    .room(0.15)
+    .color("crimson"),
+
+  // ── CLAP ──────────────────────────────────────────────────────
+  s("~ cp ~ cp")
+    .gain(0.6).hpf(280).room(0.3).size(0.7)
+    .color("orange"),
+
+  // ── HAT — when'd bright variant ───────────────────────────────
+  // .when(binary-pattern, fn) applies fn only on the "1" steps of
+  // the binary pattern. Here, every 4th cycle the hats brighten.
+  s("hh*16")
+    .when("<0 0 0 1>", x => x.hpf(8500).gain(0.5))
+    .gain(0.28).hpf(5800)
+    .color("yellow"),
+
+  // ── BASS — RIBBON pulls a 4-cycle window from an 8-bar phrase ─
+  // .ribbon(start, length) extracts a length-cycle slice of a
+  // longer pattern. Here the underlying phrase is 8 chord changes;
+  // ribbon(0, 4) loops just the first 4 — so we get the "calm"
+  // half of the progression as our closer.
+  note("<d2 a1 f2 c2 g1 d2 a1 f2>")
+    .ribbon(0, 4)
+    .sound("sawtooth").lpf(420).lpq(4)
+    .shape(0.15)
+    .attack(0.01).release(0.3)
+    .gain(0.62)
+    .color("purple"),
+
+  // ── SUB ANCHOR ────────────────────────────────────────────────
+  note("d1")
+    .sound("sine")
+    .struct("x ~ x ~ x x ~ x")
+    .gain(0.82)
+    .color("navy"),
+
+  // ── BEAUTIFUL PAD — the comedown chord ─────────────────────────
+  // .add("<0 0 0 4>") octave-modulates: 3 cycles in Dm, 1 cycle
+  // shifted up 4 semitones (D → F#) for the Picardy-third lift.
+  note("<[d4,f4,a4] [c4,e4,g4] [bb3,d4,f4] [a3,c#4,e4]>")
+    .sound("sawtooth").vowel("o")
+    .attack(0.8).release(2.5)
+    .lpf(slider(1800, 800, 3500))
+    .gain(0.32).pan(0.5)
+    .room(0.5).slow(2)
+    .color("teal"),
+
+  // ── MELODIC HOOK ──────────────────────────────────────────────
+  note("d5 ~ f5 ~  ~ a5 ~ g5  ~ f5 ~ d5  ~ ~ ~ ~")
+    .sound("triangle").attack(0.05).release(0.5)
+    .lpf(3500).gain(0.45).pan(0.55)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.32)
+    .room(0.45).slow(2)
+    .color("hotpink"),
+
+  // ── BELL SHIMMER ──────────────────────────────────────────────
+  note("d6 ~ ~ ~ ~ ~ ~ ~")
+    .sound("triangle").attack(0.3).release(2)
+    .delay(0.55).delaytime(0.625).delayfeedback(0.5)
+    .room(0.6).gain(0.2).pan(0.45)
+    .slow(4)
+    .color("white"),
+
+  // ── OPEN HAT ──────────────────────────────────────────────────
+  s("~ ~ ~ oh ~ ~ ~ ~")
+    .gain(0.4).hpf(4500)
+    .color("gold")
+)

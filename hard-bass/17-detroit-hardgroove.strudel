@@ -1,0 +1,85 @@
+// ══════════════════════════════════════════════════════════════
+// "Detroit Hardgroove"
+// Hardgroove — Ben Sims, Adam Beyer, Drumcode 2002
+//
+// Key:    A minor (modal)
+// Tempo:  138 BPM  (setcpm 34.5)
+// Feel:   Tight rolling drums, .jux(rev) stereo trick, off-beat bass.
+//
+// STRUDEL FUNCTIONS HIGHLIGHTED
+//   .jux(rev)           — pattern hard-left, REVERSED hard-right
+//   .off(offset, fn)    — duplicate pattern offset by N cycles
+//   .swing(N)           — swing the off-beats
+// ══════════════════════════════════════════════════════════════
+
+setcpm(slider(34.5, 30, 40))
+
+stack(
+
+  // ── KICK ──────────────────────────────────────────────────────
+  s("bd*4")
+    .shape(slider(0.35, 0, 0.65))
+    .gain(0.93).lpf(170)
+    .color("crimson"),
+
+  // ── CLAP ──────────────────────────────────────────────────────
+  s("~ cp ~ cp")
+    .gain(0.62).hpf(280).room(0.18)
+    .color("orange"),
+
+  // ── HAT — jux(rev) for stereo trick ───────────────────────────
+  // .jux(rev) puts the SAME hat pattern hard-left forward, and
+  // hard-right REVERSED. The ear stitches them together into a
+  // wide, "phasing" texture that's a Drumcode hallmark.
+  s("hh*16")
+    .jux(rev)
+    .gain("0.32 0.20 0.32 0.22")
+    .hpf(5800)
+    .color("yellow"),
+
+  // ── ROLLING BASS — off-beat ───────────────────────────────────
+  // .off(1/8, fn) duplicates the bass an eighth-note later with
+  // .add(7) (transposed up a 5th) — gives the rolling Detroit feel.
+  note("a1 ~ a1 ~  a1 ~ a1 ~")
+    .sound("sawtooth").lpf(420).lpq(5)
+    .shape(0.2)
+    .attack(0.005).release(0.16)
+    .off(1/8, x => x.add(7).gain(0.4))
+    .gain(0.65)
+    .color("purple"),
+
+  // ── SUB ───────────────────────────────────────────────────────
+  note("a1")
+    .sound("sine")
+    .struct("x ~ x ~ x x ~ x")
+    .gain(0.85)
+    .color("navy"),
+
+  // ── PERC — tribal ─────────────────────────────────────────────
+  s("tabla").euclid(5, 8)
+    .gain(0.55).hpf(600).pan(0.4)
+    .color("sienna"),
+
+  // ── COWBELL ───────────────────────────────────────────────────
+  s("cb").euclid(3, 8)
+    .gain(0.32).hpf(2500).pan(0.55)
+    .color("gold"),
+
+  // ── METAL HIT — sparse ────────────────────────────────────────
+  s("rim").euclid(7, 16)
+    .gain(0.4).hpf(3200).pan(0.6)
+    .color("silver"),
+
+  // ── DARK PAD ──────────────────────────────────────────────────
+  note("[a3,c4,e4]")
+    .sound("sawtooth").vowel("o")
+    .attack(1.5).release(2.5)
+    .lpf(slider(1400, 600, 2800))
+    .gain(0.2).pan(0.5).slow(4)
+    .color("teal"),
+
+  // ── OPEN HAT ──────────────────────────────────────────────────
+  s("~ ~ oh ~ ~ ~ ~ oh")
+    .gain(0.42).hpf(4500)
+    .color("khaki")
+)
