@@ -1,0 +1,58 @@
+// ══════════════════════════════════════════════════════════════
+// "Final Light"
+// Track 30 of 30 · Harmonic — the album's last word
+//
+// Key:    C major (resolving — the long-arc tonic)
+// Tempo:  48 BPM  (setcpm 12)
+// Mood:   Resolution. A long-held note. Letting it fade.
+//
+// This is the conclusion of everything learned across this repo:
+//   sine drone + SATB sawtooth-vowel choir + triangle bell + reverb,
+//   the language we built from /vocals/09-harmonic-vowels.strudel
+//   onward, distilled to its simplest, most patient form.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(12)
+
+stack(
+
+  note("c1").sound("sine").attack(12).release(16).gain(0.5)
+    .color("midnightblue"),
+
+  // ── Cmaj9 — the most peaceful chord in tonal music ───────────
+  note("[c2,e2,g2,d3]")
+    .sound("sawtooth").vowel("o")
+    .attack(10).release(15).lpf(1500)
+    .gain(0.42).pan(0.4).room(0.85)
+    .color("purple"),
+
+  note("[g3,c4,e4]")
+    .sound("sawtooth").vowel("a")
+    .attack(11).release(15).lpf(2200)
+    .gain(0.34).pan(0.5).room(0.85)
+    .color("teal"),
+
+  note("[e4,g4,b4,d5]")
+    .sound("sawtooth").vowel("e")
+    .attack(12).release(16).lpf(2800)
+    .gain(0.28).pan(0.55).room(0.88)
+    .color("cyan"),
+
+  note("[c5,e5,g5]")
+    .sound("sawtooth").vowel("i")
+    .attack(13).release(16).lpf(3400)
+    .gain(0.22).pan(0.6).room(0.9)
+    .color("white"),
+
+  // ── A single bell — the last sound ───────────────────────────
+  note("c6 ~ ~ ~  ~ ~ ~ ~  e6 ~ ~ ~  ~ ~ ~ ~")
+    .sound("triangle").attack(0.5).release(8)
+    .delay(0.7).delaytime(0.75).delayfeedback(0.55)
+    .room(0.92).size(0.95).gain(0.3).pan(0.5).slow(4)
+    .color("ivory"),
+
+  // ── Final whisper ────────────────────────────────────────────
+  s("white*4").lpf(slider(1500, 500, 3000)).hpf(700)
+    .gain(0.03).pan(rand).slow(8)
+    .color("gray")
+)

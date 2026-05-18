@@ -1,0 +1,49 @@
+// ══════════════════════════════════════════════════════════════
+// "Memory Stone"
+// Track 4 of 30 · Harmonic
+//
+// Key:    D Phrygian (D Eb F G A Bb C — ancient sound, b2 colour)
+// Tempo:  52 BPM  (setcpm 13)
+// Mood:   Ancient stone, memorial. The Phrygian b2 (Eb) gives weight.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(13)
+
+stack(
+
+  note("d1").sound("sine")
+    .attack(8).release(15).gain(0.5)
+    .color("midnightblue"),
+
+  // ── BASS voice — D + the b2 (Eb) for that Phrygian dread ──────
+  note("[d2,f2,a2]")
+    .sound("sawtooth").vowel("o")
+    .attack(5).release(10).lpf(1300)
+    .gain(0.42).pan(0.4).room(0.75)
+    .color("purple"),
+
+  // ── b2 colour layer — sustained Eb ────────────────────────────
+  note("eb3").sound("sawtooth")
+    .vowel("a").attack(6).release(10).lpf(1800)
+    .gain(0.26).pan(0.6).room(0.75)
+    .color("crimson"),
+
+  note("[a3,c4,f4]")
+    .sound("sawtooth").vowel("o")
+    .attack(5).release(9).lpf(2400)
+    .gain(0.32).pan(0.45).room(0.7)
+    .color("teal"),
+
+  note("[f4,a4,d5]")
+    .sound("sawtooth").vowel("i")
+    .attack(7).release(11).lpf(3200)
+    .gain(0.28).pan(0.55).room(0.78)
+    .color("indigo"),
+
+  // ── Bell — Phrygian melodic phrase ────────────────────────────
+  note("d5 ~ eb5 ~ ~ f5 ~ ~  ~ ~ d5 ~ ~ ~ ~ ~")
+    .sound("triangle").attack(0.3).release(4)
+    .delay(0.6).delaytime(0.625).delayfeedback(0.5)
+    .room(0.8).gain(0.22).pan(0.5).slow(2)
+    .color("white")
+)

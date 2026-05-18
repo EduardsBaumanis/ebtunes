@@ -1,0 +1,47 @@
+// ══════════════════════════════════════════════════════════════
+// "Beneath The Surface"
+// Track 16 of 30 · Harmonic
+//
+// Key:    F minor
+// Tempo:  56 BPM  (setcpm 14)
+// Mood:   Sub-aquatic. Filtered dark, sparse bell drops.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(14)
+
+stack(
+
+  note("f1").sound("sine").attack(8).release(13).gain(0.5)
+    .color("midnightblue"),
+
+  // ── Heavily LPF'd pad — feels muffled, deep underwater
+  note("[f2,ab2,c3]")
+    .sound("sawtooth").vowel("o")
+    .attack(6).release(11).lpf(900)
+    .gain(0.42).pan(0.4).room(0.75)
+    .color("purple"),
+
+  note("[ab3,c4,eb4]")
+    .sound("sawtooth").vowel("u")
+    .attack(7).release(11).lpf(1400)
+    .gain(0.34).pan(0.55).room(0.75)
+    .color("teal"),
+
+  note("[c4,eb4,f4,ab4]")
+    .sound("sawtooth").vowel("o")
+    .attack(8).release(12).lpf(1800)
+    .gain(0.28).pan(0.6).room(0.8)
+    .color("indigo"),
+
+  // ── Bell drops — like sonar pings, very sparse
+  note("ab4 ~ ~ ~ ~ ~ c5 ~  ~ ~ ~ ~ f4 ~ ~ ~")
+    .sound("triangle").attack(0.1).release(4)
+    .delay(0.6).delaytime(0.625).delayfeedback(0.5)
+    .room(0.85).size(0.92).gain(0.26).pan(0.5).slow(4)
+    .color("white"),
+
+  // ── Bubble/wash texture — filtered noise
+  s("white*8").lpf(slider(1200, 400, 3000)).hpf(500)
+    .gain("0.05 0.07 0.04 0.08").pan(rand).slow(4)
+    .color("gray")
+)

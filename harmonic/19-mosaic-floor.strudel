@@ -1,0 +1,50 @@
+// ══════════════════════════════════════════════════════════════
+// "Mosaic Floor"
+// Track 19 of 30 · Harmonic
+//
+// Key:    C minor
+// Tempo:  76 BPM  (setcpm 19)
+// Mood:   Patterned arpeggio. Geometric. Tiles interlocking.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(19)
+
+stack(
+
+  note("c2").sound("sine").attack(4).release(8).gain(0.4)
+    .color("midnightblue"),
+
+  // ── Cm → Ab → Eb → G (i — VI — III — V) ──────────────────────
+  note("<[c3,eb3,g3] [ab2,c3,eb3] [eb2,g2,bb2] [g2,b2,d3]>")
+    .sound("sawtooth").vowel("o")
+    .attack(2).release(5).lpf(1700)
+    .gain(0.36).pan(0.4).room(0.55).slow(2)
+    .color("purple"),
+
+  // ── Arp — 16th-note mosaic pattern ───────────────────────────
+  note("<[c4,eb4,g4,bb4] [ab3,c4,eb4,g4] [eb4,g4,bb4,d5] [d4,g4,b4,d5]>")
+    .arp("0 2 1 3 2 0 3 1")
+    .sound("sawtooth").vowel("e")
+    .attack(0.01).release(0.22)
+    .lpf(slider(2400, 800, 3800)).lpq(4)
+    .gain(0.34).pan(0.55).room(0.5)
+    .color("teal"),
+
+  // ── Sustained top voice ──────────────────────────────────────
+  note("<[g4,bb4,eb5] [eb4,ab4,c5] [g4,bb4,eb5] [b4,d5,g5]>")
+    .sound("sawtooth").vowel("u")
+    .attack(3).release(5).lpf(2800)
+    .gain(0.24).pan(0.6).room(0.6).slow(2)
+    .color("indigo"),
+
+  // ── Bell counterpoint ────────────────────────────────────────
+  note("eb6 ~ ~ ~  c6 ~ ~ ~  g5 ~ ~ ~  bb5 ~ ~ ~")
+    .sound("triangle").attack(0.05).release(2)
+    .delay(0.4).delaytime(0.375).delayfeedback(0.35)
+    .room(0.6).gain(0.22).pan(0.5).slow(2)
+    .color("white"),
+
+  // ── Soft hat ─────────────────────────────────────────────────
+  s("hh*8").gain("0.12 0.06 0.10 0.06").hpf(7000)
+    .color("yellow")
+)
