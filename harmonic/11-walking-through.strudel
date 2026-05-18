@@ -1,0 +1,46 @@
+// ══════════════════════════════════════════════════════════════
+// "Walking Through"
+// Track 11 of 30 · Harmonic — Side B opens with a gentle pulse
+//
+// Key:    G major (with vi — iii — IV — I)
+// Tempo:  72 BPM  (setcpm 18)
+// Mood:   Walking through a quiet room. First track with a kick.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(18)
+
+stack(
+
+  note("g1").sound("sine").attack(5).release(10).gain(0.42)
+    .color("midnightblue"),
+
+  // ── Soft heartbeat kick — VERY gentle ─────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.55).lpf(160)
+    .color("crimson"),
+
+  // ── Pad cycles G — Em — Bm — C
+  note("<[g2,b2,d3] [e2,g2,b2] [b1,d2,fs2] [c2,e2,g2]>")
+    .sound("sawtooth").vowel("o")
+    .attack(2).release(5).lpf(1500)
+    .gain(0.4).pan(0.4).room(0.55)
+    .color("purple"),
+
+  note("<[b3,d4,g4] [g3,b3,e4] [d4,fs4,b4] [e3,g3,c4]>")
+    .sound("sawtooth").vowel("a")
+    .attack(3).release(5).lpf(2200)
+    .gain(0.34).pan(0.55).room(0.55)
+    .color("teal"),
+
+  note("<[d5,g5] [b4,e5] [fs5,b5] [g4,c5]>")
+    .sound("sawtooth").vowel("i")
+    .attack(3).release(5).lpf(2800)
+    .gain(0.28).pan(0.6).room(0.6)
+    .color("cyan"),
+
+  // ── Bell melodic line ─────────────────────────────────────────
+  note("d5 ~ b4 ~  e5 ~ g4 ~  fs5 ~ b4 ~  g5 ~ e5 ~")
+    .sound("triangle").attack(0.05).release(0.6)
+    .delay(0.4).delaytime(0.375).delayfeedback(0.3)
+    .room(0.5).gain(0.32).pan(0.55).slow(2)
+    .color("white")
+)
