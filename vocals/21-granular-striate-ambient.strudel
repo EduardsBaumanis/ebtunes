@@ -1,0 +1,68 @@
+// ══════════════════════════════════════════════════════════════
+// "Granular Striate Ambient"
+// Ambient — .striate() shatters a vocal sample into grains
+//
+// Key:    F# minor
+// Tempo:  ~50 BPM equivalent  (setcpm 12.5)
+// Genre:  Ambient / granular synthesis
+//
+// VOCAL TECHNIQUE
+//   .striate(N)  — INTERLEAVES N slices of the source sample across
+//   the pattern. Unlike .chop() (which plays slice 0, then 1, then
+//   2...), .striate plays slice 0 of beat 1, then slice 0 of beat 2,
+//   ... slice 1 of beat 1, ... — the source breaks into a textural
+//   SHIMMER rather than a re-ordered loop. Brilliant on vocals.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(12.5)
+
+stack(
+
+  // ── SOFT KICK heartbeat ───────────────────────────────────────
+  s("bd ~ ~ ~ ~ ~ ~ ~").gain(0.55).lpf(140).slow(2)
+    .color("crimson"),
+
+  // ── BASS DRONE ────────────────────────────────────────────────
+  note("fs1").sound("sine").attack(3).release(5).gain(0.5)
+    .color("midnightblue"),
+
+  // ── BASS PAD ──────────────────────────────────────────────────
+  note("[fs3,a3,cs4]")
+    .sound("sawtooth").vowel("o")
+    .attack(2).release(3).lpf(1400)
+    .gain(0.28).pan(0.5)
+    .room(0.65).slow(4)
+    .color("teal"),
+
+  // ── STRIATED VOCAL — alphabet shattered into grains ───────────
+  // .striate(16) chops the source into 16 grain-slices and
+  // interleaves them across the pattern. Each grain is a tiny
+  // fragment of the spoken letter — the result is a shimmering
+  // cloud of vocal texture rather than a recognisable word.
+  s("alphabet:0").striate(16)
+    .gain(0.45).hpf(800).lpf(4500)
+    .room(0.6).size(0.85).pan("0.3 0.7 0.4 0.6")
+    .color("hotpink"),
+
+  // ── SECOND STRIATE LAYER — different letter, different N ──────
+  s("alphabet:14").striate(32)
+    .gain(0.35).hpf(1200).lpf(4000)
+    .room(0.65).size(0.9).pan(rand)
+    .color("magenta"),
+
+  // ── VOWEL PAD — sustained "ahhh" ──────────────────────────────
+  note("[fs4,a4,cs5,e5]")
+    .sound("sawtooth").vowel("a")
+    .attack(3).release(4).lpf(2400)
+    .gain(0.26).pan(0.55)
+    .room(0.7).size(0.9).slow(4)
+    .color("purple"),
+
+  // ── DISTANT BELL ──────────────────────────────────────────────
+  note("fs6 ~ ~ ~ ~ ~ ~ ~")
+    .sound("triangle").attack(0.3).release(4)
+    .delay(0.7).delaytime(0.625).delayfeedback(0.55)
+    .room(0.85).gain(0.18).pan(0.5).slow(4)
+    .color("white")
+
+)
