@@ -1,0 +1,70 @@
+// ══════════════════════════════════════════════════════════════
+// "Stutter Vocal Glitch"
+// IDM / breakcore — .ply() on vocals for stuttering repetition
+//
+// Key:    E minor
+// Tempo:  128 BPM  (setcpm 32)
+// Genre:  IDM / glitch hop
+//
+// VOCAL TECHNIQUE
+//   .ply(N) MULTIPLIES each event into N quick repeats in the same
+//   time slot. Applied to a single alphabet letter, you get
+//   "AaAaAaA" stuttering machine-gun vocal — the Aphex Twin /
+//   Squarepusher signature.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(32)
+
+stack(
+
+  // ── KICK ──────────────────────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~").gain(0.85).lpf(180).shape(0.15)
+    .color("crimson"),
+
+  // ── SNARE ─────────────────────────────────────────────────────
+  s("~ ~ sd ~ ~ ~ sd ~").gain(0.7).hpf(280).room(0.18).shape(0.12)
+    .color("orange"),
+
+  // ── HAT — cycling speed for glitch motion ────────────────────
+  s("hh*16").gain(0.3).hpf(5800)
+    .speed("<1 1.2 0.8 1.5>")
+    .color("yellow"),
+
+  // ── STUTTER VOCAL — .ply pattern stutters letters ─────────────
+  // .ply("<1 1 4 1>") means most cycles play normally (ply 1)
+  // but every 4th cycle the letter is replayed 4 times in the
+  // same slot — instant glitch stutter on demand.
+  s("alphabet:0 ~ alphabet:4 ~  alphabet:8 ~ alphabet:14 ~")
+    .ply("<1 1 4 1  1 4 1 1>")
+    .gain(0.55).hpf(280).pan(0.5)
+    .color("hotpink"),
+
+  // ── SECOND STUTTER LAYER — different letters, different ply ──
+  s("~ alphabet:11 ~ alphabet:13  ~ alphabet:18 ~ alphabet:19")
+    .ply("<2 1 1 3>")
+    .speed(1.3)
+    .gain(0.5).hpf(400).pan(0.45)
+    .delay(0.3).delaytime(0.166).delayfeedback(0.35)
+    .color("magenta"),
+
+  // ── BASS — also stutters via ply ─────────────────────────────
+  note("e1")
+    .sound("sawtooth").lpf(280).lpq(6).shape(0.25)
+    .ply("<1 1 1 2  1 2 1 1>")
+    .struct("x ~ x ~ x x ~ x")
+    .attack(0.003).release(0.1).gain(0.6)
+    .color("purple"),
+
+  // ── SUB ANCHOR ────────────────────────────────────────────────
+  note("e1").sound("sine")
+    .struct("x ~ ~ ~ x ~ ~ ~").gain(0.78)
+    .color("navy"),
+
+  // ── PAD — gives the glitch some atmosphere ───────────────────
+  note("[e3,g3,b3]")
+    .sound("sawtooth").vowel("u")
+    .attack(1.5).release(2.5).lpf(1400)
+    .gain(0.22).pan(0.5).slow(4)
+    .color("teal")
+
+)

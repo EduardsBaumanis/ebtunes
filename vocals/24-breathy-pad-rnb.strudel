@@ -1,0 +1,78 @@
+// ══════════════════════════════════════════════════════════════
+// "Breathy Pad R&B"
+// R&B / neo-soul — soft vowel "u" pad with breath texture
+//
+// Key:    A minor
+// Tempo:  72 BPM  (setcpm 18)
+// Genre:  Neo-soul / breathy R&B
+//
+// VOCAL TECHNIQUE
+//   Vowel "u" sustained at LOW gain — sounds like a singer
+//   exhaling "oooh" rather than singing it. Combined with high-
+//   passed white noise for the BREATH sound itself, the pad
+//   becomes a layered chorus of breath + tone.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(18)
+
+stack(
+
+  // ── KICK — soft pocket ────────────────────────────────────────
+  s("bd ~ ~ ~  ~ bd ~ ~").gain(0.85).lpf(170).shape(0.1)
+    .color("crimson"),
+
+  // ── BRUSHED SNARE on 3 ────────────────────────────────────────
+  s("~ ~ ~ ~ sd ~ ~ ~").gain(0.55).hpf(800).lpf(4000).room(0.35)
+    .color("orange"),
+
+  // ── BEHIND-THE-BEAT HAT ──────────────────────────────────────
+  s("hh*16").gain("0.22 0.16 0.26 0.18").hpf(5800).swingBy(0.18, 4)
+    .color("yellow"),
+
+  // ── BASS ──────────────────────────────────────────────────────
+  note("a1 ~ ~ e2  ~ ~ g1 ~")
+    .sound("sawtooth").lpf(280).lpq(3)
+    .attack(0.01).release(0.5).gain(0.68)
+    .color("navy"),
+
+  // ── BREATHY VOCAL PAD — low-gain vowel "u" ────────────────────
+  // The breath is in the GAIN: 0.22 means it's barely there, more
+  // texture than tone. Vowel "u" rounds the formant to a closed
+  // "ooh" shape. Heavy reverb wraps it in space.
+  note("<[a3,c4,e4,g4] [d4,f4,a4,c5] [e3,g3,b3,d4] [a3,c4,e4,g4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(0.7).release(2.5).lpf(1800)
+    .gain(0.22).pan(0.5)
+    .room(0.6).size(0.85).slow(2)
+    .color("purple"),
+
+  // ── BREATH NOISE — filtered white noise = exhalation ──────────
+  // Band-passed noise pulses on a slow rhythm = audible breath
+  // between phrases. Critical for the "breathy vocal" illusion.
+  s("white*4")
+    .bpf("800 1200 600 1500")
+    .gain("0.06 0.10 0.05 0.12")
+    .pan(rand).slow(2)
+    .color("gray"),
+
+  // ── MELODIC VOCAL HOOK — also "u" but louder ──────────────────
+  note("e5 ~ ~ ~  ~ ~ d5 ~  ~ c5 ~ ~  a4 ~ ~ ~")
+    .sound("sawtooth").vowel("u")
+    .attack(0.06).release(0.6).lpf(2800)
+    .gain(0.42).pan(0.55)
+    .delay(0.45).delaytime(0.5).delayfeedback(0.32)
+    .room(0.5).slow(2)
+    .color("hotpink"),
+
+  // ── RHODES SUBTLE ────────────────────────────────────────────
+  note("<[a3,c4,e4,g4] [d4,f4,a4,c5]>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.05).release(0.5).lpf(2200)
+    .gain(0.22).pan(0.4).room(0.32).slow(4)
+    .color("teal"),
+
+  // ── DEEP DRONE ────────────────────────────────────────────────
+  note("a1").sound("sine").attack(2).release(3).gain(0.32)
+    .color("midnightblue")
+
+)

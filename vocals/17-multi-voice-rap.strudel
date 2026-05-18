@@ -1,0 +1,67 @@
+// ══════════════════════════════════════════════════════════════
+// "Multi-Voice Rap"
+// Hip-hop — chopped alphabet phrases in syncopated rap rhythm
+//
+// Key:    G minor
+// Tempo:  90 BPM  (setcpm 22.5)
+// Genre:  Boom-bap / chopped-vocal rap
+//
+// VOCAL TECHNIQUE
+//   Dense 16th-note rearrangement of spoken letters in syncopated
+//   "rap" cadence. Different letters land on the strong and weak
+//   beats — the alphabet becomes the MC. Layered with a second
+//   pitched-down voice for "two MCs trading bars".
+// ══════════════════════════════════════════════════════════════
+
+setcpm(22.5)
+
+stack(
+
+  // ── BOOM BAP KICK ─────────────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~").gain(0.92).lpf(160).shape(0.18)
+    .color("crimson"),
+
+  // ── SNARE on 2 + 4 ───────────────────────────────────────────
+  s("~ ~ sd ~ ~ ~ sd ~").gain(0.78).hpf(220).room(0.16).shape(0.12)
+    .color("orange"),
+
+  // ── HAT — light swing ─────────────────────────────────────────
+  s("hh*16").gain("0.32 0.22 0.30 0.22").hpf(2800).swingBy(0.18, 4)
+    .color("yellow"),
+
+  // ── RAP VOICE 1 — dense alphabet flow, normal pitch ───────────
+  // The pattern simulates a rap cadence: stressed syllables on the
+  // strong beats, internal rhymes between them. Each alphabet:N
+  // is a different letter so the phrase has phonetic variety.
+  s("alphabet:8 ~ alphabet:11 alphabet:8  alphabet:11 alphabet:14 ~ alphabet:13  alphabet:7 alphabet:4 alphabet:24 ~  ~ alphabet:8 alphabet:11 alphabet:11")
+    .gain(0.6).hpf(250)
+    .delay(0.3).delaytime(0.375).delayfeedback(0.18)
+    .room(0.18).pan(0.45)
+    .color("hotpink"),
+
+  // ── RAP VOICE 2 — pitched down, answers voice 1 ──────────────
+  // .speed(0.7) drops the pitch — sounds like a deeper MC trading
+  // bars. Plays bars 2 and 4 (silent during voice 1's bars).
+  s("~ ~ ~ ~  ~ ~ ~ ~  ~ ~ ~ ~  alphabet:1 alphabet:0 alphabet:18 alphabet:18")
+    .speed(0.7).gain(0.6).hpf(180).pan(0.55)
+    .room(0.18)
+    .color("magenta"),
+
+  // ── BASS ─────────────────────────────────────────────────────
+  note("g1 ~ d2 ~  bb1 ~ f2 ~  c2 ~ g2 ~  d2 ~ a2 ~")
+    .sound("sawtooth").lpf(380).lpq(3)
+    .attack(0.01).release(0.4).gain(0.75)
+    .color("navy"),
+
+  // ── RHODES CHORDS ─────────────────────────────────────────────
+  note("<[g3,bb3,d4,f4] [c4,eb4,g4,bb4] [d4,f4,a4,c5] [g3,bb3,d4,f4]>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.06).release(0.6).lpf(2200)
+    .gain(0.32).pan(0.4).room(0.25).slow(2)
+    .color("teal"),
+
+  // ── VINYL CRACKLE ─────────────────────────────────────────────
+  s("hh*32").gain(0.07).hpf(7000).degradeBy(0.55)
+    .color("gray")
+
+)

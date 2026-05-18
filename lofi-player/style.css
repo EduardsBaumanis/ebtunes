@@ -145,6 +145,17 @@
   --code-fg:  #d09898;
 }
 
+/* ── VOCALS theme — warm rose, mouth-shaped formant peach ── */
+[data-theme="vocals"] {
+  --black:    #1a0a0f;
+  --white:    #ffd8d8;
+  --grey:     #c08080;
+  --dim:      #2e1218;
+  --mid:      #582430;
+  --code-bg:  #1a0a0f;
+  --code-fg:  #e0a8a8;
+}
+
 /* ── DEMOS theme — showcase gallery: cool slate + cyan accent ── */
 [data-theme="demos"] {
   --black:    #06090e;
