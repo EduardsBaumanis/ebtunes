@@ -1,0 +1,71 @@
+// ══════════════════════════════════════════════════════════════
+// "Vocal Pad Dorian"
+// Modal jazz — sustained vowel pad in D Dorian over a bass vamp
+//
+// Key:    D Dorian (D E F G A B C — modal jazz centre)
+// Tempo:  76 BPM  (setcpm 19)
+// Genre:  Modal jazz / cool ambient
+//
+// VOCAL TECHNIQUE
+//   Long sustained chord pad with vowel filter — same gesture as
+//   "vowel-choir" but with the MODAL framing of jazz (Dorian).
+//   Each chord cycles vowels independently, so the harmony "sings".
+// ══════════════════════════════════════════════════════════════
+
+setcpm(19)
+
+stack(
+
+  // ── BASS PEDAL on D — modal anchor ────────────────────────────
+  note("d2 ~ ~ ~ a2 ~ ~ ~  d2 ~ ~ ~ g2 ~ ~ ~")
+    .sound("sawtooth").lpf(380).lpq(3)
+    .attack(0.01).release(0.4).gain(0.7)
+    .color("navy"),
+
+  // ── SUB ───────────────────────────────────────────────────────
+  note("d1").sound("sine").attack(2).release(3).gain(0.4)
+    .color("midnightblue"),
+
+  // ── BRUSH KIT — soft jazz pulse ───────────────────────────────
+  s("sd*4").gain("0.16 0.20 0.16 0.22").hpf(800).lpf(4000).room(0.32)
+    .color("orange"),
+  s("hh ~ hh hh  hh ~ hh hh").gain(0.24).hpf(6500).swingBy(0.18, 4)
+    .color("yellow"),
+
+  // ── VOWEL CHOIR — bass voice (Dorian voicing) ─────────────────
+  // Cycles through Dm9 → Gm9 → Dm9 → Am7 — the modal vamp.
+  note("<[d3,f3,a3] [g3,bb3,d4] [d3,f3,a3] [a3,c4,e4]>")
+    .sound("sawtooth").vowel("o")
+    .attack(1.2).release(2.5)
+    .lpf(1600).gain(0.35).pan(0.4)
+    .room(0.5).slow(2)
+    .color("purple"),
+
+  // ── MID VOICE — vowel "a", higher voicing ─────────────────────
+  note("<[a3,c4,e4] [d4,f4,a4] [a3,c4,e4] [c4,e4,g4]>")
+    .sound("sawtooth").vowel("a")
+    .attack(1.8).release(3)
+    .lpf(2400).gain(0.3).pan(0.55)
+    .room(0.55).slow(2)
+    .color("teal"),
+
+  // ── HIGH VOICE — vowel cycles per cycle ──────────────────────
+  // Dorian-coloured top line. Sings different vowel each cycle —
+  // creates evolving harmonic colour without note motion.
+  note("<f4 g4 a4 b4 a4 g4 f4 e4>")
+    .sound("sawtooth")
+    .vowel("<a e i o u>")
+    .attack(0.8).release(2)
+    .lpf(3000).gain(0.32).pan(0.6)
+    .room(0.5).slow(2)
+    .color("cyan"),
+
+  // ── ALPHABET ACCENT every 2 cycles ────────────────────────────
+  // Sparse spoken letter as a "vocal whisper" between phrases.
+  s("alphabet:3 ~ ~ ~  ~ ~ ~ ~")
+    .gain(0.35).hpf(400).pan(0.45)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.35)
+    .room(0.45).slow(2)
+    .color("hotpink")
+
+)
