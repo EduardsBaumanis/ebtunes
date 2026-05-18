@@ -1,0 +1,78 @@
+// ══════════════════════════════════════════════════════════════
+// "Shout Stab Hardcore"
+// Hard rave / hardcore — loud vocal shouts as drop accents
+//
+// Key:    A minor
+// Tempo:  160 BPM  (setcpm 40)
+// Genre:  Hardcore rave / breakcore
+//
+// VOCAL TECHNIQUE
+//   Loud SHORT vocal stabs — alphabet samples with .shape (drive)
+//   to push them past the kick. Land on every "drop" moment as
+//   the genre's signature "AH!" / "HEY!" crowd-vocal accent.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(40)
+
+stack(
+
+  // ── HARDCORE KICK ─────────────────────────────────────────────
+  s("bd*4")
+    .shape(0.5).crush(7)
+    .gain(0.95).lpf(180)
+    .color("crimson"),
+
+  // ── SNARE backbeat ────────────────────────────────────────────
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .shape(0.3).gain(0.75).hpf(280).room(0.18)
+    .color("orange"),
+
+  // ── HAT 16ths ─────────────────────────────────────────────────
+  s("hh*16").gain("0.30 0.20 0.32 0.40").hpf(5800)
+    .color("yellow"),
+
+  // ── OPEN HAT ──────────────────────────────────────────────────
+  s("~ oh ~ oh").gain(0.42).hpf(4500)
+    .color("gold"),
+
+  // ── VOCAL SHOUT — alphabet stab on the BREAKDOWN drop ─────────
+  // Loud, distorted, single hit on beat 1 of every other cycle —
+  // the "AH!" / "HOO!" rave shout. .shape pushes it into the
+  // distortion register so it sits ABOVE the kick.
+  s("alphabet:7 ~ ~ ~  ~ ~ ~ ~")
+    .shape(0.35).crush(7)
+    .gain(0.75).hpf(300).room(0.32)
+    .slow(2)
+    .color("hotpink"),
+
+  // ── ANSWER SHOUT — different letter, other side of stereo ─────
+  s("~ ~ ~ ~  ~ ~ alphabet:0 ~")
+    .shape(0.35).crush(7)
+    .gain(0.65).hpf(300).pan(0.6).room(0.3)
+    .slow(2)
+    .color("magenta"),
+
+  // ── SUB BASS ──────────────────────────────────────────────────
+  note("a1").sound("sine")
+    .struct("x ~ x ~ x x ~ x")
+    .gain(0.88)
+    .color("navy"),
+
+  // ── HOOVER BASS — distorted hardcore bass ─────────────────────
+  note("a2 a2 a2 a2  c3 c3 b2 a2")
+    .sound("sawtooth").lpf("400 700 1100 1800").lpq(8)
+    .shape(0.45).crush(8)
+    .attack(0.005).release(0.16).gain(0.55).pan(0.5)
+    .color("purple"),
+
+  // ── REVERSED CYMBAL build before each shout ───────────────────
+  s("cy").speed(-1)
+    .gain(0.45).hpf(2000).room(0.55).slow(2)
+    .color("silver"),
+
+  // ── CRASH on drop ─────────────────────────────────────────────
+  s("cy")
+    .gain(0.5).room(0.5).slow(2)
+    .color("white")
+
+)
