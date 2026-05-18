@@ -156,6 +156,17 @@
   --code-fg:  #e0a8a8;
 }
 
+/* ── HARMONIC theme — candlelit chapel: warm cream on contemplative blue ── */
+[data-theme="harmonic"] {
+  --black:    #07091a;
+  --white:    #f4ead0;
+  --grey:     #8088b0;
+  --dim:      #10142a;
+  --mid:      #28305c;
+  --code-bg:  #07091a;
+  --code-fg:  #d8d0b0;
+}
+
 /* ── DEMOS theme — showcase gallery: cool slate + cyan accent ── */
 [data-theme="demos"] {
   --black:    #06090e;
