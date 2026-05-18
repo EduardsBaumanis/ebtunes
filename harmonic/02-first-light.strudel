@@ -1,0 +1,51 @@
+// ══════════════════════════════════════════════════════════════
+// "First Light"
+// Track 2 of 30 · Harmonic
+//
+// Key:    G Lydian (G A B C# D E F# — bright with #4)
+// Tempo:  60 BPM  (setcpm 15)
+// Mood:   Morning light. The Lydian #4 gives the chord its lift.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(15)
+
+stack(
+
+  // ── DRONE — G fundamental ─────────────────────────────────────
+  note("g1").sound("sine")
+    .attack(6).release(12).gain(0.45)
+    .color("midnightblue"),
+
+  // ── BASS VOICE — Lydian mode, vowel "o" ───────────────────────
+  note("[g2,b2,d3]")
+    .sound("sawtooth").vowel("o")
+    .attack(3).release(7).lpf(1500)
+    .gain(0.42).pan(0.4)
+    .room(0.65).color("purple"),
+
+  // ── MID VOICE — adds the Lydian #4 (C#) ──────────────────────
+  note("[b3,d4,fs4]")
+    .sound("sawtooth").vowel("a")
+    .attack(4).release(7).lpf(2200)
+    .gain(0.36).pan(0.55)
+    .room(0.65).color("teal"),
+
+  // ── HIGH SHIMMER — cycles vowels per cycle ────────────────────
+  note("[d5,fs5,a5]")
+    .sound("sawtooth").vowel("<e i o>")
+    .attack(4).release(8).lpf(3200)
+    .gain(0.28).pan(0.6)
+    .room(0.7).color("cyan"),
+
+  // ── BELL — outlines the bright #4 ─────────────────────────────
+  note("fs5 ~ ~ ~ ~ a5 ~ ~")
+    .sound("triangle").attack(0.2).release(3)
+    .delay(0.55).delaytime(0.5).delayfeedback(0.4)
+    .room(0.7).gain(0.22).pan(0.5).slow(4)
+    .color("gold"),
+
+  // ── DISTANT WIND ──────────────────────────────────────────────
+  s("white*4").lpf(1000).hpf(500)
+    .gain("0.04 0.06 0.04 0.07").pan(rand).slow(4)
+    .color("gray")
+)
