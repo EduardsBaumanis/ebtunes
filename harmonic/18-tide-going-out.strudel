@@ -1,0 +1,47 @@
+// ══════════════════════════════════════════════════════════════
+// "Tide Going Out"
+// Track 18 of 30 · Harmonic
+//
+// Key:    Bb minor
+// Tempo:  54 BPM  (setcpm 13.5)
+// Mood:   Melancholic. Water pulling back. Long sighs.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(13.5)
+
+stack(
+
+  note("bb1").sound("sine").attack(7).release(13).gain(0.45)
+    .color("midnightblue"),
+
+  // ── Bbm → Gb → Eb → F (i — VI — iv — V, sad sea) ─────────────
+  note("<[bb2,db3,f3] [gb2,bb2,db3] [eb2,gb2,bb2] [f2,a2,c3]>")
+    .sound("sawtooth").vowel("o")
+    .attack(5).release(9).lpf(1500)
+    .gain(0.4).pan(0.4).room(0.75).slow(2)
+    .color("purple"),
+
+  note("<[db4,f4,bb4] [bb3,db4,gb4] [gb3,bb3,eb4] [a3,c4,f4]>")
+    .sound("sawtooth").vowel("a")
+    .attack(6).release(10).lpf(2200)
+    .gain(0.32).pan(0.55).room(0.75).slow(2)
+    .color("teal"),
+
+  note("<[f4,bb4,db5] [gb4,bb4,eb5] [eb4,gb4,bb4] [c5,f5,a5]>")
+    .sound("sawtooth").vowel("u")
+    .attack(7).release(11).lpf(2800)
+    .gain(0.26).pan(0.6).room(0.8).slow(2)
+    .color("indigo"),
+
+  // ── Bell — distant lighthouse ────────────────────────────────
+  note("bb5 ~ ~ ~  ~ db6 ~ ~  ~ ~ ~ ~  f5 ~ ~ ~")
+    .sound("triangle").attack(0.2).release(4)
+    .delay(0.55).delaytime(0.75).delayfeedback(0.45)
+    .room(0.8).size(0.9).gain(0.24).pan(0.5).slow(2)
+    .color("white"),
+
+  // ── Wash — receding waves ────────────────────────────────────
+  s("white*8").lpf(slider(1400, 500, 2800)).hpf(400)
+    .gain("0.06 0.04 0.07 0.03 0.05 0.04 0.06 0.03").pan(rand).slow(4)
+    .color("gray")
+)
