@@ -1,0 +1,75 @@
+// ══════════════════════════════════════════════════════════════
+// "Chopped Vocal DnB"
+// Drum and bass — vocal letter chops, half-time feel, 172 BPM
+//
+// Key:    G minor
+// Tempo:  172 BPM  (setcpm 43)
+// Genre:  Liquid DnB / vocal science
+//
+// VOCAL TECHNIQUE
+//   Fast 16th-note rearrangement of spoken letters. Each
+//   alphabet:N sample is short (≤200ms); triggering them at 16th-
+//   note grid speed gives "chopped vocal" rapid-fire phrases — the
+//   foundation of vocal science DnB (Bukem, LTJ Bukem, dBridge).
+// ══════════════════════════════════════════════════════════════
+
+setcpm(43)
+
+stack(
+
+  // ── KICK — half-time feel ─────────────────────────────────────
+  s("bd ~ ~ ~  ~ ~ bd ~")
+    .gain(0.92).lpf(150).shape(0.18)
+    .color("crimson"),
+
+  // ── SNARE on 3 ────────────────────────────────────────────────
+  s("~ ~ ~ ~  sd ~ ~ ~")
+    .gain(0.78).hpf(280).room(0.25).size(0.7).shape(0.12)
+    .color("orange"),
+
+  // ── HI-HAT — full speed 16ths ─────────────────────────────────
+  s("hh*16").gain("0.28 0.20 0.30 0.22").hpf(5800)
+    .color("yellow"),
+
+  // ── CHOPPED VOCAL — letter samples rearranged ─────────────────
+  // The pattern picks different alphabet indices (numbers map to
+  // letters: 0=A, 8=I, 11=L, 19=T, etc.) — the resulting "phrase"
+  // sounds like an unintelligible but rhythmic vocal chop.
+  s("alphabet:8 ~ alphabet:11 alphabet:8  alphabet:19 ~ alphabet:8 ~  alphabet:13 alphabet:14 ~ alphabet:11  ~ alphabet:8 ~ alphabet:14")
+    .gain(0.55).hpf(300)
+    .delay(0.32).delaytime(0.166).delayfeedback(0.3)
+    .room(0.4).pan(0.55)
+    .color("hotpink"),
+
+  // ── SECOND VOCAL LAYER — sparser, lower pitched via .speed ────
+  // .speed(0.7) plays the sample slower AND lower-pitched (sample
+  // resampling) — gives a "deeper voice" chopping alongside the
+  // first layer.
+  s("~ ~ ~ ~  ~ alphabet:0 ~ ~  ~ ~ alphabet:4 ~  ~ ~ ~ ~")
+    .speed(0.7)
+    .gain(0.5).hpf(200).pan(0.45)
+    .room(0.45)
+    .color("magenta"),
+
+  // ── SUB BASS ──────────────────────────────────────────────────
+  note("g1").sound("sine")
+    .struct("x ~ ~ x ~ ~ x ~")
+    .gain(0.92)
+    .color("navy"),
+
+  // ── REESE BASS ────────────────────────────────────────────────
+  note("g2").sound("sawtooth").lpf("400 700 1200 800").lpq(8).shape(0.3)
+    .attack(0.005).release(0.4)
+    .struct("~ x x ~ x ~ x x")
+    .gain(0.4).pan(0.45)
+    .color("purple"),
+
+  // ── ATMOSPHERIC PAD ───────────────────────────────────────────
+  note("[g3,bb3,d4,f4]")
+    .sound("sawtooth").vowel("u")
+    .attack(0.8).release(2.5).lpf(1400)
+    .gain(0.22).pan(0.5)
+    .room(0.55).size(0.85).slow(4)
+    .color("teal")
+
+)
