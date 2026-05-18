@@ -1,0 +1,42 @@
+// ══════════════════════════════════════════════════════════════
+// "Old Hymn"
+// Track 27 of 30 · Harmonic
+//
+// Key:    F major
+// Tempo:  56 BPM  (setcpm 14)
+// Mood:   Reverent. A melody remembered from childhood.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(14)
+
+stack(
+
+  note("f1").sound("sine").attack(6).release(11).gain(0.45)
+    .color("midnightblue"),
+
+  // ── F → Bb → C → F (I — IV — V — I, classic hymn) ────────────
+  note("<[f2,a2,c3] [bb2,d3,f3] [c3,e3,g3] [f2,a2,c3]>")
+    .sound("sawtooth").vowel("o")
+    .attack(5).release(9).lpf(1500)
+    .gain(0.42).pan(0.4).room(0.78).slow(2)
+    .color("purple"),
+
+  note("<[a3,c4,f4] [d4,f4,bb4] [e4,g4,c5] [a3,c4,f4]>")
+    .sound("sawtooth").vowel("a")
+    .attack(6).release(10).lpf(2200)
+    .gain(0.34).pan(0.55).room(0.78).slow(2)
+    .color("teal"),
+
+  note("<[c5,f5,a5] [f4,bb4,d5] [g4,c5,e5] [c5,f5,a5]>")
+    .sound("sawtooth").vowel("u")
+    .attack(7).release(11).lpf(2800)
+    .gain(0.28).pan(0.6).room(0.82).slow(2)
+    .color("indigo"),
+
+  // ── Hymn melody on top — simple stepwise line ────────────────
+  note("<f5 a5 g5 f5  bb5 a5 g5 a5  c6 bb5 a5 g5  f5 g5 a5 f5>")
+    .sound("triangle").attack(0.3).release(2)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.3)
+    .room(0.7).gain(0.28).pan(0.5).slow(2)
+    .color("white")
+)

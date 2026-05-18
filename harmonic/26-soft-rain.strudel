@@ -1,0 +1,51 @@
+// ══════════════════════════════════════════════════════════════
+// "Soft Rain"
+// Track 26 of 30 · Harmonic
+//
+// Key:    G minor
+// Tempo:  68 BPM  (setcpm 17)
+// Mood:   Steady rain on a roof. Inside, warm.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(17)
+
+stack(
+
+  note("g1").sound("sine").attack(5).release(10).gain(0.42)
+    .color("midnightblue"),
+
+  // ── Gm → Eb → Bb → F (i — VI — III — VII) ────────────────────
+  note("<[g2,bb2,d3] [eb2,g2,bb2] [bb2,d3,f3] [f2,a2,c3]>")
+    .sound("sawtooth").vowel("o")
+    .attack(4).release(7).lpf(1500)
+    .gain(0.4).pan(0.4).room(0.7).slow(2)
+    .color("purple"),
+
+  note("<[d4,g4,bb4] [g3,bb3,eb4] [d4,f4,bb4] [c4,f4,a4]>")
+    .sound("sawtooth").vowel("a")
+    .attack(5).release(8).lpf(2200)
+    .gain(0.32).pan(0.55).room(0.7).slow(2)
+    .color("teal"),
+
+  note("<[g4,bb4,d5] [eb4,g4,bb4] [f4,bb4,d5] [a4,c5,f5]>")
+    .sound("sawtooth").vowel("u")
+    .attack(6).release(9).lpf(2800)
+    .gain(0.25).pan(0.6).room(0.75).slow(2)
+    .color("indigo"),
+
+  // ── Bell — drops on a windowpane ─────────────────────────────
+  note("d6 ~ ~ g5  bb5 ~ d6 ~  ~ f5 ~ ~  c6 ~ d6 ~")
+    .sound("triangle").attack(0.03).release(1.5)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.35)
+    .room(0.65).gain(0.22).pan(0.5).slow(2)
+    .color("white"),
+
+  // ── RAIN — continuous filtered noise ─────────────────────────
+  s("white*32").lpf(slider(2400, 1000, 4000)).hpf(800)
+    .gain("0.08 0.05 0.07 0.04 0.06 0.05 0.08 0.04").pan(rand)
+    .color("gray"),
+
+  // ── Occasional larger drop ───────────────────────────────────
+  s("white*4").lpf(800).hpf(200).gain("0 0.12 0 0.08").pan(rand).slow(2)
+    .color("slategray")
+)
