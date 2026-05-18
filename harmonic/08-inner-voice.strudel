@@ -1,0 +1,53 @@
+// ══════════════════════════════════════════════════════════════
+// "Inner Voice"
+// Track 8 of 30 · Harmonic
+//
+// Key:    C# minor (with E maj7 relative-major)
+// Tempo:  54 BPM  (setcpm 13.5)
+// Mood:   Intimate, close-mic'd. Single voice leads with answer.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(13.5)
+
+stack(
+
+  note("cs1").sound("sine")
+    .attack(7).release(12).gain(0.42)
+    .color("midnightblue"),
+
+  // ── Quiet pad — sits low so the lead voice can sing ──────────
+  note("<[cs3,e3,gs3] [a2,cs3,e3]>")
+    .sound("sawtooth").vowel("o")
+    .attack(5).release(10).lpf(1300)
+    .gain(0.3).pan(0.4).room(0.6)
+    .color("purple"),
+
+  note("<[e4,gs4,b4] [cs4,e4,gs4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(6).release(11).lpf(2000)
+    .gain(0.24).pan(0.55).room(0.65)
+    .color("teal"),
+
+  // ── INNER VOICE — solo lead with vowel "a" (close, intimate) ─
+  note("gs4 ~ ~ b4  ~ e5 ~ ~  ~ ~ cs5 b4  ~ gs4 ~ ~")
+    .sound("sawtooth").vowel("a")
+    .attack(0.4).release(2.5)
+    .lpf(2800).gain(0.45).pan(0.5)
+    .room(0.5).slow(2)
+    .color("hotpink"),
+
+  // ── ANSWER VOICE — soft echo on the other side, "e" vowel ─────
+  note("~ ~ ~ ~  ~ ~ b4 ~  ~ cs5 ~ ~  e5 ~ ~ ~")
+    .sound("sawtooth").vowel("e")
+    .attack(0.4).release(2)
+    .lpf(2600).gain(0.3).pan(0.55)
+    .room(0.55).slow(2)
+    .color("magenta"),
+
+  // ── Distant bell ──────────────────────────────────────────────
+  note("gs6 ~ ~ ~ ~ ~ ~ ~")
+    .sound("triangle").attack(0.2).release(3)
+    .delay(0.6).delaytime(0.625).delayfeedback(0.5)
+    .room(0.8).gain(0.18).pan(0.5).slow(4)
+    .color("white")
+)
