@@ -1,0 +1,49 @@
+// ══════════════════════════════════════════════════════════════
+// "Tournament Fanfare"
+// Track 17 of 20 · Medeival
+//
+// Key:    C major (Ionian — bright, ceremonial)
+// Tempo:  88 BPM  (setcpm 22)
+// Mood:   Lances raised. Crowd cheering. Banners snapping.
+//
+// VOCAL TECHNIQUE
+//   Trumpet-call line on vowel "e" (bright formant) plus crowd-
+//   like vocal stab pads on "a", short attacks. Tournament heralds.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(22)
+
+stack(
+
+  note("c2").sound("sine").attack(2).release(5).gain(0.45)
+    .color("midnightblue"),
+
+  // ── KETTLE DRUMS ─────────────────────────────────────────────
+  s("bd bd ~ bd  ~ bd bd ~").gain(0.7).lpf(180)
+    .color("crimson"),
+
+  // ── HERALD TRUMPETS — fanfare pattern ────────────────────────
+  note("c5 e5 g5 c6  g5 e5 c5 ~  e5 g5 c6 e6  c6 g5 e5 c5")
+    .sound("sawtooth").vowel("e")
+    .attack(0.02).release(0.25).lpf(3000).lpq(5)
+    .gain(0.45).pan(0.6).room(0.45)
+    .color("gold"),
+
+  // ── TRUMPET HARMONY (third below) ────────────────────────────
+  note("e4 g4 c5 e5  c5 g4 e4 ~  g4 c5 e5 g5  e5 c5 g4 e4")
+    .sound("sawtooth").vowel("e")
+    .attack(0.03).release(0.25).lpf(2600).lpq(5)
+    .gain(0.36).pan(0.4).room(0.45)
+    .color("goldenrod"),
+
+  // ── CROWD STAB — short vocal "ha!" ───────────────────────────
+  note("~ ~ ~ c4  ~ ~ ~ g3")
+    .sound("sawtooth").vowel("a")
+    .attack(0.005).release(0.12).lpf(2000)
+    .gain(0.45).pan(0.5).room(0.35)
+    .color("orange"),
+
+  // ── Cymbal/clash ─────────────────────────────────────────────
+  s("~ ~ cy ~  ~ ~ ~ ~").gain(0.45).hpf(3000).room(0.5)
+    .color("yellow")
+)

@@ -1,0 +1,51 @@
+// ══════════════════════════════════════════════════════════════
+// "Black Death"
+// Track 12 of 20 · Medeival
+//
+// Key:    F minor (Aeolian — dark, no major resolution)
+// Tempo:  44 BPM  (setcpm 11)
+// Mood:   1348. Dies Irae. Plague carts. Voices breaking.
+//
+// VOCAL TECHNIQUE
+//   "Dies irae, dies illa" motif transposed. Voices on vowel "u"
+//   sound covered, frightened. Heavy LPF on everything — air thick.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(11)
+
+stack(
+
+  note("f1").sound("sine").attack(9).release(14).gain(0.48)
+    .color("midnightblue"),
+
+  // ── Sustained drone, covered ─────────────────────────────────
+  note("[f2,c3]").sound("sawtooth").vowel("o")
+    .attack(8).release(13).lpf(900).gain(0.4).room(0.85)
+    .color("darkslategray"),
+
+  // ── DIES IRAE motif — F E F D F E D ──────────────────────────
+  note("f4 e4 f4 d4  f4 e4 d4 ~  c4 bb3 c4 db4  c4 bb3 ab3 ~")
+    .sound("sawtooth").vowel("u")
+    .attack(0.5).release(2).lpf(1500)
+    .gain(0.4).pan(0.5).room(0.88).size(0.95)
+    .color("darkred"),
+
+  // ── DOUBLE — fifth below (parallel organum) ──────────────────
+  note("bb3 a3 bb3 g3  bb3 a3 g3 ~  f3 eb3 f3 gb3  f3 eb3 db3 ~")
+    .sound("sawtooth").vowel("u")
+    .attack(0.6).release(2).lpf(1200)
+    .gain(0.36).pan(0.45).room(0.88)
+    .color("darkgoldenrod"),
+
+  // ── Funeral bell — slow, irregular ───────────────────────────
+  note("f2 ~ ~ ~  ~ ~ ~ ~  ~ ~ f2 ~  ~ ~ ~ ~")
+    .sound("triangle").attack(0.3).release(9)
+    .delay(0.7).delaytime(1).delayfeedback(0.5)
+    .room(0.92).size(0.97).gain(0.38).pan(0.5).slow(2)
+    .color("dimgray"),
+
+  // ── Wind, very low and dark ──────────────────────────────────
+  s("white*4").lpf(slider(700, 300, 1500)).hpf(200)
+    .gain(0.06).pan(rand).slow(4)
+    .color("gray")
+)

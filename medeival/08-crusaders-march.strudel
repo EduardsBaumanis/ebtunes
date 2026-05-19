@@ -1,0 +1,49 @@
+// ══════════════════════════════════════════════════════════════
+// "Crusaders' March"
+// Track 8 of 20 · Medeival
+//
+// Key:    D minor (Aeolian)
+// Tempo:  82 BPM  (setcpm 20.5)
+// Mood:   Steady march. Boots on dirt road. Long journey east.
+//
+// VOCAL TECHNIQUE
+//   Massed male voices chanting a single note rhythmically on
+//   the downbeats — vowel "o", short attacks, like an oar-stroke.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(20.5)
+
+stack(
+
+  note("d1").sound("sine").attack(2).release(4).gain(0.45)
+    .color("midnightblue"),
+
+  // ── MARCHING DRUM ────────────────────────────────────────────
+  s("bd ~ bd ~ bd ~ bd ~").gain(0.7).lpf(180)
+    .color("crimson"),
+
+  // ── Snare-like rim ───────────────────────────────────────────
+  s("~ sd ~ sd ~ sd ~ sd").gain(0.4).hpf(900)
+    .color("orange"),
+
+  // ── MEN'S CHANT — short, percussive vowel hits ───────────────
+  note("d3 d3 d3 d3  a2 a2 a2 a2  c3 c3 c3 c3  d3 d3 d3 d3")
+    .sound("sawtooth").vowel("o")
+    .attack(0.03).release(0.18).lpf(1500).lpq(4)
+    .gain(0.4).pan(0.45).room(0.45)
+    .color("darkred"),
+
+  // ── HIGHER LAYER — boys' voices, sustained ───────────────────
+  note("<[d4,f4,a4] [d4,e4,a4] [d4,f4,bb4] [d4,f4,a4]>")
+    .sound("sawtooth").vowel("a")
+    .attack(2).release(3).lpf(2000)
+    .gain(0.3).pan(0.55).room(0.6).slow(2)
+    .color("goldenrod"),
+
+  // ── Trumpet call — sparse ────────────────────────────────────
+  note("~ ~ ~ ~  ~ ~ a4 d5  ~ ~ ~ ~  ~ ~ ~ ~")
+    .sound("sawtooth").vowel("e")
+    .attack(0.05).release(0.6).lpf(2800).lpq(5)
+    .gain(0.36).pan(0.5).room(0.55).slow(4)
+    .color("gold")
+)

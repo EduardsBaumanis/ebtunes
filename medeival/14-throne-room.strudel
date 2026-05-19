@@ -1,0 +1,52 @@
+// ══════════════════════════════════════════════════════════════
+// "Throne Room"
+// Track 14 of 20 · Medeival
+//
+// Key:    Bb major (Ionian — royal, formal)
+// Tempo:  62 BPM  (setcpm 15.5)
+// Mood:   Regal hall. Banners hanging. The king enters.
+//
+// VOCAL TECHNIQUE
+//   Vox-organum: low voice holds the cantus on "o", upper voice
+//   floridly decorates above on "a" — discant style, 13th c.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(15.5)
+
+stack(
+
+  note("bb1").sound("sine").attack(5).release(10).gain(0.45)
+    .color("midnightblue"),
+
+  // ── Timpani-like kick ────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.55).lpf(190)
+    .color("crimson"),
+
+  // ── CANTUS — long-held bass notes (vox principalis) ──────────
+  note("<bb2 eb3 f3 bb2>")
+    .sound("sawtooth").vowel("o")
+    .attack(3).release(7).lpf(1400)
+    .gain(0.42).pan(0.4).room(0.7).slow(2)
+    .color("saddlebrown"),
+
+  // ── DISCANT — florid line moving over each cantus note ───────
+  note("<[f4 g4 a4 bb4 c5 d5 c5 bb4]  [g4 a4 bb4 c5 d5 c5 bb4 a4]  [a4 bb4 c5 d5 eb5 d5 c5 bb4]  [d5 c5 bb4 a4 g4 f4 g4 bb4]>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.05).release(0.3).lpf(2400)
+    .gain(0.36).pan(0.55).room(0.65).slow(2)
+    .color("goldenrod"),
+
+  // ── HARMONY VOICE — fills middle ─────────────────────────────
+  note("<[bb3,d4,f4] [eb3,g3,bb3] [f3,a3,c4] [bb3,d4,f4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(2).release(4).lpf(2000)
+    .gain(0.28).pan(0.5).room(0.7).slow(2)
+    .color("indigo"),
+
+  // ── Ceremonial bell ──────────────────────────────────────────
+  note("bb4 ~ ~ ~  ~ ~ ~ ~")
+    .sound("triangle").attack(0.1).release(4)
+    .delay(0.5).delaytime(0.75).delayfeedback(0.4)
+    .room(0.75).gain(0.28).pan(0.5).slow(4)
+    .color("gold")
+)

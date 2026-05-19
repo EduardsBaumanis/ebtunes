@@ -167,6 +167,17 @@
   --code-fg:  #d8d0b0;
 }
 
+/* ── MEDEIVAL theme — illuminated manuscript: gold leaf on vellum ── */
+[data-theme="medeival"] {
+  --black:    #1a1208;
+  --white:    #f0d890;
+  --grey:     #a08850;
+  --dim:      #2a1c10;
+  --mid:      #4a3418;
+  --code-bg:  #1a1208;
+  --code-fg:  #d8b870;
+}
+
 /* ── DEMOS theme — showcase gallery: cool slate + cyan accent ── */
 [data-theme="demos"] {
   --black:    #06090e;
