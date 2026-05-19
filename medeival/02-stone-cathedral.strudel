@@ -1,0 +1,52 @@
+// ══════════════════════════════════════════════════════════════
+// "Stone Cathedral"
+// Track 2 of 20 · Medeival
+//
+// Key:    E Phrygian (the dark church mode — flat 2)
+// Tempo:  ~46 BPM  (setcpm 11.5)
+// Mood:   Vast stone interior. Long decays. Parallel organum.
+//
+// VOCAL TECHNIQUE
+//   Parallel perfect-5th organum — every melody note doubled
+//   five steps below by a second voice, like 9th-century Musica
+//   Enchiriadis. Both voices on vowel "a".
+// ══════════════════════════════════════════════════════════════
+
+setcpm(11.5)
+
+stack(
+
+  note("e1").sound("sine").attack(10).release(15).gain(0.5)
+    .color("midnightblue"),
+
+  // ── Sustained vowel pad ──────────────────────────────────────
+  note("[e2,b2]").sound("sawtooth").vowel("o")
+    .attack(9).release(14).lpf(1100).gain(0.4).room(0.88)
+    .color("indigo"),
+
+  // ── ORGANUM — top voice ──────────────────────────────────────
+  note("<e4 f4 g4 e4  a4 g4 f4 e4>")
+    .sound("sawtooth").vowel("a")
+    .attack(1).release(3).lpf(1900)
+    .gain(0.4).pan(0.55).room(0.92).size(0.96)
+    .color("goldenrod"),
+
+  // ── ORGANUM — perfect 5th BELOW (vox principalis) ────────────
+  note("<a3 bb3 c4 a3  d4 c4 bb3 a3>")
+    .sound("sawtooth").vowel("a")
+    .attack(1).release(3).lpf(1600)
+    .gain(0.38).pan(0.45).room(0.92).size(0.96)
+    .color("darkgoldenrod"),
+
+  // ── Cathedral bell, slow ─────────────────────────────────────
+  note("e3 ~ ~ ~  ~ ~ ~ ~")
+    .sound("triangle").attack(0.3).release(10)
+    .delay(0.7).delaytime(0.75).delayfeedback(0.55)
+    .room(0.95).size(0.98).gain(0.32).pan(0.5).slow(4)
+    .color("bronze"),
+
+  // ── Whisper of air through nave ──────────────────────────────
+  s("white*4").lpf(slider(1400, 500, 2600)).hpf(500)
+    .gain(0.03).pan(rand).slow(8)
+    .color("gray")
+)
