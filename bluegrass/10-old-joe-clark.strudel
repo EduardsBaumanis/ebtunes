@@ -1,0 +1,53 @@
+// ══════════════════════════════════════════════════════════════
+// "Old Joe Clark"
+// Track 10 of 15 · Bluegrass
+//
+// Key:    A Mixolydian (flat-7 — G natural, not G#)
+// Tempo:  138 BPM  (setcpm 34.5)
+// Form:   AABB modal tune
+// Mood:   Mountain modal. Rough, defiant.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(34.5)
+
+stack(
+
+  // ── BASS — A / G alternation (flat-7 vamp) ───────────────────
+  note("<a2 e3 a2 e3  g2 d3 g2 d3>")
+    .sound("sine").attack(0.005).release(0.32).lpf(230)
+    .gain(0.68).pan(0.45)
+    .color("saddlebrown"),
+
+  // ── MANDOLIN CHOP ────────────────────────────────────────────
+  note("<[a3,cs4,e4] [g3,b3,d4] [a3,cs4,e4] [g3,b3,d4]>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.003).release(0.06).lpf(2800).hpf(800).lpq(6)
+    .struct("~ x ~ x ~ x ~ x").gain(0.42).pan(0.6)
+    .color("forestgreen"),
+
+  // ── FIDDLE — Old Joe Clark melody (flat-7 = G nat) ───────────
+  note("a4 b4 cs5 a4  e5 cs5 a4 e4  g4 a4 b4 g4  e5 d5 b4 g4")
+    .sound("sawtooth").vowel("a")
+    .attack(0.03).release(0.2).lpf(2700)
+    .gain(0.46).pan(0.5).room(0.22)
+    .color("crimson"),
+
+  // ── BANJO — supporting roll, drops to G7-ish ─────────────────
+  note("a4 e5 cs5 e5  a4 e5 cs5 e5  g4 d5 b4 d5  g4 d5 b4 d5")
+    .sound("triangle").attack(0.003).release(0.1).lpf(3300)
+    .gain(0.36).pan(0.4).room(0.18)
+    .color("goldenrod"),
+
+  // ── VOCAL "HEY OLD JOE" stab on the B part ───────────────────
+  note("<~ ~ ~ ~  a4 ~ g4 ~>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.01).release(0.18).lpf(2200)
+    .gain(0.38).pan(0.5).room(0.3)
+    .color("orange"),
+
+  // ── KICK + clap ──────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.4).lpf(175)
+    .color("dimgray"),
+  s("~ ~ cp ~ ~ ~ cp ~").gain(0.28).hpf(900).room(0.22)
+    .color("crimson")
+)
