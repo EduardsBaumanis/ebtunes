@@ -1,0 +1,56 @@
+// ══════════════════════════════════════════════════════════════
+// "Dueling Strings"
+// Track 13 of 15 · Bluegrass
+//
+// Key:    G major
+// Tempo:  130 BPM  (setcpm 32.5)
+// Form:   Trade-fours: banjo plays a phrase, fiddle answers
+// Mood:   Friendly competition. Two pickers trying to one-up.
+//
+// PALETTE
+//   Banjo solos LEFT for 4 beats, then silent;
+//   Fiddle solos RIGHT for the next 4 beats, then silent. Bass
+//   and chop hold steady throughout.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(32.5)
+
+stack(
+
+  // ── BASS — steady ────────────────────────────────────────────
+  note("<g2 d3 g2 d3  c3 g2 d3 g2>")
+    .sound("sine").attack(0.005).release(0.34).lpf(235)
+    .gain(0.65).pan(0.5)
+    .color("saddlebrown"),
+
+  // ── MANDOLIN CHOP — centred ──────────────────────────────────
+  note("<[g3,b3,d4] [c4,e4,g4] [d4,fs4,a4] [g3,b3,d4]>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.003).release(0.06).lpf(2800).hpf(800).lpq(6)
+    .struct("~ x ~ x ~ x ~ x").gain(0.4).pan(0.5)
+    .color("forestgreen"),
+
+  // ── BANJO — solos on the first half, LEFT ────────────────────
+  note("<[g4 d5 b4 d5  c5 e5 g5 e5]  [~ ~ ~ ~  ~ ~ ~ ~]>")
+    .sound("triangle").attack(0.003).release(0.1).lpf(3300)
+    .gain(0.5).pan(0.2).room(0.2)
+    .color("goldenrod"),
+
+  // ── FIDDLE — answers on the second half, RIGHT ───────────────
+  note("<[~ ~ ~ ~  ~ ~ ~ ~]  [d5 b4 g4 b4  c5 a4 fs5 g5]>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.03).release(0.2).lpf(2700)
+    .gain(0.5).pan(0.8).room(0.25)
+    .color("crimson"),
+
+  // ── GUITAR fill on the gaps ──────────────────────────────────
+  note("g3 ~ ~ ~ g3 ~ ~ ~")
+    .sound("sawtooth").vowel("i")
+    .attack(0.005).release(0.5).lpf(2000)
+    .gain(0.26).pan(0.5).room(0.3)
+    .color("olive"),
+
+  // ── KICK ─────────────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.38).lpf(175)
+    .color("dimgray")
+)

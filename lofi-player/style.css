@@ -178,6 +178,17 @@
   --code-fg:  #d8b870;
 }
 
+/* ── BLUEGRASS theme — porch lamp, hickory wood, banjo gold ── */
+[data-theme="bluegrass"] {
+  --black:    #0e0a06;
+  --white:    #f0d8a0;
+  --grey:     #b08850;
+  --dim:      #1c1408;
+  --mid:      #3a2810;
+  --code-bg:  #0e0a06;
+  --code-fg:  #d8b878;
+}
+
 /* ── DEMOS theme — showcase gallery: cool slate + cyan accent ── */
 [data-theme="demos"] {
   --black:    #06090e;
