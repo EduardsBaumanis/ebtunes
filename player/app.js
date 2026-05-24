@@ -121,6 +121,55 @@ async function fetchSong(playlist, filename) {
   }
 }
 
+// ── Player links ─────────────────────────────────────────────────────────────
+
+function albumUrl(playlist, filename = '') {
+  const url = new URL(window.location.href);
+  url.search = '';
+  url.hash = '';
+  url.searchParams.set('album', playlist.id);
+  if (filename) url.searchParams.set('song', filename);
+  return url;
+}
+
+function updatePlayerUrl(playlist, filename = '') {
+  window.history.replaceState(null, '', albumUrl(playlist, filename));
+}
+
+function routeFromUrl() {
+  const query = new URLSearchParams(window.location.search);
+  let album = query.get('album') || query.get('playlist') || '';
+  let song = query.get('song') || '';
+
+  if (!album && window.location.hash) {
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash.includes('=')) {
+      const hashParams = new URLSearchParams(hash);
+      album = hashParams.get('album') || hashParams.get('playlist') || '';
+      song = hashParams.get('song') || '';
+    } else {
+      album = hash;
+    }
+  }
+
+  return { album, song };
+}
+
+function findPlaylist(plId) {
+  const target = plId.trim().toLowerCase();
+  if (!target || typeof PLAYLISTS === 'undefined') return null;
+  return PLAYLISTS.find(pl => pl.id.toLowerCase() === target) || null;
+}
+
+function initialSelection() {
+  if (typeof PLAYLISTS === 'undefined' || !PLAYLISTS.length) return null;
+  const route = routeFromUrl();
+  const playlist = findPlaylist(route.album) || PLAYLISTS[0];
+  const songIdx = route.song ? playlist.files.indexOf(route.song) : -1;
+  const idx = songIdx >= 0 ? songIdx : 0;
+  return { playlist, filename: playlist.files[idx], idx };
+}
+
 // ── Sidebar (collapsible playlist tree) ──────────────────────────────────────
 
 function buildSidebar() {
@@ -143,7 +192,10 @@ function buildSidebar() {
       <span class="pl-label">${pl.label}</span>
       <span class="pl-count">${String(pl.files.length).padStart(2, '0')}</span>
     `;
-    header.addEventListener('click', () => toggleGroup(pl.id));
+    header.addEventListener('click', () => {
+      toggleGroup(pl.id);
+      updatePlayerUrl(pl);
+    });
 
     // Song list (hidden until group is expanded)
     const list = document.createElement('div');
@@ -158,6 +210,7 @@ function buildSidebar() {
         <span class="pl-name">${humanize(filename)}</span>
       `;
       btn.addEventListener('click', () => {
+        updatePlayerUrl(pl, filename);
         selectSong(pl, filename, i);
         // Lazy-fetch title from the file for nicer labels
         fetchSong(pl, filename).then(entry => {
@@ -277,6 +330,7 @@ async function vote(value) {
 
   const nextSong = nextSongInPlaylist();
   if (nextSong) {
+    updatePlayerUrl(nextSong.playlist, nextSong.filename);
     await selectSong(nextSong.playlist, nextSong.filename, nextSong.idx);
   }
 }
@@ -345,6 +399,7 @@ function renderLeaderboard(entries) {
       if (idx < 0) return;
       expandGroup(plId);
       showPlay();
+      updatePlayerUrl(pl, filename);
       selectSong(pl, filename, idx);
     });
   });
@@ -433,11 +488,11 @@ function init() {
   // Sidebar tree
   buildSidebar();
 
-  // Default open state: expand the first playlist
-  if (typeof PLAYLISTS !== 'undefined' && PLAYLISTS.length) {
-    expandGroup(PLAYLISTS[0].id);
+  const initial = initialSelection();
+  if (initial) {
+    expandGroup(initial.playlist.id);
     // Pre-select the first song so the editor has something to show
-    selectSong(PLAYLISTS[0], PLAYLISTS[0].files[0], 0);
+    selectSong(initial.playlist, initial.filename, initial.idx);
   }
 
   // Tab switching
