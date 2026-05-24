@@ -211,6 +211,17 @@
   --code-fg:  #d8b878;
 }
 
+/* ── FOOTWORK theme — Chicago neon: hot pink on asphalt ── */
+[data-theme="footwork"] {
+  --black:    #0a0608;
+  --white:    #ff8fc8;
+  --grey:     #b04880;
+  --dim:      #18080f;
+  --mid:      #38101c;
+  --code-bg:  #0a0608;
+  --code-fg:  #f088b8;
+}
+
 /* ── BERLIN SCHOOL theme — Tangerine Dream cassette tape colours ── */
 [data-theme="berlin-school"] {
   --black:    #0a0612;
