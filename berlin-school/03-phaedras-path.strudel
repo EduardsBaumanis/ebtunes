@@ -1,0 +1,58 @@
+// ══════════════════════════════════════════════════════════════
+// "Phaedra's Path"
+// Track 3 of 20 · Berlin School — Tangerine Dream homage
+//
+// Key:    E minor (modal)
+// Tempo:  85 BPM  (setcpm 21)
+// Mood:   Phaedra (1974) — locked sequencer, sweeping pads.
+//
+// STRUDEL TECHNIQUE
+//   Two sequencers RUNNING AT DIFFERENT SPEEDS — the classic
+//   TD trick. One in 8, one in 7 = slow phase shift over time.
+//
+// VISUALIZATION
+//   .pianoroll() on the primary arp + .scope() on the bass
+// ══════════════════════════════════════════════════════════════
+
+setcpm(21)
+
+stack(
+
+  note("e1").sound("sine").attack(4).release(8).gain(0.48)
+    .color("midnightblue"),
+
+  // ── SEQUENCER 1 — 8-step E minor pattern ─────────────────────
+  note("[e3,g3,b3,d4]")
+    .arp("0 1 2 3 2 3 0 1")
+    .sound("sawtooth")
+    .lpf(slider(1100, 300, 2800)).lpq(7)
+    .attack(0.003).release(0.13)
+    .gain(0.42).pan(0.35).room(0.4)
+    .color("cyan")
+    .pianoroll(),
+
+  // ── SEQUENCER 2 — 7-step pattern (phases against #1) ─────────
+  note("[e4,g4,b4,d5,a4,c5,g4]")
+    .arp("0 1 2 3 4 5 6")
+    .sound("square")
+    .lpf(slider(2200, 700, 4000)).lpq(5)
+    .attack(0.003).release(0.1)
+    .gain(0.3).pan(0.65).room(0.4)
+    .color("aqua"),
+
+  // ── BASS — slow filtered pulse with scope ────────────────────
+  note("<e2 b1 g2 a1>")
+    .sound("sawtooth").lpf(560).lpq(6).shape(0.13)
+    .attack(0.01).release(0.5)
+    .struct("x ~ ~ ~ x ~ ~ ~")
+    .gain(0.6).pan(0.5)
+    .color("navy")
+    .scope(),
+
+  // ── PAD — slow swell, sweeping ───────────────────────────────
+  note("[e3,g3,b3,d4]")
+    .sound("sawtooth").vowel("o")
+    .attack(6).release(10).lpf(slider(1500, 500, 3000))
+    .gain(0.32).pan(0.5).room(0.7)
+    .color("indigo")
+)
