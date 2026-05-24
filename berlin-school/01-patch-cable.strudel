@@ -1,0 +1,50 @@
+// ══════════════════════════════════════════════════════════════
+// "Patch Cable"
+// Track 1 of 20 · Berlin School — the opening
+//
+// Key:    A minor
+// Tempo:  90 BPM  (setcpm 22.5)
+// Mood:   Modular synth waking up. Sequencer engages on cue.
+//
+// STRUDEL TECHNIQUE
+//   .arp("0 1 2 3")           — classic ascending sequencer arp
+//   .lpf(slider(...))         — manually-sweepable filter cutoff
+//   .lpq(8)                   — resonance for that Moog/MS-20 quack
+//
+// VISUALIZATION
+//   .scope()  on the bass — see the filter sweep shape on the wave
+// ══════════════════════════════════════════════════════════════
+
+setcpm(22.5)
+
+stack(
+
+  // ── DEEP SUB drone ───────────────────────────────────────────
+  note("a1").sound("sine").attack(4).release(8).gain(0.5)
+    .color("midnightblue"),
+
+  // ── 16TH-NOTE SEQUENCER — the soul of Berlin School ──────────
+  note("[a3,c4,e4,g4]")
+    .arp("0 1 2 3 2 1 0 1")
+    .sound("sawtooth")
+    .lpf(slider(900, 250, 3000)).lpq(8)
+    .attack(0.003).release(0.12)
+    .gain(0.45).pan(0.5).room(0.3)
+    .color("cyan"),
+
+  // ── BASS sequencer with scope visualizer ─────────────────────
+  note("<a1 a1 e2 a1  c2 g1 e2 a1>")
+    .sound("sawtooth")
+    .lpf(slider(600, 200, 2000)).lpq(6).shape(0.12)
+    .attack(0.005).release(0.18)
+    .gain(0.55).pan(0.5)
+    .color("navy")
+    .scope(),
+
+  // ── PAD — slowly evolving Am ─────────────────────────────────
+  note("[a3,c4,e4]")
+    .sound("sawtooth").vowel("u")
+    .attack(4).release(8).lpf(1700)
+    .gain(0.3).pan(0.5).room(0.55)
+    .color("indigo")
+)

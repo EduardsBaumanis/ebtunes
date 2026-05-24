@@ -1,0 +1,52 @@
+// Album: Footwork — Chicago Juke Codes
+// Track: 20 — dawn-tek
+// Genre: Footwork — album closer
+// Tempo / CPM: 144 BPM (setcpm 36)
+// Musical idea: Battle's over — slow exit, long pad, single 808 hits, one bell saying goodbye.
+// Strudel focus: Same juke vocabulary stripped down: long-attack pad, sparse 808, one bell per phrase.
+// Visualisation: ._pianoroll({ fold: true, cycles: 8 }) — long 8-cycle fold to read the slow farewell phrasing.
+
+setcpm(36)
+
+stack(
+
+  // ── SUB ──────────────────────────────────────────────────────
+  note("e1").sound("sine").attack(5).release(10).gain(0.42)
+    .color("midnightblue"),
+
+  // ── LONG PAD — Em9 → Cmaj7 → Am9 → Bm7 ──────────────────────
+  note("<[e3,g3,b3,d4,fs4] [c3,e3,g3,b3] [a3,c4,e4,g4,b4] [b2,d3,fs3,a3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(4).release(7).lpf(1900)
+    .gain(0.4).pan(0.5).room(0.7).slow(4)
+    .color("teal"),
+
+  // ── SINGLE LONG PHRASE — pianoroll fold ──────────────────────
+  note("b5 ~ ~ ~  g5 ~ ~ ~  fs5 ~ ~ ~  e5 ~ ~ b4")
+    .sound("triangle").attack(0.01).release(1.2).lpf(2800)
+    .delay(0.5).delaytime(0.5).delayfeedback(0.45)
+    .gain(0.38).pan(0.55).room(0.7)
+    .slow(2)
+    .color("ivory")
+    ._pianoroll({ fold: true, cycles: 8 }),
+
+  // ── 808 — one stab per long phrase ───────────────────────────
+  note("<e2 ~ ~ ~  ~ ~ a2 ~  ~ ~ ~ ~  ~ ~ b1 ~>")
+    .sound("sine").attack(0.001).release(0.4).shape(0.14)
+    .gain(0.82).pan(0.5)
+    .color("darkred"),
+
+  // ── WHISPER HAT — fading ─────────────────────────────────────
+  s("hh*8").gain(0.1).hpf(8000)
+    .mask("<1 0 1 0>")
+    .color("yellow"),
+
+  // ── FINAL KICK — one beat per bar ────────────────────────────
+  s("bd ~ ~ ~ ~ ~ ~ ~").gain(0.45).lpf(160).shape(0.1)
+    .color("dimgray"),
+
+  // ── DISTANT CLAP ─────────────────────────────────────────────
+  s("~ ~ ~ ~  ~ ~ cp ~").gain(0.32).hpf(900).room(0.55)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.4)
+    .color("coral")
+)

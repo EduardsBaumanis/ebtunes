@@ -1,0 +1,50 @@
+// Album: Amapiano — South African House Codes
+// Track: 20 — dawn-reflection
+// Genre: Amapiano — the album closer
+// Tempo / CPM: 104 BPM (setcpm 26)
+// Musical idea: After the party ends — sparse, contemplative, single log-drum hits with long pad halos.
+// Strudel focus: Everything we've used (log drum, vowel pads, piano, shakers) reduced to its quietest essence.
+// Visualisation: ._pianoroll({ fold: true, cycles: 8 }) — long 8-cycle fold lets the slow phrasing breathe.
+
+setcpm(26)
+
+stack(
+
+  note("d1").sound("sine").attack(5).release(10).gain(0.42)
+    .color("midnightblue"),
+
+  // ── LONG PAD — Dm9 → F6/9 → Am11 → Bbmaj7 ────────────────────
+  note("<[d3,f3,a3,c4,e4] [f3,a3,c4,e4,g4] [a3,c4,e4,g4,b4] [bb3,d4,f4,a4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(4).release(7).lpf(1900)
+    .gain(0.36).pan(0.5).room(0.7).slow(4)
+    .color("teal"),
+
+  // ── SINGLE PIANO PHRASE — once per long cycle + folded view ──
+  note("f5 ~ ~ ~  e5 ~ ~ ~  d5 ~ ~ ~  c5 ~ ~ a4")
+    .sound("triangle").attack(0.01).release(1).lpf(2800)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.4)
+    .gain(0.38).pan(0.55).room(0.65)
+    .slow(2)
+    .color("gold")
+    ._pianoroll({ fold: true, cycles: 8 }),
+
+  // ── LOG DRUM — almost a heartbeat, one hit per phrase ────────
+  note("<d2 ~ a1 ~  ~ ~ d2 ~>")
+    .sound("sine").attack(0.001).release(0.3).shape(0.15).lpf(400)
+    .gain(0.78).pan(0.5).room(0.45)
+    .color("saddlebrown"),
+
+  // ── SHAKER — barely there, vanishing ─────────────────────────
+  s("hh*8").gain(0.08).hpf(7800)
+    .mask("<1 0 1 0>")
+    .color("yellow"),
+
+  // ── RIM — once every 2 bars ──────────────────────────────────
+  s("~ ~ ~ ~  ~ ~ rim ~").gain(0.32).hpf(1500).room(0.4)
+    .color("orange"),
+
+  // ── KICK — final heart pulse ─────────────────────────────────
+  s("bd ~ ~ ~ ~ ~ ~ ~").gain(0.42).lpf(160).shape(0.08)
+    .color("dimgray")
+)

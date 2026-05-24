@@ -200,6 +200,39 @@
   --code-fg:  #98e0b8;
 }
 
+/* ── AMAPIANO theme — savanna gold on deep night sky ── */
+[data-theme="amapiano"] {
+  --black:    #0a0814;
+  --white:    #f0d090;
+  --grey:     #a08068;
+  --dim:      #14102a;
+  --mid:      #2e2444;
+  --code-bg:  #0a0814;
+  --code-fg:  #d8b878;
+}
+
+/* ── FOOTWORK theme — Chicago neon: hot pink on asphalt ── */
+[data-theme="footwork"] {
+  --black:    #0a0608;
+  --white:    #ff8fc8;
+  --grey:     #b04880;
+  --dim:      #18080f;
+  --mid:      #38101c;
+  --code-bg:  #0a0608;
+  --code-fg:  #f088b8;
+}
+
+/* ── BERLIN SCHOOL theme — Tangerine Dream cassette tape colours ── */
+[data-theme="berlin-school"] {
+  --black:    #0a0612;
+  --white:    #f0d8a8;
+  --grey:     #806080;
+  --dim:      #150a20;
+  --mid:      #2e1a40;
+  --code-bg:  #0a0612;
+  --code-fg:  #d8b890;
+}
+
 /* ── DEMOS theme — showcase gallery: cool slate + cyan accent ── */
 [data-theme="demos"] {
   --black:    #06090e;

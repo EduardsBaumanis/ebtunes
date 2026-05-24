@@ -1,0 +1,70 @@
+// ══════════════════════════════════════════════════════════════
+// "Berlin Wall"
+// Track 8 of 20 · Berlin School
+//
+// Key:    A minor
+// Tempo:  80 BPM  (setcpm 20)
+// Mood:   Cold concrete. Long-form unfolding. Patient evolution.
+//
+// STRUDEL TECHNIQUE
+//   Multiple sequencers at lengths 16 / 12 / 11 — non-aligning
+//   periods mean the pattern never quite repeats. Long arc.
+//
+// VISUALIZATION
+//   .punchcard() on the kick — visual proof of phase locks/slips
+// ══════════════════════════════════════════════════════════════
+
+setcpm(20)
+
+stack(
+
+  note("a1").sound("sine").attack(5).release(10).gain(0.48)
+    .color("midnightblue"),
+
+  // ── KICK — slow, punchcard ───────────────────────────────────
+  s("bd ~ ~ ~ ~ ~ ~ ~  bd ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.55).lpf(170).shape(0.1)
+    .color("crimson")
+    .punchcard(),
+
+  // ── SEQ A — 16 steps ─────────────────────────────────────────
+  note("[a3,c4,e4,g4]")
+    .arp("0 1 2 3 0 2 1 3  2 3 1 0 3 2 0 1")
+    .sound("sawtooth")
+    .lpf(slider(1100, 350, 3000)).lpq(8)
+    .attack(0.003).release(0.13)
+    .gain(0.4).pan(0.45).room(0.4)
+    .color("cyan"),
+
+  // ── SEQ B — 12 steps, different note set ─────────────────────
+  note("[d4,f4,a4,c5]")
+    .arp("0 1 2 3 1 2 3 0 2 3 0 1")
+    .sound("square")
+    .lpf(slider(2400, 800, 3800)).lpq(5)
+    .attack(0.003).release(0.11)
+    .gain(0.26).pan(0.55).room(0.4)
+    .color("aqua"),
+
+  // ── SEQ C — 11 steps, sparser ────────────────────────────────
+  note("e5 ~ a5 ~ c6 ~ b5 ~ g5 ~ e5")
+    .sound("triangle").attack(0.005).release(0.25)
+    .lpf(3200)
+    .delay(0.4).delaytime(0.375).delayfeedback(0.4)
+    .gain(0.32).pan(0.65).room(0.5)
+    .color("white"),
+
+  // ── BASS — slow ──────────────────────────────────────────────
+  note("<a2 e2 g2 d2>")
+    .sound("sawtooth").lpf(530).lpq(6).shape(0.13)
+    .attack(0.005).release(0.4)
+    .struct("x ~ ~ x x ~ ~ ~")
+    .gain(0.6).pan(0.5)
+    .color("navy"),
+
+  // ── PAD ──────────────────────────────────────────────────────
+  note("<[a3,c4,e4] [d4,f4,a4] [e4,g4,b4] [a3,c4,e4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(5).release(10).lpf(1700)
+    .gain(0.28).pan(0.5).room(0.65).slow(4)
+    .color("indigo")
+)

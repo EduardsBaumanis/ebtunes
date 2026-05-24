@@ -1,0 +1,61 @@
+// ══════════════════════════════════════════════════════════════
+// "Hyperion"
+// Track 13 of 20 · Berlin School
+//
+// Key:    B minor
+// Tempo:  98 BPM  (setcpm 24.5)
+// Mood:   Long-arc cinematic piece. Slow build, big payoff.
+//
+// STRUDEL TECHNIQUE
+//   Two sliders on different filters — manual mix automation
+//   .every(16, ...) for very-long-period transformations
+//
+// VISUALIZATION
+//   .scope() on the bass + .pianoroll() on the lead
+// ══════════════════════════════════════════════════════════════
+
+setcpm(24.5)
+
+stack(
+
+  note("b1").sound("sine").attack(4).release(8).gain(0.5)
+    .color("midnightblue"),
+
+  // ── KICK ─────────────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.65).lpf(175).shape(0.12)
+    .color("crimson"),
+
+  // ── 16th SEQUENCER ───────────────────────────────────────────
+  note("[b3,d4,fs4,a4,b4]")
+    .arp("0 1 2 3 4 3 2 1  0 1 2 3 4 3 2 1")
+    .sound("sawtooth")
+    .lpf(slider(1400, 400, 3200)).lpq(8)
+    .attack(0.003).release(0.13)
+    .gain(0.42).pan(0.5).room(0.4)
+    .color("cyan")
+    .pianoroll(),
+
+  // ── BASS — slow root + scope ─────────────────────────────────
+  note("<b2 fs2 d2 a2>")
+    .sound("sawtooth").lpf(slider(580, 220, 1800)).lpq(7).shape(0.14)
+    .attack(0.01).release(0.5)
+    .struct("x ~ ~ x x ~ ~ ~")
+    .gain(0.6).pan(0.5)
+    .color("navy")
+    .scope(),
+
+  // ── CINEMATIC LEAD — long legato, transposes every 16 ────────
+  note("<[fs5 b5 d6 fs5  e5 d5 b4 ~]  [a5 d6 fs6 a5  g5 fs5 e5 ~]>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.3).release(1.5).lpf(2800)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.35)
+    .gain(0.42).pan(0.55).room(0.55).slow(2)
+    .color("magenta"),
+
+  // ── PAD — Bm9 long ───────────────────────────────────────────
+  note("<[b3,d4,fs4,a4] [e4,g4,b4,d5] [fs4,a4,cs5,e5] [b3,d4,fs4,a4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(5).release(9).lpf(1700)
+    .gain(0.3).pan(0.5).room(0.7).slow(4)
+    .color("indigo")
+)

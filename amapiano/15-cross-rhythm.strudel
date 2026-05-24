@@ -1,0 +1,46 @@
+// Album: Amapiano — South African House Codes
+// Track: 15 — cross-rhythm
+// Genre: Amapiano
+// Tempo / CPM: 112 BPM (setcpm 28)
+// Musical idea: West-African-leaning 3-against-2 — clave in 3, log drum in 4, piano in 6.
+// Strudel focus: Stacked metric cycles ("*3", "*4", "*6") create authentic cross-rhythm without explicit polymeter math.
+// Visualisation: ._punchcard({ cycles: 3, vertical: true }) — vertical layout to read each meter as a column.
+
+setcpm(28)
+
+stack(
+
+  note("g1").sound("sine").attack(2).release(5).gain(0.4)
+    .color("midnightblue"),
+
+  // ── 3-CLAVE pattern ──────────────────────────────────────────
+  s("rim*3").gain(0.5).hpf(1600).room(0.18)
+    .color("orange")
+    ._punchcard({ cycles: 3, vertical: true }),
+
+  // ── LOG DRUM in 4 ────────────────────────────────────────────
+  note("<g2 d2 bb1 g2>")
+    .sound("sine").attack(0.001).release(0.18).shape(0.2).lpf(420)
+    .struct("x ~ x x")
+    .gain(0.85).pan(0.5)
+    .color("saddlebrown"),
+
+  // ── PIANO ARP in 6 — Gm11 ────────────────────────────────────
+  note("[g3,bb3,d4,f4,a4,c5]")
+    .arp("0 1 2 3 4 5")
+    .sound("triangle").attack(0.005).release(0.18).lpf(2700)
+    .gain(0.34).pan(0.55).room(0.4)
+    .color("gold"),
+
+  // ── HAT in 8 ─────────────────────────────────────────────────
+  s("hh*8").gain("0.18 0.10").hpf(7200)
+    .color("yellow"),
+
+  // ── CLAP in 5 ────────────────────────────────────────────────
+  s("cp*5").gain(0.25).hpf(900).room(0.2)
+    .color("coral"),
+
+  // ── KICK on 1 ────────────────────────────────────────────────
+  s("bd ~ ~ ~ ~ ~ ~ ~").gain(0.55).lpf(160).shape(0.1)
+    .color("crimson")
+)

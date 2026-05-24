@@ -1,0 +1,42 @@
+// Album: Footwork — Chicago Juke Codes
+// Track: 12 — polymetric-feet
+// Genre: Footwork
+// Tempo / CPM: 160 BPM (setcpm 40)
+// Musical idea: Pure polymeter — 808 in 5, kick in 4, hat in 7, clap in 3 — all over a 4-beat cycle.
+// Strudel focus: Per-layer "*N" mini-notation makes each layer phase against the others without manual math.
+// Visualisation: ._punchcard({ labels: true }) on every layer = literal grid of the phase relations.
+
+setcpm(40)
+
+stack(
+
+  // ── KICK in 4 + punchcard ────────────────────────────────────
+  s("bd*4").gain(0.8).lpf(165).shape(0.18)
+    .color("crimson")
+    ._punchcard({ labels: true }),
+
+  // ── 808 PITCHED STAB in 5 ────────────────────────────────────
+  note("a1 d2 c2 f2 g1")
+    .sound("sine").attack(0.001).release(0.25).shape(0.16)
+    .gain(0.85).pan(0.5)
+    .color("darkred")
+    ._punchcard({ labels: true }),
+
+  // ── HAT in 7 ─────────────────────────────────────────────────
+  s("hh*7").gain("0.24 0.14 0.20 0.14").hpf(7400)
+    .color("yellow")
+    ._punchcard({ labels: true }),
+
+  // ── CLAP in 3 ────────────────────────────────────────────────
+  s("cp*3").gain(0.4).hpf(900).room(0.2)
+    .color("orange")
+    ._punchcard({ labels: true }),
+
+  // ── TRIPLET HAT in 12 (overlay) ──────────────────────────────
+  s("hh*12").gain(0.12).hpf(8200)
+    .color("gold"),
+
+  // ── RIM in 11 — slowest layer ────────────────────────────────
+  s("rim*11").gain(0.18).hpf(2000)
+    .color("coral")
+)

@@ -1,0 +1,41 @@
+// Album: Amapiano — South African House Codes
+// Track: 01 — log-drum-intro
+// Genre: Amapiano
+// Tempo / CPM: 112 BPM (setcpm 28)
+// Musical idea: Establish the genre's signature — the log drum syncopation paired with a sparse shaker grid.
+// Strudel focus: Synthesised "log drum" from a deep sine with very fast envelope + euclid'd percussion.
+// Visualisation: ._punchcard() on the log drum so the percussive syncopation is immediately readable.
+
+setcpm(28)
+
+stack(
+
+  // ── SUB drone — F-Aeolian root ───────────────────────────────
+  note("f1").sound("sine").attack(2).release(4).gain(0.4)
+    .color("midnightblue"),
+
+  // ── LOG DRUM — the heartbeat of amapiano ─────────────────────
+  // Made from a low sine: short attack, short release, low pitches.
+  // The struct gives the signature syncopation (dotted feel).
+  note("<f2 c2 eb2 f2  ab1 c2 eb2 f2>")
+    .sound("sine")
+    .attack(0.001).release(0.18)
+    .struct("x ~ x ~ ~ x ~ x  ~ x ~ x x ~ x ~")
+    .shape(0.18).lpf(420)
+    .gain(0.9).pan(0.5)
+    .color("saddlebrown")
+    ._punchcard(),
+
+  // ── SHAKER — driving 16th-note grid ──────────────────────────
+  s("hh*16").gain("0.18 0.10 0.22 0.12  0.16 0.10 0.20 0.14")
+    .hpf(7200)
+    .color("yellow"),
+
+  // ── SIDE-STICK / RIM — the lazy backbeat ─────────────────────
+  s("~ rim ~ rim").gain(0.45).hpf(1400).room(0.18)
+    .color("orange"),
+
+  // ── KICK on 1+5 — quiet, supportive ──────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.55).lpf(160).shape(0.1)
+    .color("crimson")
+)

@@ -1,0 +1,49 @@
+// Album: Footwork — Chicago Juke Codes
+// Track: 07 — ghetto-house-roots
+// Genre: Footwork (Chicago lineage)
+// Tempo / CPM: 152 BPM (setcpm 38)
+// Musical idea: Acknowledge the lineage — ghetto-house 4/4 underneath, juke triplets and 808 stabs above.
+// Strudel focus: 4-on-the-floor kick (the house genealogy) + juke-style 808 and triplet hat on top = hybrid.
+// Visualisation: ._punchcard({ cycles: 4 }) on the kick pulse showing the steady 4/4 root.
+
+setcpm(38)
+
+stack(
+
+  // ── HOUSE KICK 4/4 + punchcard ───────────────────────────────
+  s("bd*4").gain(0.85).lpf(160).shape(0.15)
+    .color("crimson")
+    ._punchcard({ cycles: 4 }),
+
+  // ── OFF-BEAT BASS — house pulse ──────────────────────────────
+  note("<c2 ab1 f1 bb1>")
+    .sound("sawtooth").lpf(450).lpq(6).shape(0.15)
+    .attack(0.005).release(0.13)
+    .struct("~ x ~ x ~ x ~ x").gain(0.55)
+    .color("navy"),
+
+  // ── 808 PITCHED STAB — juke layer on top of house ────────────
+  note("<c2 ~ eb2 ~  f2 ~ ~ c2  ~ ab1 ~ eb2  c2 ~ ~ ~>")
+    .sound("sine").attack(0.001).release(0.25).shape(0.16)
+    .gain(0.78).pan(0.5)
+    .color("darkred"),
+
+  // ── HAT 16ths ────────────────────────────────────────────────
+  s("hh*16").gain("0.24 0.14 0.22 0.16").hpf(7400)
+    .color("yellow"),
+
+  // ── TRIPLET HAT ROLL — the juke layer over house ─────────────
+  s("hh*12").gain(0.12).hpf(8200)
+    .color("gold"),
+
+  // ── CLAP on 2 + 4 (house convention) ─────────────────────────
+  s("~ cp ~ cp").gain(0.55).hpf(900).room(0.22)
+    .color("coral"),
+
+  // ── CHORD STAB — Cm9 ─────────────────────────────────────────
+  note("[c4,eb4,g4,bb4]")
+    .sound("triangle").attack(0.003).release(0.15).lpf(2700)
+    .struct("~ ~ x ~ ~ ~ x ~")
+    .gain(0.34).pan(0.55).room(0.4)
+    .color("gold")
+)

@@ -1,0 +1,49 @@
+// Album: Amapiano — South African House Codes
+// Track: 13 — yano-house
+// Genre: Amapiano
+// Tempo / CPM: 118 BPM (setcpm 29.5)
+// Musical idea: Amapiano leaning toward 4/4 house — pumping kick, off-beat bass, slightly faster shuffle.
+// Strudel focus: Off-beat sub-bass (struct "~ x ~ x") = classic house pulse; log drum still answers in syncopation.
+// Visualisation: ._punchcard({ cycles: 2 }) on the off-beat bass — see the pump pattern.
+
+setcpm(29.5)
+
+stack(
+
+  note("c1").sound("sine").attack(1.5).release(4).gain(0.42)
+    .color("midnightblue"),
+
+  // ── KICK 4/4 ─────────────────────────────────────────────────
+  s("bd*4").gain(0.85).lpf(160).shape(0.13)
+    .color("crimson"),
+
+  // ── OFF-BEAT BASS — house pulse + punchcard ──────────────────
+  note("<c2 g1 ab1 eb2>")
+    .sound("sawtooth").lpf(380).lpq(6).shape(0.15)
+    .attack(0.005).release(0.13)
+    .struct("~ x ~ x ~ x ~ x").gain(0.65)
+    .color("navy")
+    ._punchcard({ cycles: 2 }),
+
+  // ── PIANO STABS — Cm9 → Abmaj7 → Fm7 → Gsus ──────────────────
+  note("<[c4,eb4,g4,bb4,d5] [ab3,c4,eb4,g4] [f3,ab3,c4,eb4] [g3,c4,d4,f4]>")
+    .sound("triangle").attack(0.005).release(0.3).lpf(2700)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.4).pan(0.55).room(0.45)
+    .color("gold"),
+
+  // ── LOG DRUM — supportive ────────────────────────────────────
+  note("<c2 g1 ab1 eb2>")
+    .sound("sine").attack(0.001).release(0.16).shape(0.18).lpf(420)
+    .struct("~ ~ x ~  ~ x ~ ~")
+    .gain(0.75).pan(0.5)
+    .color("saddlebrown"),
+
+  // ── HAT + CLAP + RIM ─────────────────────────────────────────
+  s("hh*16").gain("0.22 0.14").hpf(7200)
+    .color("yellow"),
+  s("~ cp ~ cp").gain(0.5).hpf(900).room(0.22)
+    .color("coral"),
+  s("rim*3").gain(0.3).hpf(1500).room(0.2)
+    .color("orange")
+)
