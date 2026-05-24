@@ -45,6 +45,7 @@ Strudel IDE, vērtēšanu un līderlisti:
 | [`pack-demos/`](pack-demos/) | Pa diviem demo katrai no 50 GitHub semplu pakām | 100 |
 | [`amapiano/`](amapiano/) | Dienvidāfrikas amapiano — koka bungas, jaza klavieres, soweto kori, vizualizācijas | 20 |
 | [`footwork/`](footwork/) | Čikāgas footwork / juke — 160 BPM, triplet hai-hat, 808 stabu melodijas | 20 |
+| [`gardens-of-broken-clocks/`](gardens-of-broken-clocks/) | Eksperimentāls albums: 30 izdomāti pulksteņi, kas saauguši ar dārzu | 30 |
 
 Daži favorīti:
 
@@ -53,6 +54,7 @@ Daži favorīti:
 - `study/study-17-mridangam-misra` — Hindustāni Misra Chapu (7-sitienu cikls) Raag Yaman
 - `amapiano/07-polyperc-study` — pieci ritmi 3 / 4 / 5 / 7 / 11 ar `_punchcard` fāzes redzējumu
 - `footwork/12-polymetric-feet` — kicks 4, 808 5, hat 7, clap 3 — viss vienlaikus, ar etiķetēm
+- `gardens-of-broken-clocks/17-clockstone` — viens akords aizturēts 8 ciklus, lēni atveras filtrs
 - `TehnoSkola/techno-08-melodic-techno` — melodiskais tehno ar Detroitas saknēm
 - `prog/song-06-terminal-green` — CRT fosfora zaļš, kompilēšanās laikā
 

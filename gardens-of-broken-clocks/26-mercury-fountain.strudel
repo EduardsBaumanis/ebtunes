@@ -1,0 +1,44 @@
+// Album: gardens of broken clocks
+// Track: 26 — mercury-fountain
+// Concept: A fountain of liquid mercury rising and falling, each drop a tiny clock.
+// Musical idea: Ascending/descending pitch sweeps via sine.range() applied to .note() transposition.
+// Strudel focus: sine.range() controlling a transposition .add() = the literal rise-and-fall.
+// Visualisation: ._pianoroll({ cycles: 4 }) — the modulated pitch is visible as a sinusoidal wave on the staff.
+
+setcpm(20)
+
+stack(
+
+  note("a1").sound("sine").attack(3).release(6).gain(0.42)
+    .color("dimgray"),
+
+  // ── MERCURY DROP — pitch modulated by sine LFO + pianoroll ───
+  note("a4")
+    .add(sine.range(0, 12).slow(8))
+    .sound("triangle").attack(0.001).release(0.25).lpf(4000)
+    .struct("x ~ x ~ x ~ x ~")
+    .delay(0.4).delaytime(0.375).delayfeedback(0.4)
+    .gain(0.4).pan(0.55).room(0.55)
+    .color("silver")
+    ._pianoroll({ cycles: 4 }),
+
+  // ── COUNTER DROP — opposite phase ────────────────────────────
+  note("e4")
+    .add(sine.range(12, 0).slow(8))
+    .sound("triangle").attack(0.001).release(0.25).lpf(3500)
+    .struct("~ x ~ x ~ x ~ x")
+    .gain(0.32).pan(0.45).room(0.55)
+    .color("gainsboro"),
+
+  // ── POOL — sustained Am9 pad ─────────────────────────────────
+  note("[a3,c4,e4,g4,b4]")
+    .sound("sawtooth").vowel("u")
+    .attack(4).release(7).lpf(1800)
+    .gain(0.3).pan(0.5).room(0.6)
+    .color("slategray"),
+
+  // ── BUBBLE — high noise ping ─────────────────────────────────
+  s("white*4").lpf(5500).hpf(3500).attack(0.001).release(0.04)
+    .gain(0.14).pan(rand).degradeBy(0.5)
+    .color("aliceblue")
+)

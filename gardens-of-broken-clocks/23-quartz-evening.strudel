@@ -1,0 +1,40 @@
+// Album: gardens of broken clocks
+// Track: 23 — quartz-evening
+// Concept: A quartz crystal humming at exactly 32,768 Hz, scaled down to the slow garden evening.
+// Musical idea: A locked, perfectly steady sine pulse + crystalline triangle melody = perfectly-still-time.
+// Strudel focus: tight quantised note() + no probabilistic transformations = stark unbroken precision.
+// Visualisation: .punchcard({ cycles: 2 }) — the steadiness becomes visually beautiful through the lockstep grid.
+
+setcpm(22)
+
+stack(
+
+  // ── QUARTZ PULSE — perfectly steady + punchcard ──────────────
+  note("e2*8")
+    .sound("sine").attack(0.001).release(0.06)
+    .gain(0.55).pan(0.5)
+    .color("aqua")
+    .punchcard({ cycles: 2 }),
+
+  // ── CRYSTAL MELODY — sparse, harmonic ────────────────────────
+  note("<e5 b4 fs5 ~  ~ a5 ~ b5  e5 ~ d5 ~  b4 ~ ~ ~>")
+    .sound("triangle").attack(0.002).release(0.45).lpf(4000)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.4)
+    .gain(0.36).pan(0.55).room(0.55)
+    .color("paleturquoise"),
+
+  // ── DRONE ────────────────────────────────────────────────────
+  note("e1").sound("sine").attack(4).release(8).gain(0.4)
+    .color("midnightblue"),
+
+  // ── EVENING PAD — Emaj9 ──────────────────────────────────────
+  note("[e3,gs3,b3,ds4,fs4]")
+    .sound("sawtooth").vowel("u")
+    .attack(4).release(7).lpf(2000)
+    .gain(0.3).pan(0.5).room(0.6)
+    .color("teal"),
+
+  // ── KICK ─────────────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.5).lpf(170).shape(0.08)
+    .color("crimson")
+)

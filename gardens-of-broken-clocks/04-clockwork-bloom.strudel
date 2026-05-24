@@ -1,0 +1,37 @@
+// Album: gardens of broken clocks
+// Track: 04 — clockwork-bloom
+// Concept: Brass gears that wind down so slowly they begin to flower — petals of harmonic open with every cycle.
+// Musical idea: Arpeggio that opens one note further every cycle via .every(N, x => x.add(...)) — a "blooming" pattern.
+// Strudel focus: chained .every() transformations to expand a melodic seed across long form.
+// Visualisation: ._pianoroll({ cycles: 4, labels: true }) — see the "bloom" register climb cycle by cycle.
+
+setcpm(24)
+
+stack(
+
+  note("d1").sound("sine").attack(2).release(5).gain(0.42)
+    .color("darkgreen"),
+
+  // ── BLOOMING ARP — register climbs over time + pianoroll ─────
+  note("[d4,f4,a4,c5]")
+    .arp("0 1 2 3")
+    .every(4, x => x.add(2))
+    .every(8, x => x.add(5))
+    .every(16, x => x.sub(7))
+    .sound("triangle").attack(0.005).release(0.4).lpf(3200)
+    .delay(0.3).delaytime(0.375).delayfeedback(0.3)
+    .gain(0.4).pan(0.55).room(0.45)
+    .color("gold")
+    ._pianoroll({ cycles: 4, labels: true }),
+
+  // ── BRASS PAD ────────────────────────────────────────────────
+  note("<[d3,f3,a3,c4] [g3,bb3,d4,f4]>")
+    .sound("sawtooth").vowel("o")
+    .attack(2).release(4).lpf(slider(1800, 700, 3000))
+    .gain(0.32).pan(0.5).room(0.55).slow(2)
+    .color("goldenrod"),
+
+  // ── GEAR CLICK ───────────────────────────────────────────────
+  s("rim*5").gain(0.28).hpf(2400).room(0.18)
+    .color("peru")
+)

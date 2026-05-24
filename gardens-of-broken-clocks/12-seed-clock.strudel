@@ -1,0 +1,40 @@
+// Album: gardens of broken clocks
+// Track: 12 — seed-clock
+// Concept: A clock germinating from a seed — at first only a single soft tick, then two, then a sprout of notes.
+// Musical idea: Density grows monotonically across cycles via .every(N, x => x.ply(2)) stacked at different periods.
+// Strudel focus: nested .every() to compound density increase = "germination" curve.
+// Visualisation: ._punchcard({ cycles: 4 }) on the seed-tick — visibly germinates from sparse to dense.
+
+setcpm(22)
+
+stack(
+
+  // ── SEED TICK — starts as one event, grows in density ────────
+  s("white")
+    .struct("x ~ ~ ~  ~ ~ ~ ~  ~ ~ ~ ~  ~ ~ ~ ~")
+    .every(2, x => x.ply(2))
+    .every(3, x => x.ply(2))
+    .every(5, x => x.ply(2))
+    .attack(0.001).release(0.03).lpf(5500).hpf(3500)
+    .gain(0.32).pan(rand)
+    .color("yellowgreen")
+    ._punchcard({ cycles: 4 }),
+
+  // ── EARTH DRONE ──────────────────────────────────────────────
+  note("e1").sound("sine").attack(4).release(8).gain(0.4)
+    .color("saddlebrown"),
+
+  // ── SPROUT — a few high notes that appear only in late cycles ─
+  note("<~ ~ ~ ~  ~ ~ ~ ~  ~ ~ ~ ~  ~ ~ ~ ~  e6 b5 g5 ~  ~ ~ ~ ~  ~ ~ ~ ~  ~ ~ ~ ~>")
+    .sound("triangle").attack(0.005).release(0.6).lpf(3200)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.4)
+    .gain(0.32).pan(0.55).room(0.5)
+    .color("limegreen"),
+
+  // ── DEEP PAD — slowly opens with time ────────────────────────
+  note("[e3,g3,b3]")
+    .sound("sawtooth").vowel("u")
+    .attack(6).release(10).lpf(slider(1200, 600, 2400))
+    .gain(0.3).pan(0.5).room(0.6)
+    .color("forestgreen")
+)
