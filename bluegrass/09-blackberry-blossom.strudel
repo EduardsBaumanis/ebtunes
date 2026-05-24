@@ -38,13 +38,6 @@ stack(
     .gain(0.36).pan(0.4).room(0.18)
     .color("goldenrod"),
 
-  // ── FIDDLE HARMONY — third above on the B turn ───────────────
-  note("<~ ~ ~ ~  g5 a5 b5 c6  d6 c6 b5 a5  g5 fs5 d5 b4>")
-    .sound("sawtooth").vowel("e")
-    .attack(0.04).release(0.2).lpf(2900)
-    .gain(0.32).pan(0.55).room(0.28)
-    .color("orange"),
-
   // ── KICK ─────────────────────────────────────────────────────
   s("bd ~ ~ ~ bd ~ ~ ~").gain(0.38).lpf(175)
     .color("dimgray")

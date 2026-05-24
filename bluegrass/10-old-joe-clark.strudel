@@ -25,13 +25,6 @@ stack(
     .struct("~ x ~ x ~ x ~ x").gain(0.42).pan(0.6)
     .color("forestgreen"),
 
-  // ── FIDDLE — Old Joe Clark melody (flat-7 = G nat) ───────────
-  note("a4 b4 cs5 a4  e5 cs5 a4 e4  g4 a4 b4 g4  e5 d5 b4 g4")
-    .sound("sawtooth").vowel("a")
-    .attack(0.03).release(0.2).lpf(2700)
-    .gain(0.46).pan(0.5).room(0.22)
-    .color("crimson"),
-
   // ── BANJO — supporting roll, drops to G7-ish ─────────────────
   note("a4 e5 cs5 e5  a4 e5 cs5 e5  g4 d5 b4 d5  g4 d5 b4 d5")
     .sound("triangle").attack(0.003).release(0.1).lpf(3300)

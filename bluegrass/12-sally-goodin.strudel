@@ -25,12 +25,6 @@ stack(
     .struct("~ x ~ x ~ x ~ x").gain(0.44).pan(0.6)
     .color("forestgreen"),
 
-  // ── FIDDLE — Sally Goodin core riff ──────────────────────────
-  note("a4 a4 cs5 a4  e5 cs5 a4 e4  fs4 a4 e4 a4  cs5 e5 cs5 a4")
-    .sound("sawtooth").vowel("a")
-    .attack(0.025).release(0.18).lpf(2800)
-    .gain(0.48).pan(0.5).room(0.2)
-    .color("crimson"),
 
   // ── BANJO — Earl Scruggs forward roll ────────────────────────
   note("a4 e5 cs5 e5  a4 e5 cs5 e5  a4 e5 cs5 e5  a4 e5 cs5 e5")

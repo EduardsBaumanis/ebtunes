@@ -45,11 +45,7 @@ stack(
     .color("purple"),
 
   // ── LEAD — "a" ───────────────────────────────────────────────
-  note("<fs4 d4 e4 fs4  b4 a4 d4 fs4>")
-    .sound("sawtooth").vowel("a")
-    .attack(0.3).release(1.3).lpf(2200)
-    .gain(0.42).pan(0.5).room(0.6)
-    .color("crimson"),
+
 
   // ── TENOR — "e", high lonesome ───────────────────────────────
   note("<b4 fs4 a4 b4  d5 fs5 a4 b4>")

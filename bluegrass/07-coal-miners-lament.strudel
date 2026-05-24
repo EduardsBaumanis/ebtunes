@@ -30,11 +30,7 @@ stack(
     .color("forestgreen"),
 
   // ── LEAD VOCAL ───────────────────────────────────────────────
-  note("<[e4 g4 b4 g4  e4 d4 e4 ~]  [g4 b4 e5 b4  a4 g4 e4 ~]>")
-    .sound("sawtooth").vowel("a")
-    .attack(0.15).release(0.7).lpf(2400)
-    .gain(0.42).pan(0.5).room(0.5)
-    .color("crimson"),
+
 
   // ── TENOR HARMONY — 3rd above ────────────────────────────────
   note("<[g4 b4 d5 b4  g4 fs4 g4 ~]  [b4 d5 g5 d5  c5 b4 g4 ~]>")

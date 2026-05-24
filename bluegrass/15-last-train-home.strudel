@@ -37,11 +37,6 @@ stack(
     .color("goldenrod"),
 
   // ── LEAD VOCAL ───────────────────────────────────────────────
-  note("<[d5 fs5 a5 fs5  e5 d5 fs5 a5]  [g5 fs5 e5 d5  cs5 d5 a4 ~]>")
-    .sound("sawtooth").vowel("a")
-    .attack(0.1).release(0.55).lpf(2400)
-    .gain(0.42).pan(0.5).room(0.4)
-    .color("crimson"),
 
   // ── TENOR — 3rd above ────────────────────────────────────────
   note("<[fs5 a5 d6 a5  g5 fs5 a5 d6]  [b5 a5 g5 fs5  e5 fs5 cs5 ~]>")
