@@ -1,0 +1,41 @@
+// Album: gardens of broken clocks
+// Track: 10 — midnight-cog
+// Concept: A single enormous cog turning at midnight, deep in the garden's underground vault.
+// Musical idea: Very low slow pulse + occasional high "ring" of metal-on-metal contact every few rotations.
+// Strudel focus: deep sub at root + .rarely(fn) for surprise high contacts; large room for vault depth.
+// Visualisation: ._punchcard({ cycles: 4, smear: true }) on the rotation — smear draws the slow turning trail.
+
+setcpm(12)
+
+stack(
+
+  // ── COG — deep slow rotation pulse + smear viz ───────────────
+  note("c1*4")
+    .sound("sine").attack(0.005).release(0.6).shape(0.18)
+    .gain(0.78).pan(0.5)
+    .color("dimgray")
+    ._punchcard({ cycles: 4, smear: true }),
+
+  // ── METAL CONTACT RING — rarely ──────────────────────────────
+  note(choose("c6","g5","eb6","bb5"))
+    .sound("triangle").attack(0.002).release(4).lpf(4200)
+    .delay(0.65).delaytime(0.75).delayfeedback(0.55)
+    .gain(0.4).pan(rand).room(0.85)
+    .struct("x ~ ~ ~ ~ ~ ~ ~")
+    .rarely(ply(2))
+    .degradeBy(0.7)
+    .color("silver"),
+
+  // ── VAULT AIR — very low filtered noise ──────────────────────
+  s("white*4").lpf(slider(600, 200, 1400)).hpf(150)
+    .attack(0.5).release(2)
+    .gain(0.07).pan(rand)
+    .color("darkslategray"),
+
+  // ── SUB DRONE — Cmin tonality ────────────────────────────────
+  note("[c2,eb2,g2]")
+    .sound("sawtooth").vowel("o")
+    .attack(8).release(12).lpf(900)
+    .gain(0.32).pan(0.5).room(0.7)
+    .color("midnightblue")
+)
