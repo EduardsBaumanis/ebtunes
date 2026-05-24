@@ -1,0 +1,37 @@
+// Album: Footwork — Chicago Juke Codes
+// Track: 01 — teklife-opens
+// Genre: Footwork / Chicago juke
+// Tempo / CPM: 160 BPM (setcpm 40)
+// Musical idea: Establish the genre — 808 stab triplets, 16th-note hat storm, half-time kick.
+// Strudel focus: Pitched sine-808 stabs as melody/bass + triplet-vs-quad metric tension via "*3" inside a 4-grid.
+// Visualisation: ._punchcard({ labels: true }) on the kick + 808 so the kick-pattern is immediately readable.
+
+setcpm(40)
+
+stack(
+
+  // ── KICK — half-time 808 syncopation + punchcard ─────────────
+  s("bd ~ ~ bd  ~ bd ~ ~  bd ~ bd ~  ~ ~ bd ~").gain(0.85).lpf(160).shape(0.2)
+    .color("crimson")
+    ._punchcard({ labels: true }),
+
+  // ── 808 PITCHED STAB — sub bass that IS the melody ───────────
+  note("<a1 a1 ~ a1  ~ c2 ~ ~  e2 ~ a1 ~  ~ g1 ~ ~>")
+    .sound("sine").attack(0.001).release(0.28).shape(0.15)
+    .gain(0.95).pan(0.5)
+    .color("darkred"),
+
+  // ── HI-HAT — busy 16ths with triplet rolls ───────────────────
+  s("hh*16").gain("0.28 0.16 0.22 0.18  0.32 0.18 0.24 0.16")
+    .hpf(7400)
+    .color("yellow"),
+
+  // ── HI-HAT TRIPLET ROLL — the juke signature ─────────────────
+  s("hh*12").gain("0.16 0.10 0.08  0.18 0.10 0.08")
+    .hpf(8000)
+    .color("gold"),
+
+  // ── CLAP off-grid ────────────────────────────────────────────
+  s("~ ~ cp ~  ~ ~ ~ cp").gain(0.5).hpf(900).room(0.18)
+    .color("orange")
+)

@@ -1,0 +1,42 @@
+// Album: Footwork — Chicago Juke Codes
+// Track: 04 — triplet-storm
+// Genre: Footwork
+// Tempo / CPM: 158 BPM (setcpm 39.5)
+// Musical idea: A study in 3-against-4 — three triplet hat layers vs a 4/4 kick = the metric heart of juke.
+// Strudel focus: Stacked "*12", "*9", "*6" hat patterns over "bd*4" — same beat-length, different subdivisions.
+// Visualisation: ._punchcard({ cycles: 2, vertical: true }) — vertical reads each triplet layer as a column.
+
+setcpm(39.5)
+
+stack(
+
+  // ── KICK in 4 — anchor + punchcard ───────────────────────────
+  s("bd*4").gain(0.8).lpf(165).shape(0.18)
+    .color("crimson")
+    ._punchcard({ cycles: 2, vertical: true }),
+
+  // ── HAT in 12 (triplet 16ths) ────────────────────────────────
+  s("hh*12").gain("0.24 0.14 0.16  0.22 0.14 0.18  0.24 0.14 0.16  0.22 0.14 0.18")
+    .hpf(7400)
+    .color("yellow")
+    ._punchcard({ cycles: 2, vertical: true }),
+
+  // ── HAT in 9 (slower triplet) ────────────────────────────────
+  s("hh*9").gain(0.14).hpf(8200)
+    .color("gold"),
+
+  // ── HAT in 6 (slow triplet, deeper) ──────────────────────────
+  s("hh*6").gain(0.18).hpf(6500)
+    .color("khaki"),
+
+  // ── 808 STAB — minimal melodic anchor ────────────────────────
+  note("<g1 d2 c2 a1>")
+    .sound("sine").attack(0.001).release(0.28).shape(0.16)
+    .struct("x ~ ~ x  x ~ x ~")
+    .gain(0.85).pan(0.5)
+    .color("darkred"),
+
+  // ── CLAP on the 3 ────────────────────────────────────────────
+  s("~ ~ cp ~  ~ ~ cp ~").gain(0.5).hpf(900).room(0.2)
+    .color("orange")
+)
