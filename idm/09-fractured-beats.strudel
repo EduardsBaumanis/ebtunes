@@ -1,0 +1,53 @@
+// ══════════════════════════════════════════════════════════════
+// "Fractured Beats"
+// Track 9 of 20 · IDM
+//
+// Key:    A minor (sparse)
+// Tempo:  170 BPM  (setcpm 42.5)
+// Mood:   Amen break treated as IDM material. Chopped to pieces.
+//
+// STRUDEL TECHNIQUE
+//   complex .struct() rhythm with rests + density variation
+//   .jux(fast(2))  — left plays normally, right plays double-time
+//   .every(3, rev) — every third cycle, reverse the break
+//
+// VISUALIZATION
+//   .scope() on the drums — see the broken transients
+// ══════════════════════════════════════════════════════════════
+
+setcpm(42.5)
+
+stack(
+
+  // ── KICK — broken pattern with scope ─────────────────────────
+  s("bd bd ~ bd  ~ bd ~ ~  bd ~ bd bd  ~ ~ bd ~")
+    .gain(0.78).lpf(180).shape(0.18)
+    .every(3, rev)
+    .color("crimson")
+    .scope(),
+
+  // ── SNARE — Amen-style fragmented ────────────────────────────
+  s("~ sd ~ ~  sd ~ sd ~  ~ ~ sd sd  sd ~ ~ sd")
+    .gain(0.55).hpf(900).room(0.22)
+    .jux(fast(2))
+    .color("orange"),
+
+  // ── HAT — fast irregular ─────────────────────────────────────
+  s("hh*16").gain("0.26 0.14 0.30 0.18 0.22 0.16 0.30 0.20")
+    .hpf(7000).degradeBy(0.15)
+    .color("yellow"),
+
+  // ── BASS — drops in chunks ───────────────────────────────────
+  note("a1")
+    .sound("sawtooth").lpf(420).shape(0.2).lpq(6)
+    .attack(0.005).release(0.18)
+    .struct("x ~ ~ x  ~ x ~ ~  x ~ x ~  ~ x ~ ~")
+    .gain(0.65).pan(0.5)
+    .color("navy"),
+
+  // ── STAB — single note across the break ──────────────────────
+  note("<e5 ~ a5 ~  ~ c6 ~ ~  ~ ~ e5 ~  ~ a5 ~ ~>")
+    .sound("square").attack(0.003).release(0.06)
+    .lpf(3400).gain(0.38).pan(0.6)
+    .color("magenta")
+)
