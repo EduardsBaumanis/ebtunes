@@ -25,13 +25,6 @@ stack(
     .struct("~ x x").gain(0.36).pan(0.55).room(0.3)
     .color("forestgreen"),
 
-  // ── FIDDLE — slow legato waltz line ──────────────────────────
-  note("<[d5 b4 ~  c5 a4 ~  b4 a4 g4  a4 b4 ~]  [g4 a4 b4  c5 d5 ~  b4 a4 g4  fs4 g4 ~]>")
-    .sound("sawtooth").vowel("a")
-    .attack(0.15).release(0.55).lpf(2400)
-    .gain(0.42).pan(0.5).room(0.4)
-    .color("crimson"),
-
   // ── HARMONY VOICE — third below ──────────────────────────────
   note("<[b4 g4 ~  a4 fs4 ~  g4 fs4 d4  fs4 g4 ~]  [d4 fs4 g4  a4 b4 ~  g4 fs4 d4  c4 d4 ~]>")
     .sound("sawtooth").vowel("o")

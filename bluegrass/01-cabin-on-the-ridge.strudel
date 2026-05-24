@@ -37,13 +37,6 @@ stack(
     .gain(0.4).pan(0.35).room(0.18)
     .color("goldenrod"),
 
-  // ── FIDDLE LEAD — main tune ──────────────────────────────────
-  note("<[d5 g5 b5 g5  fs5 e5 d5 b4]  [e5 g5 c6 a5  g5 e5 d5 g4]>")
-    .sound("sawtooth").vowel("a")
-    .attack(0.04).release(0.28).lpf(2600)
-    .gain(0.42).pan(0.5).room(0.25)
-    .color("crimson"),
-
   // ── KICK — soft brush-like ───────────────────────────────────
   s("bd ~ ~ ~ bd ~ ~ ~").gain(0.35).lpf(180)
     .color("dimgray")

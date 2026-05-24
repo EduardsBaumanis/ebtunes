@@ -36,12 +36,6 @@ stack(
     .gain(0.42).pan(0.35).room(0.15)
     .color("goldenrod"),
 
-  // ── FIDDLE — high lonesome lead ──────────────────────────────
-  note("<[a5 fs5 d5 fs5  a5 b5 a5 fs5]  [g5 b5 d6 b5  a5 fs5 e5 d5]>")
-    .sound("sawtooth").vowel("a")
-    .attack(0.03).release(0.22).lpf(2800)
-    .gain(0.42).pan(0.5).room(0.22)
-    .color("crimson"),
 
   // ── DOBRO slide stab — single note per bar ───────────────────
   note("<~ ~ ~ d6  ~ ~ ~ a5>")
