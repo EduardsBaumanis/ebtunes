@@ -1,0 +1,49 @@
+// Album: Amapiano — South African House Codes
+// Track: 19 — log-drum-finale
+// Genre: Amapiano
+// Tempo / CPM: 113 BPM (setcpm 28.25)
+// Musical idea: Build-and-release — log drum gets denser via .every(4, ply(2)), filter sweeps open via slider().
+// Strudel focus: slider() for live cutoff automation + .every(N, ply(M)) for periodic density bumps.
+// Visualisation: ._punchcard({ cycles: 2, smear: true }) on the log drum — smear shows the density build visually.
+
+setcpm(28.25)
+
+stack(
+
+  note("a1").sound("sine").attack(2).release(5).gain(0.42)
+    .color("midnightblue"),
+
+  // ── PIANO STABS — Am11 → F#m7b5 → Bbmaj7 → E7sus ─────────────
+  note("<[a3,c4,e4,g4,b4] [fs3,a3,c4,e4] [bb2,d3,f3,a3,c4] [e3,a3,b3,d4]>")
+    .sound("triangle").attack(0.005).release(0.4).lpf(2700)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.4).pan(0.55).room(0.45)
+    .color("gold"),
+
+  // ── LOG DRUM — building density + smeared punchcard ──────────
+  note("<a2 e2 d2 g2>")
+    .sound("sine")
+    .attack(0.001).release(0.18)
+    .shape(0.2).lpf(slider(420, 200, 900))
+    .struct("x ~ x ~  ~ x ~ x")
+    .every(4, ply(2))
+    .every(8, x => x.fast(2))
+    .gain(0.85).pan(0.5)
+    .color("saddlebrown")
+    ._punchcard({ cycles: 2, smear: true }),
+
+  // ── SUB BASS — supports the build ────────────────────────────
+  note("<a1 e1 d1 g1>")
+    .sound("sine").attack(0.005).release(0.4)
+    .struct("x ~ ~ ~ x ~ ~ ~")
+    .gain(0.7).pan(0.5)
+    .color("navy"),
+
+  // ── SHAKER + RIM + KICK ──────────────────────────────────────
+  s("hh*16").gain("0.2 0.12 0.22 0.14").hpf(7200)
+    .color("yellow"),
+  s("~ rim ~ rim").gain(0.45).hpf(1500).room(0.2)
+    .color("orange"),
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.6).lpf(160).shape(0.12)
+    .color("crimson")
+)

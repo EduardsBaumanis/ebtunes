@@ -43,12 +43,14 @@ Strudel IDE, vērtēšanu un līderlisti:
 | [`yt/`](yt/) | Skaņas efekti YouTube esejām, DIY un izglītības video | 20 |
 | [`game/`](game/) | Videospēļu skaņas efekti (jump, coin, victory, game over u.c.) | 20 |
 | [`pack-demos/`](pack-demos/) | Pa diviem demo katrai no 50 GitHub semplu pakām | 100 |
+| [`amapiano/`](amapiano/) | Dienvidāfrikas amapiano — koka bungas, jaza klavieres, soweto kori, vizualizācijas | 20 |
 
 Daži favorīti:
 
 - `lofi/song-01-3am-rain` — C minors, putekļains un silts
 - `jazz-piano/jazz-09-tritone-romance` — tritona aizstāšanas pētījums G minorā
 - `study/study-17-mridangam-misra` — Hindustāni Misra Chapu (7-sitienu cikls) Raag Yaman
+- `amapiano/07-polyperc-study` — pieci ritmi 3 / 4 / 5 / 7 / 11 ar `_punchcard` fāzes redzējumu
 - `TehnoSkola/techno-08-melodic-techno` — melodiskais tehno ar Detroitas saknēm
 - `prog/song-06-terminal-green` — CRT fosfora zaļš, kompilēšanās laikā
 

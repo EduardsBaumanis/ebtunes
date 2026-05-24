@@ -200,6 +200,17 @@
   --code-fg:  #98e0b8;
 }
 
+/* ── AMAPIANO theme — savanna gold on deep night sky ── */
+[data-theme="amapiano"] {
+  --black:    #0a0814;
+  --white:    #f0d090;
+  --grey:     #a08068;
+  --dim:      #14102a;
+  --mid:      #2e2444;
+  --code-bg:  #0a0814;
+  --code-fg:  #d8b878;
+}
+
 /* ── BERLIN SCHOOL theme — Tangerine Dream cassette tape colours ── */
 [data-theme="berlin-school"] {
   --black:    #0a0612;

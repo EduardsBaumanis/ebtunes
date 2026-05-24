@@ -1,0 +1,65 @@
+// Album: Amapiano — South African House Codes
+// Track: 17 — choir-and-piano
+// Genre: Amapiano
+// Tempo / CPM: 110 BPM (setcpm 27.5)
+// Musical idea: Township gospel meets amapiano — vowel-formant choir locked with piano answering each phrase.
+// Strudel focus: SATB vowel pads + a single piano phrase that COMPLETES each choir line ("call/response").
+// Visualisation: ._pianoroll({ vertical: true, cycles: 2 }) — vertical reads the voice-leading like a hymn book.
+
+setcpm(27.5)
+
+stack(
+
+  note("c1").sound("sine").attack(4).release(8).gain(0.42)
+    .color("midnightblue"),
+
+  // ── BASS choir "o" ───────────────────────────────────────────
+  note("<c2 g2 a2 f2>")
+    .sound("sawtooth").vowel("o")
+    .attack(1.5).release(3).lpf(1200)
+    .gain(0.4).pan(0.4).room(0.65).slow(2)
+    .color("indigo"),
+
+  // ── TENOR "u" ────────────────────────────────────────────────
+  note("<g3 c4 e4 a3>")
+    .sound("sawtooth").vowel("u")
+    .attack(2).release(3).lpf(1700)
+    .gain(0.34).pan(0.45).room(0.65).slow(2)
+    .color("purple"),
+
+  // ── ALTO "a" + vertical pianoroll ────────────────────────────
+  note("<e4 g4 c5 c4>")
+    .sound("sawtooth").vowel("a")
+    .attack(2).release(3).lpf(2300)
+    .gain(0.32).pan(0.55).room(0.7).slow(2)
+    .color("crimson")
+    ._pianoroll({ vertical: true, cycles: 2 }),
+
+  // ── SOPRANO "e" ──────────────────────────────────────────────
+  note("<c5 e5 g5 e5>")
+    .sound("sawtooth").vowel("e")
+    .attack(2).release(3).lpf(2800)
+    .gain(0.28).pan(0.6).room(0.75).slow(2)
+    .color("orange"),
+
+  // ── PIANO — answers the choir on the back half of each phrase ─
+  note("<~ ~ ~ ~  [c5,e5,g5] [d5,f5,a5] [c5,e5,g5] ~>")
+    .sound("triangle").attack(0.005).release(0.45).lpf(2700)
+    .gain(0.38).pan(0.5).room(0.45)
+    .color("gold"),
+
+  // ── LOG DRUM — gentle ────────────────────────────────────────
+  note("<c2 g1 a1 f2>")
+    .sound("sine").attack(0.001).release(0.2).shape(0.16).lpf(420)
+    .struct("x ~ ~ ~  ~ x ~ x")
+    .gain(0.72).pan(0.5)
+    .color("saddlebrown"),
+
+  // ── SHAKER + RIM + KICK ──────────────────────────────────────
+  s("hh*8").gain(0.13).hpf(7400)
+    .color("yellow"),
+  s("~ rim ~ rim").gain(0.35).hpf(1500).room(0.22)
+    .color("coral"),
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.42).lpf(160).shape(0.08)
+    .color("dimgray")
+)
