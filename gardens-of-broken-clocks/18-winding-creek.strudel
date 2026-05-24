@@ -1,0 +1,42 @@
+// Album: gardens of broken clocks
+// Track: 18 — winding-creek
+// Concept: A creek that bends through the garden — water is its own clock, ticking by gravel.
+// Musical idea: Pitched water-drop noises (sine pings) + Euclidean shaker chains = creek-flowing meter.
+// Strudel focus: choose() on note values gives water its randomness; .euclid() shakers give the gravel ticking.
+// Visualisation: ._punchcard({ cycles: 2, smear: true }) on the shakers = visual creek-flow.
+
+setcpm(24)
+
+stack(
+
+  // ── DEEP SUB — riverbed ──────────────────────────────────────
+  note("d1").sound("sine").attack(4).release(8).gain(0.4)
+    .color("darkblue"),
+
+  // ── WATER DROPS — random pitched sine pings ──────────────────
+  note(choose("d6","fs6","a6","b6","d7","a5"))
+    .sound("sine").attack(0.001).release(0.35)
+    .gain(0.32).pan(rand).room(0.55)
+    .struct("x ~ ~ x  ~ x ~ ~  x ~ x ~  ~ x ~ x")
+    .degradeBy(0.35)
+    .color("aqua"),
+
+  // ── GRAVEL TICKING — 11-in-16 euclid + punchcard ─────────────
+  s("white").euclid(11, 16).attack(0.001).release(0.025)
+    .lpf(5500).hpf(3200)
+    .gain("0.18 0.10 0.16 0.10")
+    .pan(rand)
+    .color("tan")
+    ._punchcard({ cycles: 2, smear: true }),
+
+  // ── RIVER BED PAD — D Dorian ─────────────────────────────────
+  note("[d3,f3,a3,c4,e4]")
+    .sound("sawtooth").vowel("u")
+    .attack(4).release(7).lpf(slider(1500, 700, 2500))
+    .gain(0.3).pan(0.5).room(0.65)
+    .color("teal"),
+
+  // ── FAR ROCK — low rim every few ─────────────────────────────
+  s("rim*3").gain(0.22).hpf(900).room(0.35)
+    .color("saddlebrown")
+)
