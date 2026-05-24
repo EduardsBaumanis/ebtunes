@@ -30,10 +30,10 @@ stack(
     .sometimesBy(0.2, ply(3))
     .color("yellow"),
 
-  // ── SNARE on 2 + 4, jux-reversed ─────────────────────────────
-  s("~ sd ~ sd").gain(0.55).hpf(900).room(0.18)
-    .jux(rev)
-    .color("orange"),
+  // ── CLAP TRANSIENT — dry tick on the snare hit ───────────────
+  s("~ cp ~ cp").gain(0.18).hpf(2600).lpf(7200)
+    .attack(0.001).release(0.04).pan(0.54)
+    .color("gold"),
 
   // ── BASS — stuttered 303 ─────────────────────────────────────
   note("<a1 a1 c2 g1>")

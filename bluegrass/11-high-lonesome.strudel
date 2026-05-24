@@ -46,7 +46,6 @@ stack(
 
   // ── LEAD — "a" ───────────────────────────────────────────────
 
-
   // ── TENOR — "e", high lonesome ───────────────────────────────
   note("<b4 fs4 a4 b4  d5 fs5 a4 b4>")
     .sound("sawtooth").vowel("e")
