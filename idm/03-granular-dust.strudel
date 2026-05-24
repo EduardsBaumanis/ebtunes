@@ -1,0 +1,52 @@
+// ══════════════════════════════════════════════════════════════
+// "Granular Dust"
+// Track 3 of 20 · IDM
+//
+// Key:    F# minor (sparse)
+// Tempo:  118 BPM  (setcpm 29.5)
+// Mood:   Sound shattered into tiny grains. Microsound.
+//
+// STRUDEL TECHNIQUE
+//   .chop(16)     — divide each sample into 16 micro-grains
+//   .striate(32)  — interleaved granular scatter
+//   .speed("1 0.5 2")  — varispeed per grain
+//
+// VISUALIZATION
+//   .spectrum() on the granular layer
+// ══════════════════════════════════════════════════════════════
+
+setcpm(29.5)
+
+stack(
+
+  // ── Sparse kick — only sometimes ─────────────────────────────
+  s("bd ~ ~ ~  ~ ~ bd ~").gain(0.7).lpf(180)
+    .sometimes(rev)
+    .color("crimson"),
+
+  // ── GRANULAR pad — striated noise + spectrum viz ─────────────
+  s("white*8").lpf(slider(3000, 800, 6000)).hpf(900)
+    .striate(32).speed("1 0.5 1.5 2 0.75")
+    .gain(0.16).pan(rand)
+    .color("silver")
+    .spectrum(),
+
+  // ── BASS — chopped sub ───────────────────────────────────────
+  note("fs1").sound("sine").attack(0.003).release(0.3)
+    .gain(0.6).chop(8)
+    .color("navy"),
+
+  // ── BELL MICROSOUND — staccato chime ─────────────────────────
+  note("<fs5 a5 cs6 e6  b4 d5 fs5 a5>")
+    .sound("triangle").attack(0.001).release(0.04)
+    .lpf(5000).gain(0.4).pan(rand).room(0.5)
+    .ply("1 2 1 4")
+    .color("cyan"),
+
+  // ── PAD foundation ───────────────────────────────────────────
+  note("[fs3,a3,cs4]")
+    .sound("sawtooth").vowel("u")
+    .attack(2).release(4).lpf(1500)
+    .gain(0.28).pan(0.5).room(0.5)
+    .color("indigo")
+)
