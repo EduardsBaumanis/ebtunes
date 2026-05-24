@@ -1,0 +1,51 @@
+// ══════════════════════════════════════════════════════════════
+// "Aphex Sleep"
+// Track 4 of 20 · IDM
+//
+// Key:    C minor
+// Tempo:  72 BPM  (setcpm 18)
+// Mood:   Selected Ambient Works II. Slow, pretty, off-kilter.
+//
+// STRUDEL TECHNIQUE
+//   .sometimesBy(0.3, ply(2))  — occasionally double a melody note
+//   .off(0.125, x => x.add(7))  — echoed transposed copy
+//
+// VISUALIZATION
+//   .punchcard() on the melody — grid of notes lights up as they play
+// ══════════════════════════════════════════════════════════════
+
+setcpm(18)
+
+stack(
+
+  // ── Soft sub ─────────────────────────────────────────────────
+  note("c1").sound("sine").attack(2).release(4).gain(0.5)
+    .color("midnightblue"),
+
+  // ── Slow kick with light noise tail ──────────────────────────
+  s("bd ~ ~ ~  ~ ~ ~ ~").gain(0.55).lpf(190).shape(0.1)
+    .color("crimson"),
+
+  // ── PAD — long held minor 9 chord ────────────────────────────
+  note("<[c3,eb3,g3,d4] [ab2,c3,eb3,bb3] [f2,ab2,c3,g3] [g2,b2,d3,a3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(3).release(6).lpf(1700)
+    .gain(0.34).pan(0.5).room(0.7).slow(2)
+    .color("purple"),
+
+  // ── MELODY with punchcard visualizer ─────────────────────────
+  note("<c5 eb5 g5 c6  bb5 ab5 g5 eb5  c5 eb5 f5 g5  ab5 g5 eb5 c5>")
+    .sound("triangle").attack(0.05).release(0.7)
+    .lpf(3000).delay(0.4).delaytime(0.375).delayfeedback(0.4)
+    .room(0.55).gain(0.36).pan(0.55)
+    .sometimesBy(0.3, ply(2))
+    .color("cyan")
+    .punchcard(),
+
+  // ── COUNTER VOICE — offset echo a fifth up ───────────────────
+  note("<g5 bb5 d6 g6  f6 eb6 d6 bb5>")
+    .sound("triangle").attack(0.05).release(0.5)
+    .lpf(3400).gain(0.22).pan(0.45).room(0.55).slow(2)
+    .degradeBy(0.4)
+    .color("ivory")
+)

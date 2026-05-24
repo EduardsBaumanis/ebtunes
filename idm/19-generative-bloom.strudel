@@ -1,0 +1,60 @@
+// ══════════════════════════════════════════════════════════════
+// "Generative Bloom"
+// Track 19 of 20 · IDM
+//
+// Key:    A minor pentatonic (chosen for randomness safety)
+// Tempo:  124 BPM  (setcpm 31)
+// Mood:   The system composes itself. Different every cycle.
+//
+// STRUDEL TECHNIQUE
+//   irand(n)             — random integer 0..n-1 per event
+//   choose([opts])       — random pick per event
+//   degradeBy(p)         — random silence
+//   sometimesBy(p, fn)   — probabilistic transformation
+//   ALL probabilistic — no repeating melody, just a tendency.
+//
+// VISUALIZATION
+//   .pianoroll() on the generative voice — watch composition happen
+// ══════════════════════════════════════════════════════════════
+
+setcpm(31)
+
+stack(
+
+  // ── KICK — sometimes doubled ─────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~").gain(0.78).lpf(180).shape(0.15)
+    .sometimesBy(0.25, ply(2))
+    .color("crimson"),
+
+  // ── HAT — probabilistic ──────────────────────────────────────
+  s("hh*16").gain(0.22).hpf(6800).degradeBy(0.4)
+    .color("yellow"),
+
+  // ── CLAP — randomly placed ───────────────────────────────────
+  s("cp").euclid(choose([3,4,5,7]), 8).gain(0.42).hpf(900).room(0.2)
+    .color("orange"),
+
+  // ── GENERATIVE LEAD — random pick + pianoroll ────────────────
+  note(choose("a4","c5","d5","e5","g5","a5","c6","e6"))
+    .sound("square").attack(0.003).release(0.18)
+    .lpf(3000).gain(0.36).pan(rand).room(0.3)
+    .fast(4)
+    .degradeBy(0.3)
+    .color("magenta")
+    .pianoroll(),
+
+  // ── BASS — chosen octave per event ───────────────────────────
+  note(choose("a1","e2","g1","d2"))
+    .sound("sawtooth").lpf(500).shape(0.15).lpq(7)
+    .attack(0.005).release(0.2)
+    .struct("x ~ x ~ x ~ x ~")
+    .gain(0.6).pan(0.5)
+    .color("navy"),
+
+  // ── PAD — anchored Am ────────────────────────────────────────
+  note("[a3,c4,e4]")
+    .sound("sawtooth").vowel("u")
+    .attack(2).release(3).lpf(1700)
+    .gain(0.26).pan(0.5).room(0.5)
+    .color("indigo")
+)
