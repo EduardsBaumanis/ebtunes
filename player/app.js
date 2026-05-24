@@ -2,8 +2,9 @@
 
 // ── State ────────────────────────────────────────────────────────────────────
 
-const codeCache       = new Map();   // url → { filename, code, meta }
+const codeCache       = new Map();   // song path -> { fetchedAt, entry }
 const expandedGroups  = new Set();   // sidebar groups currently expanded
+const SONG_CACHE_MS   = 5000;        // avoids duplicate fetches from click + label refresh
 let currentPlaylist   = null;        // playlist object
 let currentFilename   = null;        // string
 let currentSongId     = null;        // "playlist_id/filename" — supabase key
@@ -84,16 +85,31 @@ function parseMeta(filename, code) {
   };
 }
 
+function songPath(playlist, filename) {
+  return playlist.path + filename;
+}
+
+function freshSongUrl(playlist, filename) {
+  const url = new URL(songPath(playlist, filename), window.location.href);
+  url.searchParams.set('v', Date.now().toString(36));
+  return url.href;
+}
+
 async function fetchSong(playlist, filename) {
-  const url = playlist.path + filename;
-  if (codeCache.has(url)) return codeCache.get(url);
+  const key = songPath(playlist, filename);
+  const cached = codeCache.get(key);
+  if (cached && Date.now() - cached.fetchedAt < SONG_CACHE_MS) {
+    return cached.entry;
+  }
+
+  const url = freshSongUrl(playlist, filename);
   try {
-    const res = await fetch(url);
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const code  = await res.text();
     const meta  = parseMeta(filename, code);
     const entry = { filename, code, meta };
-    codeCache.set(url, entry);
+    codeCache.set(key, { fetchedAt: Date.now(), entry });
     return entry;
   } catch (err) {
     console.error('fetch failed:', url, err);
