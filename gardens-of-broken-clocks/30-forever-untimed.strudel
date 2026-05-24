@@ -1,0 +1,48 @@
+// Album: gardens of broken clocks
+// Track: 30 — forever-untimed
+// Concept: The garden's last and oldest clock — released from time entirely; one chord drone, no pulse, no rhythm.
+// Musical idea: All percussion absent; SATB vowel-choir on a single Cmaj9 chord; an unending blessing on the album.
+// Strudel focus: a return to the album's quietest elements (drone, vowel choir, single bell) — final unity.
+// Visualisation: ._pianoroll({ cycles: 8, vertical: true }) — vertical, slow, the closer's slow breath made visible.
+
+setcpm(8)
+
+stack(
+
+  // ── ETERNAL SUB ──────────────────────────────────────────────
+  note("c1").sound("sine").attack(12).release(15).gain(0.5)
+    .color("midnightblue"),
+
+  // ── BASS CHOIR "o" ───────────────────────────────────────────
+  note("c2").sound("sawtooth").vowel("o")
+    .attack(10).release(15).lpf(1200)
+    .gain(0.4).pan(0.4).room(0.85)
+    .color("indigo"),
+
+  // ── TENOR CHOIR "u" ──────────────────────────────────────────
+  note("g3").sound("sawtooth").vowel("u")
+    .attack(11).release(15).lpf(1700)
+    .gain(0.36).pan(0.45).room(0.88)
+    .color("purple"),
+
+  // ── ALTO CHOIR "a" + pianoroll ───────────────────────────────
+  note("e4").sound("sawtooth").vowel("a")
+    .attack(12).release(15).lpf(2300)
+    .gain(0.32).pan(0.55).room(0.9)
+    .color("crimson")
+    ._pianoroll({ cycles: 8, vertical: true }),
+
+  // ── SOPRANO CHOIR "i" ────────────────────────────────────────
+  note("b4").sound("sawtooth").vowel("i")
+    .attack(13).release(15).lpf(2900)
+    .gain(0.28).pan(0.6).room(0.92)
+    .color("orange"),
+
+  // ── ONE FINAL BELL — the last clock chimes once, then forever ─
+  note("c6")
+    .struct("x ~ ~ ~ ~ ~ ~ ~")
+    .sound("triangle").attack(0.005).release(10).lpf(4000)
+    .delay(0.8).delaytime(1.5).delayfeedback(0.65)
+    .gain(0.4).pan(0.5).room(0.95).slow(8)
+    .color("ivory")
+)

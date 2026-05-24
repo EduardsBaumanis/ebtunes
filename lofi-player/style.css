@@ -211,6 +211,17 @@
   --code-fg:  #d8b878;
 }
 
+/* ── GARDENS OF BROKEN CLOCKS theme — verdigris on humid night ── */
+[data-theme="gardens-of-broken-clocks"] {
+  --black:    #060c0a;
+  --white:    #b8d8a8;
+  --grey:     #608060;
+  --dim:      #0c1812;
+  --mid:      #1c3424;
+  --code-bg:  #060c0a;
+  --code-fg:  #98c898;
+}
+
 /* ── FOOTWORK theme — Chicago neon: hot pink on asphalt ── */
 [data-theme="footwork"] {
   --black:    #0a0608;

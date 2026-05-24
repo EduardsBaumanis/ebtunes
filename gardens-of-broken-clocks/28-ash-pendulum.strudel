@@ -1,0 +1,43 @@
+// Album: gardens of broken clocks
+// Track: 28 — ash-pendulum
+// Concept: A pendulum that was burnt — only ash falls now, swinging from a charred string.
+// Musical idea: Distorted (.shape) low pendulum + soft .chop()ed white-noise "ash" falling across the stereo field.
+// Strudel focus: heavy .shape distortion on a sub + .chop() granular ash-fall; .every(N, ply) for the swing.
+// Visualisation: .pianoroll({ cycles: 2, fold: true }) — folded view reveals the asymmetric pendulum arc.
+
+setcpm(18)
+
+stack(
+
+  // ── CHARRED PENDULUM — distorted sine ────────────────────────
+  note("<a2 ~ ~ e3>")
+    .sound("sine").attack(0.005).release(0.5).shape(0.45).lpf(900)
+    .struct("x ~ ~ ~ x ~ ~ ~")
+    .gain(0.6).pan(sine.range(0.2, 0.8).slow(4))
+    .every(3, ply(2))
+    .color("dimgray")
+    .pianoroll({ cycles: 2, fold: true }),
+
+  // ── ASH FALL — chopped granular noise ────────────────────────
+  s("white*8").chop(8)
+    .lpf(slider(2400, 800, 4000)).hpf(800)
+    .attack(0.001).release(0.05)
+    .gain("0.16 0.10 0.18 0.12")
+    .pan(rand)
+    .degradeBy(0.3)
+    .color("darkgray"),
+
+  // ── COLD ASH PAD ─────────────────────────────────────────────
+  note("[a3,c4,e4]")
+    .sound("sawtooth").vowel("u")
+    .attack(5).release(8).lpf(1100)
+    .gain(0.32).pan(0.5).room(0.6)
+    .color("slategray"),
+
+  // ── EMBER GLOW — sparse low pings ────────────────────────────
+  note(choose("e2","a2","c3"))
+    .sound("sine").attack(0.001).release(0.4).shape(0.2)
+    .struct("~ ~ x ~ ~ ~ ~ x")
+    .gain(0.36).pan(0.5).room(0.45)
+    .color("orangered")
+)
