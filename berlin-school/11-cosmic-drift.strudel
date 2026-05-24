@@ -1,0 +1,65 @@
+// ══════════════════════════════════════════════════════════════
+// "Cosmic Drift"
+// Track 11 of 20 · Berlin School
+//
+// Key:    D Dorian
+// Tempo:  72 BPM  (setcpm 18)
+// Mood:   Slow. Spacious. Drifting between stations.
+//
+// STRUDEL TECHNIQUE
+//   .iter(n)  — rotates the pattern start position each cycle.
+//             A 4-step seq with .iter(4) presents step 1,2,3,4
+//             on successive cycles = phasing without changing notes.
+//
+// VISUALIZATION
+//   .punchcard() — see the iter rotation visually
+// ══════════════════════════════════════════════════════════════
+
+setcpm(18)
+
+stack(
+
+  note("d1").sound("sine").attack(4).release(8).gain(0.48)
+    .color("midnightblue"),
+
+  // ── KICK — very sparse ───────────────────────────────────────
+  s("bd ~ ~ ~ ~ ~ ~ ~").gain(0.5).lpf(170).shape(0.08)
+    .color("crimson"),
+
+  // ── PRIMARY SEQ — 8 notes, iter rotated each cycle ───────────
+  note("[d3,f3,a3,c4,e4,g4,b4,d5]")
+    .arp("0 1 2 3 4 5 6 7")
+    .iter(4)
+    .sound("sawtooth")
+    .lpf(slider(1100, 350, 2800)).lpq(8)
+    .attack(0.003).release(0.18)
+    .gain(0.4).pan(0.45).room(0.45)
+    .color("cyan")
+    .punchcard(),
+
+  // ── DRIFTING HIGH VOICE ──────────────────────────────────────
+  note("[a5,c6,d6,e6]")
+    .arp("0 1 2 3 1 2 3 0")
+    .sound("triangle")
+    .lpf(3400)
+    .attack(0.01).release(0.5)
+    .delay(0.5).delaytime(0.5).delayfeedback(0.45)
+    .gain(0.3).pan(0.6).room(0.6)
+    .slow(2)
+    .color("white"),
+
+  // ── BASS — Dorian root + iv ──────────────────────────────────
+  note("<d2 a1 g2 d2>")
+    .sound("sawtooth").lpf(500).lpq(6).shape(0.12)
+    .attack(0.01).release(0.5)
+    .struct("x ~ ~ ~ x ~ ~ ~")
+    .gain(0.55).pan(0.5)
+    .color("navy"),
+
+  // ── PAD — long Dm9 wash ──────────────────────────────────────
+  note("<[d3,f3,a3,c4] [g3,bb3,d4,f4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(6).release(10).lpf(1700)
+    .gain(0.3).pan(0.5).room(0.7).slow(4)
+    .color("indigo")
+)
