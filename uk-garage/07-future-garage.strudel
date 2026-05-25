@@ -1,0 +1,46 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 07 — future-garage
+// Genre: Future garage
+// Tempo / CPM: 130 BPM (setcpm 32.5)
+// Musical idea: Future garage — sparse 2-step with massive reverb tail, ambient pad floating above.
+// Strudel focus: heavy .room() + long .delay() on all percussion = the "Burial" treatment.
+// Visualisation: .pianoroll({ cycles: 4, smear: true }) — smear visualises the long reverb tails.
+
+setcpm(32.5)
+
+stack(
+
+  note("a1").sound("sine").attack(4).release(8).gain(0.42)
+    .color("midnightblue"),
+
+  // ── SPARSE 2-STEP KICK with reverb ───────────────────────────
+  s("bd ~ ~ ~  ~ ~ bd ~  ~ bd ~ ~  ~ ~ ~ ~")
+    .gain(0.75).lpf(180).shape(0.1).room(0.55)
+    .color("crimson"),
+
+  // ── SNARE — long room ────────────────────────────────────────
+  s("~ ~ ~ ~  sd ~ ~ ~  ~ ~ ~ ~  sd ~ ~ ~")
+    .gain(0.5).hpf(900).room(0.7)
+    .delay(0.4).delaytime(0.375).delayfeedback(0.4)
+    .color("orange"),
+
+  // ── DISTANT HATS ─────────────────────────────────────────────
+  s("hh*8").swingBy(0.3, 2)
+    .gain(0.16).hpf(7500).room(0.5)
+    .degradeBy(0.3)
+    .color("yellow"),
+
+  // ── AMBIENT PAD — long swells + smear pianoroll ──────────────
+  note("<[a3,c4,e4,g4] [d3,f3,a3,c4] [g3,b3,d4,f4] [e3,g3,b3,d4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(4).release(7).lpf(2000)
+    .gain(0.42).pan(0.5).room(0.8).slow(2)
+    .color("teal")
+    .pianoroll({ cycles: 4, smear: true }),
+
+  // ── DEEP SUB ─────────────────────────────────────────────────
+  note("<a1 ~ ~ d2  ~ g1 ~ ~  e1 ~ ~ ~  ~ a1 ~ ~>")
+    .sound("sine").attack(0.005).release(0.6)
+    .gain(0.7).pan(0.5).room(0.4)
+    .color("navy")
+)

@@ -1,0 +1,40 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 10 — ride-and-snap
+// Genre: UK Garage
+// Tempo / CPM: 132 BPM (setcpm 33)
+// Musical idea: Ride-cymbal-led groove — the ride carries the bounce, kick/snare are minimal.
+// Strudel focus: open-hat ride on every off-beat + euclid-pattern snare snap + minimal kick.
+// Visualisation: ._punchcard({ cycles: 2, labels: true }) on the ride.
+
+setcpm(33)
+
+stack(
+
+  note("b1").sound("sine").attack(3).release(6).gain(0.4)
+    .color("midnightblue"),
+
+  // ── RIDE / OPEN HAT — leads the groove + punchcard ───────────
+  s("~ oh ~ oh  ~ oh ~ oh").gain(0.55).hpf(4400)
+    .color("gold")
+    ._punchcard({ cycles: 2, labels: true }),
+
+  // ── KICK — sparse 2-step ─────────────────────────────────────
+  s("bd ~ ~ ~  ~ ~ bd ~").gain(0.78).lpf(170).shape(0.12)
+    .color("crimson"),
+
+  // ── SNARE on Euclidean 3-in-8 ────────────────────────────────
+  s("sd").euclid(3, 8).gain(0.5).hpf(900).room(0.2)
+    .color("orange"),
+
+  // ── CLOSED HATS — quiet, swung ───────────────────────────────
+  s("hh*16").swingBy(0.35, 2)
+    .gain("0.16 0.10").hpf(7500)
+    .color("yellow"),
+
+  // ── SUB ──────────────────────────────────────────────────────
+  note("<b1 fs2 e2 a1>")
+    .sound("sine").attack(0.005).release(0.4).shape(0.13)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.75).pan(0.5)
+    .color("navy")
+)
