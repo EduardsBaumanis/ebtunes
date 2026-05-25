@@ -244,6 +244,17 @@
   --code-fg:  #d8b890;
 }
 
+/* ── SIMILARITY GRADIENT theme — instrument-panel teal, metric-driven ── */
+[data-theme="similarity-gradient"] {
+  --black:    #051014;
+  --white:    #b0e0d0;
+  --grey:     #508c80;
+  --dim:      #0c1c20;
+  --mid:      #1c3840;
+  --code-bg:  #051014;
+  --code-fg:  #88c8b8;
+}
+
 /* ── DEMOS theme — showcase gallery: cool slate + cyan accent ── */
 [data-theme="demos"] {
   --black:    #06090e;

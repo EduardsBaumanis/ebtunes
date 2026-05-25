@@ -1,0 +1,43 @@
+// Album: Similarity Gradient
+// Track: 04 — close-cousin
+// Target similarity: 75/100
+// Actual similarity: 77/100
+// Similarity band: very similar
+// Concept: Close cousin of the repo's pads-and-bells family, but one element shifted (heavier rim percussion).
+// Musical strategy: Familiar synth/vowel pad + bell, but percussion features rim-stick instead of typical bd/cp.
+// Strudel focus: stack with vowel pads, rim-led percussion, common effect chain.
+// Visualisation: ._punchcard({ cycles: 2 }) on the rim — punchcard chosen to highlight the unusual rhythm-source.
+
+setcpm(22)
+
+stack(
+
+  note("d1").sound("sine").attack(4).release(8).gain(0.42)
+    .color("midnightblue"),
+
+  note("<[d3,f3,a3,c4] [g2,bb2,d3,f3] [a2,c3,e3,g3] [d3,f3,a3,c4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(2).release(4).lpf(1900)
+    .gain(0.36).pan(0.5).room(0.6).slow(2)
+    .color("purple"),
+
+  note("<[a4,c5,e5] [d4,f4,bb4] [c4,e4,g4] [a4,c5,e5]>")
+    .sound("sawtooth").vowel("a")
+    .attack(3).release(5).lpf(2700)
+    .gain(0.28).pan(0.55).room(0.6).slow(2)
+    .color("teal"),
+
+  // Rim-stick replaces the usual kick+clap
+  s("rim*5").gain(0.42).hpf(1600).room(0.18)
+    .color("orange")
+    ._punchcard({ cycles: 2 }),
+
+  s("~ hh ~ hh").gain(0.16).hpf(6900)
+    .color("yellow"),
+
+  note("d6 ~ f5 ~  a5 ~ d5 ~  c6 ~ a5 ~  ~ e5 ~ ~")
+    .sound("triangle").attack(0.005).release(1.5).lpf(3400)
+    .delay(0.4).delaytime(0.375).delayfeedback(0.35)
+    .gain(0.3).pan(0.55).room(0.55)
+    .color("ivory")
+)

@@ -1,0 +1,19 @@
+// Album: Similarity Gradient
+// Track: 23 — half-and-half
+// Target similarity: 46/100
+// Actual similarity: 46.8/100
+// Similarity band: moderately similar
+// Concept: Half and half — first half familiar pitched melody, second half granular noise burst.
+// Musical strategy: stack of two complementary .struct() patterns split across the cycle.
+// Strudel focus: .struct() complementarity + chop() granular.
+// Visualisation: pianoroll({ cycles: 2 }) on the melody half.
+
+stack(
+  n("0 2 4 6  ~ ~ ~ ~")
+    .scale("e:lydian")
+    .legato(0.4)
+    .gain(0.4)
+    .pianoroll({ cycles: 2 }),
+  s("white").struct("~ ~ ~ ~ x x x x").chop(8)
+    .hpf(2400).lpf(7000).gain(0.22)
+)

@@ -1,0 +1,40 @@
+// Album: Similarity Gradient
+// Track: 08 — drift-and-anchor
+// Target similarity: 55/100
+// Actual similarity: 77.7/100
+// Similarity band: very similar
+// Concept: Drift-and-anchor — a 5/4 metric loop (anchor) with generative chord drift (drift) sitting on top.
+// Musical strategy: 5-step structs throughout (unusual for the repo) + chord choose() for harmonic drift.
+// Strudel focus: 5-step .struct() everywhere; choose() per cycle; minimal effect chain.
+// Visualisation: ._punchcard({ cycles: 5 }) — five-cycle window matches the 5-step meter exactly.
+
+setcpm(20)
+
+stack(
+
+  // Anchor: 5-step bass
+  note("d2 ~ a2 ~ d3")
+    .sound("sine").attack(0.003).release(0.35).shape(0.15)
+    .gain(0.7).pan(0.5)
+    .color("navy"),
+
+  // 5-step drum hit
+  s("bd").struct("x ~ ~ x ~").gain(0.65).lpf(170).shape(0.1)
+    .color("crimson")
+    ._punchcard({ cycles: 5 }),
+
+  // Drift: chord chosen per cycle
+  note(choose("[d3,f3,a3]","[g3,bb3,d4]","[a3,c4,e4]","[c3,e3,g3]"))
+    .sound("sawtooth").vowel("u")
+    .attack(2).release(4).lpf(1800)
+    .gain(0.36).pan(0.5).room(0.55)
+    .color("teal"),
+
+  // 5-step counter-rhythm rim
+  s("rim ~ rim ~ ~").gain(0.32).hpf(1500).room(0.2)
+    .color("orange"),
+
+  // High shimmer
+  s("hh*5").gain(0.18).hpf(7400)
+    .color("yellow")
+)
