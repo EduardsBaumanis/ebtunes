@@ -1,0 +1,52 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 04 — vocal-chop-sweet
+// Genre: UK Garage
+// Tempo / CPM: 132 BPM (setcpm 33)
+// Musical idea: Pitched vocal-chop hook (vowel "a") sitting on top of a classic 2-step bounce.
+// Strudel focus: sawtooth + .vowel("a") + .chop() stutters + .ply() retriggers = "ah-ah-aaah" vocal feel.
+// Visualisation: ._pianoroll({ cycles: 2, labels: true }) on the vocal chops.
+
+setcpm(33)
+
+stack(
+
+  note("e1").sound("sine").attack(2).release(5).gain(0.4)
+    .color("midnightblue"),
+
+  // ── 2-STEP KICK ──────────────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~").gain(0.82).lpf(170).shape(0.12)
+    .color("crimson"),
+
+  // ── SNARE on 2-and ───────────────────────────────────────────
+  s("~ ~ sd ~  ~ ~ ~ ~").gain(0.55).hpf(900).room(0.22)
+    .color("orange"),
+
+  // ── HATS shuffled ────────────────────────────────────────────
+  s("hh*16").swingBy(0.4, 2)
+    .gain("0.26 0.14 0.22 0.16").hpf(7300)
+    .color("yellow"),
+
+  // ── VOCAL CHOPS + pianoroll ──────────────────────────────────
+  note("<e4 g4 a4 e4  b4 a4 g4 e4>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.005).release(0.13).lpf(2400).lpq(4)
+    .chop(4)
+    .ply("1 2 1 1  1 1 3 1")
+    .gain(0.42).pan(0.55).room(0.4)
+    .color("magenta")
+    ._pianoroll({ cycles: 2, labels: true }),
+
+  // ── HARMONY VOCAL — third above ──────────────────────────────
+  note("<g4 b4 c5 g4  d5 c5 b4 g4>")
+    .sound("sawtooth").vowel("o")
+    .attack(0.005).release(0.13).lpf(2000)
+    .gain(0.26).pan(0.4).room(0.45)
+    .color("hotpink"),
+
+  // ── SUB ──────────────────────────────────────────────────────
+  note("<e2 a1 g1 b1>")
+    .sound("sine").attack(0.005).release(0.4)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.7).pan(0.5)
+    .color("navy")
+)

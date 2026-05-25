@@ -1,0 +1,40 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 03 — bassline-skip
+// Genre: UK Garage / bassline
+// Tempo / CPM: 138 BPM (setcpm 34.5)
+// Musical idea: Bassline-genre lean — driving square-wave bass line as the lead instrument, drums supporting.
+// Strudel focus: square-wave bass with .lpq() resonance + .struct() syncopation; bass IS the melody.
+// Visualisation: ._punchcard({ cycles: 2, labels: true }) on the bass — labels reveal the riff.
+
+setcpm(34.5)
+
+stack(
+
+  // ── KICK — 2-step ────────────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~").gain(0.82).lpf(170).shape(0.13)
+    .color("crimson"),
+
+  // ── BASSLINE — square wave, resonant, melodic + punchcard ────
+  note("a2 ~ c3 a2  e3 ~ g2 ~  a2 c3 ~ e3  ~ g2 a2 ~")
+    .sound("square")
+    .lpf(slider(900, 350, 2200)).lpq(10).shape(0.12)
+    .attack(0.003).release(0.13)
+    .gain(0.65).pan(0.5)
+    .color("magenta")
+    ._punchcard({ cycles: 2, labels: true }),
+
+  // ── SUB underlining ──────────────────────────────────────────
+  note("a1*4")
+    .sound("sine").attack(0.003).release(0.18)
+    .gain(0.55).pan(0.5)
+    .color("navy"),
+
+  // ── SHUFFLED HATS ────────────────────────────────────────────
+  s("hh*16").swingBy(0.35, 2)
+    .gain("0.26 0.14 0.22 0.16").hpf(7300)
+    .color("yellow"),
+
+  // ── SNARE — off-beat ─────────────────────────────────────────
+  s("~ ~ sd ~  ~ ~ ~ sd").gain(0.55).hpf(900).room(0.2)
+    .color("orange")
+)
