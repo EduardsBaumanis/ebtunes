@@ -255,6 +255,17 @@
   --code-fg:  #88c8b8;
 }
 
+/* ── SAXOPHONE AFTERHOURS theme — brass on smoky midnight blue ── */
+[data-theme="saxophone-afterhours"] {
+  --black:    #0a0610;
+  --white:    #f0c890;
+  --grey:     #b07050;
+  --dim:      #1a0e1a;
+  --mid:      #3a2030;
+  --code-bg:  #0a0610;
+  --code-fg:  #d8a878;
+}
+
 /* ── UK GARAGE theme — London neon: sodium orange on rainy slate ── */
 [data-theme="uk-garage"] {
   --black:    #0a0d12;

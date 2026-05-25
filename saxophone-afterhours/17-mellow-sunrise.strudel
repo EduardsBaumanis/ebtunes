@@ -1,0 +1,49 @@
+// Album: Saxophone Afterhours
+// Track: 17 — mellow-sunrise
+// Genre: Saxophone-centred electronic jazz (mellow)
+// Tempo / CPM: 76 BPM (setcpm 19)
+// Key / Mode: F major
+// Saxophone role: warm sunrise melody, soprano register
+// Musical idea: First light after a long night — a soprano-sax line floats over warm Rhodes chords and brushed drums.
+// Strudel focus: vowel("i") = brighter soprano formant; gentle .every(4, x => x.add(7)) lifts the phrase a 5th every 4 cycles.
+// Visualisation: ._pianoroll({ cycles: 4, vertical: true }) — vertical reads the rising contour.
+
+setcpm(19)
+
+stack(
+
+  note("f1").sound("sine").attack(4).release(8).gain(0.42)
+    .color("midnightblue"),
+
+  // ── SOPRANO SAX — bright, rising
+  note("<f5 a5 c6 a5  bb5 d6 c6 a5  g5 a5 c6 ~  f5 ~ ~ ~>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.08).release(0.6).lpf(3200).lpq(3)
+    .delay(0.35).delaytime(0.5).delayfeedback(0.35)
+    .every(4, x => x.add(7))
+    .gain(0.42).pan(0.55).room(0.6)
+    .color("orange")
+    ._pianoroll({ cycles: 4, vertical: true }),
+
+  // ── RHODES — Fmaj9 → Dm9 → Bbmaj7 → C7sus
+  note("<[f3,a3,c4,e4,g4] [d3,f3,a3,c4,e4] [bb2,d3,f3,a3,c4] [c3,f3,g3,bb3]>")
+    .sound("triangle").attack(0.02).release(1.5).lpf(2400)
+    .gain(0.34).pan(0.45).room(0.55).slow(2)
+    .color("gold"),
+
+  // ── BRUSH DRUMS — soft
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.5).lpf(170).shape(0.08)
+    .color("dimgray"),
+  s("~ ~ sd ~").gain(0.3).hpf(900).room(0.4)
+    .color("orange"),
+
+  // ── HATS quiet
+  s("hh*8").gain(0.14).hpf(7300).swingBy(0.4, 2)
+    .color("yellow"),
+
+  // ── SUB-BASS
+  note("<f2 d2 bb1 c2>")
+    .sound("sine").attack(0.005).release(0.5)
+    .struct("x ~ ~ x  ~ x ~ ~").gain(0.66)
+    .color("navy")
+)

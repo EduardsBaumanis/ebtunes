@@ -1,0 +1,53 @@
+// Album: Saxophone Afterhours
+// Track: 15 — warped-lounge
+// Genre: Saxophone-centred electronic jazz (warped / vaporwave-adjacent)
+// Tempo / CPM: 84 BPM (setcpm 21)
+// Key / Mode: E♭ major
+// Saxophone role: pitched-down lounge phrase, slightly detuned
+// Musical idea: 1980s hotel-lounge sax played on a warped tape — slightly slowed, slightly detuned, dreamlike.
+// Strudel focus: .speed(0.92) on drums = tape warble; sax pair with .add(0.07) micro-detune.
+// Visualisation: .pianoroll({ cycles: 4, smear: true }) — smear matches the warped feel.
+
+setcpm(21)
+
+stack(
+
+  note("eb1").sound("sine").attack(3).release(6).gain(0.42)
+    .color("midnightblue"),
+
+  // ── WARPED KICK + hats — slightly slow
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.65).lpf(170).shape(0.1).speed(0.92)
+    .color("crimson"),
+  s("hh*8").gain(0.18).hpf(7000).speed(0.92)
+    .color("yellow"),
+
+  // ── LOUNGE SAX — main voice
+  note("eb5 ~ g5 ~  bb5 ~ ab5 g5  f5 ~ eb5 ~  d5 ~ eb5 ~")
+    .sound("sawtooth").vowel("a")
+    .attack(0.06).release(0.5).lpf(2700).lpq(3)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.4)
+    .gain(0.44).pan(0.5).room(0.55)
+    .color("crimson")
+    .pianoroll({ cycles: 4, smear: true }),
+
+  // ── DETUNED SAX TWIN — 7 cents off
+  note("eb5 ~ g5 ~  bb5 ~ ab5 g5  f5 ~ eb5 ~  d5 ~ eb5 ~")
+    .add(0.07)
+    .sound("sawtooth").vowel("a")
+    .attack(0.07).release(0.5).lpf(2500)
+    .gain(0.3).pan(0.6).room(0.6)
+    .color("hotpink"),
+
+  // ── LOUNGE CHORDS — Ebmaj9 → Cm9 → Fm9 → Bb7sus
+  note("<[eb3,g3,bb3,d4,f4] [c3,eb3,g3,bb3,d4] [f3,ab3,c4,eb4,g4] [bb2,eb3,f3,ab3]>")
+    .sound("triangle").attack(0.02).release(0.6).lpf(2400)
+    .gain(0.3).pan(0.45).room(0.5).slow(2)
+    .color("gold"),
+
+  // ── WALKING BASS
+  note("<eb2 bb1 c2 ab1  f2 c2 bb1 eb2>")
+    .sound("sawtooth").lpf(480).shape(0.08).speed(0.92)
+    .attack(0.005).release(0.45)
+    .gain(0.5).pan(0.5)
+    .color("navy")
+)
