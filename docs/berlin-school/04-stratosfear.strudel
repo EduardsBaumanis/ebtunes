@@ -1,0 +1,61 @@
+// ══════════════════════════════════════════════════════════════
+// "Stratosfear"
+// Track 4 of 20 · Berlin School
+//
+// Key:    C minor
+// Tempo:  104 BPM  (setcpm 26)
+// Mood:   Driving sequencer with a soaring melody on top.
+//
+// STRUDEL TECHNIQUE
+//   .arp("[0,2] 1 2 3")  — chord-tone arp with chord+single mix
+//   .every(8, x => x.add(12))  — every 8 cycles, jump octave up
+//
+// VISUALIZATION
+//   .scope() on the sequencer to see the saw + resonance shape
+// ══════════════════════════════════════════════════════════════
+
+setcpm(26)
+
+stack(
+
+  note("c1").sound("sine").attack(2).release(5).gain(0.5)
+    .color("midnightblue"),
+
+  // ── KICK — pulse for the drive ───────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.62).lpf(170).shape(0.12)
+    .color("crimson"),
+
+  // ── DRIVING SEQUENCER with scope ─────────────────────────────
+  note("[c3,eb3,g3,bb3,c4]")
+    .arp("0 1 2 3 4 3 2 1  4 3 2 1 0 1 2 3")
+    .sound("sawtooth")
+    .lpf(slider(1300, 400, 3200)).lpq(8)
+    .attack(0.003).release(0.12)
+    .every(8, x => x.add(12))
+    .gain(0.45).pan(0.5).room(0.32)
+    .color("cyan")
+    .scope(),
+
+  // ── SOARING LEAD — long-release legato ───────────────────────
+  note("<g5 ~ ~ eb5  f5 ~ g5 ~  bb5 ~ ~ g5  ab5 g5 f5 ~>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.1).release(1.2).lpf(2800)
+    .delay(0.4).delaytime(0.375).delayfeedback(0.3)
+    .gain(0.4).pan(0.55).room(0.5)
+    .color("magenta"),
+
+  // ── BASS ─────────────────────────────────────────────────────
+  note("<c2 g1 ab1 eb2>")
+    .sound("sawtooth").lpf(560).lpq(6).shape(0.15)
+    .attack(0.005).release(0.4)
+    .struct("x ~ ~ x x ~ ~ x")
+    .gain(0.62).pan(0.5)
+    .color("navy"),
+
+  // ── PAD ──────────────────────────────────────────────────────
+  note("<[c3,eb3,g3] [ab2,c3,eb3] [bb2,d3,f3] [g2,bb2,d3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(3).release(6).lpf(1700)
+    .gain(0.28).pan(0.5).room(0.6).slow(2)
+    .color("indigo")
+)

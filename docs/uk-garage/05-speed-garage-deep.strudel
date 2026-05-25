@@ -1,0 +1,45 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 05 — speed-garage-deep
+// Genre: Speed garage
+// Tempo / CPM: 136 BPM (setcpm 34)
+// Musical idea: Speed garage muscle — heavier kick, octave-jumping reese-style bass, four-on-floor lean.
+// Strudel focus: sawtooth bass with .add(12) octave pop + four-on-floor kick + ride-cymbal off-beats.
+// Visualisation: .punchcard({ cycles: 2 }) — background visual.
+
+setcpm(34)
+
+stack(
+
+  // ── 4-ON-FLOOR KICK (speed garage shift) ─────────────────────
+  s("bd*4").gain(0.85).lpf(170).shape(0.15)
+    .color("crimson")
+    .punchcard({ cycles: 2 }),
+
+  // ── REESE-STYLE BASS — octave pop ────────────────────────────
+  note("<g1 g1 d2 g1  bb1 f1 c2 g1>")
+    .sound("sawtooth").lpf(560).lpq(8).shape(0.18)
+    .attack(0.005).release(0.18)
+    .every(2, x => x.add(12).gain(0.4))
+    .struct("x ~ x ~ x ~ x ~").gain(0.65)
+    .color("navy"),
+
+  // ── SNARE on 2 + 4 ───────────────────────────────────────────
+  s("~ cp ~ cp").gain(0.55).hpf(900).room(0.2)
+    .color("orange"),
+
+  // ── OFF-BEAT RIDE ────────────────────────────────────────────
+  s("~ oh ~ oh").gain(0.42).hpf(4400)
+    .color("gold"),
+
+  // ── HATS shuffled ────────────────────────────────────────────
+  s("hh*16").swingBy(0.3, 2)
+    .gain("0.24 0.14").hpf(7200)
+    .color("yellow"),
+
+  // ── PAD — Gm9 colour ─────────────────────────────────────────
+  note("[g3,bb3,d4,f4,a4]")
+    .sound("sawtooth").vowel("u")
+    .attack(2).release(4).lpf(1800)
+    .gain(0.26).pan(0.5).room(0.5)
+    .color("teal")
+)

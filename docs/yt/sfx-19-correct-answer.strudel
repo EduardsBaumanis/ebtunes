@@ -1,0 +1,47 @@
+// ══════════════════════════════════════════════════════════════
+// "Correct Answer"
+// YouTube — quiz correct / "yes!" reward
+//
+// Key:    G major
+// Tempo:  140 BPM  (setcpm 70)
+// Chords: G – C   (I – IV)
+// Feel:   Cheery two-note resolution. Gold-star satisfaction.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(70)
+
+stack(
+
+  // ── MELODIC HOP ──────────────────────────────────────────────
+  // Two-note major hop g5 → c6: classic "yes that's right" jingle.
+  note("g5 c6 ~ ~ ~ ~ ~ ~")
+    .sound("triangle")
+    .attack(0.003)
+    .decay(0.18)
+    .sustain(0)
+    .release(0.25)
+    .gain(0.5)
+    .room(0.3),
+
+
+  // ── HARMONIC ─────────────────────────────────────────────────
+  // Lower fifth harmony for warmth.
+  note("d5 g5 ~ ~ ~ ~ ~ ~")
+    .sound("sine")
+    .attack(0.003)
+    .decay(0.18)
+    .sustain(0)
+    .release(0.22)
+    .gain(0.28),
+
+
+  // ── SPARKLE ──────────────────────────────────────────────────
+  // High shimmer ping after the resolution.
+  note("~ g7 ~ ~ ~ ~ ~ ~")
+    .sound("sine")
+    .attack(0.001)
+    .release(0.4)
+    .gain(0.22)
+    .room(0.5)
+
+)

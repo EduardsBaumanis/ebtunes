@@ -1,0 +1,50 @@
+// ══════════════════════════════════════════════════════════════
+// "Foggy Hollow Breakdown"
+// Track 2 of 15 · Bluegrass
+//
+// Key:    D major
+// Tempo:  148 BPM  (setcpm 37)
+// Form:   AABB breakdown
+// Mood:   Foot-stomping Scruggs-style breakdown. Fingers fly.
+//
+// PALETTE
+//   - Driving banjo forward+backward rolls
+//   - Fiddle high lead doubling banjo notes
+//   - Tight chop on the 2+4
+// ══════════════════════════════════════════════════════════════
+
+setcpm(37)
+
+stack(
+
+  // ── BASS — alternating root/fifth ────────────────────────────
+  note("<d2 a2 d2 a2  g2 d3 a2 d3>")
+    .sound("sine").attack(0.005).release(0.32).lpf(230)
+    .gain(0.68).pan(0.45)
+    .color("saddlebrown"),
+
+  // ── MANDOLIN — sharp chops ───────────────────────────────────
+  note("<[d4,fs4,a4] [g3,b3,d4] [a3,cs4,e4] [d4,fs4,a4]>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.003).release(0.06).lpf(2800).hpf(800).lpq(7)
+    .struct("~ x ~ x ~ x ~ x").gain(0.44).pan(0.6)
+    .color("forestgreen"),
+
+  // ── BANJO — Scruggs roll, faster, alternating ────────────────
+  note("d5 a4 fs5 a4  d5 a4 fs5 a4  g4 d5 b4 d5  a4 cs5 e5 cs5")
+    .sound("triangle").attack(0.003).release(0.1).lpf(3400)
+    .gain(0.42).pan(0.35).room(0.15)
+    .color("goldenrod"),
+
+
+  // ── DOBRO slide stab — single note per bar ───────────────────
+  note("<~ ~ ~ d6  ~ ~ ~ a5>")
+    .sound("sawtooth").vowel("e")
+    .attack(0.08).release(0.7).lpf(3200).lpq(4)
+    .gain(0.32).pan(0.55).room(0.4)
+    .color("orange"),
+
+  // ── KICK ─────────────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.4).lpf(170)
+    .color("dimgray")
+)

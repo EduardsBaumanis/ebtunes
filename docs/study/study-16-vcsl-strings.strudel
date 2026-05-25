@@ -1,0 +1,50 @@
+// ══════════════════════════════════════════════════════════════
+// "VCSL Strings"
+// Slow chamber strings pad — orchestral samples from the
+// Versilian Community Sample Library
+//
+// Key:    C minor (with Picardy-third resolution to C major)
+// Tempo:  ~58 BPM  (setcpm 14.5)
+// Theory: String chorale writing. Four-part SATB voicing,
+//         no doubled leading tone, contrary motion in the
+//         outer voices. Ends on a Picardy third (major chord
+//         on the minor tonic) — a Renaissance convention that
+//         softens an otherwise dark cadence.
+// Strudel: samples('github:felixroos/dough-samples') brings in
+//          VCSL via the curated dough bundle. Sample names like
+//          `vcsl_strings` are then available via .s(). If your
+//          load is partial, the synth lines beneath carry the
+//          piece on their own.
+// Pack:   github:felixroos/dough-samples (VCSL subset).
+// ══════════════════════════════════════════════════════════════
+
+samples('github:felixroos/dough-samples')
+
+setcpm(14.5)
+
+stack(
+
+  // Bass voice (low strings)
+  note("<c2 ab2 f2 g2  c2 f2 g2 c2>")
+    .s("sawtooth").lpf(440).attack(0.8).release(3)
+    .gain(0.42),
+
+  // Tenor — moves in contrary motion to the bass
+  note("<eb3 c3 ab3 b3  eb3 ab3 b3 e3>")
+    .s("sawtooth").lpf(900).attack(0.8).release(3)
+    .gain(0.32).pan(0.42),
+
+  // Alto — held common tones / passing motion
+  note("<g3 eb3 c4 d4  g3 c4 d4 g3>")
+    .s("sawtooth").lpf(1500).attack(0.9).release(3)
+    .gain(0.28).pan(0.58),
+
+  // Soprano — the melodic line, lands on E (major 3rd, Picardy) at end
+  note("<c4 ab3 f4 g4  c4 f4 d4 e4>")
+    .s("triangle").attack(0.9).release(2.8)
+    .lpf(2400).gain(0.36).pan(0.5).room(0.6),
+
+  // Subtle room ambience
+  s("white*32").gain(0.04).hpf(7000).degradeBy(0.7)
+
+)

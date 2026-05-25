@@ -1,0 +1,60 @@
+// ══════════════════════════════════════════════════════════════
+// "Tempo Modulation"
+// Track 8 of 20 · IDM
+//
+// Key:    B minor
+// Tempo:  Variable — base setcpm(30), layers fast/slow individually
+// Mood:   Layers run at different speeds. The grid breathes.
+//
+// STRUDEL TECHNIQUE
+//   .fast(2)   — double-time a single layer while others stay
+//   .slow(3)   — third-time another layer
+//   independent per-layer time = polymetric IDM (Squarepusher)
+//
+// VISUALIZATION
+//   .punchcard() on the kick + .pianoroll() on the bass
+// ══════════════════════════════════════════════════════════════
+
+setcpm(30)
+
+stack(
+
+  // ── KICK with punchcard ──────────────────────────────────────
+  s("bd ~ bd ~  bd bd ~ ~").gain(0.78).lpf(180).shape(0.15)
+    .color("crimson")
+    .punchcard(),
+
+  // ── HAT — half-speed ─────────────────────────────────────────
+  s("hh*8").gain("0.26 0.16 0.30 0.18").hpf(6900)
+    .slow(1.5)
+    .color("yellow"),
+
+  // ── SNARE — fast layer (1.33x) ───────────────────────────────
+  s("~ sd ~ sd").gain(0.5).hpf(900).room(0.2)
+    .fast(1.333)
+    .color("orange"),
+
+  // ── BASS — base speed, with pianoroll ────────────────────────
+  note("<b1 fs2 d2 a1>")
+    .sound("sawtooth").lpf(580).shape(0.15).lpq(6)
+    .attack(0.005).release(0.2)
+    .struct("x x ~ x ~ x x ~")
+    .gain(0.6).pan(0.5)
+    .color("navy")
+    .pianoroll(),
+
+  // ── ARP — 3x speed against everything else ───────────────────
+  note("<b4 d5 fs5 a5 g5 e5>")
+    .sound("square").attack(0.003).release(0.1)
+    .lpf(3000).gain(0.34).pan(0.6).room(0.3)
+    .fast(3)
+    .color("cyan"),
+
+  // ── PAD — 4x slower than base ────────────────────────────────
+  note("<[b3,d4,fs4] [e4,g4,b4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(1.5).release(3).lpf(1800)
+    .gain(0.26).pan(0.5).room(0.5)
+    .slow(4)
+    .color("indigo")
+)

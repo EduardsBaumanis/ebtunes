@@ -1,0 +1,44 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 16 — tunnel-bass
+// Genre: UK Garage / dark garage
+// Tempo / CPM: 136 BPM (setcpm 34)
+// Musical idea: Filtered bassline rising and falling like driving through a tunnel.
+// Strudel focus: lpf(sine.range()) on a sawtooth bassline = the tunnel filter sweep.
+// Visualisation: ._punchcard({ cycles: 4 }) on the kick.
+
+setcpm(34)
+
+stack(
+
+  note("eb1").sound("sine").attack(2).release(5).gain(0.42)
+    .color("midnightblue"),
+
+  // ── 2-STEP KICK + punchcard ──────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~").gain(0.82).lpf(170).shape(0.13)
+    .color("crimson")
+    ._punchcard({ cycles: 4 }),
+
+  // ── TUNNEL BASS — filter sweep ───────────────────────────────
+  note("<eb2 eb2 bb1 eb2  ab1 c2 g1 bb1>")
+    .sound("sawtooth")
+    .lpf(sine.range(300, 2400).slow(8)).lpq(10).shape(0.18)
+    .attack(0.005).release(0.18)
+    .struct("x ~ x ~ x ~ x ~")
+    .gain(0.65).pan(0.5)
+    .color("navy"),
+
+  // ── SNARE off-beat ───────────────────────────────────────────
+  s("~ ~ sd ~  ~ ~ ~ sd").gain(0.55).hpf(900).room(0.22)
+    .color("orange"),
+
+  // ── HATS shuffled ────────────────────────────────────────────
+  s("hh*16").swingBy(0.35, 2)
+    .gain("0.26 0.14").hpf(7300)
+    .color("yellow"),
+
+  // ── SUB-SUB ──────────────────────────────────────────────────
+  note("eb1*4")
+    .sound("sine").attack(0.005).release(0.18)
+    .gain(0.5).pan(0.5)
+    .color("midnightblue")
+)

@@ -1,0 +1,41 @@
+// Album: gardens of broken clocks
+// Track: 11 — reverse-bloom
+// Concept: A flower un-blossoming — every fourth cycle the melody plays backwards as if time reverses.
+// Musical idea: Forward arpeggio with .every(4, rev) and speed(-1) on a cymbal cycle = reversed-time signal.
+// Strudel focus: .rev and speed(-1) interleaved against a forward base; the listener perceives a wave of un-time.
+// Visualisation: ._pianoroll({ cycles: 4, flipTime: true }) — flipTime mirrors the visualisation to match the concept.
+
+setcpm(20)
+
+stack(
+
+  // ── SUB ──────────────────────────────────────────────────────
+  note("f1").sound("sine").attack(3).release(6).gain(0.42)
+    .color("darkgreen"),
+
+  // ── ARP — reverses every 4th cycle + flipped pianoroll ───────
+  note("[f3,a3,c4,e4,g4,a4]")
+    .arp("0 1 2 3 4 5 4 3")
+    .every(4, rev)
+    .sound("triangle").attack(0.005).release(0.3).lpf(3200)
+    .delay(0.35).delaytime(0.375).delayfeedback(0.4)
+    .gain(0.4).pan(0.55).room(0.5)
+    .color("magenta")
+    ._pianoroll({ cycles: 4, flipTime: true }),
+
+  // ── REVERSE CYMBAL — every 2 bars ────────────────────────────
+  s("cy").speed(-1).gain(0.34).hpf(2000).room(0.6).slow(2)
+    .color("ivory"),
+
+  // ── PAD ──────────────────────────────────────────────────────
+  note("<[f3,a3,c4] [bb2,d3,f3] [g2,b2,d3] [a2,c3,e3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(2.5).release(4).lpf(1900)
+    .gain(0.3).pan(0.5).room(0.6).slow(2)
+    .color("purple"),
+
+  // ── KICK ─────────────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.5).lpf(170).shape(0.1)
+    .every(8, rev)
+    .color("crimson")
+)

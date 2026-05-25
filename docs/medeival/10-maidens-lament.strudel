@@ -1,0 +1,47 @@
+// ══════════════════════════════════════════════════════════════
+// "Maiden's Lament"
+// Track 10 of 20 · Medeival
+//
+// Key:    E Phrygian (the saddest mode — flat 2)
+// Tempo:  48 BPM  (setcpm 12)
+// Mood:   A solo woman's voice. The trobairitz tradition.
+//
+// VOCAL TECHNIQUE
+//   Solo female voice on vowel "a" carries the entire melody.
+//   Very minimal accompaniment — just a sustained drone and
+//   a soft answering vowel-pad on each phrase end.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(12)
+
+stack(
+
+  note("e1").sound("sine").attack(8).release(13).gain(0.4)
+    .color("midnightblue"),
+
+  // ── DRONE — sustained tonic only ─────────────────────────────
+  note("e2").sound("sawtooth").vowel("o")
+    .attack(7).release(12).lpf(1100).gain(0.34).room(0.78)
+    .color("saddlebrown"),
+
+  // ── SOLO VOICE — slow, weeping Phrygian line ─────────────────
+  note("e4 f4 g4 e4  f4 e4 ~ ~  a4 g4 f4 e4  d4 e4 ~ ~")
+    .sound("sawtooth").vowel("a")
+    .attack(0.4).release(2).lpf(2000)
+    .gain(0.46).pan(0.5).room(0.82).size(0.92)
+    .color("goldenrod"),
+
+  // ── ANSWERING PAD — comes in on rests ────────────────────────
+  note("<~ ~ ~ ~  ~ ~ [e3,a3] [e3,a3]  ~ ~ ~ ~  ~ ~ [e3,g3] [e3,g3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(0.5).release(2.5).lpf(1700)
+    .gain(0.3).pan(0.45).room(0.85)
+    .color("indigo"),
+
+  // ── Distant bell, every phrase ───────────────────────────────
+  note("~ ~ ~ ~  ~ ~ ~ ~  ~ ~ ~ ~  ~ ~ ~ e5")
+    .sound("triangle").attack(0.2).release(5)
+    .delay(0.55).delaytime(0.75).delayfeedback(0.45)
+    .room(0.85).gain(0.22).pan(0.5)
+    .color("ivory")
+)

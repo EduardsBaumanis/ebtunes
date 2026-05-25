@@ -1,0 +1,38 @@
+// Album: gardens of broken clocks
+// Track: 05 — rust-and-dew
+// Concept: Iron oxidising on a clock face; small dew-drops fall, sparking momentary clarity through the corrosion.
+// Musical idea: Bit-crushed sawtooth "rust" pad against bright clean sine "dew-drops" — corroded vs. clean dialectic.
+// Strudel focus: .crush() and .coarse() on one layer, perfectly clean .sine on another; structural contrast.
+// Visualisation: .pianoroll({ cycles: 2, smear: true }) on the rust pad to visualise its decay tail.
+
+setcpm(20)
+
+stack(
+
+  // ── SUB drone ────────────────────────────────────────────────
+  note("g1").sound("sine").attack(3).release(7).gain(0.42)
+    .color("dimgray"),
+
+  // ── RUST PAD — bit-crushed, low-sample-rate ──────────────────
+  note("<[g3,bb3,d4] [eb3,g3,bb3] [c3,eb3,g3] [f3,a3,c4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(0.5).release(2).lpf(1500)
+    .crush(4).coarse(3)
+    .gain(0.38).pan(0.45).room(0.5).slow(2)
+    .color("sienna")
+    .pianoroll({ cycles: 2, smear: true }),
+
+  // ── DEW DROPS — pristine sine pings ──────────────────────────
+  note(choose("g6","bb6","d7","f6","c7"))
+    .sound("sine").attack(0.001).release(0.4)
+    .gain(0.28).pan(rand).room(0.7)
+    .struct("~ x ~ ~ ~ ~ x ~  ~ ~ x ~ ~ ~ ~ ~")
+    .color("aqua"),
+
+  // ── METALLIC SCRAPE — rare ───────────────────────────────────
+  s("white*4").lpf(3200).hpf(1800).attack(0.005).release(0.18)
+    .gain(0.18).pan(rand)
+    .rarely(ply(3))
+    .degradeBy(0.4)
+    .color("darkgoldenrod")
+)

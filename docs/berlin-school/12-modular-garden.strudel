@@ -1,0 +1,59 @@
+// ══════════════════════════════════════════════════════════════
+// "Modular Garden"
+// Track 12 of 20 · Berlin School
+//
+// Key:    C major (modal — anchored on Cmaj7)
+// Tempo:  108 BPM  (setcpm 27)
+// Mood:   Generative patch. Self-evolving. Things bloom.
+//
+// STRUDEL TECHNIQUE
+//   choose() per event + .sometimesBy(p, ply(n)) for "blooms"
+//   .every(n, x => x.add(7)) — every n cycles, transpose 5th up
+//
+// VISUALIZATION
+//   .pianoroll() on the generative lead — see flowers open
+// ══════════════════════════════════════════════════════════════
+
+setcpm(27)
+
+stack(
+
+  note("c1").sound("sine").attack(3).release(6).gain(0.48)
+    .color("midnightblue"),
+
+  // ── KICK — sparse, sometimes doubled ─────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.6).lpf(180).shape(0.1)
+    .sometimesBy(0.2, ply(2))
+    .color("crimson"),
+
+  // ── HAT — soft ───────────────────────────────────────────────
+  s("~ hh ~ hh").gain(0.2).hpf(6900)
+    .color("yellow"),
+
+  // ── GENERATIVE LEAD — chosen + bloom + pianoroll ─────────────
+  note(choose("c4","e4","g4","b4","d5","e5","g5","a5"))
+    .sound("sawtooth")
+    .lpf(slider(1800, 600, 3500)).lpq(7)
+    .attack(0.003).release(0.16)
+    .fast(4)
+    .sometimesBy(0.2, ply(3))
+    .every(8, x => x.add(7))
+    .gain(0.4).pan(rand).room(0.4)
+    .color("magenta")
+    .pianoroll(),
+
+  // ── BASS — chosen root ───────────────────────────────────────
+  note(choose("c2","g1","a1","e2","f2"))
+    .sound("sawtooth").lpf(500).lpq(6).shape(0.13)
+    .attack(0.005).release(0.2)
+    .struct("x ~ x ~ x ~ x ~")
+    .gain(0.6).pan(0.5)
+    .color("navy"),
+
+  // ── PAD — Cmaj7 ──────────────────────────────────────────────
+  note("[c3,e3,g3,b3]")
+    .sound("sawtooth").vowel("u")
+    .attack(3).release(6).lpf(1700)
+    .gain(0.28).pan(0.5).room(0.55)
+    .color("indigo")
+)

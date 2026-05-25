@@ -1,0 +1,197 @@
+// ══════════════════════════════════════════════════════════════
+// "Chrome Cathedral"
+// Dark trance — underground, gothic, devotional
+//
+// Key:    D minor
+// Tempo:  136 BPM  (setcpm 68)
+// Chords: Dm – Gm – Bb – F   (i – iv – III – VII)
+// Feel:   A silver cathedral inside a data center.
+//         Cold air, server hum, holographic stained glass.
+//         Not sad — reverent. The machine as sacred space.
+//
+// DARK TRANCE PHILOSOPHY:
+// Peak-time trance resolves. The drop lands, the crowd rises.
+// Dark trance holds the tension. It reaches but never fully arrives.
+// i–iv–III–VII: the iv (Gm) is the shadow chord of D minor.
+// The VII chord (F) reaches upward but doesn't return home.
+// You're always suspended between ascent and resolution.
+//
+// EFFECTS ARCHITECTURE:
+// kick     — shape + crush: industrial digital character
+// snare    — jux: different reverb each ear = stone room effect
+// rim      — crush(8): metallic digital texture on the rimshot
+// hats     — degradeBy: organic, pan(sine): cathedral breathing
+// acid 1   — shape(0.25): distorted 303, grinds against the reverb
+// acid 2   — off(1/4): square wave echo shadow, fills the gaps
+// sub      — shape(0.08): very subtle, keeps it audible on headphones
+// pad 1    — jux(rev) + vowel("<a e>"): stereo organ with breath
+// pad 2    — jux: different lpf each ear = stereo organ spread
+// arp      — jux(rev) + phaser: full 16-note stereo spiral with shimmer
+// lead     — off(1/4): ghost echo that shimmers above the lead note
+// ══════════════════════════════════════════════════════════════
+
+setcpm(68)  // 136 BPM
+
+stack(
+
+  // ── KICK — industrial digital punch ──────────────────────────
+  // shape(0.2): aggressive upper harmonics, crush(12): digital edge
+  //   Together: kick feels like it's hitting a metal floor, not wood
+  s("bd*4")
+    .gain(0.9)
+    .distort(0.08)
+    .shape(0.2)
+    .crush(12)
+    .lpf(4500),
+
+  // ── SNARE — stereo stone room ─────────────────────────────────
+  // jux: left = room(0.2)/size(0.3), right = room(0.3)/size(0.45)
+  //   Different reverb in each ear = asymmetric space, like a real cathedral
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.78)
+    .room(0.2).size(0.3)
+    .jux(x => x.room(0.3).size(0.45)),
+
+  // ── HI-HAT 16ths — cathedral air ─────────────────────────────
+  // degradeBy(0.08): 8% absent = breathing machine
+  // pan(sine.range): simulates reverb arriving from all directions
+  s("hh*16")
+    .gain(0.18)
+    .hpf(9500)
+    .degradeBy(0.08)
+    .pan(sine.range(0.44, 0.65).slow(9)),
+
+  // ── OPEN HAT — phased syncopated accent ──────────────────────
+  // phaser(0.15): slight phase modulation — metal that vibrates
+  s("~ ~ ~ ~ hh ~ ~ oh  ~ ~ ~ ~ hh ~ ~ oh")
+    .gain(0.35)
+    .hpf(7000)
+    .phaser(0.15),
+
+  // ── EUCLIDEAN PERCUSSION — complex digital rhythm ─────────────
+  // E(7,16): 7 hits in 16 = non-repeating feel, crush(8) = metallic
+  s("rim").euclid(7, 16)
+    .gain(0.22)
+    .hpf(4000)
+    .crush(8)
+    .room(0.08)
+    .pan(0.46),
+
+  // ── LOW TOM — seismic footfall ────────────────────────────────
+  // E(3,16,5): 3 hits rotated 5 = lands in unexpected spots
+  // jux: right channel has extra room = wide, physical thud
+  s("lt").euclid(3, 16, 5)
+    .gain(0.32)
+    .room(0.12)
+    .lpf(800)
+    .jux(x => x.room(0.2).pan(0.65))
+    .pan(0.54),
+
+  // ── MAIN ACID 303 (voice 1) — distorted cathedral bass ───────
+  // shape(0.25): distortion adds upper harmonics that cut through reverb
+  //   Normal 303 in a cathedral would be absorbed. Distortion survives.
+  //   The grit is what you hear when the pad swallows everything else.
+  // Very slow filter sweep (slow 4.5): the acid CRAWLS through the space
+  note("d2 ~ f2 ~ d2 a2 ~ c3  bb1 ~ f2 ~ ~ d2 ~ ~")
+    .sound("sawtooth")
+    .lpf(sine.range(200, 1800).slow(4.5))
+    .lpq(13)
+    .shape(0.25)
+    .attack(0.001).decay(0.15).sustain(0.0).release(0.07)
+    .gain(0.85)
+    .slow(2),
+
+  // ── COUNTER ACID 303 (voice 2) — echo shadow ─────────────────
+  // Square wave: higher register, hollow tone contrasts voice 1
+  // off(1/4): shadow note delayed 1/4 cycle — falls on offbeats
+  //   Shadow: hpf(2000) = only the upper harmonic splash
+  //   The result: voice 1 is the body, voice 2's ghost is the shimmer
+  //   In the cathedral reverb, this ghost blurs into an eerie texture
+  note("~ d3 ~ ~ a2 ~ f2 ~  bb2 ~ ~ g2 ~ d3 ~ ~")
+    .sound("square")
+    .lpf(sine.range(400, 3500).slow(1.8))
+    .lpq(12)
+    .attack(0.001).decay(0.09).sustain(0.0).release(0.04)
+    .gain(0.48)
+    .off(1/4, x => x.gain(0.16).hpf(2000))
+    .pan(0.42)
+    .slow(2),
+
+  // ── SUB BASS — below the stone floor ─────────────────────────
+  // shape(0.08): barely audible saturation keeps it on laptop speakers
+  note("<d2 g2 bb2 f2>")
+    .sound("sine")
+    .lpf(100)
+    .shape(0.08)
+    .attack(0.008).decay(0.28).sustain(0.4).release(0.18)
+    .gain(0.76),
+
+  // ── CATHEDRAL PAD 1 — stereo organ with human breath ──────────
+  // jux(rev): chord plays BACKWARDS in the right channel
+  //   Left = normal chord voicing. Right = reversed = different attack/decay
+  //   The reversed right channel: its attack is where left has its release
+  //   = psychedelic stereo depth that never feels static
+  // vowel("<a e>"): "a" = open chest, "e" = slightly nasal
+  //   Cycling gives the pad organic, breathing movement
+  // room(0.9)/size(0.95): 3-second cathedral tail
+  note("<[d3,f3,a3] [g3,bb3,d4] [bb2,d3,f3] [f3,a3,c4]>")
+    .sound("sawtooth")
+    .attack(0.8).decay(0.8).sustain(0.85).release(3.0)
+    .lpf(sine.range(800, 2000).slow(10))
+    .room(0.9).size(0.95)
+    .jux(rev)
+    .vowel("<a e>")
+    .gain(0.2)
+    .pan(0.4)
+    .slow(4),
+
+  // ── CATHEDRAL PAD 2 — stereo organ spread ────────────────────
+  // jux: right channel has tighter filter (lpf 1500 vs 3000)
+  //   Left = brighter, right = darker = wide organ spread
+  //   Like two organ pipes at different distances — same note, different air
+  note("<[f4,a4] [bb3,d4] [d4,f4] [a3,c4]>")
+    .sound("sawtooth")
+    .attack(1.0).decay(0.6).sustain(0.75).release(2.5)
+    .lpf(3000)
+    .room(0.85).size(0.9)
+    .jux(x => x.lpf(1500).room(0.7))
+    .gain(0.15)
+    .pan(0.6)
+    .slow(4),
+
+  // ── DESCENDING ARP — full 16-note stereo spiral ───────────────
+  // 16 notes spanning the full D minor scale: descent and re-ascent
+  // jux(rev): reversed in right channel = ascending while left descends
+  //   Left and right move in opposite directions simultaneously = spiral
+  // phaser(0.2)/phaserrate(0.4): slow shimmer across the descending notes
+  //   Like sunlight through cathedral windows as the arp falls
+  n("0 2 3 5 7 5 3 2 0 2 4 5 7 5 3 2").scale("D:minor")
+    .sound("sawtooth")
+    .lpf(sine.range(1500, 4000).slow(3))
+    .lpq(5)
+    .attack(0.001).release(0.1)
+    .gain(0.42)
+    .room(0.3)
+    .jux(rev)
+    .phaser(0.2).phaserrate(0.4)
+    .pan(0.55)
+    .fast(2),
+
+  // ── ETHEREAL LEAD — ghost echo shimmer ───────────────────────
+  // off(1/4): ghost note 1/4 cycle after each lead note
+  //   Ghost: gain(0.15), hpf(3000) = just air and sparkle above the note
+  //   Original: the note with body. Ghost: the sound after the sound.
+  //   In a cathedral: the note bouncing off high walls, arriving later.
+  note("~ ~ a5 ~ ~ ~ f5 ~  ~ ~ ~ g5 ~ ~ ~ ~  ~ d5 ~ ~ ~ ~ a4 ~  ~ ~ c5 ~ ~ bb4 ~ ~")
+    .sound("sine")
+    .attack(0.04).decay(0.4).sustain(0.3).release(1.2)
+    .room(0.7).size(0.75)
+    .delay(0.42)
+    .delaytime(0.5)
+    .delayfeedback(0.2)
+    .gain(0.4)
+    .off(1/4, x => x.gain(0.15).hpf(3000))
+    .pan(0.5)
+    .slow(4)
+
+)

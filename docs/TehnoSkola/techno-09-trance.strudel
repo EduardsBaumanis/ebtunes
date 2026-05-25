@@ -1,0 +1,146 @@
+// ============================================================
+// TECHNO LESSON 09: Peak-Time Trance
+// ============================================================
+// Trance evolved from early Detroit techno and European dance music
+// in the late 1980s, reaching its commercial and artistic peak
+// in the late 1990s–early 2000s (the "Golden Era of Trance").
+//
+// While not always called "techno," trance shares its 4/4 structure
+// and BPM range, and the two genres have always cross-pollinated.
+// Peak-time trance in particular — the loud, euphoric, festival
+// variety — uses the hardest elements of techno with maximalist melody.
+//
+// KEY ARTISTS:
+//   Paul van Dyk — "For an Angel", "Forbidden Fruit"
+//   Ferry Corsten — "Punk", "Wicked" (as System F)
+//   Tiësto — "Adagio for Strings", "Traffic"
+//   ATB — "9pm (Till I Come)" — one of the biggest trance hits ever
+//   Armin van Buuren — "A State of Trance" era
+//   Carl Cox — bridged techno and trance in DJ sets
+//
+// DEFINING CHARACTERISTICS:
+//   ✦ BPM: 136–145 (faster than melodic techno, less than hard techno)
+//   ✦ THE SUPERSAW: multiple detuned sawtooth oscillators create a
+//     massive, lush, "wall of sound" — the defining sound of trance
+//   ✦ Arpeggiated synths — fast repeating note sequences
+//   ✦ Big "breakdowns" — drums drop out for 16–32 bars, only pads
+//   ✦ The "drop" or "riser" — energy build then explosive return
+//   ✦ Euphoric, uplifting emotional arc
+//   ✦ Clearly defined verse/breakdown/build/drop structure
+//
+// THE SUPERSAW SOUND:
+//   A supersaw is several sawtooth oscillators playing the same note
+//   but each detuned slightly (a few cents sharp/flat of each other).
+//   The beating between slightly-out-of-tune oscillators creates
+//   the characteristic "shimmer" and "thickness" of trance pads.
+//   In Strudel, we approximate by stacking sawtooth layers with
+//   note values offset by tiny fractions.
+//
+// ARPEGGIATORS:
+//   An arpeggio is a chord played note-by-note in rapid succession.
+//   In trance, arpeggios run at 8th or 16th notes, creating urgency.
+//   Pattern: "c4 e4 g4 b4 c5 b4 g4 e4" repeating = classic trance arp.
+// ============================================================
+
+setcpm(70)  // ~140 BPM
+
+// --- EXAMPLE 1: Trance kick + snare ---
+// The trance kick is similar to techno but slightly "rounder."
+// The snare has a reverse reverb feel — it builds before the hit.
+s("bd*4").gain(0.9)
+
+
+// --- EXAMPLE 2: Classic trance hi-hat pattern ---
+// 8th note hats + open hat on the "and" of beat 4.
+// Much more musical than hard techno 16ths.
+// stack(
+//   s("bd*4").gain(0.9),
+//   s("~ ~ sd ~ ~ ~ sd ~").gain(0.8),
+//   s("hh*8").gain(0.35).hpf(7000),
+//   s("~ ~ ~ ~ ~ ~ ~ oh").gain(0.6)
+// )
+
+
+// --- EXAMPLE 3: Trance arpeggio ---
+// A fast 8-note arpeggio cycling through chord tones.
+// This is one of the most recognizable trance sounds.
+// n("0 2 4 6 7 6 4 2").scale("A:minor")
+//   .sound("sawtooth")
+//   .lpf(3000)
+//   .attack(0.001).release(0.08)
+//   .gain(0.55)
+//   .fast(2)   // double speed = 16th-note arpeggio
+
+
+// --- EXAMPLE 4: Supersaw pad (stacked layers) ---
+// The closest Strudel gets to a supersaw: two sawtooth layers,
+// one slightly "wider" (more room). The interference between
+// them creates the characteristic shimmer.
+// stack(
+//   note("<[a3,c4,e4] [f3,a3,c4] [c3,e3,g3] [g3,b3,d4]>")
+//     .sound("sawtooth").attack(0.1).release(0.8)
+//     .lpf(2500).room(0.4).gain(0.28).slow(2),
+//   note("<[a3,c4,e4] [f3,a3,c4] [c3,e3,g3] [g3,b3,d4]>")
+//     .sound("sawtooth").attack(0.15).release(1.0)
+//     .lpf(2200).room(0.6).gain(0.22).slow(2).pan(0.42)
+// )
+
+
+// --- EXAMPLE 5: Breakdown section ---
+// The breakdown = no drums, only pads. Creates tension before drop.
+// In a real track this lasts 16–32 bars. Here it's one cycle.
+// note("<[a3,c4,e4,g4] [f3,a3,c4,e4] [c3,e3,g3,b3] [g3,b3,d4,f4]>")
+//   .sound("sawtooth")
+//   .attack(0.8).release(2.0)
+//   .lpf(1800).room(0.85).size(0.9)
+//   .gain(0.4)
+//   .slow(4)
+
+
+// --- EXAMPLE 6: The rise ---
+// A repeated high note that rises in pitch or density — signals
+// the drop is coming. Creates almost unbearable anticipation.
+// note("a4*16")
+//   .sound("sawtooth")
+//   .lpf(sine.range(1000, 5000).slow(1))  // filter opens as it rises
+//   .gain(sine.range(0.1, 0.7).slow(1))   // volume also rises
+//   .room(0.4)
+
+
+// --- EXAMPLE 7: Full peak-time trance ---
+// The complete template. Notice the structure possibilities:
+// swap in the breakdown (Example 5) for the pads to create sections.
+// stack(
+//   s("bd*4").gain(0.9),
+//   s("~ ~ sd ~ ~ ~ sd ~").gain(0.78),
+//   s("hh*8").gain(0.3).hpf(7000),
+//   s("~ ~ ~ ~ ~ ~ ~ oh").gain(0.55),
+//
+//   // Arp
+//   n("0 2 4 6 7 6 4 2").scale("A:minor")
+//     .sound("sawtooth").lpf(3500)
+//     .attack(0.001).release(0.07)
+//     .gain(0.48).fast(2),
+//
+//   // Bass (follows chord roots)
+//   note("<a2 f2 c2 g2>")
+//     .sound("sawtooth").lpf(500)
+//     .attack(0.01).release(0.2)
+//     .gain(0.65).slow(2),
+//
+//   // Supersaw pad (two layers)
+//   note("<[a3,c4,e4] [f3,a3,c4] [c3,e3,g3] [g3,b3,d4]>")
+//     .sound("sawtooth").attack(0.15).release(0.9)
+//     .lpf(2400).room(0.5).gain(0.25).slow(2)
+// )
+
+
+// ============================================================
+// EXERCISE:
+//   1. Try the arpeggio in different scales: "A:major", "A:dorian"
+//      Feel how each scale changes the emotional quality
+//   2. Change .fast(2) to .fast(4) on the arp — ultra-fast 32nd notes
+//   3. Build a breakdown → drop: use cat() with Example 5 then Example 7
+//   4. Listen to: Paul van Dyk "For an Angel" (1994) — classic arp
+//   5. Ferry Corsten "Punk" (1999) — notice the arp + supersaw combination
+// ============================================================

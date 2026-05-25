@@ -1,0 +1,127 @@
+// ============================================================
+// LESSON 07: Effects
+// ============================================================
+// Effects process audio AFTER it leaves the oscillator or sample.
+// They shape the sound's space, color, dynamics, and character.
+// Good mixing = giving each sound its own place to live.
+//
+// THE MAIN EFFECTS:
+//
+//   FILTERS (shape the frequency content):
+//     .lpf(hz)          Low-Pass Filter — cut highs. Darker sound.
+//     .hpf(hz)          High-Pass Filter — cut lows. Thinner sound.
+//     .lpq(amount)      Resonance at the LPF cutoff (0–50, adds a "peak")
+//
+//   REVERB (simulates acoustic space):
+//     .room(0–1)        Amount of reverb. 0 = dry room, 1 = cathedral.
+//     .size(0–1)        Size of the simulated room.
+//     Rule: kicks and bass stay DRY — reverb muddies low frequencies.
+//
+//   DELAY (echo effect):
+//     .delay(0–1)       How much delay signal to mix in.
+//     .delaytime(secs)  Time between echoes (try tempo-synced values).
+//     .delayfeedback(0–1) How much each echo feeds into the next.
+//     Tip: delaytime in musical values: 0.5 = half a cycle, 0.25 = quarter.
+//
+//   DYNAMICS:
+//     .gain(0–2)        Volume. 1 = default, 0.5 = half, 2 = double.
+//     .pan(0–1)         Stereo position. 0 = hard left, 0.5 = center, 1 = right.
+//
+//   DISTORTION:
+//     .distort(0–1)     Harmonic saturation. Subtle = warmth. Heavy = crunch.
+//
+//   VOWEL FILTER:
+//     .vowel("a e i o") Formant filter mimicking vowel sounds. Very expressive.
+//
+// MIXING PRINCIPLES:
+//   Frequency spectrum: kick (sub), bass (low), pads (mid), melody (high-mid)
+//   Stereo width: bass stays centered, hi-hats and pads spread outward
+//   Reverb depth: leads/pads → wet, kick/bass/snare → dry
+// ============================================================
+
+setcpm(55)
+
+// --- EXAMPLE 1: LPF — from dark to bright ---
+// Slowly raise the lpf value and hear the sound open up.
+note("c3*4").sound("sawtooth").lpf(500)
+// try: 100  200  500  1000  2000  5000
+
+
+// --- EXAMPLE 2: HPF — telephone / thinning effect ---
+// Cutting lows makes a sound sit "above" the bass. Good for hi-hats.
+// note("c3*4").sound("sawtooth").hpf(800)
+
+
+// --- EXAMPLE 3: Resonant filter with lpq ---
+// lpq adds a peak at the cutoff frequency — that nasal "wah" quality.
+// note("c3*4").sound("sawtooth").lpf(800).lpq(10)
+// try lpq: 0  2  5  10  20 — more = more pronounced "wah"
+
+
+// --- EXAMPLE 4: Reverb — dry vs wet ---
+// note("c4 d4 e4 f4 g4 a4 b4 c5")
+//   .sound("piano")
+//   .slow(2)
+//   .room(0.8)    // try: 0, 0.2, 0.5, 0.8
+//   .size(0.9)
+
+
+// --- EXAMPLE 5: Delay — echoing lead synth ---
+// Delay works best on sparse, melodic parts.
+// note("c4 ~ ~ ~ g4 ~ ~ ~")
+//   .sound("triangle")
+//   .delay(0.5)
+//   .delaytime(0.5)       // echo every half-cycle
+//   .delayfeedback(0.35)
+//   .slow(2)
+
+
+// --- EXAMPLE 6: Vowel filter — expressive character ---
+// The .vowel() filter mimics the resonance of vowel sounds.
+// note("c3*8")
+//   .sound("sawtooth")
+//   .vowel("<a e i o u>")
+//   .gain(0.7)
+
+
+// --- EXAMPLE 7: Distortion for grit ---
+// Low distortion = warmth. High distortion = aggression.
+// note("c2*4")
+//   .sound("sawtooth")
+//   .distort(0.3)
+//   .lpf(800)
+
+
+// --- EXAMPLE 8: Full mix — each instrument in its own space ---
+// The goal: no two instruments compete for the same frequency/position.
+// stack(
+//   // Kick: dry, centered, punchy
+//   s("bd ~ sd ~").gain(0.9),
+//
+//   // Hi-hat: high-passed, slightly right, tiny room
+//   s("hh*8").gain(0.4).hpf(5000).pan(0.65).room(0.05),
+//
+//   // Bass: dry, no reverb (reverb = mud in low end)
+//   note("c2 ~ ~ c2 ~ ~ eb2 ~")
+//     .sound("sawtooth").lpf(400).gain(0.65),
+//
+//   // Chord pad: lots of room, panned wide
+//   note("<[c4,g4] [ab3,eb4]>")
+//     .sound("sawtooth").attack(0.5).release(0.8)
+//     .lpf(1500).room(0.7).size(0.8).gain(0.35).pan(0.4),
+//
+//   // Lead melody: delay for movement, moderate reverb
+//   note("c5 ~ eb5 ~ g5 ~ f5 ~")
+//     .sound("triangle").slow(2)
+//     .delay(0.4).delaytime(0.25).delayfeedback(0.3)
+//     .room(0.3).gain(0.55).pan(0.55)
+// )
+
+
+// ============================================================
+// EXERCISE:
+//   1. Add .room(0.7) to a plain drum loop — notice the "wash"
+//   2. Use .pan() values to spread a 4-instrument mix across the stereo field
+//   3. Try .delay(0.5).delaytime(0.333) — that's a triplet echo
+//   4. Compare .distort(0.1) vs .distort(0.8) on the same bass patch
+// ============================================================

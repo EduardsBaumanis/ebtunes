@@ -1,0 +1,107 @@
+// ══════════════════════════════════════════════════════════════
+// "Blue Smoke"
+// Modal jazz / lo-fi — moody, introspective, smoke-filled room
+//
+// Key:    D Dorian  (D minor but with a natural 6th — the B♮)
+// Tempo:  ~80 BPM  (setcpm 40)
+// Chords: Dm9 → G9 → Cmaj9 → Am7   (i9 – IV9 – VII9 – v7)
+// Feel:   Miles Davis "Kind of Blue" meets dusty bedroom tape
+//
+// D Dorian scale: D  E  F  G  A  B♮  C  D
+// The B♮ (natural 6th) is what gives Dorian its bittersweet
+// quality — darker than major, but lighter than pure minor.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(17)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Brushy, jazz-inflected kick pattern. Avoids the downbeat
+  // on bars 2 and 4 — syncopated, forward-leaning feel.
+  s("bd ~ bd ~ ~ bd ~ ~")
+    .gain(0.78)
+    .lpf(3800)
+    .room(0.08),
+
+
+  // ── SNARE / RIM ──────────────────────────────────────────────
+  // Alternating between snare and rimshot — more varied, less robotic.
+  // The <sd rim> changes every cycle, keeping the groove alive.
+  s("~ ~ <sd rim> ~ ~ ~ <sd rim> ~")
+    .gain(0.7)
+    .room(0.18),
+
+
+  // ── HI-HAT ───────────────────────────────────────────────────
+  // Swing feel via subdivision. On the "and" of each beat,
+  // the hi-hat sits in the back third of the beat (triplet swing).
+  s("[hh [~ hh]]*4")
+    .gain(0.28)
+    .hpf(5200)\n    .room(0.1)
+    .pan(0.64)
+    .room(0.06),
+
+
+  // ── RIDE CYMBAL ──────────────────────────────────────────────
+  // Jazz ride pattern: hit on 1, skip 2, hit on 3 and the "and" of 3.
+  // This is more characteristic of jazz than straight hi-hats.
+  s("~ oh ~ ~ oh [oh oh] ~ ~")
+    .gain(0.32)
+    .hpf(4500)
+    .pan(0.38)
+    .room(0.1),
+
+
+  // ── BASS ─────────────────────────────────────────────────────
+  // Syncopated bass line — hits on beat 1 and anticipates the next
+  // chord by landing on the "and" of beat 4 (jazz anticipation).
+  // Dorian flavored: uses the B♮ (b2 in D) over the Dm bar.
+  //   Dm9:   D  ~  A  ~  |  G9: G  ~  D  ~
+  //   Cmaj9: C  ~  G  ~  |  Am7: A  ~  E  ~
+  note("d2 ~ a2 ~ ~ ~  g2 ~ d3 ~ ~ ~  c2 ~ g2 ~ ~ ~  a2 ~ e3 ~ ~ ~")
+    .sound("sawtooth")
+    .lpf(220)
+    .attack(0.006).decay(0.14).sustain(0.4).release(0.09)
+    .gain(0.65)
+    .slow(3),
+
+
+  // ── JAZZ CHORD VOICINGS (9th chords) ─────────────────────────
+  // 9th chords add an extra layer of color above the 7th.
+  // The 9th (2nd note up an octave) gives jazz its "open" feeling.
+  //   Dm9:   D  F  A  C  E  →  [d4, f4, c5, e5]
+  //   G9:    G  B  F  A    →  [g3, b3, f4, a4]
+  //   Cmaj9: C  E  B  D    →  [c4, e4, b4, d5]
+  //   Am7:   A  E  G  C    →  [a3, e4, g4, c5]
+  note("<[d4,f4,c5,e5] [g3,b3,f4,a4] [c4,e4,b4,d5] [a3,e4,g4,c5]>")
+    .sound("sawtooth")
+    .attack(0.05)
+    .release(0.55)
+    .lpf(1900)
+    .room(0.38)
+    .size(0.6)
+    .gain(0.27)
+    .pan(0.42)
+    .slow(2),
+
+
+  // ── MELODY ───────────────────────────────────────────────────
+  // D Dorian melody — angular, jazz-inflected.
+  // Uses the B♮ (b5 = 6th of D) on the climb, which is the
+  // characteristic note that separates Dorian from pure minor.
+  // Phrase floats over 2 cycles. Square wave for clarity.
+  note("a4 ~ c5 b4  ~ g4 ~ a4  ~ ~ d5 ~  c5 ~ b4 a4")
+    .sound("square")
+    .lpf(3500)
+    .attack(0.01)
+    .release(0.22)
+    .delay(0.35)
+    .delaytime(0.333)
+    .delayfeedback(0.28)
+    .room(0.42)
+    .gain(0.44)
+    .pan(0.55)
+    .slow(2)
+
+)

@@ -1,0 +1,89 @@
+// ══════════════════════════════════════════════════════════════
+// "Cathedral of Hollow Wind"
+// Dark ambient — Lustmord, Thomas Köner tradition
+//
+// Key:    F minor (with diminished colour tones)
+// Tempo:  ~40 BPM equivalent  (setcpm 10)
+// Chords: Fm (i) with chromatic neighbour Eb-dim (drone-based)
+// Feel:   Cavernous low rumble, distant metallic scrapes, dread.
+//
+// THEORY NOTES
+//   Dark ambient strips ambient music of its consonance: where Eno
+//   wrote in modal major, dark ambient lives in minor + diminished
+//   intervals + microtonal beating. Sub-frequencies dominate the
+//   mix. Above them, drones held for many seconds in the lower-mid
+//   register; above THEM, occasional metallic flashes — bell-tones
+//   with deliberately dissonant intervals. Reverb is enormous —
+//   "cathedral" or "underground" sounding. No traditional beat.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(10)
+
+stack(
+
+  // ── ULTRA-SUB DRONE ──────────────────────────────────────────
+  // F at sub-bass — the cavernous foundation. Very long attack
+  // so it builds from silence. Reverb makes it endless.
+  note("f1").sound("sine")
+    .attack(6).release(10).gain(0.5)
+    .room(0.6).size(0.85),
+
+  // ── LOW DRONE — SAWTOOTH WITH BEATING ────────────────────────
+  // Two slightly-detuned sawtooths create an audible beat frequency
+  // — the underlying "wrongness" of dark ambient. lpf keeps the
+  // brightness from triggering, lpq adds resonant peak.
+  note("f2").sound("sawtooth")
+    .lpf(420).lpq(6).attack(4).release(8)
+    .gain(0.32).pan(0.4),
+  note("f2").sound("sawtooth")
+    .lpf(440).lpq(6).attack(4).release(8)
+    .gain(0.32).pan(0.6),
+
+  // ── DIMINISHED COLOUR DRONE ──────────────────────────────────
+  // Eb (the b7 below F) plus the diminished b3 (Ab) — minor + b5
+  // = the diminished colour, never resolving.
+  note("[eb3,gb3,a3]").sound("sawtooth")
+    .lpf(900).attack(5).release(7)
+    .gain(0.22).pan(0.5).slow(4)
+    .room(0.7).size(0.9),
+
+  // ── METALLIC SCRAPE — SPARSE ──────────────────────────────────
+  // High-frequency noise burst, very rare. Filtered through narrow
+  // bandpass to give the "distant metal" character.
+  s("white*4").bpf(2400).bpq(15)
+    .gain("0.18 0.10 0.22 0.08")
+    .release(0.6).pan(rand)
+    .degradeBy(0.75).slow(4),
+
+  // ── DISSONANT BELL ───────────────────────────────────────────
+  // Bell tones in the tritone above the root (F + B = tritone of
+  // dread). Extremely sparse trigger, heavy reverb.
+  note("b4 ~ ~ ~ ~ ~ ~ ~  ~ ~ ~ ~ f5 ~ ~ ~")
+    .sound("sine").attack(0.4).release(6)
+    .delay(0.8).delaytime(0.625).delayfeedback(0.55)
+    .room(0.85).size(0.95)
+    .gain(0.25).pan(0.55).slow(4)
+    .degradeBy(0.5),
+
+  // ── LOW RUMBLE PERC ──────────────────────────────────────────
+  // Very rare deep kick — "the temple bell" effect. Almost never
+  // fires; when it does, lots of reverb.
+  s("bd*1").gain(0.55).lpf(120)
+    .room(0.7).size(0.92)
+    .almostNever(x => x.gain(0.7)).slow(4),
+
+  // ── BREATHING WIND ───────────────────────────────────────────
+  // Long, slow filtered noise that swells and recedes — the
+  // "cathedral wind". LPF moves slowly to create the breath.
+  s("white*8")
+    .lpf("400 700 500 800 600 400 900 500")
+    .gain("0.04 0.08 0.06 0.10  0.04 0.07 0.05 0.09")
+    .pan(rand).slow(8),
+
+  // ── HIGH FRAGMENT ────────────────────────────────────────────
+  // Very high partial tone — adds the "ear-singing" upper harmonic
+  // that Köner's records have. Sustained.
+  note("f6").sound("sine")
+    .attack(2).release(6).gain(0.05)
+    .pan(0.5).slow(4)
+)

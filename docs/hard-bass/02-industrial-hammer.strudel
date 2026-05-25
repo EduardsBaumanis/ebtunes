@@ -1,0 +1,79 @@
+// ══════════════════════════════════════════════════════════════
+// "Industrial Hammer"
+// Birmingham industrial techno — Surgeon, Regis lineage
+//
+// Key:    A minor (single chord, modal)
+// Tempo:  138 BPM  (setcpm 34.5)
+// Feel:   Driving distorted kick, metallic clangs, vocal stab.
+//
+// STRUDEL FUNCTIONS HIGHLIGHTED
+//   jux(fn)   — duplicate pattern hard-left/hard-right, transform one
+//   struct()  — apply rhythmic skeleton to a pitched pattern
+//   crush(n)  — bit-crush, integer bit-depth for digital grit
+// ══════════════════════════════════════════════════════════════
+
+setcpm(slider(34.5, 28, 42))
+
+stack(
+
+  // ── KICK — heavy, distorted, dry ──────────────────────────────
+  s("bd*4")
+    .shape(slider(0.5, 0, 0.8))
+    .crush(slider(8, 4, 16))
+    .gain(0.95).lpf(180)
+    .color("crimson"),
+
+  // ── CLAP — on the 3 only (half-time feel) ─────────────────────
+  s("~ ~ cp ~")
+    .gain(0.7).hpf(280).room(0.2).shape(0.15)
+    .color("orange"),
+
+  // ── METALLIC CLANG — jux'd hat ────────────────────────────────
+  // jux(rev) splits stereo: left channel plays forward, right plays
+  // the same pattern reversed. The ear stitches them together as one
+  // wide industrial texture.
+  s("hh*8")
+    .jux(rev)
+    .gain(0.42).hpf(6000).shape(0.2)
+    .color("silver"),
+
+  // ── SUB BASS — pure sine, struct'd to a rhythm ────────────────
+  // .struct("x ~ x x ~ x ~ x") gates the sustained sub note into
+  // the rhythm pattern — a useful way to "play" sustained tones.
+  note("a1")
+    .sound("sine")
+    .struct("x ~ x x ~ x ~ x")
+    .gain(0.85)
+    .color("navy"),
+
+  // ── BASS DRONE — slow distorted under-layer ───────────────────
+  note("a2")
+    .sound("sawtooth")
+    .lpf(280).lpq(6)
+    .shape(0.4)
+    .attack(0.05).release(2)
+    .gain(0.45).pan(0.5)
+    .color("purple"),
+
+  // ── METAL HIT — single-stab industrial percussion ─────────────
+  s("rim").euclid(3, 8)
+    .shape(0.3).crush(6)
+    .gain(0.55).hpf(2500).pan(0.4)
+    .color("gray"),
+
+  // ── VOCAL STAB (faked via vowel-filtered saw) ─────────────────
+  // Vowel filter "a" on a short sawtooth ≈ pitched vocal-like chop.
+  note("e4 ~ ~ ~ ~ ~ ~ ~")
+    .sound("sawtooth").vowel("a")
+    .attack(0.005).decay(0.18).sustain(0.2).release(0.12)
+    .shape(0.3)
+    .lpf(2400).gain(0.5).pan(0.55).slow(2)
+    .color("yellow"),
+
+  // ── NOISE BUILD — every 4 cycles ──────────────────────────────
+  s("white*16")
+    .lpf(slider(2000, 200, 8000))
+    .gain("0.05 0.08 0.10 0.14")
+    .slow(4)
+    .color("white")
+)

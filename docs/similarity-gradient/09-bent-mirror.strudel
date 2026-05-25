@@ -1,0 +1,39 @@
+// Album: Similarity Gradient
+// Track: 09 — bent-mirror
+// Target similarity: 50/100
+// Actual similarity: 55.7/100
+// Similarity band: moderately similar
+// Concept: A mirror that is slightly bent — familiar palette refracts into asymmetric reflections.
+// Musical strategy: Take a normal melody and reflect it via .jux(rev) + add a non-tonic drone (b6 of the key).
+// Strudel focus: heavy .jux(rev), .off(), polymetric *3 vs *4 layers.
+// Visualisation: .pianoroll({ flipTime: true, cycles: 2 }) — flipped time visualises the "mirror" idea.
+
+setcpm(24)
+
+stack(
+
+  // Non-tonic drone — F# under a C minor track
+  note("fs1").sound("sine").attack(4).release(8).gain(0.36)
+    .color("indigo"),
+
+  // Forward melody
+  note("c4 eb4 g4 bb4 c5 d5 eb5 g5")
+    .sound("triangle").attack(0.003).release(0.25).lpf(3000)
+    .jux(rev)
+    .gain(0.38).pan(0.5).room(0.5)
+    .color("magenta")
+    .pianoroll({ flipTime: true, cycles: 2 }),
+
+  // Offset copy a 4th down, sometimes reversed
+  note("c4 eb4 g4 bb4 c5 d5 eb5 g5")
+    .add(-5).sound("triangle").attack(0.005).release(0.3).lpf(2600)
+    .off(0.25, x => x.rev())
+    .gain(0.26).pan(0.4).room(0.5)
+    .color("hotpink"),
+
+  // 3-vs-4 percussion
+  s("rim*3").gain(0.3).hpf(1600).room(0.2)
+    .color("orange"),
+  s("hh*4").gain(0.18).hpf(7400)
+    .color("yellow")
+)

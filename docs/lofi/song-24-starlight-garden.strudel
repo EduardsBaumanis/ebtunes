@@ -1,0 +1,86 @@
+// ══════════════════════════════════════════════════════════════
+// "Starlight Garden"
+// Lo-fi jazz — dreamy, ethereal, moonlit atmosphere
+//
+// Key:    A minor
+// Tempo:  ~69 BPM  (setcpm 34.5)
+// Chords: Am7 → Dm7 → G7 → Cmaj7   (i – iv – VII – III)
+// Feel:   Fireflies dancing, flowers glowing, night magic
+// ══════════════════════════════════════════════════════════════
+
+setcpm(24)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Very soft and ethereal. Almost subthreshold presence.
+  s("bd ~ ~ ~ ~ ~ bd ~")
+    .gain(0.82)
+    .lpf(2600),
+
+
+  // ── SNARE ────────────────────────────────────────────────────
+  // Brushed and distant. Lots of reverb.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.62)
+    .room(0.22),
+
+
+  // ── HI-HAT ───────────────────────────────────────────────────
+  // Minimal, swung triplets. Like crickets.
+  s("[hh [~ hh]]*4")
+    .gain(0.23)
+    .lpf(7900)
+    .room(0.12)
+    .pan(0.6),
+
+
+  // ── OPEN HI-HAT ──────────────────────────────────────────────
+  // Subtle star twinkles.
+  s("~ ~ ~ ~ ~ oh ~ oh")
+    .gain(0.39)
+    .pan(0.55),
+
+
+  // ── SLOW WALKING BASS ──────────────────────────────────────────
+  // Meditative jazz walking, very sparse.
+  //   Am7:   A  C  E  G
+  //   Dm7:   D  F  A  C
+  //   G7:    G  B  D  F
+  //   Cmaj7: C  E  G  B
+  note("a2 c3 e3 g3  d3 f3 a3 c4  g2 b2 d3 f3  c3 e3 g3 b3")
+    .sound("sawtooth")
+    .lpf(180)
+    .attack(0.015).decay(0.16).sustain(0.52).release(0.13)
+    .gain(0.67),
+
+
+  // ── ETHEREAL PAD ───────────────────────────────────────────────
+  // Slow, dreamy 7th chords. Like moonlight on water.
+  note("<[a2,c3,e3,g3] [d3,f3,a3,c4] [g2,b2,d3,f3] [c3,e3,g3,b3]>")
+    .sound("sawtooth")
+    .attack(0.14)
+    .release(0.7)
+    .lpf(1700)
+    .room(0.5)
+    .gain(0.19)
+    .pan(0.4)
+    .slow(4),
+
+
+  // ── DREAMY MELODY ─────────────────────────────────────────────
+  // A minor pentatonic: A  C  D  E  G
+  // Ethereal, floating above the chords. Sparse.
+  note("e5 ~ ~ g4 ~ c5 ~ ~  ~ ~ a4 ~ d5 ~ ~ e5")
+    .sound("triangle")
+    .attack(0.025)
+    .release(0.44)
+    .delay(0.38)
+    .delaytime(0.375)
+    .delayfeedback(0.3)
+    .room(0.54)
+    .gain(0.4)
+    .pan(0.51)
+    .slow(2)
+
+)

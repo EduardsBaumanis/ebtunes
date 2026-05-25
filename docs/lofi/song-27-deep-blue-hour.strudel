@@ -1,0 +1,68 @@
+// ══════════════════════════════════════════════════════════════
+// "Deep Blue Hour"
+// Lo-fi jazz — late afternoon, grey sky, still
+//
+// Key:    E minor
+// Tempo:  ~84 BPM  (setcpm 21)
+// Chords: Em7 – Am7 – Cmaj7 – Bm7   (i – iv – III – vi)
+// Feel:   Everything paused. Light changing but nothing moving.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(21)
+
+stack(
+
+  // ── KICK ──────────────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~")
+    .gain(0.76)
+    .lpf(2500),
+
+  // ── SNARE ─────────────────────────────────────────────────────
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.62)
+    .room(0.15),
+
+  // ── HI-HAT swing ─────────────────────────────────────────────
+  s("[hh [~ hh]]*4")
+    .gain(0.24)
+    .lpf(8000)
+    .degradeBy(0.12)
+    .room(0.08)
+    .pan(0.60),
+
+  // ── OPEN HAT — single lift ────────────────────────────────────
+  s("~ ~ ~ ~ ~ ~ ~ oh")
+    .gain(0.44)
+    .pan(0.56),
+
+  // ── WALKING BASS — Em7 Am7 Cmaj7 Bm7 ─────────────────────────
+  note("e2 g2 b2 d3  a2 c3 e3 g3  c2 e2 g2 b2  b2 d3 fs3 a3")
+    .sound("sawtooth")
+    .lpf(240)
+    .attack(0.008).decay(0.12).sustain(0.45).release(0.1)
+    .gain(0.64)
+    .slow(4),
+
+  // ── CHORD PAD ─────────────────────────────────────────────────
+  note("<[e3,g3,b3,d4] [a3,c4,e4,g4] [c4,e4,g4,b4] [b3,d4,fs4,a4]>")
+    .sound("sawtooth")
+    .attack(0.1).decay(0.35).sustain(0.55).release(0.6)
+    .lpf(2000)
+    .room(0.35)
+    .gain(0.22)
+    .pan(0.44)
+    .slow(2),
+
+  // ── MELODY — E minor pentatonic: E G A B D ───────────────────
+  note("b4 ~ ~ ~ g4 ~ ~ e4  ~ ~ d5 ~ ~ b4 ~ ~  ~ a4 ~ ~ g4 ~ ~ ~  e5 ~ ~ d5 ~ b4 ~ ~")
+    .sound("triangle")
+    .attack(0.012).decay(0.38).sustain(0.18).release(0.5)
+    .delay(0.3)
+    .delaytime(0.375)
+    .delayfeedback(0.2)
+    .room(0.52)
+    .gain(0.44)
+    .pan(0.5)
+    .slow(4)
+
+)

@@ -1,0 +1,42 @@
+// ══════════════════════════════════════════════════════════════
+// "Ribbon Cycle"
+// Extract a four-cycle window from a longer underlying pattern
+//
+// Key:    Eb major (long chord progression: Eb–Cm–Fm–Bb)
+// Tempo:  ~70 BPM  (setcpm 17.5)
+// Theory: Sub-pattern extraction. Imagine a 16-bar score; sometimes
+//         you only want to hear bars 5-8 looped. Ribbon takes a
+//         time slice without restarting the underlying pattern's
+//         clock — the rest of the patterns continue as if the
+//         whole score is playing.
+// Strudel: .ribbon(start, length) — start at cycle `start`,
+//          loop a `length`-cycle window. Useful for arrangements
+//          where each part is "in the middle" of a longer phrase.
+// Pack:   github:felixroos/dough-samples (piano).
+// ══════════════════════════════════════════════════════════════
+
+samples('github:felixroos/dough-samples')
+
+setcpm(17.5)
+
+stack(
+
+  // The full 16-step chord stream: Eb - Cm - Fm - Bb - Eb - Ab - Fm - Bb - ...
+  // .ribbon(2, 4) starts on cycle 2 and loops 4 cycles, so we hear
+  // the middle of this longer progression continuously.
+  note("<[eb3,g3,bb3,d4] [c3,eb3,g3,bb3] [f3,ab3,c4,eb4] [bb2,d3,f3,ab3] [eb3,g3,bb3,d4] [ab3,c4,eb4,g4] [f3,ab3,c4,eb4] [bb2,d3,f3,ab3]>")
+    .ribbon(2, 4)
+    .s("piano").attack(0.04).release(0.5).gain(0.5)
+    .room(0.4).pan(0.55),
+
+  // Bass — same trick, same window so the harmony aligns.
+  note("<eb2 c2 f2 bb1 eb2 ab1 f2 bb1>")
+    .ribbon(2, 4)
+    .s("piano").gain(0.6),
+
+  // Drums independent of the ribbon — march steadily underneath
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.6).lpf(220),
+  s("~ ~ sd ~ ~ ~ sd ~").gain(0.5).room(0.18),
+  s("hh*8").gain(0.28).hpf(5500).pan("0.4 0.6")
+
+)

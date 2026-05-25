@@ -1,0 +1,41 @@
+// Album: gardens of broken clocks
+// Track: 06 — seven-second-spring
+// Concept: A coiled spring that releases every seven seconds — a single explosive note, then silence, then spring again.
+// Musical idea: 7-step pattern with a single accented event ("release"), everything else .mask()ed silent.
+// Strudel focus: 7-beat loops via "x ~ ~ ~ ~ ~ ~" + a longer 7-vs-4 phase against the steady kick.
+// Visualisation: ._punchcard({ cycles: 4, labels: true }) — the 7-vs-4 phase becomes visually obvious.
+
+setcpm(28)
+
+stack(
+
+  // ── KICK in 4 — steady reference ─────────────────────────────
+  s("bd*4").gain(0.55).lpf(170).shape(0.1)
+    .color("crimson")
+    ._punchcard({ cycles: 4, labels: true }),
+
+  // ── SPRING RELEASE — single sawtooth blast every 7 steps ─────
+  note("a2")
+    .struct("x ~ ~ ~ ~ ~ ~")
+    .sound("sawtooth").lpf(1200).lpq(10).shape(0.35)
+    .attack(0.001).release(0.4)
+    .gain(0.65).pan(0.5).room(0.4)
+    .color("gold"),
+
+  // ── RING TAIL — bell after each release ──────────────────────
+  note("a5")
+    .struct("x ~ ~ ~ ~ ~ ~")
+    .sound("triangle").attack(0.005).release(3).lpf(3500)
+    .delay(0.5).delaytime(0.375).delayfeedback(0.5)
+    .gain(0.35).pan(0.55).room(0.7)
+    .color("ivory"),
+
+  // ── BACKGROUND DRONE ─────────────────────────────────────────
+  note("a1").sound("sine").attack(3).release(6).gain(0.38)
+    .color("darkgreen"),
+
+  // ── SHAKER — masked to only play in alternating cycles ───────
+  s("hh*8").gain(0.16).hpf(7400)
+    .mask("<1 0 1 0>")
+    .color("yellow")
+)

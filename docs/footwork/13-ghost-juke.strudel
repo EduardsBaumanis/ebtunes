@@ -1,0 +1,46 @@
+// Album: Footwork — Chicago Juke Codes
+// Track: 13 — ghost-juke
+// Genre: Footwork
+// Tempo / CPM: 156 BPM (setcpm 39)
+// Musical idea: Sparse, haunted — ghost-note 808 hits, single distant bell, big silences.
+// Strudel focus: .degradeBy(p) drops random hits = the ghost-note effect; long delays on bells fill the space.
+// Visualisation: .pianoroll({ cycles: 4, fold: true }) — long background visual reveals the haunted spacing.
+
+setcpm(39)
+
+stack(
+
+  // ── SUB ──────────────────────────────────────────────────────
+  note("g1").sound("sine").attack(3).release(6).gain(0.42)
+    .color("midnightblue"),
+
+  // ── 808 STAB — ghosted (50% silence) ─────────────────────────
+  note("<g1 ~ d2 ~  ~ ~ bb1 ~  c2 ~ ~ ~  ~ d2 ~ g1>")
+    .sound("sine").attack(0.001).release(0.28).shape(0.15)
+    .degradeBy(0.3)
+    .gain(0.88).pan(0.5)
+    .color("darkred")
+    .pianoroll({ cycles: 4, fold: true }),
+
+  // ── BELL — sparse, long delay ────────────────────────────────
+  note("<g5 ~ ~ ~  ~ ~ d6 ~  ~ ~ ~ ~  bb5 ~ ~ ~>")
+    .sound("triangle").attack(0.005).release(2).lpf(3500)
+    .delay(0.65).delaytime("3/8").delayfeedback(0.55)
+    .gain(0.35).pan(0.5).room(0.7).slow(2)
+    .color("ivory"),
+
+  // ── KICK — ghosted ───────────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~  bd ~ ~ bd  ~ ~ bd ~").gain(0.7).lpf(165).shape(0.16)
+    .degradeBy(0.25)
+    .color("crimson"),
+
+  // ── HAT — only sometimes ─────────────────────────────────────
+  s("hh*16").gain(0.18).hpf(7600)
+    .degradeBy(0.4)
+    .color("yellow"),
+
+  // ── CLAP — distant ───────────────────────────────────────────
+  s("~ ~ cp ~").gain(0.42).hpf(900).room(0.5)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.4)
+    .color("orange")
+)

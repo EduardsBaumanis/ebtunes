@@ -1,0 +1,44 @@
+// ══════════════════════════════════════════════════════════════
+// "Ply Pulses"
+// Multiply pattern density — turn one event into N rapid
+// repeats in the same time slot
+//
+// Key:    C minor
+// Tempo:  ~70 BPM  (setcpm 17.5)
+// Theory: Pulse multiplication. Reich, Riley, Glass all use
+//         this device: take a single sustained tone, subdivide
+//         its duration into N retrigerred attacks. The
+//         underlying note is the same — the texture is
+//         completely different.
+// Strudel: .ply(N) plays each event N times in the duration
+//          it would otherwise occupy. .ply("<2 3 4>") cycles
+//          the multiplier — perfect for "drumroll" builds.
+// Pack:   Default Dirt-Samples.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(17.5)
+
+stack(
+
+  // Bass — each note .ply'd to a different rate per bar
+  note("c2 g2 eb2 g2")
+    .ply("<1 2 3 4>")                // 1× then 2× then 3× then 4× pulses
+    .s("sawtooth").lpf(360).attack(0.005).release(0.18).gain(0.55),
+
+  // Chord pad — every chord gets a triplet pulse via .ply(3)
+  note("<[c3,eb3,g3,bb3] [ab2,c3,eb3,g3] [f2,ab2,c3,eb3] [g2,bb2,d3,f3]>")
+    .ply(3)
+    .s("sawtooth").lpf(1500).attack(0.04).release(0.25).gain(0.32)
+    .pan(0.45),
+
+  // Top melodic line — held against the pulsing harmony.
+  note("c5 ~ eb5 ~  bb4 ~ c5 ~  ab4 ~ bb4 ~  g4 ~ bb4 ~")
+    .s("triangle").attack(0.04).release(0.6).gain(0.45)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.25)
+    .room(0.5).pan(0.6)
+    .slow(2),
+
+  // Pulsing soft hat
+  s("hh").ply("<4 6 8 4>").gain(0.22).hpf(5500).pan("0.4 0.6")
+
+)

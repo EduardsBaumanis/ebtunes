@@ -1,0 +1,79 @@
+// ══════════════════════════════════════════════════════════════
+// "Runtime Reflections"
+// Programmer jazz — log output scrolling. Something working, finally.
+//
+// Key:    Ab major
+// Tempo:  ~92 BPM  (setcpm 23)
+// Chords: Abmaj7 – Fm7 – Dbmaj7 – Ebmaj7
+// Feel:   Green on black. The test suite passes. You lean back.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(23)
+
+stack(
+
+  // ── KICK ──────────────────────────────────────────────────────
+  s("bd ~ ~ ~ ~ bd ~ ~")
+    .gain(0.74)
+    .lpf(2900)
+    .shape(0.07),
+
+  // ── SNARE ─────────────────────────────────────────────────────
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.57)
+    .room(0.15)
+    .pan(0.52),
+
+  // ── HI-HAT swing ─────────────────────────────────────────────
+  s("[hh [~ hh]]*4")
+    .gain(0.23)
+    .lpf(9200)
+    .degradeBy(0.11)
+    .room(0.06)
+    .pan(0.61),
+
+  // ── OPEN HAT ─────────────────────────────────────────────────
+  s("~ ~ ~ ~ ~ ~ oh ~")
+    .gain(0.42)
+    .pan(0.54),
+
+  // ── WALKING BASS — Abmaj7 Fm7 Dbmaj7 Ebmaj7 ──────────────────
+  note("ab2 c3 eb3 g3  f2 ab2 c3 eb3  db2 f2 ab2 c3  eb2 g2 bb2 db3")
+    .sound("sawtooth")
+    .lpf(255)
+    .attack(0.007).decay(0.12).sustain(0.47).release(0.1)
+    .gain(0.67)
+    .slow(4),
+
+  // ── RHODES PAD ────────────────────────────────────────────────
+  note("<[ab3,c4,eb4,g4] [f3,ab3,c4,eb4] [db3,f3,ab3,c4] [eb3,g3,bb3,db4]>")
+    .sound("sawtooth")
+    .attack(0.09).decay(0.31).sustain(0.59).release(0.58)
+    .lpf(2150)
+    .phaser(0.18).phaserdepth(0.38).phaserrate(0.13)
+    .room(0.3)
+    .gain(0.23)
+    .pan(0.43)
+    .slow(2),
+
+  // ── UPPER EXTENSIONS ──────────────────────────────────────────
+  note("<[bb4,db5] [g4,c5] [f4,ab4] [bb4,eb5]>")
+    .sound("triangle")
+    .attack(0.19).sustain(0.63).release(0.9)
+    .lpf(3700)
+    .jux(x => x.lpf(1800).room(0.5))
+    .room(0.37)
+    .gain(0.13)
+    .pan(0.56),
+
+  // ── MELODY — Ab pentatonic: Ab Bb C Eb F ─────────────────────
+  note("eb5 ~ ~ ~ c5 ~ ab4 ~  ~ ~ ~ f4 ~ ~ ~ ~  ~ bb4 ~ ~ c5 ~ ~ eb5  ~ ~ ~ c5 ~ ab4 ~ ~")
+    .sound("triangle")
+    .attack(0.012).decay(0.42).sustain(0.21).release(0.56)
+    .delay(0.3).delaytime(0.375).delayfeedback(0.2)
+    .room(0.5)
+    .gain(0.44)
+    .pan(0.5)
+    .slow(4)
+
+)

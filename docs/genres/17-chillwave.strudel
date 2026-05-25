@@ -1,0 +1,80 @@
+// ══════════════════════════════════════════════════════════════
+// "Slow Sunset Loop"
+// Chillwave — Washed Out, Toro y Moi, Neon Indian
+//
+// Key:    A major (with passing minor iv for nostalgia)
+// Tempo:  82 BPM  (setcpm 20.5)
+// Chords: Amaj7 — F#m9 — Dm7 — E7sus4  (I — vi — iv minor borrow — V)
+// Feel:   Hazy sun-faded chords, tape-warble synth, big drum machine.
+//
+// THEORY NOTES
+//   Chillwave is the 2009-2012 wave of bedroom-pop electronics — slow
+//   tempos, washed-out reverb, layered analogue synth tones, often a
+//   slightly off-pitch lead that suggests aged tape. Harmonically it
+//   borrows from 80s soft-pop: maj7 home base, with chromatic borrow
+//   chords (modal interchange) for the wistful colour. Drums are
+//   often a soft drum machine — LinnDrum, DMX-style — with quantize
+//   slightly loosened.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(20.5)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Soft drum-machine kick on 1, with a soft lift on the &-of-3.
+  s("bd ~ ~ ~  ~ bd ~ ~")
+    .gain(0.75).lpf(180),
+
+  // ── SNARE ────────────────────────────────────────────────────
+  // Soft snare on 2 and 4 — very wet, gives that washed-out feel.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.6).hpf(240).room(0.45).size(0.75),
+
+  // ── HI-HAT ───────────────────────────────────────────────────
+  // Light 8ths with slight off-quantize (degradeBy adds the human
+  // feel chillwave producers like).
+  s("hh*8")
+    .gain(0.26).hpf(5800).degradeBy(0.1)
+    .pan("0.4 0.6"),
+
+  // ── OPEN HAT ─────────────────────────────────────────────────
+  // Once per bar — the "lift".
+  s("~ ~ ~ ~ ~ ~ oh ~")
+    .gain(0.36).hpf(4500),
+
+  // ── BASS ─────────────────────────────────────────────────────
+  // Round sub bass — root notes through the chord progression. Soft
+  // attack, long release for the floating chillwave bass.
+  note("<a1 fs1 d1 e1>")
+    .sound("sine").attack(0.04).release(0.7)
+    .gain(0.78).slow(2),
+
+  // ── WARM CHORD PAD ───────────────────────────────────────────
+  // Big sustained chords. Vowel filter "u" gives the warm "wow"
+  // character. Heavy reverb + size for the wide soundstage.
+  note("<[a3,cs4,e4,gs4] [fs3,a3,cs4,e4,gs4] [d3,f3,a3,c4] [e3,a3,b3,d4]>")
+    .sound("sawtooth").attack(0.5).release(2.3)
+    .lpf(2200).vowel("u").gain(0.36).pan(0.45)
+    .room(0.55).size(0.8).slow(2),
+
+  // ── OFF-PITCH LEAD ───────────────────────────────────────────
+  // Triangle wave with mild vibrato — emulates the "warbly tape"
+  // synth lead. Sparse, contemplative phrasing.
+  note("e5 ~ ~ cs5  ~ gs4 ~ ~  fs5 ~ ~ d5  ~ a4 ~ ~  d5 ~ ~ f5  ~ ~ a5 ~  b4 ~ ~ d5  ~ e5 ~ ~")
+    .sound("triangle").attack(0.06).release(0.5)
+    .vib(2.5).vibmod(0.3)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.32)
+    .room(0.55).gain(0.42).pan(0.55).slow(2),
+
+  // ── DREAM SHIMMER ────────────────────────────────────────────
+  // High sine harmonics fade in and out — like an FM-synth shimmer.
+  note("<a6 ~ ~ ~  cs7 ~ ~ ~  a6 ~ ~ ~  e7 ~ ~ ~>")
+    .sound("sine").attack(1).release(2.5)
+    .gain(0.12).pan(0.5).slow(2),
+
+  // ── TAPE NOISE ───────────────────────────────────────────────
+  // Constant low-level noise floor — the cassette aesthetic.
+  s("hh*16").gain(0.05).hpf(6500).degradeBy(0.5)
+
+)

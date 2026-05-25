@@ -1,0 +1,86 @@
+// ══════════════════════════════════════════════════════════════
+// "Quiet Streets"
+// Lo-fi jazz — peaceful, urban solitude, late night walk
+//
+// Key:    G minor
+// Tempo:  ~74 BPM  (setcpm 37)
+// Chords: Gm7 → Cm7 → F7 → Bbmaj7   (i – iv – VII – III)
+// Feel:   Empty sidewalks, streetlights, the city sleeping
+// ══════════════════════════════════════════════════════════════
+
+setcpm(26)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Sparse and steady. Minimal presence on empty streets.
+  s("bd ~ ~ ~ bd ~ ~ ~")
+    .gain(0.83)
+    .lpf(3500),
+
+
+  // ── SNARE ────────────────────────────────────────────────────
+  // Soft, with gentle room reverb for urban decay feel.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.66)
+    .room(0.15),
+
+
+  // ── HI-HAT ───────────────────────────────────────────────────
+  // Triplet swing, very subtle and distant.
+  s("[hh [~ hh]]*4")
+    .gain(0.29)
+    .lpf(8200)
+    .room(0.1)
+    .pan(0.6),
+
+
+  // ── OPEN HI-HAT ──────────────────────────────────────────────
+  // Occasional shimmer reflecting street lights.
+  s("~ ~ ~ ~ ~ oh ~ ~")
+    .gain(0.43)
+    .pan(0.55),
+
+
+  // ── WALKING BASS ─────────────────────────────────────────────
+  // 4 notes per chord, jazz walking foundation.
+  //   Gm7:   G  Bb D  F
+  //   Cm7:   C  Eb G  Bb
+  //   F7:    F  A  C  Eb
+  //   Bbmaj7: Bb D  F  A
+  note("g2 bb2 d3 f3  c3 eb3 g3 bb3  f2 a2 c3 eb3  bb2 d3 f3 a3")
+    .sound("sawtooth")
+    .lpf(195)
+    .attack(0.009).decay(0.13).sustain(0.46).release(0.09)
+    .gain(0.65),
+
+
+  // ── RHODES PAD ────────────────────────────────────────────────
+  // Warm 7th chords. Slow attack for atmospheric quality.
+  note("<[g3,bb3,d4,f4] [c3,eb3,g3,bb3] [f3,a3,c4,eb4] [bb3,d4,f4,a4]>")
+    .sound("sawtooth")
+    .attack(0.075)
+    .release(0.48)
+    .lpf(2000)
+    .room(0.34)
+    .gain(0.25)
+    .pan(0.43)
+    .slow(2),
+
+
+  // ── MELODY ───────────────────────────────────────────────────
+  // G minor pentatonic: G  Bb C  D  F
+  // Contemplative and solitary. Sparse phrasing.
+  note("d5 ~ f5 ~ bb4 ~ g4 ~  ~ c5 ~ ~ d5 ~ f5 ~")
+    .sound("triangle")
+    .attack(0.016)
+    .release(0.33)
+    .delay(0.38)
+    .delaytime(0.375)
+    .delayfeedback(0.23)
+    .room(0.49)
+    .gain(0.47)
+    .pan(0.51)
+    .slow(2)
+
+)

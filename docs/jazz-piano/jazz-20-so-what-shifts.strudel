@@ -1,0 +1,42 @@
+// ══════════════════════════════════════════════════════════════
+// "So What Shifts"
+// Two-chord modal jazz — D Dorian alternating with Eb Dorian
+//
+// Key:    D Dorian (16 bars) → Eb Dorian (8 bars) → D Dorian
+// Tempo:  ~80 BPM ballad pace  (setcpm 20)
+// Chords: Dm11 — Dm11 — Ebm11 — Ebm11 — Dm11
+// Theory: The "So What" form: 16 bars in D minor, 8 in Eb minor,
+//         8 back to D minor (32-bar AABA where each A is just
+//         one chord). The shift up a half-step is dramatic
+//         because nothing else changes — same voicing transposed.
+//         "So What" voicing: stack 3 perfect 4ths + a major 3rd
+//         on top: D-G-C-F-A  (1-4-b7-b3-5 of D Dorian).
+//         McCoy Tyner / Bill Evans signature.
+// Feel:   Suspended motion. Time pauses, then nudges sideways.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(20)
+
+stack(
+
+  // ── BASS — single root per bar, light walk on bar 4 of cycle
+  // Section A1 (D Dorian): 4 bars D
+  // Section A2 (D Dorian): 4 bars D
+  // Section B  (Eb Dorian): 4 bars Eb
+  // Section A3 (D Dorian): 4 bars D
+  note("d2 ~ a2 ~  d2 ~ f2 ~  d2 ~ a2 ~  d2 ~ a2 c3  d2 ~ a2 ~  d2 ~ f2 ~  d2 ~ a2 ~  d2 ~ a2 c3  eb2 ~ bb2 ~  eb2 ~ gb2 ~  eb2 ~ bb2 ~  eb2 ~ bb2 db3  d2 ~ a2 ~  d2 ~ f2 ~  d2 ~ a2 ~  d2 ~ ~ ~")
+    .s("piano").gain(0.58).attack(0.005),
+
+  // ── "SO WHAT" VOICING — answered call-and-response style ────
+  // Chord stab on beats 2 and 4 (the lift), root sits underneath.
+  // D Dorian voicing:  D G C F A    (left: D-G-C, right: F-A)
+  // Eb Dorian voicing: Eb Ab Db Gb Bb (same shape transposed up)
+  note("~ [d3,g3,c4,f4,a4] ~ [d3,g3,c4,f4,a4]  ~ [d3,g3,c4,f4,a4] ~ [d3,g3,c4,f4,a4]  ~ [d3,g3,c4,f4,a4] ~ [d3,g3,c4,f4,a4]  ~ [d3,g3,c4,f4,a4] ~ [d3,g3,c4,f4,a4]  ~ [d3,g3,c4,f4,a4] ~ [d3,g3,c4,f4,a4]  ~ [d3,g3,c4,f4,a4] ~ [d3,g3,c4,f4,a4]  ~ [d3,g3,c4,f4,a4] ~ [d3,g3,c4,f4,a4]  ~ [d3,g3,c4,f4,a4] ~ [d3,g3,c4,f4,a4]  ~ [eb3,ab3,db4,gb4,bb4] ~ [eb3,ab3,db4,gb4,bb4]  ~ [eb3,ab3,db4,gb4,bb4] ~ [eb3,ab3,db4,gb4,bb4]  ~ [eb3,ab3,db4,gb4,bb4] ~ [eb3,ab3,db4,gb4,bb4]  ~ [eb3,ab3,db4,gb4,bb4] ~ [eb3,ab3,db4,gb4,bb4]  ~ [d3,g3,c4,f4,a4] ~ [d3,g3,c4,f4,a4]  ~ [d3,g3,c4,f4,a4] ~ [d3,g3,c4,f4,a4]  ~ [d3,g3,c4,f4,a4] ~ [d3,g3,c4,f4,a4]  ~ [d3,g3,c4,f4,a4] ~ [d3,g3,c4,f4,a4]")
+    .s("piano").attack(0.04).release(0.45).gain(0.4),
+
+  // ── MELODIC IMPROV — D Dorian / Eb Dorian, mostly stepwise ──
+  // Long phrases, occasional 4th leaps to echo the voicing.
+  note("a4 ~ c5 d5  ~ e5 d5 c5  a4 ~ g4 e4  d4 ~ ~ ~  d5 a5 g5 e5  ~ d5 c5 a4  c5 d5 e5 g5  a5 ~ ~ ~  bb4 ~ db5 eb5  ~ f5 eb5 db5  bb4 ~ ab4 f4  eb4 ~ ~ ~  a4 c5 d5 f5  ~ e5 d5 c5  d5 ~ a4 ~  ~ ~ ~ ~")
+    .s("piano").attack(0.005).release(0.4).gain(0.5).slow(2)
+
+)

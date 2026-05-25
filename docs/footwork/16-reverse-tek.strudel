@@ -1,0 +1,43 @@
+// Album: Footwork — Chicago Juke Codes
+// Track: 16 — reverse-tek
+// Genre: Footwork
+// Tempo / CPM: 160 BPM (setcpm 40)
+// Musical idea: Whole tracks of reversed cymbal sweeps + .jux(rev) stereo motion = juke build-and-release.
+// Strudel focus: speed(-1) on a cymbal + .every(2, rev) on the kick = "anticipation" sound.
+// Visualisation: ._punchcard({ cycles: 2, flipTime: true }) — flipped time matches the reversal aesthetic.
+
+setcpm(40)
+
+stack(
+
+  // ── 808 ──────────────────────────────────────────────────────
+  note("<eb2 ~ bb1 ~  c2 ~ ~ eb2  ~ f2 ~ ~  bb1 ~ eb2 ~>")
+    .sound("sine").attack(0.001).release(0.28).shape(0.16)
+    .gain(0.88).pan(0.5)
+    .color("darkred"),
+
+  // ── REVERSED CYMBAL — anticipation builds ────────────────────
+  s("cy").speed(-1).gain(0.42).hpf(2000).room(0.5).slow(2)
+    .color("ivory"),
+
+  // ── KICK — reversed every 2 cycles + punchcard ───────────────
+  s("bd ~ ~ bd  ~ bd ~ ~  bd ~ ~ bd  ~ ~ bd ~").gain(0.8).lpf(165).shape(0.18)
+    .every(2, rev)
+    .color("crimson")
+    ._punchcard({ cycles: 2, flipTime: true }),
+
+  // ── HAT — jux'd (right channel reversed) ─────────────────────
+  s("hh*16").gain("0.24 0.14").hpf(7400)
+    .jux(rev)
+    .color("yellow"),
+
+  // ── TRIPLET HAT ──────────────────────────────────────────────
+  s("hh*12").gain(0.13).hpf(8200)
+    .every(4, rev)
+    .color("gold"),
+
+  // ── CLAP — reverse on cycle 3 ────────────────────────────────
+  s("~ ~ cp ~  ~ ~ ~ cp").gain(0.5).hpf(900).room(0.25)
+    .every(3, rev)
+    .color("orange")
+)

@@ -1,0 +1,39 @@
+// Album: gardens of broken clocks
+// Track: 09 — iron-iris
+// Concept: A camera-shutter clockwork iris, made of iron petals, opens and closes in microscopic time.
+// Musical idea: Filter "iris" opens (cutoff sweeps up) and closes (sweeps down) on a sine.range() controlled by slow().
+// Strudel focus: lpf(sine.range()) for breath-like filter envelope across all melodic layers.
+// Visualisation: .punchcard({ cycles: 2 }) on the heartbeat kick to anchor the otherwise-floating filter motion.
+
+setcpm(24)
+
+stack(
+
+  // ── SUB ──────────────────────────────────────────────────────
+  note("a1").sound("sine").attack(2).release(5).gain(0.42)
+    .color("darkgreen"),
+
+  // ── KICK — slow heartbeat + punchcard ────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.55).lpf(170).shape(0.1)
+    .color("crimson")
+    .punchcard({ cycles: 2 }),
+
+  // ── IRON SEQ — iris-breath filter sweep ──────────────────────
+  note("[a3,c4,e4,g4]")
+    .arp("0 1 2 3 2 1 0 1")
+    .sound("sawtooth")
+    .lpf(sine.range(500, 3200).slow(8)).lpq(9)
+    .attack(0.005).release(0.18)
+    .gain(0.4).pan(0.5).room(0.4)
+    .color("steelblue"),
+
+  // ── METALLIC PETAL CHIME ─────────────────────────────────────
+  note("e5 ~ ~ g5  ~ a5 ~ ~  c6 ~ b5 ~  ~ ~ a5 ~")
+    .sound("triangle").attack(0.001).release(0.4).lpf(4000)
+    .gain(0.28).pan(0.55).room(0.5)
+    .color("silver"),
+
+  // ── HAT — quiet ──────────────────────────────────────────────
+  s("hh*8").gain(0.16).hpf(7400)
+    .color("yellow")
+)

@@ -1,0 +1,43 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 13 — piano-house-cross
+// Genre: UK Garage / piano-house cross
+// Tempo / CPM: 132 BPM (setcpm 33)
+// Musical idea: Italo/piano-house chord-stab energy collides with 2-step drums.
+// Strudel focus: bright triangle piano chord stabs with .struct() on syncopated positions.
+// Visualisation: ._pianoroll({ cycles: 2, labels: true }) on the piano stabs.
+
+setcpm(33)
+
+stack(
+
+  note("a1").sound("sine").attack(2).release(5).gain(0.42)
+    .color("midnightblue"),
+
+  // ── 2-STEP KICK ──────────────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~").gain(0.82).lpf(170).shape(0.13)
+    .color("crimson"),
+
+  // ── SNARE off-beat ───────────────────────────────────────────
+  s("~ ~ sd ~  ~ ~ ~ ~").gain(0.55).hpf(900).room(0.2)
+    .color("orange"),
+
+  // ── HATS shuffled ────────────────────────────────────────────
+  s("hh*16").swingBy(0.4, 2)
+    .gain("0.28 0.14 0.22 0.16").hpf(7300)
+    .color("yellow"),
+
+  // ── PIANO STABS — Am9 → D7 → Gmaj7 → Cmaj7 + pianoroll ───────
+  note("<[a3,c4,e4,g4,b4] [d3,fs3,a3,c4] [g3,b3,d4,fs4] [c4,e4,g4,b4]>")
+    .sound("triangle").attack(0.005).release(0.18).lpf(3000)
+    .struct("x ~ x ~ ~ x ~ x")
+    .gain(0.4).pan(0.55).room(0.35)
+    .color("gold")
+    ._pianoroll({ cycles: 2, labels: true }),
+
+  // ── SUB ──────────────────────────────────────────────────────
+  note("<a1 d2 g1 c2>")
+    .sound("sine").attack(0.005).release(0.4)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.72).pan(0.5)
+    .color("navy")
+)

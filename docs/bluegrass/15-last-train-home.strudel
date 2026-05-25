@@ -1,0 +1,67 @@
+// ══════════════════════════════════════════════════════════════
+// "Last Train Home"
+// Track 15 of 15 · Bluegrass — the closer
+//
+// Key:    D major
+// Tempo:  112 BPM  (setcpm 28)
+// Mood:   The album's farewell. Train rhythm, but slower, softer.
+//         Three-part harmony riding out into the distance.
+//
+// VOCAL TECHNIQUE
+//   Full bluegrass sound: tight three-part harmony lead/tenor/
+//   baritone over boom-chuck, banjo roll, dobro slide, fiddle
+//   answers. Everything we built across the album, brought home.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(28)
+
+stack(
+
+  // ── BASS — chugging quarters ─────────────────────────────────
+  note("<d2 a2 d2 a2  g2 d3 a2 d3  b2 fs3 a2 e3  d2 a2 d3 a2>")
+    .sound("sine").attack(0.005).release(0.4).lpf(230)
+    .gain(0.65).pan(0.45)
+    .color("saddlebrown"),
+
+  // ── MANDOLIN CHOP ────────────────────────────────────────────
+  note("<[d4,fs4,a4] [g3,b3,d4] [a3,cs4,e4] [d4,fs4,a4]>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.003).release(0.07).lpf(2700).hpf(800).lpq(6)
+    .struct("~ x ~ x ~ x ~ x").gain(0.4).pan(0.6)
+    .color("forestgreen"),
+
+  // ── BANJO — gentle train roll ────────────────────────────────
+  note("d4 fs4 a4 fs4  g4 b4 d5 b4  a4 cs5 e5 cs5  d4 fs4 a4 fs4")
+    .sound("triangle").attack(0.003).release(0.1).lpf(3200)
+    .gain(0.34).pan(0.35).room(0.2)
+    .color("goldenrod"),
+
+  // ── LEAD VOCAL ───────────────────────────────────────────────
+
+  // ── TENOR — 3rd above ────────────────────────────────────────
+  note("<[fs5 a5 d6 a5  g5 fs5 a5 d6]  [b5 a5 g5 fs5  e5 fs5 cs5 ~]>")
+    .sound("sawtooth").vowel("e")
+    .attack(0.12).release(0.6).lpf(2700)
+    .gain(0.34).pan(0.65).room(0.45)
+    .color("orange"),
+
+  // ── BARITONE — 3rd below ─────────────────────────────────────
+  note("<[a4 cs5 fs5 cs5  b4 a4 cs5 fs5]  [d5 cs5 b4 a4  g4 a4 e4 ~]>")
+    .sound("sawtooth").vowel("o")
+    .attack(0.12).release(0.6).lpf(2000)
+    .gain(0.34).pan(0.35).room(0.45)
+    .color("indigo"),
+
+  // ── DOBRO — farewell slide ───────────────────────────────────
+  note("<~ ~ ~ ~  ~ ~ ~ ~  ~ ~ ~ ~  d6 ~ ~ ~>")
+    .sound("sawtooth").vowel("e")
+    .attack(0.3).release(2.5).lpf(3200).lpq(4)
+    .gain(0.34).pan(0.55).room(0.55).delay(0.4).delaytime(0.5).delayfeedback(0.3)
+    .color("gold"),
+
+  // ── KICK + soft snare ────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.4).lpf(175)
+    .color("dimgray"),
+  s("sd*8").gain(0.1).hpf(1800).pan(rand)
+    .color("dimgray")
+)

@@ -1,0 +1,39 @@
+// Album: Similarity Gradient
+// Track: 07 — half-familiar
+// Target similarity: 60/100
+// Actual similarity: 75.9/100
+// Similarity band: close to existing style
+// Concept: Half-familiar — repo's drum kit but the harmony is built from open fifths only (parallel organum lean).
+// Musical strategy: Familiar drums, generative open-fifth pads via .add(7) on a melodic line.
+// Strudel focus: .off() copy for the parallel-fifth voice; .every() rev variation.
+// Visualisation: ._pianoroll({ cycles: 4, vertical: true }) — vertical reads the parallel-5th texture.
+
+setcpm(22)
+
+stack(
+
+  note("a1").sound("sine").attack(3).release(6).gain(0.4)
+    .color("midnightblue"),
+
+  // Solo melodic line
+  note("a3 c4 d4 e4  g4 e4 d4 c4")
+    .sound("triangle").attack(0.005).release(0.4).lpf(2900)
+    .delay(0.3).delaytime(0.375).delayfeedback(0.3)
+    .gain(0.4).pan(0.45).room(0.5)
+    .every(4, rev)
+    .color("gold")
+    ._pianoroll({ cycles: 4, vertical: true }),
+
+  // Parallel fifth above via .off()
+  note("a3 c4 d4 e4  g4 e4 d4 c4")
+    .add(7)
+    .sound("triangle").attack(0.005).release(0.45).lpf(2700)
+    .gain(0.32).pan(0.6).room(0.55)
+    .color("ivory"),
+
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.55).lpf(170).shape(0.1)
+    .color("crimson"),
+
+  s("~ rim ~ rim").gain(0.32).hpf(1600).room(0.2)
+    .color("orange")
+)

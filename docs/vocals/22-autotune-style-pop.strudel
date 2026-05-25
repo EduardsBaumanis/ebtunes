@@ -1,0 +1,79 @@
+// ══════════════════════════════════════════════════════════════
+// "Autotune Style Pop"
+// Pop — quantized pitches on a vowel synth = "autotune" feel
+//
+// Key:    C major
+// Tempo:  104 BPM  (setcpm 26)
+// Genre:  Pop / autotuned-vocal hook
+//
+// VOCAL TECHNIQUE
+//   Strictly quantized melody on a vowel-filtered synth — every
+//   note snaps perfectly to the C major scale. Combined with no
+//   vibrato and sharp attack, this is the AUTOTUNE-HARD aesthetic
+//   (T-Pain, Cher's "Believe", Travis Scott).
+// ══════════════════════════════════════════════════════════════
+
+setcpm(26)
+
+stack(
+
+  // ── KICK ──────────────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.85).lpf(180).shape(0.12)
+    .color("crimson"),
+
+  // ── CLAP ──────────────────────────────────────────────────────
+  s("~ cp ~ cp").gain(0.62).hpf(280).room(0.22)
+    .color("orange"),
+
+  // ── HAT ───────────────────────────────────────────────────────
+  s("hh*16").gain("0.28 0.20 0.30 0.22").hpf(5800)
+    .color("yellow"),
+
+  // ── BASS ──────────────────────────────────────────────────────
+  note("c2 ~ g2 ~  a1 ~ e2 ~")
+    .sound("sawtooth").lpf(380).lpq(3)
+    .attack(0.005).release(0.18).gain(0.7)
+    .color("navy"),
+
+  // ── AUTOTUNE VOCAL — quantized to scale, NO vibrato ───────────
+  // The autotune aesthetic: ZERO pitch wobble, perfectly straight
+  // attacks, vowel-filtered so it reads as a voice. Notes locked
+  // to C major degrees via .scale().
+  note("0 ~ 2 ~  4 ~ 5 ~  7 ~ 5 4  2 ~ 0 ~")
+    .scale("C:major")
+    .add("<0 0 0 0  0 0 7 0>")    // jump up an octave on bar 7
+    .sound("sawtooth")
+    .vowel("e")
+    .attack(0.005).release(0.25)
+    .lpf(3200).gain(0.55).pan(0.5)
+    .room(0.3).slow(2)
+    .color("hotpink"),
+
+  // ── HARMONY VOICE — third above the lead ──────────────────────
+  note("2 ~ 4 ~  6 ~ 7 ~  9 ~ 7 6  4 ~ 2 ~")
+    .scale("C:major")
+    .sound("sawtooth").vowel("a")
+    .attack(0.005).release(0.25)
+    .lpf(3200).gain(0.4).pan(0.45).slow(2)
+    .color("magenta"),
+
+  // ── 808 SUB ───────────────────────────────────────────────────
+  note("c1").sound("sine")
+    .struct("x ~ x ~ x x ~ x").gain(0.85)
+    .color("midnightblue"),
+
+  // ── RHODES CHORDS ─────────────────────────────────────────────
+  note("<[c4,e4,g4,b4] [a3,c4,e4,g4] [f3,a3,c4,e4] [g3,b3,d4,f4]>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.04).release(0.5).lpf(2400)
+    .gain(0.32).pan(0.4).room(0.22).slow(2)
+    .color("teal"),
+
+  // ── BELL ──────────────────────────────────────────────────────
+  note("c6 ~ ~ ~ ~ ~ g5 ~")
+    .sound("triangle").attack(0.005).release(0.4)
+    .delay(0.4).delaytime(0.375).delayfeedback(0.3)
+    .gain(0.32).pan(0.55).slow(2)
+    .color("white")
+
+)

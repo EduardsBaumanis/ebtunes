@@ -1,0 +1,102 @@
+// ══════════════════════════════════════════════════════════════
+// "Café Crème"
+// Lo-fi jazz — warm, bright, unhurried Saturday morning
+//
+// Key:    G major
+// Tempo:  ~78 BPM  (setcpm 39)
+// Chords: Gmaj7 → Em7 → Am7 → D7   (I – vi – ii – V)
+// Feel:   Morning light through café windows, coffee going warm,
+//         no plans, no rush
+//
+// THEORY NOTE — The I–vi–ii–V:
+//   This is arguably the most used progression in all of jazz.
+//   It appears in hundreds of standards: "Autumn Leaves",
+//   "Fly Me To The Moon", "All Of Me".
+//   I (Gmaj7) = home. vi (Em7) = gentle departure, related minor.
+//   ii (Am7) = building tension. V (D7) = strong pull home.
+//   The V7 chord is called the "dominant" — its tritone interval
+//   (F# and C in D7) creates a powerful desire to resolve to G.
+//
+// RHYTHM NOTE — jazz bossa feel:
+//   This song uses a slightly bouncy, bossa-influenced rhythm.
+//   The kick anticipates beat 3 slightly, creating a forward lean.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(27)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Bossa-influenced: hits on beat 1, and anticipates beat 3.
+  // The second kick slightly early gives it a "leaning forward" feel.
+  s("bd ~ ~ ~ [~ bd] ~ ~ ~")
+    .gain(0.78)
+    .lpf(4000),
+
+
+  // ── BRUSHED SNARE / RIM ──────────────────────────────────────
+  // Alternating snare and rimshot — the light, brushy backbeat
+  // of bossa and jazz-hop. Never harsh, always polite.
+  s("~ ~ <sd rim> ~ ~ ~ <sd rim> ~")
+    .gain(0.62)
+    .room(0.16),
+
+
+  // ── HI-HAT ───────────────────────────────────────────────────
+  // Swung 8th notes. The swing (triplet feel) is what separates
+  // jazz from straight dance music.
+  s("[hh [~ hh]]*4")
+    .gain(0.3)
+    .hpf(5200)
+    .room(0.09)
+    .pan(0.6),
+
+
+  // ── BASS (bouncy, jazz-hop) ───────────────────────────────────
+  // More rhythmic than walking bass — shorter notes, slight bounce.
+  // Follows chord roots: G, E, A, D
+  // Gmaj7: G  D (5th, leaping)
+  // Em7:   E  B
+  // Am7:   A  E
+  // D7:    D  A  then chromatic approach to G (C#→back to G)
+  note("g2 ~ d3 ~ ~ ~  e2 ~ b2 ~ ~ ~  a2 ~ e3 ~ ~ ~  d2 ~ a2 ~ cs3 ~")
+    .sound("sawtooth")
+    .lpf(280)
+    .attack(0.006).decay(0.1).sustain(0.5).release(0.08)
+    .gain(0.6)
+    .slow(3),
+
+
+  // ── CHORD VOICINGS ───────────────────────────────────────────
+  // Gmaj7: G B D F# — the major 7th (F#) is warm and bright
+  // Em7:   E G B D  — same notes as Gmaj7 but rooted on E
+  // Am7:   A C E G  — minor 7th, slightly darker
+  // D7:    D F# A C — the tritone (F#↔C) creates tension → resolution
+  note("<[g3,b3,d4,fs4] [e4,g4,b4,d5] [a3,c4,e4,g4] [d4,fs4,a4,c5]>")
+    .sound("sawtooth")
+    .attack(0.05)
+    .release(0.4)
+    .lpf(2400)
+    .room(0.3)
+    .gain(0.3)
+    .pan(0.44)
+    .slow(2),
+
+
+  // ── MELODY (G major pentatonic: G A B D E) ───────────────────
+  // Bright and singable. Ends on the root G — fully resolved.
+  // Sine wave gives a gentle, glassy tone like a vibraphone.
+  // The triplet-feel delay (0.333) locks with the swing groove.
+  note("b4 ~ d5 ~ e5 d5 ~ b4  ~ a4 ~ ~ g4 ~ ~ b4")
+    .sound("sine")
+    .attack(0.018)
+    .release(0.3)
+    .delay(0.38)
+    .delaytime(0.333)
+    .delayfeedback(0.2)
+    .room(0.42)
+    .gain(0.5)
+    .pan(0.5)
+    .slow(2)
+
+)

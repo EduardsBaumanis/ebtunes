@@ -1,0 +1,81 @@
+// ══════════════════════════════════════════════════════════════
+// "Polymeter 7 and 5"
+// Math rock — Tortoise, Don Caballero, complex meters
+//
+// Key:    D Lydian (with chromatic colour)
+// Tempo:  108 BPM in 7/8 + 5/8 alternating  (setcpm 27)
+// Chords: Dmaj7 — Gmaj7#11 — Em7 — A7sus4
+// Feel:   Tapping guitar arpeggios, odd-meter drums, syncopated bass.
+//
+// THEORY NOTES
+//   Math rock (90s American post-hardcore offshoot — Don Caballero,
+//   Tortoise, Slint) is defined by ODD METERS (5/8, 7/8, 11/8),
+//   complex polyrhythms, and clean-toned tapping guitar arpeggios.
+//   Drums play around the meter — sometimes following, sometimes
+//   pushing against. Lydian and Lydian-augmented modes give the
+//   "open" math-rock harmonic colour. No traditional choruses;
+//   structure is through-composed.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(27)
+
+stack(
+
+  // ── DRUMS IN 7/8 + 5/8 ALTERNATING ───────────────────────────
+  // 12-step bar (7+5). Kick lands on the strong beats of each
+  // group, snare on the next-strongest. This is a polymetric pattern
+  // typical of math rock.
+  s("bd ~ ~ sd ~ ~ sd  bd ~ ~ sd ~")
+    .gain("0.9 0.85")
+    .lpf(180).shape(0.12),
+
+  // ── HI-HAT — 12 even subdivisions ────────────────────────────
+  // 12 hats per cycle — provides the consistent pulse over which
+  // the kick/snare polymeter sits.
+  s("hh*12")
+    .gain("0.32 0.22 0.30 0.34")
+    .hpf(5800),
+
+  // ── SNARE GHOST FILLS ────────────────────────────────────────
+  // Soft snare hits on weak positions for the syncopated math feel.
+  s("~ ~ sd ~ ~ ~ ~  ~ sd ~ ~ ~")
+    .gain(0.3).hpf(280).room(0.16),
+
+  // ── BASS ─────────────────────────────────────────────────────
+  // Syncopated bass in the same 7+5 meter, outlining the chord
+  // changes. Stays simple to leave room for the guitar.
+  note("d2 ~ a2 ~ d3 ~ a2  g2 ~ d3 ~ b2")
+    .sound("sawtooth").lpf(420).lpq(4)
+    .attack(0.005).decay(0.12).sustain(0.4).release(0.1)
+    .gain(0.72),
+
+  // ── TAPPING GUITAR — ARPEGGIATED PATTERN ─────────────────────
+  // Fast 16th-note arpeggios cycling chord tones. Clean tone
+  // (sawtooth with bright LPF, no distortion). Each chord gets a
+  // unique arpeggio shape.
+  note("d4 fs4 a4 cs5  fs4 a4 cs5 e5  d4 cs5 a4 fs4  cs5 a4 fs4 d4  g4 b4 d5 fs5  b4 d5 fs5 a5  e4 g4 b4 d5  a4 e4 g4 b4")
+    .sound("triangle").attack(0.005).decay(0.05).sustain(0.15).release(0.08)
+    .lpf(4000).gain(0.5).pan(0.5),
+
+  // ── COUNTERPOINT GUITAR ──────────────────────────────────────
+  // Second guitar line — moves in inversion against the first.
+  // Sparser, longer notes.
+  note("a3 ~ d4 ~  ~ cs4 ~ ~  ~ ~ a3 ~  fs3 ~ ~ ~  d4 ~ g3 ~  ~ b3 ~ ~  e4 ~ ~ d4  ~ a3 ~ ~")
+    .sound("triangle").attack(0.04).release(0.4)
+    .lpf(3000).gain(0.36).pan(0.4).slow(2),
+
+  // ── CHORD PAD ────────────────────────────────────────────────
+  // Sustained Lydian voicings underneath the arpeggios — gives the
+  // harmonic context for the math-rock complexity.
+  note("<[d3,fs3,a3,cs4,gs4] [g3,b3,d4,fs4,cs5] [e3,g3,b3,d4] [a3,d4,e4,g4]>")
+    .sound("sawtooth").attack(0.4).release(2)
+    .lpf(2000).gain(0.22).pan(0.45)
+    .room(0.32).slow(4),
+
+  // ── CRASH ON METER CHANGES ───────────────────────────────────
+  // Crash punctuates the start of each new measure.
+  s("cy*4")
+    .gain("0.32 0.12 0.20 0.12")
+    .hpf(7000)
+
+)

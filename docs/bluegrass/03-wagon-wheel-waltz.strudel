@@ -1,0 +1,40 @@
+// ══════════════════════════════════════════════════════════════
+// "Wagon Wheel Waltz"
+// Track 3 of 15 · Bluegrass
+//
+// Key:    G major
+// Tempo:  96 BPM in 3/4  (setcpm 24)
+// Form:   AABA waltz
+// Mood:   Slow waltz under the stars. Couples on the dance floor.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(24)
+
+stack(
+
+  // ── BASS — waltz pattern "1 2 3" → bass-chord-chord ──────────
+  note("<g2 d3 g3  c3 g3 e4  d3 a3 fs4  g2 d3 g3>")
+    .sound("sine").attack(0.005).release(0.4).lpf(240)
+    .gain(0.6).pan(0.45)
+    .color("saddlebrown"),
+
+  // ── GUITAR STRUM — beats 2 & 3 ───────────────────────────────
+  note("<[g3,b3,d4] [c4,e4,g4] [d4,fs4,a4] [g3,b3,d4]>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.005).release(0.25).lpf(2400)
+    .struct("~ x x").gain(0.36).pan(0.55).room(0.3)
+    .color("forestgreen"),
+
+  // ── HARMONY VOICE — third below ──────────────────────────────
+  note("<[b4 g4 ~  a4 fs4 ~  g4 fs4 d4  fs4 g4 ~]  [d4 fs4 g4  a4 b4 ~  g4 fs4 d4  c4 d4 ~]>")
+    .sound("sawtooth").vowel("o")
+    .attack(0.2).release(0.6).lpf(2000)
+    .gain(0.32).pan(0.45).room(0.4)
+    .color("indigo"),
+
+  // ── MANDOLIN tremolo — sustained, distant ────────────────────
+  note("<g5 ~ ~  e5 ~ ~  fs5 ~ ~  g5 ~ ~>")
+    .sound("triangle").attack(0.05).release(0.7).lpf(3000)
+    .gain(0.22).pan(0.6).room(0.5).slow(2)
+    .color("goldenrod")
+)

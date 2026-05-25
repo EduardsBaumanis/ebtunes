@@ -1,0 +1,57 @@
+// Album: Amapiano — South African House Codes
+// Track: 11 — vocal-chop-flutter
+// Genre: Amapiano
+// Tempo / CPM: 112 BPM (setcpm 28)
+// Musical idea: Vocal-chop hook stuttering across the bar — that "aaa-a-aaaa" yano signature.
+// Strudel focus: Vocal formant on a sawtooth + .ply() stutters + .every(4, rev) creates micro-mutations.
+// Visualisation: ._pianoroll({ cycles: 2, labels: true }) on the chop line so each "ah" syllable is visible.
+
+setcpm(28)
+
+stack(
+
+  note("a1").sound("sine").attack(2).release(5).gain(0.4)
+    .color("midnightblue"),
+
+  // ── VOCAL CHOP — "ah / oh / eh" via vowel + stutters ─────────
+  note("a4 a4 c5 a4  e5 c5 a4 e5")
+    .sound("sawtooth").vowel("a")
+    .attack(0.005).release(0.13).lpf(2600).lpq(4)
+    .ply("1 1 2 1  1 3 1 1")
+    .every(4, rev)
+    .gain(0.42).pan(0.55).room(0.4)
+    .color("magenta")
+    ._pianoroll({ cycles: 2, labels: true }),
+
+  // ── HARMONY VOCAL — third below, different vowel ─────────────
+  note("c5 c5 e5 c5  g5 e5 c5 g5")
+    .add(-3)
+    .sound("sawtooth").vowel("o")
+    .attack(0.005).release(0.13).lpf(2200)
+    .ply("1 1 2 1  1 3 1 1")
+    .gain(0.3).pan(0.4).room(0.45)
+    .degradeBy(0.2)
+    .color("hotpink"),
+
+  // ── PIANO BED ────────────────────────────────────────────────
+  note("<[a3,c4,e4,g4] [f3,a3,c4,e4] [d3,f3,a3,c4] [e3,g3,b3,d4]>")
+    .sound("triangle").attack(0.005).release(0.5).lpf(2400)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.32).pan(0.5).room(0.5)
+    .color("gold"),
+
+  // ── LOG DRUM ─────────────────────────────────────────────────
+  note("<a2 e2 d2 g2>")
+    .sound("sine").attack(0.001).release(0.2).shape(0.18).lpf(420)
+    .struct("x ~ x ~  ~ x ~ x")
+    .gain(0.8).pan(0.5)
+    .color("saddlebrown"),
+
+  // ── SHAKER + RIM + KICK ──────────────────────────────────────
+  s("hh*16").gain("0.16 0.10").hpf(7300)
+    .color("yellow"),
+  s("~ rim ~ rim").gain(0.4).hpf(1500).room(0.2)
+    .color("orange"),
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.5).lpf(160).shape(0.1)
+    .color("crimson")
+)

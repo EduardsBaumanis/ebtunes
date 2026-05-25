@@ -1,0 +1,45 @@
+// ══════════════════════════════════════════════════════════════
+// "Polymetric Drift"
+// Track 2 of 20 · IDM
+//
+// Key:    D minor
+// Tempo:  132 BPM  (setcpm 33)
+// Mood:   5-against-4. Patterns slowly slide out of phase.
+//
+// STRUDEL TECHNIQUE
+//   Pattern lengths 5 and 4 over the same cycle = phasing.
+//   Squarepusher / Steve Reich. The downbeat moves under you.
+//
+// VISUALIZATION
+//   .pianoroll() — every note on a vertical grid as it plays.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(33)
+
+stack(
+
+  // ── KICK in 4 ────────────────────────────────────────────────
+  s("bd*4").gain(0.85).lpf(170).shape(0.12)
+    .color("crimson"),
+
+  // ── BASS in 3 ────────────────────────────────────────────────
+  note("d2 a1 f2")
+    .sound("sawtooth").lpf(550).shape(0.15)
+    .attack(0.005).release(0.18)
+    .gain(0.65).pan(0.5)
+    .color("navy"),
+
+  // ── MELODY in 5, with pianoroll visualizer ───────────────────
+  note("d4 f4 a4 g4 c5")
+    .sound("triangle").attack(0.005).release(0.32)
+    .lpf(3200).gain(0.4).pan(0.55).room(0.3)
+    .color("cyan")
+    .pianoroll(),
+
+  // ── PAD — slow 3-chord cycle holds it together ───────────────
+  note("<[d3,f3,a3] [a2,c3,e3] [bb2,d3,f3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(0.5).release(2).lpf(1800)
+    .gain(0.22).pan(0.5).room(0.45).slow(2)
+    .color("indigo")
+)

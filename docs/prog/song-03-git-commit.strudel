@@ -1,0 +1,115 @@
+// ══════════════════════════════════════════════════════════════
+// "Git Commit"
+// Decisive lo-fi funk — clean, purposeful, no merge conflicts
+//
+// Key:    F major (bright, confident — the "green build" key)
+// Tempo:  ~84 BPM  (setcpm 28)
+// Chords: Fmaj7 – Dm7 – Gm7 – C7   (I–vi–ii–V, major turn-around)
+// Feel:   Tests pass. Coverage 100%. Push to main. Lean back.
+// Chords: Fmaj7  Dm7  Gm7  C7
+// ══════════════════════════════════════════════════════════════
+
+setcpm(28)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // "Four on the floor" skeleton with a ghost note on the "and of 4".
+  // [bd ~] = kick on 1 then immediate rest. Punchy not boomy.
+  // Straight, no swing — this track is disciplined.
+  s("bd ~ ~ ~ bd ~ bd ~")
+    .gain(0.82)
+    .lpf(3500)
+    .shape(0.06),
+
+  // ── SNARE ────────────────────────────────────────────────────
+  // Clean backbeat. every(4, ...) = every 4th bar the snare gets
+  // a slight room tail — creates a subtle structural accent.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.65)
+    .every(4, x => x.room(0.2).gain(0.78))
+    .pan(0.52),
+
+  // ── HI-HAT (16ths with dynamic variation) ────────────────────
+  // Straight 16ths. every(2, x => x.gain(0.12)) = every other bar
+  // the hats drop to 12% gain — automatic variation like a good drummer.
+  // hpf(8000) = very bright and airy, sits above everything.
+  s("hh*8")
+    .gain(0.22)
+    .hpf(8000)
+    .every(2, x => x.gain(0.12))
+    .pan(0.62),
+
+  // ── CLAP ACCENT ──────────────────────────────────────────────
+  // Clap on 2 and 4, panned slightly left (opposite to hats).
+  // Fills the 3D space between the left clap and right hat.
+  s("~ cp ~ ~ ~ cp ~ ~")
+    .gain(0.48)
+    .room(0.08)
+    .pan(0.38),
+
+  // ── BASS (confident, stepping) ───────────────────────────────
+  // F major bass: root-5th-root-octave pattern.
+  // The 5th (C below F) gives confidence. No 7ths in bass = clear.
+  // off(1/8, x => ...) = ghost note 1/8th later, adds groove.
+  note("f2 c3 f2 f3  d2 a2 d2 d3  g2 d3 g2 g3  c2 g2 c2 c3")
+    .sound("sawtooth")
+    .lpf(320)
+    .attack(0.005)
+    .decay(0.1)
+    .sustain(0.55)
+    .release(0.08)
+    .off(1/8, x => x.gain(0.18).lpf(500))
+    .gain(0.70)
+    .slow(4),
+
+  // ── FUNKY CHORD STAB ─────────────────────────────────────────
+  // Short attacks create "stab" feel — more funk, less soak.
+  // attack(0.005) + release(0.15) = percussive chord stabs.
+  // Stabs on the "and of 2" — classic funk syncopation.
+  // every(3, x => x.vowel("a")) = occasional vowel filter sweep.
+  note("<~ [f4,a4,c5,e5] ~ ~  ~ [d4,f4,a4,c5] ~ ~>")
+    .sound("sawtooth")
+    .attack(0.005)
+    .decay(0.2)
+    .sustain(0.3)
+    .release(0.15)
+    .lpf(3000)
+    .every(3, x => x.vowel("a"))
+    .room(0.12)
+    .gain(0.30)
+    .pan(0.45)
+    .slow(2),
+
+  // ── CHORD PAD (smooth backing) ────────────────────────────────
+  // Underneath the stabs — a smooth, sustained version of the same
+  // chords at much lower gain. Fills the gaps between stabs.
+  note("<[f4,a4,c5,e5] [d4,f4,a4,c5] [g4,bb4,d5,f5] [c4,e4,g4,bb4]>")
+    .sound("triangle")
+    .attack(0.15)
+    .sustain(0.7)
+    .release(0.8)
+    .lpf(2800)
+    .room(0.35)
+    .gain(0.14)
+    .pan(0.55),
+
+  // ── MELODY (F major: F G A Bb C D E) ─────────────────────────
+  // Clean, stepwise lines — reflects the clean code aesthetic.
+  // No giant leaps. Just moves from note to note like refactoring:
+  // one small improvement at a time, all in the right direction.
+  note("~ ~ c5 ~ a4 ~ ~ f4  ~ g4 ~ ~ bb4 ~ ~ ~  d5 ~ ~ c5 ~ a4 ~ ~  ~ e5 ~ d5 ~ ~ c5 ~")
+    .sound("triangle")
+    .attack(0.008)
+    .decay(0.3)
+    .sustain(0.3)
+    .release(0.45)
+    .delay(0.28)
+    .delaytime(0.25)
+    .delayfeedback(0.18)
+    .room(0.42)
+    .gain(0.42)
+    .pan(0.5)
+    .slow(4)
+
+)

@@ -1,0 +1,37 @@
+// Album: gardens of broken clocks
+// Track: 25 — paused-twilight
+// Concept: A single moment of twilight held forever — like a film frozen on its most beautiful frame.
+// Musical idea: One slow chord, one slow melody, one slow bell — nothing in a hurry, everything sustained.
+// Strudel focus: long .attack() + long .release() on every layer = "frozen-frame" perception of time.
+// Visualisation: .pianoroll({ cycles: 8 }) — long visual frame matches the frozen-time concept.
+
+setcpm(12)
+
+stack(
+
+  note("d1").sound("sine").attack(8).release(12).gain(0.45)
+    .color("midnightblue"),
+
+  // ── TWILIGHT PAD — Dmaj9 → A6 ────────────────────────────────
+  note("<[d3,fs3,a3,cs4,e4] [a2,cs3,e3,fs3,a3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(6).release(10).lpf(2200)
+    .gain(0.4).pan(0.5).room(0.8).slow(4)
+    .color("indigo")
+    .pianoroll({ cycles: 8 }),
+
+  // ── HIGH MELODY — single note per long phrase ────────────────
+  note("<fs5 ~ ~ ~  ~ ~ ~ ~  cs5 ~ ~ ~  ~ ~ a5 ~>")
+    .sound("triangle").attack(0.05).release(4).lpf(3200)
+    .delay(0.55).delaytime(0.75).delayfeedback(0.5)
+    .gain(0.36).pan(0.55).room(0.8).slow(2)
+    .color("orange"),
+
+  // ── DISTANT BELL ─────────────────────────────────────────────
+  note("d6")
+    .struct("x ~ ~ ~ ~ ~ ~ ~")
+    .sound("triangle").attack(0.005).release(6).lpf(4000)
+    .delay(0.7).delaytime(1).delayfeedback(0.6)
+    .gain(0.32).pan(0.5).room(0.85).slow(4)
+    .color("ivory")
+)

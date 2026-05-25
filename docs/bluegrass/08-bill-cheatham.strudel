@@ -1,0 +1,44 @@
+// ══════════════════════════════════════════════════════════════
+// "Bill Cheatham"
+// Track 8 of 15 · Bluegrass
+//
+// Key:    A major
+// Tempo:  136 BPM  (setcpm 34)
+// Form:   AABB fiddle tune standard
+// Mood:   Standard contest piece. Confident, bright, square.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(34)
+
+stack(
+
+  // ── BASS — root/fifth ────────────────────────────────────────
+  note("<a2 e3 a2 e3  d3 a2 e3 a2>")
+    .sound("sine").attack(0.005).release(0.32).lpf(240)
+    .gain(0.65).pan(0.45)
+    .color("saddlebrown"),
+
+  // ── MANDOLIN — sharp chops ───────────────────────────────────
+  note("<[a3,cs4,e4] [d4,fs4,a4] [e4,gs4,b4] [a3,cs4,e4]>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.003).release(0.06).lpf(2800).hpf(800).lpq(7)
+    .struct("~ x ~ x ~ x ~ x").gain(0.42).pan(0.6)
+    .color("forestgreen"),
+
+  // ── BANJO — alternating thumb roll ───────────────────────────
+  note("a4 e5 cs5 e5  a4 e5 cs5 e5  d5 fs5 a5 fs5  e5 gs5 b5 gs5")
+    .sound("triangle").attack(0.003).release(0.1).lpf(3300)
+    .gain(0.36).pan(0.4).room(0.18)
+    .color("goldenrod"),
+
+  // ── GUITAR BASS-RUN fill ─────────────────────────────────────
+  note("<~ ~ ~ ~  e4 fs4 gs4 a4>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.005).release(0.18).lpf(2400)
+    .gain(0.32).pan(0.55).room(0.2)
+    .color("olive"),
+
+  // ── KICK ─────────────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.38).lpf(175)
+    .color("dimgray")
+)

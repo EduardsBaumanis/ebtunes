@@ -1,0 +1,53 @@
+// ══════════════════════════════════════════════════════════════
+// "Glitch Pulse"
+// Track 1 of 20 · IDM
+//
+// Key:    A minor
+// Tempo:  140 BPM  (setcpm 35)
+// Mood:   The album opens. Steady IDM grid with stutter mutations.
+//
+// STRUDEL TECHNIQUE
+//   .every(4, ply(2))     — every 4th cycle, double-time the kick
+//   .sometimesBy(0.2, …)  — occasional hat triplet
+//   .jux(rev)             — stereo: right channel plays reversed
+//
+// VISUALIZATION
+//   .scope()  on the kick — oscilloscope at the bottom of the screen
+// ══════════════════════════════════════════════════════════════
+
+setcpm(35)
+
+stack(
+
+  // ── KICK with scope visualizer ───────────────────────────────
+  s("bd*4").gain(0.85).lpf(170).shape(0.18)
+    .every(4, ply(2))
+    .color("crimson")
+    .scope(),
+
+  // ── HAT — sometimes triplets ─────────────────────────────────
+  s("hh*8").gain("0.28 0.16 0.30 0.18").hpf(6800)
+    .sometimesBy(0.2, ply(3))
+    .color("yellow"),
+
+  // ── CLAP TRANSIENT — dry tick on the snare hit ───────────────
+  s("~ cp ~ cp").gain(0.18).hpf(2600).lpf(7200)
+    .attack(0.001).release(0.04).pan(0.54)
+    .color("gold"),
+
+  // ── BASS — stuttered 303 ─────────────────────────────────────
+  note("<a1 a1 c2 g1>")
+    .sound("sawtooth").lpf(slider(800, 250, 2400)).lpq(12).shape(0.12)
+    .attack(0.005).release(0.12)
+    .struct("x x x x x x x x")
+    .every(3, ply(2))
+    .gain(0.55).pan(0.5)
+    .color("navy"),
+
+  // ── BLEEPS — IDM melody, degraded ────────────────────────────
+  note("<e5 g5 a5 b5 c6 g5 a5 e5>")
+    .sound("square").attack(0.003).release(0.18)
+    .lpf(3200).gain(0.34).pan(0.6)
+    .degradeBy(0.15)
+    .color("cyan")
+)

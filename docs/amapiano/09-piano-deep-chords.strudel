@@ -1,0 +1,50 @@
+// Album: Amapiano — South African House Codes
+// Track: 09 — piano-deep-chords
+// Genre: Amapiano
+// Tempo / CPM: 111 BPM (setcpm 27.75)
+// Musical idea: Chord-driven track — broad 4-note voicings descending through a circle-of-5ths motion in C minor.
+// Strudel focus: .arp() patterns on a stacked chord to reveal inner voice movement (a yano signature).
+// Visualisation: ._pianoroll({ flipTime: true }) — flipping time displays the harmony reading right-to-left.
+
+setcpm(27.75)
+
+stack(
+
+  note("c1").sound("sine").attack(3).release(6).gain(0.42)
+    .color("midnightblue"),
+
+  // ── BIG CHORD STACK — Cm11 → Fm9 → Bbmaj7 → Ebmaj9 ───────────
+  note("<[c3,eb3,g3,bb3,d4,f4] [f3,ab3,c4,eb4,g4] [bb2,d3,f3,a3,c4] [eb3,g3,bb3,d4,f4]>")
+    .sound("triangle")
+    .attack(0.01).release(0.45).lpf(2600)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.4).pan(0.55).room(0.5)
+    .color("gold"),
+
+  // ── ARPEGGIATED INNER VOICE — same chord, arp'd ──────────────
+  note("<[c4,eb4,g4,bb4,d5] [f4,ab4,c5,eb5,g5] [d4,f4,a4,c5] [g4,bb4,d5,f5]>")
+    .arp("0 2 1 3 4 2 3 1")
+    .sound("triangle").attack(0.005).release(0.18).lpf(2800)
+    .gain(0.3).pan(0.45).room(0.4)
+    .color("orange")
+    ._pianoroll({ flipTime: true, cycles: 2 }),
+
+  // ── LOG DRUM ─────────────────────────────────────────────────
+  note("<c2 g1 f2 bb1  eb2 c2 g1 f2>")
+    .sound("sine").attack(0.001).release(0.2).shape(0.18).lpf(420)
+    .struct("x ~ ~ x  ~ x ~ x")
+    .gain(0.82).pan(0.5)
+    .color("saddlebrown"),
+
+  // ── SHAKER ───────────────────────────────────────────────────
+  s("hh*16").gain("0.17 0.10 0.20 0.12").hpf(7300)
+    .color("yellow"),
+
+  // ── RIM ──────────────────────────────────────────────────────
+  s("~ rim ~ rim").gain(0.4).hpf(1500).room(0.22)
+    .color("coral"),
+
+  // ── KICK ─────────────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.5).lpf(160).shape(0.1)
+    .color("crimson")
+)

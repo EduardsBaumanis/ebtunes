@@ -1,0 +1,35 @@
+// "Dub Foundation"
+// Bass - spacious sub and echo accents
+// Key: F minor
+// Tempo: 124 BPM (setcpm 31)
+// Feel: Root-heavy subline, sparse percussion, long room around the rim hits.
+// Chords: Fm - Ab - Eb - Db
+
+setcpm(31)
+
+stack(
+
+  note("<f1 c2 eb2 db2>")
+    .sound("sine").attack(0.001).release(0.42).shape(0.13)
+    .struct("x ~ ~ x  x ~ x ~")
+    .gain(0.88).pan(0.5)
+    .color("darkred"),
+
+  note("<f3 ~ ab3 ~  eb3 ~ db3 ~>")
+    .sound("triangle").attack(0.006).release(0.2)
+    .lpf(1500).room(0.4).delay(0.35)
+    .gain(0.22).pan(0.66)
+    .color("salmon"),
+
+  s("bd ~ ~ ~  ~ bd ~ ~")
+    .gain(0.76).lpf(135).shape(0.16)
+    .color("crimson"),
+
+  s("~ rim ~ ~  ~ cp ~ rim")
+    .gain(0.32).hpf(1400).room(0.48).delay(0.25)
+    .color("orange"),
+
+  s("hh ~ ~ hh  ~ hh ~ ~")
+    .gain(0.14).hpf(7200)
+    .color("gold")
+)

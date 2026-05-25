@@ -1,0 +1,47 @@
+// Album: Footwork — Chicago Juke Codes
+// Track: 14 — dj-rashad-shape
+// Genre: Footwork — tribute to DJ Rashad
+// Tempo / CPM: 158 BPM (setcpm 39.5)
+// Musical idea: Rashad-shape track — emotional minor-key pad, 808 melody, classic Teklife kick pattern.
+// Strudel focus: Strong harmonic centre (F minor) + 808 line that DOUBLES the pad's bass note = signature feel.
+// Visualisation: ._pianoroll({ cycles: 4, vertical: true }) — vertical reads the emotional pad voicing as text.
+
+setcpm(39.5)
+
+stack(
+
+  // ── SUB ──────────────────────────────────────────────────────
+  note("f1").sound("sine").attack(2).release(5).gain(0.42)
+    .color("midnightblue"),
+
+  // ── EMOTIONAL PAD — Fm9 → Db6/9 → Bbm7 → C7sus ───────────────
+  note("<[f3,ab3,c4,eb4,g4] [db3,f3,ab3,c4,eb4] [bb2,db3,f3,ab3,c4] [c3,f3,g3,bb3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(1.5).release(3).lpf(2400)
+    .gain(0.4).pan(0.5).room(0.6).slow(2)
+    .color("crimson")
+    ._pianoroll({ cycles: 4, vertical: true }),
+
+  // ── 808 — doubles the pad's bass root ────────────────────────
+  note("<f1 ~ ~ ab1  ~ f2 ~ ~  db2 ~ ~ ~  c2 ~ ~ ~>")
+    .sound("sine").attack(0.001).release(0.32).shape(0.16)
+    .gain(0.92).pan(0.5)
+    .color("darkred"),
+
+  // ── VOCAL CHOP — short ahh stab on the 4 ─────────────────────
+  note("<~ ~ ~ f4  ~ ~ ~ ab4  ~ ~ ~ f4  ~ ~ ~ c5>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.003).release(0.1).lpf(2400)
+    .gain(0.36).pan(0.55).room(0.4)
+    .color("magenta"),
+
+  // ── KICK — Rashad pattern ────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~  bd ~ bd ~  ~ ~ bd ~").gain(0.78).lpf(165).shape(0.18)
+    .color("orangered"),
+
+  // ── HAT + CLAP ───────────────────────────────────────────────
+  s("hh*16").gain("0.24 0.14").hpf(7400)
+    .color("yellow"),
+  s("~ ~ cp ~").gain(0.5).hpf(900).room(0.2)
+    .color("coral")
+)

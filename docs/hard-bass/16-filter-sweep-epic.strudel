@@ -1,0 +1,90 @@
+// ══════════════════════════════════════════════════════════════
+// "Filter Sweep Epic"
+// Hard techno with long evolving filter sweeps — peak-time euphoria
+//
+// Key:    C minor
+// Tempo:  138 BPM  (setcpm 34.5)
+// Feel:   Filter cutoff opens over many bars — slow build, big drop.
+//
+// STRUDEL FUNCTIONS HIGHLIGHTED
+//   range(min, max)     — random value in range (per event)
+//   .lpf(slider(...))   — combine slider with filter for live sweeps
+//   .slow(N)            — stretch pattern across N cycles
+// ══════════════════════════════════════════════════════════════
+
+setcpm(slider(34.5, 30, 40))
+
+stack(
+
+  // ── KICK ──────────────────────────────────────────────────────
+  s("bd*4")
+    .shape(slider(0.4, 0, 0.75))
+    .gain(0.95).lpf(170)
+    .color("crimson"),
+
+  // ── CLAP ──────────────────────────────────────────────────────
+  s("~ cp ~ cp")
+    .gain(0.62).hpf(280).room(0.2)
+    .color("orange"),
+
+  // ── HAT — random pan via range() ──────────────────────────────
+  // range(0.2, 0.8) returns a fresh value in [0.2, 0.8] per event;
+  // applied to .pan() it scatters the hats stereo-wide for motion.
+  s("hh*16")
+    .pan(range(0.2, 0.8))
+    .gain("0.30 0.20 0.32 0.22")
+    .hpf(5800)
+    .color("yellow"),
+
+  // ── OPEN HAT ──────────────────────────────────────────────────
+  s("~ oh ~ oh")
+    .gain(0.4).hpf(4500)
+    .color("gold"),
+
+  // ── SUB BASS ──────────────────────────────────────────────────
+  note("c1")
+    .sound("sine")
+    .struct("x ~ x ~ x x ~ x")
+    .gain(0.85)
+    .color("navy"),
+
+  // ── BASS — THE BIG SWEEP ──────────────────────────────────────
+  // The filter cutoff is on a slider — start it at 300 (deep dark),
+  // drag it up to 4000 over a long build, then drop back. The whole
+  // arc of the track is in your hand.
+  note("c2 c2 g1 c2  eb2 c2 g1 c2")
+    .sound("sawtooth").shape(0.3)
+    .lpf(slider(800, 200, 4000))
+    .lpq(slider(8, 4, 18))
+    .attack(0.005).release(0.16)
+    .gain(0.55).pan(0.5)
+    .color("purple"),
+
+  // ── ACID 303 — slow-evolving line ─────────────────────────────
+  note("c3 ~ eb3 ~ g3 ~ bb3 ~  c3 ~ g3 ~ eb3 ~ ~ ~")
+    .sound("sawtooth")
+    .lpf("400 700 1200 2000 3000 2000 1200 700")
+    .lpq(slider(13, 5, 20))
+    .shape(0.3)
+    .attack(0.001).release(0.06)
+    .gain(0.42).pan(0.55)
+    .slow(2)
+    .color("lime"),
+
+  // ── PAD ───────────────────────────────────────────────────────
+  note("[c3,eb3,g3,bb3]")
+    .sound("sawtooth").vowel("o")
+    .attack(2).release(2.5)
+    .lpf(slider(1400, 600, 3500))
+    .gain(0.22).pan(0.5)
+    .room(0.5).slow(4)
+    .color("teal"),
+
+  // ── BUILD NOISE — RISES on a slider ───────────────────────────
+  s("white*32")
+    .lpf(slider(500, 100, 12000))
+    .hpf(slider(200, 50, 4000))
+    .gain(slider(0.08, 0, 0.3))
+    .pan(0.5)
+    .color("white")
+)

@@ -1,0 +1,86 @@
+// ══════════════════════════════════════════════════════════════
+// "Winter Silence"
+// Lo-fi jazz — cold, pristine, contemplative stillness
+//
+// Key:    C# minor
+// Tempo:  ~71 BPM  (setcpm 35.5)
+// Chords: C#m7 → F#m7 → B7 → Emaj7   (i – iv – VII – III)
+// Feel:   Snowflakes falling slowly, world muffled in white
+// ══════════════════════════════════════════════════════════════
+
+setcpm(25)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Minimal and icy. Space between hits.
+  s("bd ~ ~ ~ ~ ~ bd ~")
+    .gain(0.87)
+    .lpf(2800),
+
+
+  // ── SNARE ────────────────────────────────────────────────────
+  // Distant and crystalline. Deep reverb.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.61)
+    .room(0.19),
+
+
+  // ── HI-HAT ───────────────────────────────────────────────────
+  // Sparse triplet swing. Like ice crystals.
+  s("[hh [~ hh]]*4")
+    .gain(0.25)
+    .lpf(7800)
+    .room(0.13)
+    .pan(0.62),
+
+
+  // ── OPEN HI-HAT ──────────────────────────────────────────────
+  // Rare, lingering shimmer.
+  s("~ ~ ~ ~ ~ ~ oh oh")
+    .gain(0.41)
+    .pan(0.55),
+
+
+  // ── DARK WALKING BASS ──────────────────────────────────────────
+  // Tense minor movement. Chromatic implications.
+  //   C#m7:  C# E  G# B
+  //   F#m7:  F# A  C# E
+  //   B7:    B  D# F# A
+  //   Emaj7: E  G# B  D#
+  note("cs2 e2 gs2 b2  fs2 a2 cs3 e3  b2 ds3 fs3 a3  e3 gs3 b3 ds4")
+    .sound("sawtooth")
+    .lpf(180)
+    .attack(0.013).decay(0.16).sustain(0.51).release(0.12)
+    .gain(0.68),
+
+
+  // ── COLD PAD ───────────────────────────────────────────────────
+  // Minor 7ths create desolate beauty. Very atmospheric.
+  note("<[cs3,e3,gs3,b3] [fs3,a3,cs4,e4] [b3,ds4,fs4,a4] [e3,gs3,b3,ds4]>")
+    .sound("sawtooth")
+    .attack(0.09)
+    .release(0.58)
+    .lpf(1850)
+    .room(0.41)
+    .gain(0.22)
+    .pan(0.39)
+    .slow(2),
+
+
+  // ── FROZEN MELODY ─────────────────────────────────────────────
+  // C# minor pentatonic: C# E F# G# B
+  // Pure, cold, crystalline tone.
+  note("gs4 ~ ~ b4 ~ e5 ~ ~  ~ ~ cs4 ~ fs4 ~ ~ gs4")
+    .sound("triangle")
+    .attack(0.021)
+    .release(0.41)
+    .delay(0.38)
+    .delaytime(0.375)
+    .delayfeedback(0.28)
+    .room(0.51)
+    .gain(0.43)
+    .pan(0.53)
+    .slow(2)
+
+)

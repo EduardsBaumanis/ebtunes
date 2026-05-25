@@ -1,0 +1,42 @@
+// Album: Footwork — Chicago Juke Codes
+// Track: 03 — tek-808-study
+// Genre: Footwork
+// Tempo / CPM: 160 BPM (setcpm 40)
+// Musical idea: Pure 808 study — almost no melody, just pitched 808 sub stabs forming the entire harmonic line.
+// Strudel focus: Long melodic phrase passed to a single sine "bass" pattern, with .ply() stutters in places.
+// Visualisation: ._pianoroll({ labels: true, cycles: 2 }) so every pitched 808 stab is named on the grid.
+
+setcpm(40)
+
+stack(
+
+  // ── 808 MELODY/BASS — the entire harmonic content + pianoroll ─
+  note("c2 c2 eb2 ~  g1 c2 ~ f2  eb2 ~ c2 g1  f2 ~ eb2 c2")
+    .sound("sine").attack(0.001).release(0.3).shape(0.18)
+    .ply("1 1 2 1  1 1 1 2  1 1 1 1  1 1 1 1")
+    .gain(0.95).pan(0.5)
+    .color("darkred")
+    ._pianoroll({ labels: true, cycles: 2 }),
+
+  // ── TINY MELODIC HIGHLIGHT — single high note answers ────────
+  note("<~ ~ ~ ~  ~ ~ ~ ~  c5 ~ ~ ~  ~ ~ g4 ~>")
+    .sound("triangle").attack(0.005).release(0.4).lpf(3000)
+    .gain(0.35).pan(0.6).room(0.4)
+    .color("gold"),
+
+  // ── KICK ─────────────────────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~  bd ~ bd ~  ~ ~ bd ~").gain(0.8).lpf(165).shape(0.18)
+    .color("crimson"),
+
+  // ── HI-HAT 16ths ─────────────────────────────────────────────
+  s("hh*16").gain("0.26 0.14 0.22 0.16").hpf(7400)
+    .color("yellow"),
+
+  // ── TRIPLET HAT ROLL ─────────────────────────────────────────
+  s("hh*12").gain("0.14 0.08 0.10").hpf(8200)
+    .color("khaki"),
+
+  // ── CLAP ─────────────────────────────────────────────────────
+  s("~ ~ cp ~  ~ ~ ~ cp").gain(0.48).hpf(900).room(0.18)
+    .color("orange")
+)

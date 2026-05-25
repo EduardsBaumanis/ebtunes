@@ -1,0 +1,41 @@
+// ══════════════════════════════════════════════════════════════
+// "Soft Thump"
+// YouTube — title drop / chapter mark
+//
+// Key:    —
+// Tempo:  120 BPM  (setcpm 60)
+// Chords: —
+// Feel:   Cushioned bass thump for important moments.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(60)
+
+stack(
+
+  // ── BASS HIT ─────────────────────────────────────────────────
+  // Sub-frequency kick with heavy LPF for that pillow-soft impact.
+  s("bd ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.85)
+    .lpf(140)
+    .room(0.18),
+
+
+  // ── BODY ─────────────────────────────────────────────────────
+  // Sine sub-sweep underneath to extend the rumble.
+  note("a1 ~ ~ ~ ~ ~ ~ ~")
+    .sound("sine")
+    .attack(0.002)
+    .decay(0.6)
+    .sustain(0)
+    .release(0.4)
+    .gain(0.5),
+
+
+  // ── AIR BURST ────────────────────────────────────────────────
+  // Tiny noise burst at the start to add presence on small speakers.
+  s("white ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.12)
+    .hpf(400)
+    .release(0.05)
+
+)

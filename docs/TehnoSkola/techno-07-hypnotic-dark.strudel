@@ -1,0 +1,151 @@
+// ============================================================
+// TECHNO LESSON 07: Hypnotic / Dark Techno
+// ============================================================
+// Hypnotic techno is the most meditative, trance-inducing form
+// of the genre. It draws on tribal drumming, Middle Eastern and
+// African percussion traditions, and the ritualistic function of
+// repetitive music in human culture.
+//
+// Anthropologists note that repetitive rhythm at 120–140 BPM
+// induces altered states in humans — the same BPM range used
+// for thousands of years in shamanic rituals, Sufi dhikr,
+// and West African ceremonial drumming. Hypnotic techno taps
+// directly into this neurological mechanism.
+//
+// KEY ARTISTS:
+//   Alignment — "Sequence", "Alignment Untitled 13"
+//   Oscar Mulero — "Black Propaganda", "Herd & Vulture"
+//   Paula Temple — drone-ritual work
+//   Function — "Decay" album
+//   Truncate — "Seismic"
+//   Ancient Methods — "The Jericho Records"
+//
+// DEFINING CHARACTERISTICS:
+//   ✦ Ritualistic, ceremonial, meditative quality
+//   ✦ Repetitive loops with micro-variation — a pattern that
+//     seems the same but is never exactly repeated
+//   ✦ Multiple interlocking percussion patterns (Euclidean)
+//   ✦ Dark, minor/modal tonality — often Phrygian or Locrian
+//   ✦ BPM: 134–142
+//   ✦ Long, evolving textures — tracks run 10+ minutes
+//   ✦ The "hypnotic" element = pattern + micro-variation + time
+//
+// PHRYGIAN MODE — the scale of hypnotic techno:
+//   The Phrygian mode has a distinctive "dark, Spanish, Middle Eastern"
+//   quality from its flat 2nd degree.
+//   C Phrygian: C  Db  Eb  F  G  Ab  Bb
+//   The tension between C and Db (just 1 semitone) creates the
+//   "pressing down" feeling that hypnotic music uses as tension.
+//
+// EUCLIDEAN RHYTHM THEORY:
+//   In hypnotic techno, multiple overlapping Euclidean rhythms
+//   are layered. Since they have different step counts (and therefore
+//   different cycle lengths), they gradually drift in and out of
+//   phase with each other — creating ever-changing texture
+//   without writing complex sequences.
+// ============================================================
+
+setcpm(69)  // ~138 BPM
+
+// --- EXAMPLE 1: Euclidean kick — not four-on-the-floor ---
+// E(4,16) distributes 4 kicks over 16 steps.
+// Same as 4/4, but feels more tribal when combined with odd patterns.
+s("bd").euclid(4, 16).gain(0.9)
+
+
+// --- EXAMPLE 2: Multiple Euclidean percussion layers ---
+// Each pattern has a different number of hits. They interlock and
+// drift against each other — the listener can't quite predict
+// where the next hit will be.
+// stack(
+//   s("bd").euclid(4, 16).gain(0.9),
+//   s("sd").euclid(3, 16).gain(0.7).pan(0.45),
+//   s("hh").euclid(7, 16).gain(0.3).hpf(8000).pan(0.62),
+//   s("rim").euclid(5, 16).gain(0.45).pan(0.38)
+// )
+
+
+// --- EXAMPLE 3: Dark Phrygian motif ---
+// The flat 2nd (Db) over C is what gives Phrygian its tension.
+// Use it in the bass or lead to immediately signal "dark and ritualistic."
+// note("c2 ~ db2 ~ c2 ~ ~ c2").sound("sawtooth")
+//   .lpf(500).gain(0.72)
+
+
+// --- EXAMPLE 4: Phrygian melody loop ---
+// A short repeating figure. Hypnotic = a phrase that loops
+// but sounds different each time because of the rhythm context.
+// note("c3 db3 ~ c3 ~ bb2 ~ c3")
+//   .sound("square")
+//   .attack(0.01).release(0.15)
+//   .lpf(1500)
+//   .room(0.3)
+//   .gain(0.42)
+//   .slow(2)
+
+
+// --- EXAMPLE 5: Rotating Euclidean pattern ---
+// Rotate the starting position of a Euclidean rhythm.
+// This shifts the FEEL without changing the pattern density.
+// stack(
+//   s("bd").euclid(4, 16).gain(0.9),
+//   s("sd").euclid(3, 16, 4).gain(0.68),    // offset by 4 steps
+//   s("hh").euclid(5, 16, 2).gain(0.28)     // offset by 2 steps
+// )
+
+
+// --- EXAMPLE 6: Slowly evolving texture ---
+// A single melodic cell whose filter opens over many cycles.
+// The listener doesn't notice change, but subconsciously feels it.
+// note("c2 ~ db2 ~ c2 ~ ~ c2")
+//   .sound("sawtooth")
+//   .lpf(sine.range(200, 1200).slow(16))
+//   .lpq(6)
+//   .gain(0.68)
+
+
+// --- EXAMPLE 7: Full hypnotic groove ---
+// Multiple Euclidean layers + Phrygian bass + evolving filter.
+// Press play and let it run for a few minutes — it rewards patience.
+// stack(
+//   // Kick — slightly syncopated E(4,16)
+//   s("bd").euclid(4, 16).gain(0.92),
+//
+//   // Snare — E(3,16) creates off-beat accents
+//   s("sd").euclid(3, 16).gain(0.68).distort(0.1),
+//
+//   // Hi-hats — E(7,16) = asymmetric, never repeats easily
+//   s("hh").euclid(7, 16).gain(0.28).hpf(8000).pan(0.6),
+//
+//   // Rimshot — E(5,16), offset 3 steps
+//   s("rim").euclid(5, 16, 3).gain(0.38).pan(0.4),
+//
+//   // Open hat accent — sparse
+//   s("oh").euclid(2, 16).gain(0.5),
+//
+//   // Phrygian bass — evolving filter, slow
+//   note("c2 ~ db2 ~ c2 ~ ~ c2")
+//     .sound("sawtooth")
+//     .lpf(sine.range(180, 900).slow(12))
+//     .lpq(5)
+//     .gain(0.7),
+//
+//   // Dark ambient tone — barely present
+//   note("c3")
+//     .sound("sine")
+//     .slow(8)
+//     .room(0.9).size(0.95)
+//     .gain(0.12)
+// )
+
+
+// ============================================================
+// EXERCISE:
+//   1. Replace C:phrygian bass notes with your own note sequence —
+//      find 2–3 notes that feel "dark" and unsettling to you
+//   2. Try all Euclidean values: euclid(2,16) through euclid(13,16)
+//      Which patterns feel tribal? Which feel industrial?
+//   3. Set .slow(64) on the filter modulation — barely noticeable
+//   4. Listen to: Alignment "Sequence 1" — notice the Euclidean layers
+//   5. Ancient Methods "Black Horizons" — feel how the patterns hypnotize
+// ============================================================

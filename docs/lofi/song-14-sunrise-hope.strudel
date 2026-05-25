@@ -1,0 +1,104 @@
+// ══════════════════════════════════════════════════════════════
+// "Sunrise Hope"
+// Lo-fi jazz — bright, optimistic, new beginnings
+//
+// Key:    E major
+// Tempo:  ~82 BPM  (setcpm 41)
+// Chords: Emaj7 → C#m7 → F#m7 → B7   (I – vi – ii – V)
+// Feel:   Golden morning light breaking through clouds
+// ══════════════════════════════════════════════════════════════
+
+setcpm(28)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Energetic but not heavy. Double kick on beat 3 for lift.
+  s("bd ~ ~ bd bd ~ ~ ~")
+    .gain(0.78)
+    .lpf(4300),
+
+
+  // ── SNARE ────────────────────────────────────────────────────
+  // Crisp and bright on the backbeat.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.69)
+    .room(0.1),
+
+
+  // ── HI-HAT ───────────────────────────────────────────────────
+  // Swung eighths with brightness and presence.
+  s("[hh [~ hh]]*4")
+    .gain(0.36)
+    .hpf(6500)
+    .room(0.08)
+    .pan(0.61),
+
+
+  // ── OPEN HI-HAT ──────────────────────────────────────────────
+  // Occasional sparks of light.
+  s("~ ~ oh ~ ~ ~ ~ oh")
+    .gain(0.48)
+    .hpf(6000)
+    .pan(0.59),
+
+
+  // ── BOUNCY BASS ───────────────────────────────────────────────
+  // Syncopated, rhythmic pattern.
+  //   Emaj7: E  B (5th)
+  //   C#m7:  C# G# (5th)
+  //   F#m7:  F# C# (5th)
+  //   B7:    B  F# (5th)
+  note("e2 ~ b2 ~ ~ ~  cs3 ~ gs3 ~ ~ ~  fs2 ~ cs3 ~ ~ ~  b2 ~ fs3 ~ ~ ~")
+    .sound("sawtooth")
+    .lpf(290)
+    .attack(0.006).decay(0.1).sustain(0.44).release(0.08)
+    .gain(0.64)
+    .slow(3),
+
+
+  // ── BRIGHT CHORDS ─────────────────────────────────────────────
+  // Major 7th voicings, very bright and open.
+  //   Emaj7: E  G# B  D#
+  //   C#m7:  C# E  G# B
+  //   F#m7:  F# A  C# E
+  //   B7:    B  D# F# A
+  note("<[e4,gs4,b4,ds5] [cs4,e4,gs4,b4] [fs4,a4,cs5,e5] [b3,ds4,fs4,a4]>")
+    .sound("sawtooth")
+    .attack(0.03)
+    .release(0.35)
+    .lpf(2700)
+    .room(0.24)
+    .gain(0.34)
+    .pan(0.44)
+    .slow(2),
+
+
+  // ── PAD ───────────────────────────────────────────────────────
+  // Sustained shimmer underneath.
+  note("<[e3,gs3,b3] [cs4,e4,gs4] [fs3,a3,cs4] [b3,ds4,fs4]>")
+    .sound("sine")
+    .attack(0.1)
+    .release(0.65)
+    .lpf(1400)
+    .room(0.38)
+    .gain(0.17)
+    .slow(4),
+
+
+  // ── UPLIFTING MELODY ──────────────────────────────────────────
+  // E major: E F# G# A B C# D#
+  // Bright and confident.
+  note("gs5 ~ b5 ~ cs6 b5 ~ gs5  ~ fs5 ~ ~ e5 ~ ~ gs5")
+    .sound("sine")
+    .attack(0.015)
+    .release(0.26)
+    .delay(0.38)
+    .delaytime(0.333)
+    .delayfeedback(0.17)
+    .room(0.33)
+    .gain(0.56)
+    .pan(0.5)
+    .slow(2)
+
+)

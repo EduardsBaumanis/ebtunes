@@ -1,0 +1,28 @@
+// ══════════════════════════════════════════════════════════════
+// "Emrex Deger — Iron Loop"
+// Techno pattern using the Emrex Deger sample pack
+//
+// Key:    A minor
+// Tempo:  130 BPM  (setcpm 32.5)
+// Chords: Am – Am – Dm – Am
+// Feel:   Driving 4/4 thump, hypnotic loop, industrial edge.
+// Loads:  github:emrexdeger/strudelSamples
+// Tip:    after the pack loads, swap any s("...") name above for one
+//         from the pack to hear the same pattern through it.
+// ══════════════════════════════════════════════════════════════
+
+samples('github:emrexdeger/strudelSamples')
+
+setcpm(32.5)
+
+stack(
+  s("bd*4").gain(0.92).lpf(170).shape(0.2),
+  s("~ ~ cp ~").gain(0.42).room(0.22),
+  s("[hh [~ hh]]*4").gain(0.38).hpf(4500).pan("0.4 0.6"),
+  s("~ ~ ~ ~ ~ ~ ~ oh").gain(0.3),
+  note("a1 a1 a2 a1  e2 e2 a2 e2  d2 d2 a1 d2  a1 a1 e2 a1")
+    .sound("sawtooth").lpf(380).attack(0.001).gain(0.55).shape(0.15),
+  note("<[a4 c5 e5 a5] [d5 f5 a5 d6] [c5 e5 g5 c6] [e4 g4 b4 e5]>")
+    .sound("sawtooth").attack(0.005).release(0.18)
+    .lpf(2200).gain(0.22).pan(0.55).delay(0.3).delaytime(0.333)
+)

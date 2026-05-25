@@ -1,0 +1,47 @@
+// ══════════════════════════════════════════════════════════════
+// "Plainchant Opening"
+// Track 1 of 20 · Medeival
+//
+// Key:    D Dorian (no flat — the medieval church mode)
+// Tempo:  ~50 BPM  (setcpm 12.5)
+// Mood:   Monks file in. A single line of unison voices.
+//
+// VOCAL TECHNIQUE
+//   Pure monophonic chant line — sawtooth + .vowel("a") imitates
+//   open Latin "Aaaaa-men". A second voice doubles at the octave
+//   for medieval organum-at-the-octave colour.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(12.5)
+
+stack(
+
+  // ── DRONE — sustained tonic, the "ison" of plainchant ────────
+  note("d2").sound("sine").attack(8).release(14).gain(0.45)
+    .color("midnightblue"),
+
+  note("d3").sound("sawtooth").vowel("o")
+    .attack(8).release(13).lpf(1200).gain(0.32).room(0.8)
+    .color("indigo"),
+
+  // ── CHANT LINE — free-rhythm Dorian phrase ───────────────────
+  note("d4 ~ e4 f4  ~ g4 ~ f4  e4 d4 ~ c4  d4 ~ ~ ~")
+    .sound("sawtooth").vowel("a")
+    .attack(0.5).release(2).lpf(1800)
+    .gain(0.42).pan(0.5).room(0.82).size(0.92)
+    .color("goldenrod"),
+
+  // ── OCTAVE DOUBLE — softer, like boys' voices joining ────────
+  note("d5 ~ e5 f5  ~ g5 ~ f5  e5 d5 ~ c5  d5 ~ ~ ~")
+    .sound("sawtooth").vowel("e")
+    .attack(0.8).release(2.5).lpf(2400)
+    .gain(0.26).pan(0.45).room(0.85).size(0.94)
+    .color("ivory"),
+
+  // ── Cathedral bell — single low strike ───────────────────────
+  note("d3 ~ ~ ~  ~ ~ ~ ~  ~ ~ ~ ~  ~ ~ ~ ~")
+    .sound("triangle").attack(0.2).release(8)
+    .delay(0.6).delaytime(0.75).delayfeedback(0.5)
+    .room(0.9).size(0.95).gain(0.3).pan(0.5).slow(2)
+    .color("bronze")
+)

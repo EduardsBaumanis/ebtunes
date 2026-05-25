@@ -1,0 +1,46 @@
+// ══════════════════════════════════════════════════════════════
+// "Squeeze Fill"
+// Compress an entire phrase into the duration of a single event
+//
+// Key:    G minor
+// Tempo:  ~74 BPM  (setcpm 18.5)
+// Theory: Time-compressed fills. In drum-and-bass and jazz the
+//         "fill" goes inside the gap of the main phrase. The
+//         fill might be 8 notes long but occupies the duration
+//         of one beat — a rhythmic firework that ends as fast
+//         as it started.
+// Strudel: .squeeze(items, pattern) — for every event in
+//          `pattern`, replay `items` squeezed into that event's
+//          duration. Used here to drop sixteenth-note melodic
+//          fills onto beats 1 and 4 of a slow eighth-note line.
+// Pack:   github:felixroos/dough-samples (piano).
+// ══════════════════════════════════════════════════════════════
+
+samples('github:felixroos/dough-samples')
+
+setcpm(18.5)
+
+stack(
+
+  // Main melodic phrase — sparse eighth notes on Gm9 chord tones.
+  // The "1" beats trigger a tiny eight-note fill (squeezed into
+  // that beat's duration); the "0" beats are silent.
+  squeeze("1 0 0 0 1 0 0 0",
+    note("g4 bb4 d5 f5 d5 c5 bb4 g4")
+      .s("piano").attack(0.005).release(0.18).gain(0.45)
+  ),
+
+  // Held chord pad continues underneath the fills
+  note("<[g3,bb3,d4,f4] [c4,eb4,g4,bb4] [d4,f4,a4,c5] [g3,bb3,d4,f4]>")
+    .s("piano").attack(0.06).release(2).gain(0.4).slow(2)
+    .room(0.4),
+
+  // Bass — sustained roots
+  note("g2 ~ ~ ~ c2 ~ ~ ~  d2 ~ ~ ~ g2 ~ ~ ~")
+    .s("piano").gain(0.6).slow(2),
+
+  // Soft drums (no fills, they're in the melody)
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.55).lpf(200),
+  s("~ ~ sd ~ ~ ~ sd ~").gain(0.45).hpf(220).room(0.18)
+
+)

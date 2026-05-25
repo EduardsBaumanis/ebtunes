@@ -1,0 +1,51 @@
+// Album: Amapiano — South African House Codes
+// Track: 06 — midnight-loft
+// Genre: Amapiano
+// Tempo / CPM: 112 BPM (setcpm 28)
+// Musical idea: After-hours private lounge — Rhodes-style electric piano, deep room reverb, smooth bass.
+// Strudel focus: Triangle wave + LP filter approximates Fender Rhodes; long room+delay creates "loft" depth.
+// Visualisation: .pianoroll({ smear: true, cycles: 4 }) — smear draws the decaying chord tails as ribbons.
+
+setcpm(28)
+
+stack(
+
+  note("a1").sound("sine").attack(3).release(7).gain(0.45)
+    .color("midnightblue"),
+
+  // ── RHODES CHORDS — Am9 → Dm9 → Gmaj7 → Cmaj9 (jazz turnaround) ─
+  note("<[a3,c4,e4,g4,b4] [d4,f4,a4,c5,e5] [g3,b3,d4,fs4,a4] [c4,e4,g4,b4,d5]>")
+    .sound("triangle")
+    .attack(0.005).release(0.6).lpf(2400)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.4).pan(0.55).room(0.55)
+    .delay(0.25).delaytime(0.375).delayfeedback(0.3)
+    .color("gold")
+    .pianoroll({ smear: true, cycles: 4 }),
+
+  // ── MELODIC TOP LINE — single-note answers ───────────────────
+  note("<~ e5 ~ ~  ~ ~ d5 c5  ~ b4 ~ ~  ~ ~ e5 ~>")
+    .sound("triangle").attack(0.01).release(0.7).lpf(3200)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.4)
+    .gain(0.32).pan(0.45).room(0.6)
+    .color("ivory"),
+
+  // ── LOG DRUM — moody ─────────────────────────────────────────
+  note("<a2 e2 g2 c2  d2 a1 e2 g2>")
+    .sound("sine").attack(0.001).release(0.2).shape(0.18).lpf(420)
+    .struct("x ~ x ~  ~ x ~ x")
+    .gain(0.82).pan(0.5)
+    .color("saddlebrown"),
+
+  // ── SHAKER ───────────────────────────────────────────────────
+  s("hh*16").gain("0.16 0.10 0.20 0.12").hpf(7300)
+    .color("yellow"),
+
+  // ── RIM ──────────────────────────────────────────────────────
+  s("~ rim ~ rim").gain(0.4).hpf(1500).room(0.22)
+    .color("orange"),
+
+  // ── KICK ─────────────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.5).lpf(160).shape(0.1)
+    .color("crimson")
+)

@@ -1,0 +1,116 @@
+// ══════════════════════════════════════════════════════════════
+// "Lambda Calculus"
+// Elegant lo-fi jazz — pure functions, no side effects
+//
+// Key:    Eb major (the jazz standard key — brass instruments love it)
+// Tempo:  ~70 BPM  (setcpm 23)
+// Chords: Ebmaj7 – Cm7 – Abmaj7 – Bb7  (I–vi–IV–V, round loop)
+// Feel:   Referential transparency. Every input maps to the same output.
+//         Mathematical. Inevitable. Beautifully constrained.
+// Chords: Ebmaj7  Cm7  Abmaj7  Bb7
+// ══════════════════════════════════════════════════════════════
+
+setcpm(23)
+
+stack(
+
+  // ── BRUSHED KICK ─────────────────────────────────────────────
+  // At 70 BPM this is very relaxed. Only 2 kicks per bar,
+  // on beats 1 and 3. room(0.12) = a small, warm room.
+  // No saturation — this is clean like pure functions.
+  s("bd ~ ~ ~ bd ~ ~ ~")
+    .gain(0.74)
+    .lpf(3000)
+    .room(0.12),
+
+  // ── BRUSH SNARE ──────────────────────────────────────────────
+  // Very quiet snare — almost a brushed whisper.
+  // sd:2 uses a different snare sample if available.
+  // room(0.2) = more room than kick — snare floats.
+  s("~ ~ sd:2 ~ ~ ~ sd:2 ~")
+    .gain(0.50)
+    .room(0.20)
+    .pan(0.52),
+
+  // ── HI-HAT (light swing) ─────────────────────────────────────
+  // Very low gain — jazz hat should never dominate.
+  // lpf(8000) = warm top, not harsh.
+  // degradeBy(0.18) = lots of missing hits — sparse, breathing.
+  s("[hh [~ hh]]*4")
+    .gain(0.18)
+    .lpf(8000)
+    .degradeBy(0.18)
+    .pan(0.6),
+
+  // ── WALKING BASS (Eb major: Eb F G Ab Bb C D) ────────────────
+  // Pure walking jazz bass — chord tones + chromatic passing notes.
+  // Ebmaj7: Eb G Bb D
+  // Cm7:   C Eb G Bb
+  // Abmaj7: Ab C Eb G
+  // Bb7:   Bb D F Ab (tritone D-Ab is the tension that resolves to Eb)
+  // The walk is the lambda — it maps one chord to the next.
+  note("eb2 g2 bb2 d3  c2 eb2 g2 bb2  ab1 c2 eb2 g2  bb1 d2 f2 ab2")
+    .sound("sawtooth")
+    .lpf(280)
+    .attack(0.006)
+    .decay(0.14)
+    .sustain(0.50)
+    .release(0.1)
+    .gain(0.66)
+    .slow(4),
+
+  // ── RHODES PAD (warm, clean) ──────────────────────────────────
+  // The purest chords — sawtooth + high lpf = warm Rhodes.
+  // attack(0.1) = the note blooms in slowly, like a function
+  // evaluating lazily. Haskell would approve.
+  // No effects except room. Clean inputs, clean outputs.
+  note("<[eb4,g4,bb4,d5] [c4,eb4,g4,bb4] [ab3,c4,eb4,g4] [bb3,d4,f4,ab4]>")
+    .sound("sawtooth")
+    .attack(0.10)
+    .decay(0.3)
+    .sustain(0.65)
+    .release(0.6)
+    .lpf(2600)
+    .room(0.28)
+    .gain(0.24)
+    .pan(0.44)
+    .slow(2),
+
+  // ── HIGH PIANO (sparse, mathematical) ────────────────────────
+  // Triangle wave = the cleanest, most fundamental timbre.
+  // Sparse notes, mostly rests. Like comments in functional code:
+  // each one must earn its place.
+  // off(1/6, x => x.gain(0.1).delay(0.3)) = triplet shadow note.
+  note("~ g4 ~ ~ ~ d5  ~ ~ eb5 ~ ~ ~  ~ ~ c5 ~ ~ bb4  ~ ~ ~ f4 ~ ~")
+    .sound("triangle")
+    .attack(0.005)
+    .decay(0.35)
+    .sustain(0.1)
+    .release(0.55)
+    .off(1/6, x => x.gain(0.10).delay(0.3).delayfeedback(0.15))
+    .room(0.45)
+    .gain(0.36)
+    .pan(0.53)
+    .slow(4),
+
+  // ── VIBRAPHONE-STYLE LEAD ─────────────────────────────────────
+  // Sine wave with slow attack = vibraphone approximation.
+  // The vibraphone is the jazz instrument most like a function:
+  // you strike it, it resonates, it decays perfectly predictably.
+  // delay(0.5) at 0.375 rate = the note's mathematics continue.
+  note("~ ~ ~ bb4 ~ ~ ~  d5 ~ ~ ~ ~ g4 ~  ~ ~ ~ eb5 ~ ~ ~  ~ f4 ~ ~ ~ d5 ~")
+    .sound("sine")
+    .attack(0.04)
+    .decay(0.6)
+    .sustain(0.25)
+    .release(0.9)
+    .delay(0.45)
+    .delaytime(0.375)
+    .delayfeedback(0.28)
+    .room(0.5)
+    .size(0.55)
+    .gain(0.40)
+    .pan(0.5)
+    .slow(4)
+
+)

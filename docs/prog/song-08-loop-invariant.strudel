@@ -1,0 +1,125 @@
+// ══════════════════════════════════════════════════════════════
+// "Loop Invariant"
+// Hypnotic lo-fi — the condition that stays true every iteration
+//
+// Key:    E minor (the most natural minor — all open guitar strings)
+// Tempo:  ~82 BPM  (setcpm 27)
+// Chords: Em7 – Am7 – D7 – Gmaj7  (i–iv–VII–III, modal cycling)
+// Feel:   while(true). The loop runs. The assertion holds.
+//         Each iteration slightly different but the essence stays.
+//         Hypnotic. Correct. Inevitable.
+// Chords: Em7  Am7  D7  Gmaj7
+// ══════════════════════════════════════════════════════════════
+
+setcpm(27)
+
+stack(
+
+  // ── KICK (invariant — never changes, always on 1 and 3) ──────
+  // Four on the floor: beat 1, 2, 3, 4.
+  // The kick IS the loop invariant. It never changes.
+  // shape(0.1) = slightly saturated. Consistent every iteration.
+  s("bd ~ bd ~ bd ~ bd ~")
+    .gain(0.80)
+    .lpf(3000)
+    .shape(0.10),
+
+  // ── SNARE (with variation — not quite invariant) ──────────────
+  // Snare on 2 and 4. But every(3) bar adds an accent ghost.
+  // The loop runs — but small changes accumulate.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.62)
+    .room(0.12)
+    .every(3, x => x.gain(0.78).room(0.25)),
+
+  // ── HI-HAT (mechanical but breathes) ─────────────────────────
+  // Strict 16th notes — the loop counter incrementing.
+  // degradeBy(0.08) = 8% random drops. The loop runs but
+  // sometimes the instruction scheduler does something else.
+  s("hh*8")
+    .gain(0.21)
+    .hpf(7500)
+    .degradeBy(0.08)
+    .pan(0.60),
+
+  // ── RIM ACCENT (iteration marker) ────────────────────────────
+  // A rim on beat 4 of every other bar = "end of outer loop".
+  // Like the print statement that confirms the iteration completed.
+  s("~ ~ ~ ~ ~ ~ ~ rim")
+    .gain(0.45)
+    .crush(10)
+    .room(0.08)
+    .pan(0.42),
+
+  // ── BASS (the loop body — same structure, different values) ───
+  // Em7: E G B D → Am7: A C E G → D7: D F# A C → Gmaj7: G B D F#
+  // Same rhythmic figure, different pitches. Like a for-loop.
+  // off(1/8, x => x.gain(0.15)) = ghost on every 8th subdivision.
+  note("e2 g2 b2 d3  a2 c3 e3 g3  d2 fs2 a2 c3  g2 b2 d3 fs3")
+    .sound("sawtooth")
+    .lpf(300)
+    .attack(0.006)
+    .decay(0.14)
+    .sustain(0.50)
+    .release(0.10)
+    .off(1/8, x => x.gain(0.15).lpf(550))
+    .gain(0.68)
+    .slow(4),
+
+  // ── CHORD PAD (steady, invariant, but shimmering) ─────────────
+  // Every iteration: same chords. But the phaser makes each
+  // chord slightly different from the last. The loop body
+  // preserves the invariant while accumulating small changes.
+  note("<[e3,g3,b3,d4] [a3,c4,e4,g4] [d3,fs3,a3,c4] [g3,b3,d4,fs4]>")
+    .sound("sawtooth")
+    .attack(0.10)
+    .sustain(0.70)
+    .release(0.55)
+    .lpf(2200)
+    .phaser(0.22)
+    .phaserdepth(0.50)
+    .phaserrate(0.16)
+    .room(0.32)
+    .gain(0.22)
+    .pan(0.44)
+    .slow(2),
+
+  // ── ARP (the iteration variable: i=0,1,2,3,...) ──────────────
+  // Ascending arpeggios through each chord, cycling upward.
+  // jux(rev) = left channel ascends, right channel descends.
+  // The two directions coexist — the loop variable going up
+  // while the countdown variable goes down.
+  // degradeBy(0.04) = 4% of notes drop — micro-variation.
+  note("e4 g4 b4 d5  a4 c5 e5 g5  d4 fs4 a4 c5  g4 b4 d5 fs5")
+    .sound("triangle")
+    .attack(0.002)
+    .decay(0.22)
+    .sustain(0.0)
+    .release(0.28)
+    .jux(rev)
+    .degradeBy(0.04)
+    .room(0.35)
+    .gain(0.24)
+    .pan(0.5)
+    .slow(4),
+
+  // ── MELODY (the result that accumulates) ──────────────────────
+  // E minor pentatonic: E G A B D
+  // The melody visits these notes in an order that suggests
+  // accumulation — it returns to E but always slightly changed.
+  // The loop runs. The result builds. The invariant holds.
+  note("~ e5 ~ ~ b4 ~ ~ ~  ~ ~ g5 ~ ~ a4 ~ ~")
+    .sound("sine")
+    .attack(0.012)
+    .decay(0.4)
+    .sustain(0.3)
+    .release(0.6)
+    .delay(0.35)
+    .delaytime(0.375)
+    .delayfeedback(0.24)
+    .room(0.48)
+    .gain(0.42)
+    .pan(0.5)
+    .slow(2)
+
+)

@@ -1,0 +1,101 @@
+// ══════════════════════════════════════════════════════════════
+// "Red Mesa Morning"
+// Chill cowboy / sunrise — first light on red sandstone
+//
+// Key:    A major
+// Tempo:  ~69 BPM  (setcpm 23)
+// Chords: A – D – E – A   (I – IV – V – I)
+// Feel:   Dawn breaking over red rock, cool air, coffee brewing
+//
+// A major: A C# E
+// D major: D F# A
+// E major: E G# B
+//
+// The I–IV–V–I cadence at sunrise tempo feels like waking up.
+// A major has a natural brightness — the open A and E strings
+// ring together and give the key its characteristic resonance.
+// E major (V) creates the strongest pull back to A — resolution
+// that feels like the sun finally cresting the ridge.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(23)
+
+stack(
+
+  // ── KICK (deliberate, morning pace) ──────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~")
+    .gain(0.45)
+    .lpf(3000),
+
+
+  // ── RIM ──────────────────────────────────────────────────────
+  s("~ ~ rim ~ ~ ~ rim ~")
+    .gain(0.35)
+    .room(0.1),
+
+
+  // ── BANJO ROLL (bright morning energy) ───────────────────────
+  // A major and E major both ring openly on banjo — these keys
+  // were written for this instrument.
+  //   Bar 1 A:  A4 C#5 E5 C#5 A4 C#5 E5 C#5
+  //   Bar 2 D:  D5 F#5 A5 F#5 D5 F#5 A5 F#5
+  //   Bar 3 E:  E4 G#4 B4 G#4 E5 G#4 B4 E5
+  //   Bar 4 A:  A4 C#5 E5 A5 E5 C#5 A4 ~
+  note("a4 cs5 e5 cs5 a4 cs5 e5 cs5  d5 fs5 a5 fs5 d5 fs5 a5 fs5  e4 gs4 b4 gs4 e5 gs4 b4 e5  a4 cs5 e5 a5 e5 cs5 a4 ~")
+    .sound("triangle")
+    .attack(0.001)
+    .decay(0.08)
+    .sustain(0.0)
+    .release(0.035)
+    .room(0.1)
+    .gain(0.54)
+    .pan(0.58)
+    .slow(4),
+
+
+  // ── GUITAR BASS ──────────────────────────────────────────────
+  // Root on beat 1, holds a long tone — slow morning pulse.
+  note("a2 ~ ~ ~ e3 ~ ~ ~  d2 ~ ~ ~ a2 ~ ~ ~  e2 ~ ~ ~ b2 ~ ~ ~  a2 ~ ~ ~ e3 ~ ~ a2")
+    .sound("sine")
+    .attack(0.005)
+    .decay(0.3)
+    .sustain(0.15)
+    .release(0.2)
+    .lpf(450)
+    .gain(0.68)
+    .slow(4),
+
+
+  // ── STEEL GUITAR (sunrise swell) ─────────────────────────────
+  // Very slow attack — chords fade in like dawn light, not sudden.
+  note("<[a3,cs4,e4] [d3,fs3,a3] [e3,gs3,b3] [a3,cs4,e4]>")
+    .sound("sawtooth")
+    .attack(0.2)
+    .decay(0.3)
+    .sustain(0.5)
+    .release(1.2)
+    .lpf(1650)
+    .room(0.52)
+    .size(0.6)
+    .gain(0.2)
+    .pan(0.4),
+
+
+  // ── MELODY (A major pentatonic: A B C# E F#) ─────────────────
+  // Rising melody for a rising sun. Starts low, reaches up.
+  // The F# (6th of A) gives it the characteristic "country bright."
+  note("cs5 ~ e5 ~ ~ ~ a5 ~  fs5 ~ ~ d5 ~ ~ ~ ~  b4 ~ e5 ~ ~ gs4 ~ ~  cs5 ~ ~ ~ a4 ~ ~ ~")
+    .sound("sine")
+    .attack(0.012)
+    .decay(0.26)
+    .sustain(0.15)
+    .release(0.32)
+    .delay(0.3)
+    .delaytime(0.5)
+    .delayfeedback(0.18)
+    .room(0.38)
+    .gain(0.46)
+    .pan(0.5)
+    .slow(4)
+
+)

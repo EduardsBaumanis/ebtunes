@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eBlēņas - Eduards Baumanis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="studio">
+
+  <div class="app">
+
+    <!-- HEADER -->
+    <header class="header">
+      <button id="menu-toggle" class="menu-toggle" title="Playlists">≡</button>
+      <span class="logo">◈</span>
+      <nav class="view-tabs">
+        <button id="tab-play"  class="tab-btn active" data-view="play">PLAY</button>
+        <button id="tab-board" class="tab-btn"        data-view="board">BOARD</button>
+      </nav>
+    </header>
+
+    <!-- BODY -->
+    <div class="body">
+
+      <!-- SIDEBAR (playlist tree) -->
+      <aside id="sidebar" class="sidebar">
+        <div id="playlist-tree" class="playlist-tree"></div>
+      </aside>
+
+      <!-- Mobile backdrop, captures taps outside the drawer -->
+      <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+      <!-- PLAY PANE: song header + editor -->
+      <main id="play-pane" class="play-pane">
+
+        <div class="song-info" id="song-info">
+          <div class="si-row">
+            <div class="si-meta-block">
+              <div class="si-counter" id="si-counter">— · —</div>
+              <h1 class="si-title" id="si-title">Pick a song from the sidebar</h1>
+              <div class="si-meta">
+                <span class="si-badge" id="si-key">—</span>
+                <span class="si-sep">·</span>
+                <span class="si-badge" id="si-bpm">—</span>
+                <span class="si-sep">·</span>
+                <span class="si-badge" id="si-pack">—</span>
+              </div>
+              <p class="si-feel"   id="si-feel"></p>
+              <p class="si-chords" id="si-chords"></p>
+            </div>
+            <div class="vote-bar" id="vote-bar">
+              <button id="btn-not" class="vote-btn vote-not" title="Vote down (-)">−</button>
+              <button id="btn-hot" class="vote-btn vote-hot" title="Vote up (+)">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Embedded strudel.cc — the same default player that the
+             strudel docs use. We pass the song's code as base64 in
+             the URL hash; strudel.cc loads with that code pre-filled
+             and shows its native transport bar (play / restart /
+             prev / next). Iframe avoids every CSS / AudioContext /
+             mobile-touch issue we hit trying to host the editor
+             ourselves — strudel.cc is already proven to work on
+             phone, so we embed it as-is. -->
+        <iframe id="strudel-frame"
+                class="editor"
+                title="Strudel REPL"
+                src="https://strudel.cc/"
+                allow="autoplay; clipboard-read; clipboard-write"
+                loading="lazy"></iframe>
+
+        <div class="hints">
+          <span>Tap the ▶ button inside the player to start</span>
+          <span class="sep">·</span>
+          <span>You can edit the code freely</span>
+        </div>
+      </main>
+
+      <!-- BOARD PANE: leaderboard -->
+      <main id="board-pane" class="board-pane hidden">
+        <div class="board-header">
+          <h2 class="board-title">LEADERBOARD</h2>
+          <span id="board-status" class="board-refresh-timer"></span>
+        </div>
+        <div id="board-content" class="board-content">
+          <div class="board-loading">LOADING...</div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- Re-use the lofi-player playlist registry so every folder in the
+       repo shows up in the sidebar tree automatically. -->
+  <script src="../lofi-player/playlists.js"></script>
+  <script src="supabase.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

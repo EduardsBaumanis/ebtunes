@@ -1,0 +1,89 @@
+// ══════════════════════════════════════════════════════════════
+// "Vowel Drone Finale"
+// Ambient drone — sustained chord with ALL five vowels at once
+//
+// Key:    F major (Lydian — F G A B C D E — #4 for brightness)
+// Tempo:  ~30 BPM equivalent  (setcpm 7.5)
+// Genre:  Drone / La Monte Young tradition (vocal variant)
+//
+// VOCAL TECHNIQUE
+//   FIVE SIMULTANEOUS vowel layers — a/e/i/o/u stacked on the same
+//   chord. Each vowel adds its own formant peak to the spectrum.
+//   The combined spectrum is the same chord but with rich, voice-
+//   like harmonic colour that no single vowel could produce. The
+//   sound is "a choir singing the same chord in five different
+//   mouth-shapes at once".
+// ══════════════════════════════════════════════════════════════
+
+setcpm(7.5)
+
+stack(
+
+  // ── FUNDAMENTAL DRONE ────────────────────────────────────────
+  note("f1").sound("sine")
+    .attack(8).release(15).gain(0.5)
+    .color("midnightblue"),
+
+  // ── SUB DRONE — extra weight ─────────────────────────────────
+  note("f0").sound("sine")
+    .attack(10).release(15).gain(0.32)
+    .color("navy"),
+
+  // ── VOWEL "A" LAYER ───────────────────────────────────────────
+  // Each vowel layer plays the same chord but with a different
+  // formant filter shape. The five layers together = a five-vowel
+  // CHOIR singing the same chord.
+  note("[f3,a3,c4,e4]")
+    .sound("sawtooth").vowel("a")
+    .attack(6).release(12).lpf(2400)
+    .gain(0.3).pan(0.3)
+    .room(0.7).size(0.92)
+    .color("crimson"),
+
+  // ── VOWEL "E" LAYER ───────────────────────────────────────────
+  note("[f3,a3,c4,e4]")
+    .sound("sawtooth").vowel("e")
+    .attack(6).release(12).lpf(2400)
+    .gain(0.3).pan(0.5)
+    .room(0.7).size(0.92)
+    .color("orange"),
+
+  // ── VOWEL "I" LAYER ───────────────────────────────────────────
+  note("[f3,a3,c4,e4]")
+    .sound("sawtooth").vowel("i")
+    .attack(6).release(12).lpf(2400)
+    .gain(0.3).pan(0.7)
+    .room(0.7).size(0.92)
+    .color("yellow"),
+
+  // ── VOWEL "O" LAYER ───────────────────────────────────────────
+  note("[f3,a3,c4,e4]")
+    .sound("sawtooth").vowel("o")
+    .attack(7).release(12).lpf(2400)
+    .gain(0.3).pan(0.4)
+    .room(0.7).size(0.92)
+    .color("purple"),
+
+  // ── VOWEL "U" LAYER ───────────────────────────────────────────
+  note("[f3,a3,c4,e4]")
+    .sound("sawtooth").vowel("u")
+    .attack(7).release(12).lpf(2400)
+    .gain(0.3).pan(0.6)
+    .room(0.7).size(0.92)
+    .color("teal"),
+
+  // ── HIGH SHIMMER — Lydian #4 colour ──────────────────────────
+  note("b5 ~ ~ ~ ~ ~ ~ ~")
+    .sound("triangle").attack(0.5).release(8)
+    .delay(0.7).delaytime(0.625).delayfeedback(0.55)
+    .room(0.85).gain(0.16).pan(0.5).slow(4)
+    .color("white"),
+
+  // ── BREATH WIND ───────────────────────────────────────────────
+  s("white*8")
+    .lpf(1200).hpf(600)
+    .gain("0.04 0.07 0.04 0.08")
+    .pan(rand).slow(4)
+    .color("gray")
+
+)

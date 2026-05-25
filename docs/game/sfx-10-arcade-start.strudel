@@ -1,0 +1,42 @@
+// ══════════════════════════════════════════════════════════════
+// "Arcade Start"
+// Videogame — "press start" / coin-inserted jingle
+//
+// Key:    F major
+// Tempo:  140 BPM  (setcpm 70)
+// Chords: F – C   (I – V)
+// Feel:   Classic arcade "ready player one" greeting.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(70)
+
+stack(
+
+  // ── JINGLE ───────────────────────────────────────────────────
+  // Three-note major triad fanfare — F C F.
+  note("f5 c6 f6 ~ ~ ~ ~ ~")
+    .sound("square")
+    .attack(0.002)
+    .decay(0.18)
+    .sustain(0.4)
+    .release(0.12)
+    .gain(0.45),
+
+
+  // ── BASS HIT ─────────────────────────────────────────────────
+  // Punchy bass underneath each note.
+  note("f3 c4 f4 ~ ~ ~ ~ ~")
+    .sound("sawtooth")
+    .lpf(1200)
+    .attack(0.003)
+    .release(0.18)
+    .gain(0.32),
+
+
+  // ── COIN CLINK ───────────────────────────────────────────────
+  // Faint metallic ping after the jingle for arcade feel.
+  s("~ ~ ~ rim ~ ~ ~ ~")
+    .gain(0.35)
+    .hpf(4000)
+
+)

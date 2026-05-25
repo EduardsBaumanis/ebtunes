@@ -1,0 +1,82 @@
+// ============================================================
+// LESSON 02: Mini-Notation
+// ============================================================
+// Strudel uses a compact pattern language called "mini-notation"
+// to write rhythms and sequences. It's the heart of Strudel.
+//
+// Think of a pattern string as a timeline split into equal slices:
+//   "a b c d"  →  4 events, each gets 1/4 of the cycle
+//   "a b"      →  2 events, each gets 1/2 of the cycle
+//   "a"        →  1 event, gets the whole cycle
+//
+// MINI-NOTATION OPERATORS:
+//   ~          →  rest (silence for that slot)
+//   *n         →  speed up — repeat n times within this slot
+//   /n         →  slow down — play once every n cycles
+//   [a b c]    →  subdivision — fit a b c into ONE slot
+//   <a b c>    →  alternate — use a different value each successive cycle
+//   !n         →  replicate — shorthand for repeating an element
+//   ?          →  random — play this event with ~50% chance each cycle
+//   a:n        →  select variation n of sample a  (e.g. hh:2 = 3rd hi-hat)
+// ============================================================
+
+setcpm(60)
+
+// --- EXAMPLE 1: Subdivision with [] ---
+// [bd bd] fits TWO kicks into the space of ONE beat slot.
+// Compare: "bd sd bd sd"  vs  "bd [sd sd] bd sd"
+s("bd [sd sd] bd sd")
+
+
+// --- EXAMPLE 2: Deep nesting ---
+// [] inside [] halves duration again each level. Very precise rhythms.
+// s("bd [sd [hh hh hh]] bd sd")
+
+
+// --- EXAMPLE 3: Alternation with <> ---
+// On cycle 1: snare. On cycle 2: clap. On cycle 3: rimshot. Repeats.
+// Great for adding variety without writing complex logic.
+// s("bd ~ <sd cp rim> ~")
+
+
+// --- EXAMPLE 4: Slow down with /n ---
+// "oh/2" plays the open hi-hat once every 2 cycles.
+// This adds a long, sweeping accent over multiple bars.
+// stack(
+//   s("bd*4"),
+//   s("oh/2")
+// )
+
+
+// --- EXAMPLE 5: Random events with ? ---
+// Each cycle, each ? event has ~50% chance of playing.
+// Creates variation and "human feel" automatically.
+// stack(
+//   s("bd ~ sd ~"),
+//   s("hh? hh hh? hh hh? hh hh? hh")
+// )
+
+
+// --- EXAMPLE 6: Sample variations with : ---
+// Most sample banks include multiple recordings.
+// "bd:0 bd:1 bd:2 bd:3" plays 4 different kick samples in sequence.
+// s("bd:0 bd:1 bd:2 bd:3")
+
+
+// --- EXAMPLE 7: Combining operators ---
+// Mix and match to build complex rhythms from simple rules.
+// stack(
+//   s("bd ~ [bd bd] ~"),
+//   s("~ cp ~ <cp cp*2>"),
+//   s("[hh hh] hh [hh hh] hh").gain(0.5),
+//   s("oh/2")
+// )
+
+
+// ============================================================
+// EXERCISE:
+//   1. Add a 4th option to the alternation: <sd cp rim bd>
+//   2. Try "bd!4" — what does the ! operator do? (hint: same as bd*4?)
+//   3. Write a pattern using [, ], <, >, and ? all in one line
+//   4. What rhythm does s("bd [~ bd] ~ [bd ~ bd bd]") produce?
+// ============================================================

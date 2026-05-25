@@ -1,0 +1,33 @@
+// Album: Footwork — Chicago Juke Codes
+// Track: 08 — minimal-tek
+// Genre: Footwork
+// Tempo / CPM: 158 BPM (setcpm 39.5)
+// Musical idea: Stripped to absolute essentials — just kick, 808, one hat layer. Negative space as instrument.
+// Strudel focus: Aggressive .mask() to mute layers in alternating bars, leaving big holes.
+// Visualisation: ._punchcard({ cycles: 4 }) — the long cycle reveals exactly when each layer drops in/out.
+
+setcpm(39.5)
+
+stack(
+
+  // ── 808 — sparse melody ──────────────────────────────────────
+  note("<d2 ~ ~ a1  ~ f2 ~ ~  d2 ~ ~ c2  ~ a1 ~ ~>")
+    .sound("sine").attack(0.001).release(0.32).shape(0.16)
+    .gain(0.9).pan(0.5)
+    .color("darkred"),
+
+  // ── KICK — only on cycles 1 and 3 (mask drops cycle 2 and 4) ─
+  s("bd ~ ~ bd  ~ bd ~ ~  bd ~ ~ bd  ~ ~ bd ~").gain(0.82).lpf(165).shape(0.18)
+    .mask("<1 0 1 1>")
+    .color("crimson")
+    ._punchcard({ cycles: 4 }),
+
+  // ── HAT — only on cycles 2 and 4 ─────────────────────────────
+  s("hh*16").gain("0.22 0.14").hpf(7400)
+    .mask("<0 1 0 1>")
+    .color("yellow"),
+
+  // ── CLAP — one hit, big space around it ──────────────────────
+  s("~ ~ cp ~  ~ ~ ~ ~  ~ ~ ~ ~  ~ ~ cp ~").gain(0.55).hpf(900).room(0.3)
+    .color("orange")
+)

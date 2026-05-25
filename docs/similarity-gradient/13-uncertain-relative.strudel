@@ -1,0 +1,16 @@
+// Album: Similarity Gradient
+// Track: 13 — uncertain-relative
+// Target similarity: 30/100
+// Actual similarity: 39.1/100
+// Similarity band: noticeably different
+// Concept: An uncertain relative — different lineage, only the eyes look familiar.
+// Musical strategy: Use n()+scale() (rare in repo) with whenmod() and early() — rare token signature.
+// Strudel focus: n(), scale(), whenmod(), early() — unusual function vocabulary.
+// Visualisation: pianoroll({ cycles: 4 }) — background non-silent variant for variety.
+
+n("0 2 4 6 4 2 6 0")
+  .scale("c:phrygian")
+  .whenmod(4, 3, x => x.early(0.125))
+  .legato(0.4)
+  .gain(0.4)
+  .pianoroll({ cycles: 4 })

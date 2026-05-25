@@ -1,0 +1,13 @@
+// Album: Similarity Gradient
+// Track: 20 — fractured-lineage
+// Target similarity: 24/100
+// Actual similarity: 56/100
+// Similarity band: moderately similar
+// Concept: A fractured lineage — granular noise textures using uncommon chop/striate/splice/loopAt chains.
+// Musical strategy: pure noise routing with rare chain (striate, splice, loopAt, swingBy) and no stack().
+// Strudel focus: striate(), splice(), loopAt(), swingBy() — repo-rare combo.
+// Visualisation: punchcard({ cycles: 4, smear: true }) — background smear.
+
+s("white*16").striate(8).splice(4, "0 1 2 3").loopAt(2).swingBy(0.3, 2)
+  .hpf(3000).lpf(8000).gain(0.2)
+  .punchcard({ cycles: 4, smear: true })

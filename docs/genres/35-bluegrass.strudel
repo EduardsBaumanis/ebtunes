@@ -1,0 +1,70 @@
+// ══════════════════════════════════════════════════════════════
+// "Holler Hill Breakdown"
+// Bluegrass — Bill Monroe lineage, high-octane Appalachian
+//
+// Key:    G major (with Mixolydian b7 colour from the fiddle)
+// Tempo:  155 BPM  (setcpm 38.75)
+// Chords: G — C — D — G  (I — IV — V — I — bluegrass basics)
+// Feel:   Mandolin chop on 2+4, banjo roll, fiddle melody.
+//
+// THEORY NOTES
+//   Bluegrass developed from Bill Monroe's Blue Grass Boys in the
+//   1940s. The diagnostic features: mandolin chops (sharp chord
+//   stabs) on beats 2 and 4 (taking the role of a snare drum),
+//   banjo playing "Scruggs-style" 16th-note rolls, fiddle and
+//   guitar trading melodic lines. No drums in traditional bluegrass.
+//   Harmony is straight I-IV-V diatonic, often with the b7 colour
+//   chord (Mixolydian) borrowed from blues.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(38.75)
+
+stack(
+
+  // ── UPRIGHT BASS — TWO-FEEL ─────────────────────────────────
+  // Root on 1, fifth on 3 — bluegrass's "boom-chick" walking pattern.
+  note("<g2 ~ d3 ~  c2 ~ g2 ~  d2 ~ a2 ~  g2 ~ d3 ~>")
+    .sound("sawtooth").lpf(360).lpq(2)
+    .attack(0.005).decay(0.15).sustain(0.4).release(0.18)
+    .gain(0.75),
+
+  // ── MANDOLIN CHOP — REPLACES SNARE ───────────────────────────
+  // Sharp chord stabs on beats 2 and 4. Vowel filter "e" gives the
+  // bright mandolin tone. Very short envelope.
+  note("<[g4,b4,d5] [c4,e4,g4] [d4,f#4,a4] [g3,b3,d4]>")
+    .sound("sawtooth").vowel("e")
+    .attack(0.001).decay(0.04).sustain(0).release(0.04)
+    .struct("~ ~ x ~ ~ ~ x ~")
+    .lpf(3500).gain(0.55).pan(0.45),
+
+  // ── BANJO ROLL — SCRUGGS-STYLE 16ths ─────────────────────────
+  // Fast 16th-note arpeggios — the iconic banjo roll. Triangle wave
+  // approximates the bright bell-like banjo tone. Each chord gets
+  // a forward roll (1-2-3-5-1-2-3-5).
+  note("g3 d4 b3 g4  g3 d4 b3 g4  c4 e4 g4 c5  c4 e4 g4 c5  d4 f#4 a4 d5  d4 f#4 a4 d5  g3 d4 b3 g4  g3 d4 b3 g4")
+    .sound("triangle").attack(0.001).decay(0.04).sustain(0.15).release(0.08)
+    .lpf(4500).gain(0.42).pan(0.55),
+
+  // ── FIDDLE LEAD — HIGH ENERGY MELODY ─────────────────────────
+  // Lead fiddle line. G major + b7 (F natural) — the Mixolydian
+  // colour that gives bluegrass its bluesy lift.
+  note("d5 g5 b5 d6  c6 b5 a5 g5  e5 c5 g4 e5  d5 b4 g4 ~  a5 ~ b5 c6  d6 ~ b5 a5  g5 a5 b5 d6  ~ b5 g5 d5")
+    .sound("sawtooth").attack(0.005).release(0.18)
+    .vib(2.5).vibmod(0.12)
+    .lpf(3800).gain(0.48).pan(0.55).slow(2),
+
+  // ── ACOUSTIC GUITAR — STRUMMED RHYTHM ────────────────────────
+  // Rhythm chord strums on every 8th.
+  note("<[g3,b3,d4,g4] [c4,e4,g4,c5] [d4,f#4,a4,d5] [g3,b3,d4,g4]>")
+    .sound("sawtooth").attack(0.001).decay(0.06).sustain(0.15).release(0.08)
+    .lpf(2400).gain(0.32).pan(0.4),
+
+  // ── DOBRO / RESONATOR SLIDE ──────────────────────────────────
+  // Pitch-bent slide lines — vibrato modulates pitch. Sparse, only
+  // on accented bars.
+  note("g4 ~ ~ d5  ~ b4 ~ g4  ~ ~ a4 b4  ~ d5 ~ ~")
+    .sound("sawtooth").attack(0.02).release(0.5)
+    .vib(4).vibmod(0.3)
+    .lpf(3000).room(0.22).gain(0.34).pan(0.4).slow(2)
+
+)

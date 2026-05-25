@@ -1,0 +1,126 @@
+// ══════════════════════════════════════════════════════════════
+// "Async Await"
+// Floating lo-fi — suspended in promise, unresolved and calm
+//
+// Key:    C major (the default key — clean, no sharps, no flats)
+// Tempo:  ~74 BPM  (setcpm 25)
+// Chords: Cmaj7 – Em7 – Am7 – Fmaj7  (I–iii–vi–IV, the axis loop)
+// Feel:   Awaiting a response. The spinner turning.
+//         Not impatient. Patient like event-driven code.
+//         The callback will come. It always does.
+// Chords: Cmaj7  Em7  Am7  Fmaj7
+// ══════════════════════════════════════════════════════════════
+
+setcpm(25)
+
+stack(
+
+  // ── KICK (floating, minimal) ──────────────────────────────────
+  // Only on beat 1. Suspended feeling = fewer downbeats.
+  // This track breathes rather than drives.
+  // lpf(3200) = warm thud, not a thump.
+  s("bd ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.70)
+    .lpf(3200)
+    .room(0.10),
+
+  // ── SNARE (soft, swinging) ────────────────────────────────────
+  // Snare on 2 and 4, very soft. This track floats above its drums.
+  // sd:3 = alternate snare sample (softer) if available.
+  // pan(0.5) = center — this is a balanced, centered track.
+  s("~ ~ sd:3 ~ ~ ~ sd:3 ~")
+    .gain(0.48)
+    .room(0.22)
+    .pan(0.50),
+
+  // ── HI-HAT (airy swing) ───────────────────────────────────────
+  // Very airy — lpf at 11000, degradeBy at 0.2.
+  // [hh [~ hh]] = swing. degradeBy(0.20) = many missing hits.
+  // This hat is barely there, like the spinner barely visible.
+  s("[hh [~ hh]]*4")
+    .gain(0.18)
+    .lpf(11000)
+    .degradeBy(0.20)
+    .pan(0.62),
+
+  // ── SOFT RIDE ────────────────────────────────────────────────
+  // Ride cymbal creates a different feel — more jazz, less hip-hop.
+  // rd = ride. Half the hits dropped. Very spacious.
+  s("rd ~ ~ ~ ~ rd ~ ~")
+    .gain(0.22)
+    .lpf(9000)
+    .room(0.15)
+    .pan(0.42),
+
+  // ── BASS (smooth, melodic) ────────────────────────────────────
+  // Smooth bass moving through chord tones — not a walking line,
+  // more like a melody in the bass. Root → 5th → back.
+  // Sine = the smoothest bass, like async code that just works.
+  // shape(0.06) = barely any saturation — almost pure.
+  note("c2 g2 ~ c2  e2 b2 ~ e2  a2 e3 ~ a2  f2 c3 ~ f2")
+    .sound("sine")
+    .lpf(300)
+    .attack(0.012)
+    .decay(0.2)
+    .sustain(0.55)
+    .release(0.2)
+    .shape(0.06)
+    .gain(0.68)
+    .slow(4),
+
+  // ── CHORD PAD (warm, wide) ─────────────────────────────────────
+  // The I–iii–vi–IV ("axis loop") is used in countless pop songs
+  // because it's harmonically neutral — goes nowhere, resolves
+  // to nothing. Like async code: it waits without blocking.
+  // jux(rev) = right channel hears the chord sequence reversed.
+  // This creates gentle stereo shimmer.
+  note("<[c4,e4,g4,b4] [e4,g4,b4,d5] [a3,c4,e4,g4] [f4,a4,c5,e5]>")
+    .sound("sawtooth")
+    .attack(0.14)
+    .decay(0.4)
+    .sustain(0.68)
+    .release(0.7)
+    .lpf(2400)
+    .jux(rev)
+    .room(0.38)
+    .gain(0.20)
+    .pan(0.5)
+    .slow(2),
+
+  // ── SECOND PAD (upper extensions) ─────────────────────────────
+  // 9ths of each chord: D, F#, B, G.
+  // phaser(0.18) = very gentle shimmer, like a loading indicator.
+  // Barely audible — felt more than heard.
+  note("<[d5,g5] [f#4,a4] [b4,d5] [g4,b4]>")
+    .sound("triangle")
+    .attack(0.25)
+    .sustain(0.72)
+    .release(1.0)
+    .lpf(5500)
+    .phaser(0.18)
+    .phaserdepth(0.45)
+    .room(0.5)
+    .gain(0.13)
+    .pan(0.55),
+
+  // ── MELODY (C major: C D E F G A B) ──────────────────────────
+  // The melody awaits — it doesn't rush to fill every bar.
+  // Long rests = the await keyword.
+  // Each note is a response that arrived.
+  // delay with 0.375 delaytime = the echo that follows the promise.
+  note("~ ~ ~ e5 ~ ~ ~ ~  ~ g5 ~ ~ ~ e5 ~ ~  ~ ~ a4 ~ ~ ~ c5 ~  ~ ~ ~ f4 ~ g4 ~ ~")
+    .sound("sine")
+    .attack(0.025)
+    .decay(0.5)
+    .sustain(0.35)
+    .release(0.9)
+    .delay(0.42)
+    .delaytime(0.375)
+    .delayfeedback(0.28)
+    .room(0.55)
+    .size(0.6)
+    .gain(0.44)
+    .pan(0.5)
+    .slow(4)
+
+)

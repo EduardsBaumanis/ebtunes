@@ -1,0 +1,47 @@
+// Album: Footwork — Chicago Juke Codes
+// Track: 09 — soulful-juke
+// Genre: Footwork
+// Tempo / CPM: 154 BPM (setcpm 38.5)
+// Musical idea: Sample-flip feel — a sustained "soul" chord pad chopped over a tight juke engine.
+// Strudel focus: .struct() applied to a sawtooth chord = rhythmic chord stabs ("soul-sample" emulation).
+// Visualisation: ._pianoroll({ fold: true, cycles: 2 }) — fold collapses unused notes to show chord-stab outlines.
+
+setcpm(38.5)
+
+stack(
+
+  // ── SUB ──────────────────────────────────────────────────────
+  note("g1").sound("sine").attack(2).release(4).gain(0.42)
+    .color("midnightblue"),
+
+  // ── "SOUL SAMPLE" CHORDS — Gm9 → Bbmaj7 → Eb6/9 → Dsus ───────
+  note("<[g3,bb3,d4,f4,a4] [bb3,d4,f4,a4] [eb3,g3,bb3,d4,f4] [d3,g3,a3,d4]>")
+    .sound("sawtooth").vowel("e")
+    .attack(0.005).release(0.18).lpf(2600)
+    .struct("x ~ x ~ ~ x ~ x")
+    .gain(0.42).pan(0.55).room(0.35)
+    .color("gold")
+    ._pianoroll({ fold: true, cycles: 2 }),
+
+  // ── 808 — minor-mode bass ────────────────────────────────────
+  note("<g1 ~ d2 ~  ~ bb1 ~ f2  ~ eb2 ~ ~  d2 ~ g1 ~>")
+    .sound("sine").attack(0.001).release(0.28).shape(0.16)
+    .gain(0.88).pan(0.5)
+    .color("darkred"),
+
+  // ── KICK ─────────────────────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~  bd ~ ~ bd  ~ ~ bd ~").gain(0.78).lpf(165).shape(0.18)
+    .color("crimson"),
+
+  // ── HAT ──────────────────────────────────────────────────────
+  s("hh*16").gain("0.24 0.14").hpf(7400)
+    .color("yellow"),
+
+  // ── TRIPLET ROLL ─────────────────────────────────────────────
+  s("hh*12").gain(0.14).hpf(8000)
+    .color("khaki"),
+
+  // ── CLAP ─────────────────────────────────────────────────────
+  s("~ ~ cp ~  ~ ~ ~ cp").gain(0.5).hpf(900).room(0.22)
+    .color("orange")
+)

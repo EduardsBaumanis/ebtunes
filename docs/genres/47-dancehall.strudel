@@ -1,0 +1,88 @@
+// ══════════════════════════════════════════════════════════════
+// "Sound System Saturday"
+// Dancehall — Jamaican 80s digital riddim, deep sub
+//
+// Key:    G minor (with V7 cadence for dancehall darkness)
+// Tempo:  100 BPM  (setcpm 25)
+// Chords: Gm — Cm — D7 — Gm  (i — iv — V7 — i)
+// Feel:   Stepped digital snare, sub bass, sparse offbeat skank.
+//
+// THEORY NOTES
+//   Dancehall came from Jamaica in the late 70s/early 80s — the
+//   digital successor to roots reggae. King Jammy's "Sleng Teng"
+//   (1985) was the first all-digital reggae record and set the
+//   template: drum machine (TR-808/909) instead of live drums,
+//   bass synth instead of bass guitar, sparse "skank" chord stab,
+//   deejay vocals on top. Tempo around 90-105 BPM. Compared to
+//   reggae's "one drop", dancehall puts the snare on every beat or
+//   on 1-3 — a "stepper" pattern.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(25)
+
+stack(
+
+  // ── DIGITAL KICK ─────────────────────────────────────────────
+  // TR-808-style kick on every quarter. Round and deep.
+  s("bd*4")
+    .gain(0.92).lpf(140).shape(0.12),
+
+  // ── STEPPER SNARE ────────────────────────────────────────────
+  // Snare on beats 1 and 3 — the dancehall "stepper" rhythm.
+  s("sd ~ ~ ~ sd ~ ~ ~")
+    .gain(0.74).hpf(260).room(0.18),
+
+  // ── RIM ON OFF-BEATS ─────────────────────────────────────────
+  // Tight rim shots on the &-of-1, &-of-2 etc. for the "skank"
+  // pulse.
+  s("~ rim ~ rim ~ rim ~ rim")
+    .gain(0.5).hpf(3000),
+
+  // ── HI-HAT 16ths ─────────────────────────────────────────────
+  // Light 16th-note hi-hats — supports the rhythm.
+  s("hh*16")
+    .gain("0.20 0.14 0.22 0.16")
+    .hpf(5800),
+
+  // ── SUB BASS ─────────────────────────────────────────────────
+  // Deep sub on chord roots — Gm — Cm — D7 — Gm. The dancehall
+  // sub is the centre of the mix.
+  note("<g1 c2 d2 g1>")
+    .sound("sine").attack(0.005).decay(0.3).sustain(0.5).release(0.5)
+    .gain(0.95).slow(2),
+
+  // ── BASS SYNTH MELODY ────────────────────────────────────────
+  // 8th-note bass line in G minor. Adds melodic interest above the
+  // sub. Outlines each chord with chromatic colour.
+  note("g2 ~ d3 ~  bb2 ~ g2 ~  c3 ~ g3 ~  eb3 ~ c3 ~  d3 ~ a3 ~  fs3 ~ d3 ~  g2 ~ d3 ~  bb2 ~ g2 ~")
+    .sound("sawtooth").lpf(680).lpq(6)
+    .attack(0.005).decay(0.12).sustain(0.3).release(0.08)
+    .gain(0.55),
+
+  // ── DIGITAL SKANK ────────────────────────────────────────────
+  // Off-beat chord stab — the "skank" of dancehall. Sharp envelope,
+  // vowel filter "a" for the synth-strings character.
+  note("<[g3,bb3,d4] [c4,eb4,g4] [d4,f4,a4] [g3,bb3,d4]>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.001).decay(0.06).sustain(0).release(0.05)
+    .struct("~ x ~ x ~ x ~ x")
+    .lpf(2800).gain(0.42).pan(0.45),
+
+  // ── MELODICA / KEYBOARD HOOK ─────────────────────────────────
+  // Triangle wave melody — minor pentatonic + raised 7. Heavy
+  // delay for the dub/dancehall echo.
+  note("g4 ~ bb4 ~  d5 ~ ~ c5  ~ bb4 ~ g4  ~ ~ ~ ~  c5 ~ eb5 ~  g5 ~ ~ f5  ~ eb5 ~ c5  ~ ~ ~ ~")
+    .sound("triangle").attack(0.04).release(0.4)
+    .lpf(3200).gain(0.45).pan(0.55)
+    .delay(0.42).delaytime(0.5).delayfeedback(0.4)
+    .room(0.4).slow(2),
+
+  // ── BOOM ECHO — DUB FX ───────────────────────────────────────
+  // Heavy delay-tail echo on a sparse rim hit — dancehall's
+  // dub-inherited "boom" FX.
+  s("rim").euclid(2, 8)
+    .gain(0.4).hpf(3200).pan(0.5)
+    .delay(0.6).delaytime(0.375).delayfeedback(0.55)
+    .room(0.45).slow(2)
+
+)

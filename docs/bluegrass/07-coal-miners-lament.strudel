@@ -1,0 +1,55 @@
+// ══════════════════════════════════════════════════════════════
+// "Coal Miner's Lament"
+// Track 7 of 15 · Bluegrass — slow ballad
+//
+// Key:    E minor
+// Tempo:  68 BPM  (setcpm 17)
+// Mood:   Mournful ballad. Three-part high-lonesome harmony.
+//
+// VOCAL TECHNIQUE
+//   Lead (vowel "a", centred), Tenor (vowel "e", a 3rd above,
+//   right), Baritone (vowel "o", a 3rd below, left). Classic
+//   bluegrass stack: tight, parallel, "high lonesome".
+// ══════════════════════════════════════════════════════════════
+
+setcpm(17)
+
+stack(
+
+  // ── BASS — slow walking quarters ─────────────────────────────
+  note("<e2 g2 b2 g2  a2 c3 b2 g2>")
+    .sound("sine").attack(0.005).release(0.5).lpf(220)
+    .gain(0.55).pan(0.45)
+    .color("saddlebrown"),
+
+  // ── GUITAR — slow chord strums ───────────────────────────────
+  note("<[e3,g3,b3] [a3,c4,e4] [b3,ds4,fs4] [e4,g4,b4]>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.01).release(0.6).lpf(2200)
+    .struct("x ~ x ~").gain(0.34).pan(0.55).room(0.4)
+    .color("forestgreen"),
+
+  // ── LEAD VOCAL ───────────────────────────────────────────────
+
+
+  // ── TENOR HARMONY — 3rd above ────────────────────────────────
+  note("<[g4 b4 d5 b4  g4 fs4 g4 ~]  [b4 d5 g5 d5  c5 b4 g4 ~]>")
+    .sound("sawtooth").vowel("e")
+    .attack(0.18).release(0.7).lpf(2600)
+    .gain(0.32).pan(0.65).room(0.5)
+    .color("orange"),
+
+  // ── BARITONE — 3rd below ─────────────────────────────────────
+  note("<[b3 e4 g4 e4  b3 a3 b3 ~]  [e4 g4 b4 g4  e4 d4 b3 ~]>")
+    .sound("sawtooth").vowel("o")
+    .attack(0.18).release(0.7).lpf(1900)
+    .gain(0.34).pan(0.35).room(0.5)
+    .color("indigo"),
+
+  // ── DOBRO accent — long bend at line end ─────────────────────
+  note("<~ ~ ~ ~  ~ ~ ~ b5>")
+    .sound("sawtooth").vowel("e")
+    .attack(0.3).release(2).lpf(3000).lpq(4)
+    .gain(0.3).pan(0.5).room(0.55).slow(2)
+    .color("gold")
+)

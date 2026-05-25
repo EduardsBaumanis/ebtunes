@@ -1,0 +1,39 @@
+// Album: gardens of broken clocks
+// Track: 13 — brass-orchid
+// Concept: A brass clock-key with an orchid carved into the bow — opulent, slightly oxidised.
+// Musical idea: Vowel "o" pad imitates a brass section + .arp() over a stacked chord = ornate filigree melody.
+// Strudel focus: vowel formant ("o") on sawtooth simulates brass; .arp() pattern indices for filigree.
+// Visualisation: ._pianoroll({ cycles: 2, labels: true }) — labels reveal the ornate arp note-by-note.
+
+setcpm(22)
+
+stack(
+
+  note("c1").sound("sine").attack(3).release(6).gain(0.42)
+    .color("midnightblue"),
+
+  // ── BRASS CHORD STAB — Cmaj9 → Am11 → Fmaj7 → G7sus ─────────
+  note("<[c3,e3,g3,b3,d4] [a2,c3,e3,g3,b3] [f2,a2,c3,e3] [g2,c3,d3,f3]>")
+    .sound("sawtooth").vowel("o")
+    .attack(0.2).release(1.2).lpf(2200)
+    .struct("x ~ ~ x ~ ~ x ~")
+    .gain(0.4).pan(0.45).room(0.5)
+    .color("goldenrod"),
+
+  // ── ORCHID FILIGREE ARP + labels ─────────────────────────────
+  note("<[c4,e4,g4,b4,d5] [a3,c4,e4,g4,b4] [f3,a3,c4,e4] [g3,b3,d4,f4]>")
+    .arp("0 2 4 1 3 0 4 2")
+    .sound("triangle").attack(0.003).release(0.15).lpf(3400)
+    .gain(0.34).pan(0.6).room(0.45)
+    .color("gold")
+    ._pianoroll({ cycles: 2, labels: true }),
+
+  // ── KICK ─────────────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.55).lpf(170).shape(0.1)
+    .color("crimson"),
+
+  // ── METAL TINKLE ─────────────────────────────────────────────
+  s("rim*5").gain(0.22).hpf(2400).room(0.2)
+    .degradeBy(0.3)
+    .color("peru")
+)

@@ -1,0 +1,83 @@
+// ══════════════════════════════════════════════════════════════
+// "Hypnotic Loop"
+// Hypnotic hard techno — Donato Dozzy / Voices From The Lake
+//
+// Key:    D minor (modal, single chord)
+// Tempo:  130 BPM  (setcpm 32.5)
+// Feel:   Long-form hypnotic loop, micro-variations over many bars.
+//
+// STRUDEL FUNCTIONS HIGHLIGHTED
+//   .iter(N)            — rotate pattern by 1/N each cycle (over N
+//                         cycles every rotation has been heard)
+//   .mask("<...>")      — gate the pattern on/off via a binary mask
+//   .sometimes(fn)      — apply fn ~50% of the time (probabilistic)
+//   .almostNever(fn)    — apply fn ~10% of the time (rare surprise)
+// ══════════════════════════════════════════════════════════════
+
+setcpm(slider(32.5, 28, 38))
+
+stack(
+
+  // ── KICK — steady, less distorted than schranz ────────────────
+  s("bd*4")
+    .shape(slider(0.25, 0, 0.6))
+    .gain(0.9).lpf(170)
+    .color("crimson"),
+
+  // ── CLAP — masked on / off across cycles ──────────────────────
+  // The mask cycles each bar — sometimes the clap is on, sometimes
+  // off. Over many bars you hear the clap appear and disappear,
+  // adding hypnotic micro-variation.
+  s("~ cp ~ cp")
+    .mask("<1 1 1 0  1 0 1 1>")
+    .gain(0.62).hpf(280).room(0.2)
+    .color("orange"),
+
+  // ── 16th HATS, rotated by iter ────────────────────────────────
+  // iter(4) means the pattern starts 1/4 later each cycle. Over 4
+  // cycles every starting offset has been heard, then it loops.
+  s("hh*16")
+    .iter(4)
+    .gain("0.30 0.20 0.32 0.20")
+    .hpf(5800)
+    .sometimes(x => x.hpf(8000))   // ~50% bright variant
+    .color("yellow"),
+
+  // ── DEEP SUB ──────────────────────────────────────────────────
+  note("d1")
+    .sound("sine").attack(0.005).release(0.65)
+    .struct("x ~ x ~ x x ~ x")
+    .gain(0.85)
+    .color("navy"),
+
+  // ── MID-BASS — TRIBAL DRIVING LINE ────────────────────────────
+  // Adds the rolling, hypnotic mid-low layer that defines hypnotic
+  // hard techno.
+  note("d2 ~ d2 a1  ~ d2 ~ d2")
+    .sound("sawtooth").lpf(380).lpq(4)
+    .attack(0.005).release(0.18)
+    .shape(0.2).gain(0.5)
+    .color("purple"),
+
+  // ── DRONE PAD — almost subliminal ─────────────────────────────
+  note("[d3,f3,a3]")
+    .sound("sawtooth").vowel("o")
+    .attack(2).release(3)
+    .lpf(slider(1400, 600, 3000))
+    .gain(0.22).pan(0.5)
+    .room(0.55).slow(4)
+    .color("teal"),
+
+  // ── METALLIC RIM PERC ─────────────────────────────────────────
+  s("rim").euclid(5, 12)
+    .gain(0.36).hpf(3200).pan(0.4)
+    .almostNever(x => x.fast(2))   // surprise triplet burst ~10%
+    .color("silver"),
+
+  // ── DELAYED PERC HIT — adds depth ─────────────────────────────
+  s("~ ~ ~ ~ ~ ~ ~ tabla")
+    .gain(0.35).hpf(600)
+    .delay(0.5).delaytime(0.5).delayfeedback(0.45)
+    .room(0.5).slow(2)
+    .color("plum")
+)

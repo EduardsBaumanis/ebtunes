@@ -1,0 +1,48 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 14 — broken-2step
+// Genre: Broken beat / UK Garage
+// Tempo / CPM: 130 BPM (setcpm 32.5)
+// Musical idea: Broken beat lean — kicks and snares scatter via .every(N, rev) and .ply(N).
+// Strudel focus: .every(3, rev) on snare, .ply() bursts on hats = "broken" feel inside 2-step framework.
+// Visualisation: ._punchcard({ cycles: 4 }) on the kick to track the breaks.
+
+setcpm(32.5)
+
+stack(
+
+  note("c1").sound("sine").attack(2).release(5).gain(0.42)
+    .color("midnightblue"),
+
+  // ── BROKEN KICK ──────────────────────────────────────────────
+  s("bd ~ bd ~  ~ bd ~ ~  bd ~ ~ bd  ~ ~ bd ~")
+    .gain(0.82).lpf(170).shape(0.14)
+    .every(4, rev)
+    .color("crimson")
+    ._punchcard({ cycles: 4 }),
+
+  // ── BROKEN SNARE ─────────────────────────────────────────────
+  s("~ ~ sd ~  sd ~ ~ ~  ~ ~ ~ sd  ~ sd ~ ~")
+    .gain(0.55).hpf(900).room(0.22)
+    .every(3, rev)
+    .color("orange"),
+
+  // ── HATS with ply bursts ─────────────────────────────────────
+  s("hh*16").swingBy(0.35, 2)
+    .gain("0.26 0.14").hpf(7300)
+    .sometimesBy(0.25, ply(3))
+    .color("yellow"),
+
+  // ── SUB ──────────────────────────────────────────────────────
+  note("<c2 g1 bb1 f1>")
+    .sound("sine").attack(0.005).release(0.4).shape(0.12)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.72).pan(0.5)
+    .color("navy"),
+
+  // ── CHORD STAB — Cm9 → Fm7 → Bbmaj7 → G7 ─────────────────────
+  note("<[c4,eb4,g4,bb4] [f3,ab3,c4,eb4] [bb3,d4,f4,a4] [g3,b3,d4,f4]>")
+    .sound("triangle").attack(0.005).release(0.22).lpf(2700)
+    .struct("~ x ~ ~ x ~ ~ ~")
+    .gain(0.34).pan(0.55).room(0.4)
+    .color("gold")
+)

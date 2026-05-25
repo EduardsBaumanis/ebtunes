@@ -1,0 +1,90 @@
+// ══════════════════════════════════════════════════════════════
+// "Campfire Lullaby"
+// Chill cowboy / acoustic fingerpick — fire dying down, stars out
+//
+// Key:    D major
+// Tempo:  ~54 BPM  (setcpm 18)
+// Chords: D – G – A – D   (I – IV – V – I)
+// Feel:   Quiet campfire, end of a long trail day, sky full of stars
+//
+// D major: D F# A
+// G major: G B D
+// A major: A C# E
+//
+// The I–IV–V–I is the most fundamental cadence in tonal music.
+// D gives home, G lifts upward, A creates longing, D is rest.
+// At this slow tempo it breathes like a lullaby.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(18)
+
+stack(
+
+  // ── RIM ONLY (no kick — just a soft pulse) ───────────────────
+  s("~ ~ rim ~ ~ ~ ~ ~")
+    .gain(0.35)
+    .room(0.15),
+
+
+  // ── BANJO FINGERPICK ─────────────────────────────────────────
+  // Slower banjo feel — individual notes, not a fast roll.
+  // Each chord's tones picked in a gentle up-down pattern.
+  //   Bar 1 D:  D4 F#4 A4 F#4 D5 F#4 A4 F#4
+  //   Bar 2 G:  G4 B4  D5 B4  G4 B4  D5 B4
+  //   Bar 3 A:  A4 C#5 E5 C#5 A4 C#5 E5 C#5
+  //   Bar 4 D:  D4 A4  F#4 D5 A4 F#4 D4  ~
+  note("d4 fs4 a4 fs4 d5 fs4 a4 fs4  g4 b4 d5 b4 g4 b4 d5 b4  a4 cs5 e5 cs5 a4 cs5 e5 cs5  d4 a4 fs4 d5 a4 fs4 d4 ~")
+    .sound("triangle")
+    .attack(0.001)
+    .decay(0.12)
+    .sustain(0.0)
+    .release(0.05)
+    .room(0.15)
+    .gain(0.5)
+    .pan(0.56)
+    .slow(4),
+
+
+  // ── ACOUSTIC GUITAR CHORD (subtle strum beneath the banjo) ───
+  // One chord per cycle, soft and warm behind the banjo picking.
+  note("<[d4,fs4,a4] [g3,b3,d4] [a3,cs4,e4] [d4,fs4,a4]>")
+    .sound("triangle")
+    .attack(0.008)
+    .decay(0.3)
+    .sustain(0.15)
+    .release(0.5)
+    .lpf(2200)
+    .room(0.3)
+    .gain(0.22)
+    .pan(0.44),
+
+
+  // ── BASS (fingerpicked low string) ───────────────────────────
+  // Root on beat 1, 5th on beat 3. Deep and warm.
+  note("d2 ~ ~ a2 ~ ~ ~ ~  g2 ~ ~ d3 ~ ~ ~ ~  a2 ~ ~ e3 ~ ~ ~ ~  d2 ~ ~ a2 ~ ~ ~ ~")
+    .sound("sine")
+    .attack(0.004)
+    .decay(0.25)
+    .sustain(0.05)
+    .release(0.12)
+    .lpf(480)
+    .gain(0.65)
+    .slow(4),
+
+
+  // ── MELODY (D major pentatonic: D E F# A B) ──────────────────
+  // Humming, peaceful. Long pauses — the fire crackles, wind stirs.
+  // Sine for a soft, vocal-like tone. Long release lets notes hang.
+  note("fs5 ~ ~ ~ a5 ~ ~ ~  ~ b4 ~ ~ ~ ~ d5 ~  e5 ~ ~ ~ fs5 ~ ~ ~  ~ ~ a4 ~ ~ ~ d4 ~")
+    .sound("sine")
+    .attack(0.015)
+    .decay(0.3)
+    .sustain(0.18)
+    .release(0.45)
+    .room(0.45)
+    .size(0.5)
+    .gain(0.44)
+    .pan(0.5)
+    .slow(4)
+
+)

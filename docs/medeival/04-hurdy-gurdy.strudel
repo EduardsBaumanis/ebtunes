@@ -1,0 +1,44 @@
+// ══════════════════════════════════════════════════════════════
+// "Hurdy Gurdy"
+// Track 4 of 20 · Medeival
+//
+// Key:    G Mixolydian (flat-7 colour)
+// Tempo:  60 BPM  (setcpm 15)
+// Mood:   Wandering minstrel. Continuous drone + buzzing string.
+//
+// VOCAL TECHNIQUE
+//   The hurdy-gurdy is a bowed-wheel instrument with a CONSTANT
+//   drone. We emulate it with sustained sawtooth + .vowel("e")
+//   (formant near a reed/string buzz) and a melody on top.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(15)
+
+stack(
+
+  // ── DRONE — G + D fifth, never stops ─────────────────────────
+  note("g1").sound("sine").attack(6).release(11).gain(0.42)
+    .color("midnightblue"),
+
+  note("[g2,d3]").sound("sawtooth").vowel("o")
+    .attack(5).release(9).lpf(1300).gain(0.4).room(0.65)
+    .color("saddlebrown"),
+
+  // ── BUZZING STRING — the trompette of the hurdy gurdy ────────
+  note("[g3,d4]").sound("sawtooth").vowel("e")
+    .attack(0.05).release(0.4).lpf(2200).lpq(8)
+    .gain(0.32).pan(0.4).room(0.5)
+    .struct("x x x x x x x x")
+    .color("peru"),
+
+  // ── MELODY — Mixolydian dance line, repeating ────────────────
+  note("g4 a4 b4 g4  f4 g4 a4 b4  c5 b4 a4 g4  f4 g4 a4 g4")
+    .sound("sawtooth").vowel("a")
+    .attack(0.1).release(0.5).lpf(2400)
+    .gain(0.36).pan(0.6).room(0.55)
+    .color("goldenrod"),
+
+  // ── Tambourine-like shake (light) ────────────────────────────
+  s("hh*8").gain("0.12 0.06 0.10 0.06").hpf(7500)
+    .color("yellow")
+)

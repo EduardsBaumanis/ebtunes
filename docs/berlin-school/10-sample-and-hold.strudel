@@ -1,0 +1,57 @@
+// ══════════════════════════════════════════════════════════════
+// "Sample-And-Hold"
+// Track 10 of 20 · Berlin School
+//
+// Key:    A minor (mostly — the S&H wanders)
+// Tempo:  100 BPM  (setcpm 25)
+// Mood:   The classic modular trick: random voltage on each clock.
+//
+// STRUDEL TECHNIQUE
+//   choose([...])   — emulates Sample-and-Hold module
+//   Each clock pulse picks a NEW random value from the set =
+//   wandering melody that stays within a scale.
+//
+// VISUALIZATION
+//   .pianoroll() — see the S&H notes scatter across the grid
+// ══════════════════════════════════════════════════════════════
+
+setcpm(25)
+
+stack(
+
+  note("a1").sound("sine").attack(3).release(6).gain(0.48)
+    .color("midnightblue"),
+
+  // ── KICK ─────────────────────────────────────────────────────
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.62).lpf(170).shape(0.12)
+    .color("crimson"),
+
+  // ── HAT — clock pulses ───────────────────────────────────────
+  s("hh*8").gain(0.24).hpf(6900)
+    .color("yellow"),
+
+  // ── S&H LINE — picks new note every clock tick + pianoroll ───
+  note(choose("a3","c4","d4","e4","g4","a4","c5","e5"))
+    .sound("sawtooth")
+    .lpf(slider(1500, 500, 3200)).lpq(8)
+    .attack(0.003).release(0.13)
+    .fast(4)
+    .gain(0.42).pan(0.5).room(0.32)
+    .color("magenta")
+    .pianoroll(),
+
+  // ── BASS S&H — slower, fewer choices ─────────────────────────
+  note(choose("a1","e2","g1","d2"))
+    .sound("sawtooth").lpf(500).lpq(6).shape(0.14)
+    .attack(0.005).release(0.2)
+    .struct("x ~ x ~ x ~ x ~")
+    .gain(0.6).pan(0.5)
+    .color("navy"),
+
+  // ── PAD — anchored Am9 ───────────────────────────────────────
+  note("[a3,c4,e4,g4,b4]")
+    .sound("sawtooth").vowel("u")
+    .attack(4).release(8).lpf(1800)
+    .gain(0.28).pan(0.5).room(0.55)
+    .color("indigo")
+)

@@ -30,8 +30,14 @@ jobs:
           mkdir _site
           rsync -a \
             --exclude='.env*' \
+            --exclude='.agents' \
+            --exclude='.claude' \
+            --exclude='.codex' \
             --exclude='.git' \
+            --exclude='.gitattributes' \
             --exclude='.github' \
+            --exclude='.gitignore' \
+            --exclude='docs' \
             --exclude='_site' \
             --exclude='node_modules' \
             --exclude='package-lock.json' \

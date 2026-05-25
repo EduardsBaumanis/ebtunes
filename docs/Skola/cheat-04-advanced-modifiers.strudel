@@ -1,0 +1,426 @@
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  STRUDEL CHEAT SHEET 4 — ADVANCED MODIFIERS                 ║
+// ║  Random, Conditional, and Time-based pattern transformations ║
+// ╚══════════════════════════════════════════════════════════════╝
+//
+// Copyright (C) 2024 Eduarda Baumaņa
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Affero General Public License for more details.
+//
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+//
+// Ctrl+Enter  → evaluate & play the uncommented example
+// Ctrl+.      → stop all sound
+//
+// ── CONTENTS ─────────────────────────────────────────────────────
+//   1. Conditional Modifiers — selective application
+//   2. Random Modifiers — probabilistic pattern changes
+//   3. Advanced Time Modifiers — rhythm manipulation
+//   4. Pattern Selection — pick, inhabit, squeeze
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 1. CONDITIONAL MODIFIERS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//
+// Apply functions selectively based on conditions or cycling patterns.
+
+// ── .when() — Apply function when pattern is true ────────────────
+//   Applies a function only when the given binary pattern is "on" (1).
+//   Useful for conditional changes synced to a beat.
+//
+//   Usage: pattern.when(binary_pattern, function)
+
+setcpm(30)
+
+// Apply filter sweep only every other beat
+note("c3 d3 e3 f3").s("sawtooth")
+  .when("<0 1>", x => x.lpf(400))
+
+// --- More complex: Reverse melody on specific beats ---
+// note("c4 d4 e4 f4").slow(2)
+//   .when("<1 0 1 1>", x => x.rev())
+
+
+// ── .mask() — Silence pattern based on binary mask ────────────────
+//   Returns silence (~) when mask is 0. Useful for rhythmic variation.
+//
+//   Usage: pattern.mask(binary_pattern)
+
+// note("c4 e4 g4 b4").mask("<1 [0 1]>")
+
+
+// ── .struct() — Apply one pattern's structure to another ───────────
+//   Uses the rhythm/timing of one pattern to shape another.
+//
+//   Usage: pattern.struct(rhythm_pattern)
+
+// note("c4 e4 g4 b4")
+//   .struct("x ~ x ~ ~ x ~ x")
+
+
+// ── .chunk() — Cycle through transformed pattern pieces ───────────
+//   Divides pattern into N parts, applies function to each part in turn.
+//   One part plays per cycle.
+//
+//   Usage: pattern.chunk(num_parts, function)
+
+// note("0 1 2 3").scale("C:major")
+//   .chunk(4, x => x.add(7))
+
+
+// ── .chunkBack() — Same as chunk(), but reverse cycling ────────────
+//   Cycles through pattern parts in reverse order.
+
+// note("0 1 2 3").scale("C:major")
+//   .chunkBack(4, x => x.add(7))
+
+
+// ── .arp() — Arpeggiate stacked notes ──────────────────────────────
+//   Selects indices from stacked (comma-separated) notes.
+//   Useful for breaking chords into flowing arpeggios.
+//
+//   Usage: note("[c,e,g]").arp("pattern of indices")
+
+// note("<[c,e,g]!2 [d,f,a]>")
+//   .arp("0 [0,2] 1 [0,1,2]")
+
+
+// ── .reset() — Restart pattern at specific times ────────────────────
+//   Resets the pattern to its start for each beat of a trigger pattern.
+//   Useful for rhythmic pulsing or re-triggering.
+//
+//   Usage: pattern.reset(trigger_pattern)
+
+// s("[bd lt ht]*2").reset("<x@3 x(5,8)>")
+
+
+// ── .restart() — Full restart from cycle 0 ────────────────────────
+//   Like reset(), but starts from cycle 0 of the entire pattern,
+//   not just the current cycle.
+
+// s("[bd lt ht]*2").restart("<x@3 x(5,8)>")
+
+
+// ── .hush() — Silence a pattern ────────────────────────────────────
+//   Mutes the pattern completely. Useful for arranging silence.
+
+// stack(
+//   s("bd").hush(),
+//   s("hh*3")
+// )
+
+
+// ── .invert() — Flip 1s and 0s ─────────────────────────────────────
+//   Inverts a binary pattern (0→1, 1→0). Use on masks and structures.
+
+// s("bd").struct("1 0 0 1 0 0 1 0".lastOf(4, invert))
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 2. RANDOM MODIFIERS — PROBABILISTIC CHANGES
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//
+// Add randomness and probability to patterns.
+
+// ── .choose() — Random selection per event ────────────────────────
+//   Picks randomly from a list of values for each event.
+//   Changes on every note, not every cycle.
+
+setcpm(30)
+
+note("c3").s(choose("sine", "triangle", "square"))
+
+// --- Random drum selection ---
+// s(choose("bd", "lt", "mt", "ht")).fast(8)
+
+
+// ── .wchoose() — Weighted random selection ────────────────────────
+//   Like choose(), but with probability weights.
+//   Format: wchoose([value1, weight1], [value2, weight2], ...)
+
+// note("c3").s(wchoose(["sine", 10], ["triangle", 3], ["square", 1]))
+
+
+// ── .chooseCycles() — One random choice per cycle ────────────────
+//   Picks a value randomly, but keeps it for the whole cycle.
+//   Useful for varying drum patterns between bars.
+
+// chooseCycles("bd", "lt", "mt").s().fast(4)
+
+
+// ── .wchooseCycles() — Weighted cycle randomness ──────────────────
+//   Like chooseCycles() with probability weights.
+
+// wchooseCycles(["bd", 10], ["lt", 3], ["mt", 1]).s().fast(4)
+
+
+// ── .degradeBy(amount) — Random muting ─────────────────────────────
+//   Randomly removes events with probability 0–1.
+//   0 = never removed, 1 = always removed
+//   Useful for "humanizing" patterns with random dropouts.
+
+// s("hh*8").degradeBy(0.2)    // 20% of hi-hats drop out
+
+// --- Heavier degradation ---
+// s("hh*8").degradeBy(0.5)    // 50% dropout = rough, broken feel
+
+
+// ── .degrade() — 50% random removal ────────────────────────────────
+//   Shorthand for .degradeBy(0.5). Removes half the notes randomly.
+
+// s("hh*8").degrade()
+
+
+// ── .undegradeBy(amount) — Inverse of degradeBy ────────────────────
+//   Removes events that degradeBy() would keep.
+//   Useful for complementary patterns.
+//
+//   If degradeBy keeps 80%, undegradeBy keeps 20%.
+
+// s("hh*10").layer(
+//   x => x.degradeBy(0.2).pan(0),      // mostly left
+//   x => x.undegradeBy(0.2).pan(1)     // complement right
+// )
+
+
+// ── .sometimesBy(prob, function) — Conditional function ────────────
+//   Applies a function with probability 0–1 (per event).
+//   Most flexible random modifier.
+//
+//   Usage: pattern.sometimesBy(0.3, x => x.gain(0.5))
+
+// s("hh*8").sometimesBy(0.4, x => x.speed(0.5))
+
+
+// ── .sometimes() — 50% probability ─────────────────────────────────
+//   Shorthand for .sometimesBy(0.5, fn).
+
+// s("hh*8").sometimes(x => x.speed(0.5))
+
+
+// ── Convenience functions ──────────────────────────────────────────
+//
+//   .often(fn)         →  75% chance (.sometimesBy(0.75, fn))
+//   .rarely(fn)        →  25% chance (.sometimesBy(0.25, fn))
+//   .almostNever(fn)   →  10% chance
+//   .almostAlways(fn)  →  90% chance
+//   .always(fn)        → 100% chance (always applies)
+//   .never(fn)         →   0% chance (never applies)
+
+// s("hh*8").often(x => x.speed(0.5))
+// s("hh*8").rarely(x => x.speed(0.5))
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 3. ADVANCED TIME MODIFIERS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//
+// Advanced rhythmic and temporal transformations.
+
+// ── .early() / .late() — Timing nudges ──────────────────────────────
+//   Shift pattern forward/backward in time (in cycles).
+//   Useful for syncopation and layering with slight offsets.
+//
+//   Usage: pattern.early(cycles) or .late(cycles)
+
+setcpm(30)
+
+stack(
+  s("bd").gain(0.8),
+  s("hh").early(0.1).gain(0.4)
+)
+
+// --- Layered rhythms with offsets ---
+// stack(
+//   s("bd"),
+//   s("hh*4").late(0.05),
+//   s("cp").late(0.15)
+// )
+
+
+// ── .iter(num) — Iterative subdivision ──────────────────────────────
+//   Divides pattern into num parts, plays each part in sequence,
+//   shifting by one part each cycle. Creates rotating "amen break" feel.
+//
+//   Usage: pattern.iter(4)  →  plays part 1, then 2, then 3, then 4
+
+// note("c4 d4 e4 f4 g4 a4 b4 c5").iter(4)
+
+
+// ── .iterBack() — Reverse iteration ────────────────────────────────
+//   Like iter(), but cycles parts in reverse order.
+
+// note("c4 d4 e4 f4 g4 a4 b4 c5").iterBack(4)
+
+
+// ── .palindrome() — Forward then reverse ───────────────────────────
+//   Plays pattern forward, then reversed, alternating each cycle.
+//   Useful for melodic swing.
+
+// note("c4 d4 e4 f4").palindrome()
+
+
+// ── .rev() — Reverse a pattern ──────────────────────────────────────
+//   Reverses the timing/order within each cycle.
+
+// note("c4 d4 e4 f4").rev()
+
+
+// ── .ply(num) — Repeat each event ──────────────────────────────────
+//   Repeats each event the given number of times.
+//   Useful for quick doubling or tripling of rhythmic elements.
+//
+//   Usage: pattern.ply(2)  →  each note plays twice
+
+// s("bd ~ sd cp").ply("<1 2 3>")
+
+
+// ── .segment(num) — Sample at discrete rate ────────────────────────
+//   Samples a continuous pattern at N points per cycle.
+//   Useful for turning smooth modulations into stepped changes.
+//
+//   Usage: pattern.segment(24)  →  24 samples per cycle
+
+// note(saw.range(40, 52).segment(24)).s("sine")
+
+
+// ── .compress(start, end) — Compress with gap ──────────────────────
+//   Squashes pattern into a time span, leaving a gap.
+//   Useful for creating silence after an event.
+//
+//   Usage: pattern.compress(0.25, 0.75)  →  plays only in first 25%
+
+// cat(
+//   s("bd sd").compress(0.25, 0.75),
+//   s("~ bd sd ~")
+// )
+
+
+// ── .zoom(start, end) — Extract portion ────────────────────────────
+//   Plays only the portion of a pattern between start and end times.
+//   That portion fills the entire cycle.
+//
+//   Usage: pattern.zoom(0.25, 0.75)  →  plays middle half
+
+// s("bd*2 hh*3 [sd bd]*2 perc").zoom(0.25, 0.75)
+
+
+// ── .linger(fraction) — Hold and repeat ────────────────────────────
+//   Selects a fraction of the pattern and repeats it to fill the cycle.
+//   Creates "stuck" or looping effects.
+//
+//   Usage: pattern.linger(0.5)  →  repeat first half
+
+// s("lt ht mt cp [hh oh]*2").linger("<1 .5 .25>")
+
+
+// ── .fastGap() — Fast with gap ──────────────────────────────────────
+//   Like .fast(), but leaves a gap instead of looping.
+//   Useful for compressed rhythmic stabs.
+
+// s("bd sd").fastGap(2)    // plays once in first half, silence in second
+
+
+// ── .swingBy(amount, subdivision) — Shuffle/swing ──────────────────
+//   Delays events in the second half of each subdivision.
+//   Creates a swing or shuffle feel.
+//
+//   Usage: pattern.swingBy(0.33, 4)  →  swing at 8th-note level
+
+// s("hh*8").swingBy(1/3, 4)
+
+
+// ── .swing(subdivision) — Shorthand swing ──────────────────────────
+//   Equivalent to .swingBy(1/3, subdivision).
+//   1/3 = classic swing ratio.
+
+// s("hh*8").swing(4)
+
+
+// ── .ribbon(offset, cycles) — Loop a segment ──────────────────────
+//   Loops a portion of a pattern over given cycles.
+//   Think of time as a ribbon; you cut and loop a piece.
+//
+//   Usage: pattern.ribbon(1, 2)  →  loop portion starting at cycle 1
+
+// note("<c d e f>").ribbon(1, 2)
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 4. PATTERN SELECTION — PICK & INHABIT
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//
+// Choose between multiple patterns dynamically.
+
+// ── .pick(list) — Select pattern by index ──────────────────────────
+//   Uses a pattern of indices (0, 1, 2...) to select from a list.
+//   Maintains original pattern structure.
+//
+//   Usage: pattern.pick([pattern_a, pattern_b, pattern_c])
+
+setcpm(30)
+
+note("<0 1 2!2 3>".pick(["g a", "e f", "f g f g", "g c d"]))
+
+// --- Pick drum patterns ---
+// sound("<0 1 [2,0]>".pick(["bd sd", "cp cp", "hh hh"]))
+
+
+// ── .pickF() — Pick which function to apply ────────────────────────
+//   Uses indices to select which transformation to apply.
+//
+//   Usage: pattern.pickF("<0 1 2>", [function_a, function_b, function_c])
+
+// s("bd [rim hh]").pickF("<0 1 2>", [rev, jux(rev), fast(2)])
+
+
+// ── .inhabit() — Squeeze pattern into selected ────────────────────
+//   Like pick(), but the selected pattern is "inhabited" (squeezed)
+//   into the time slot of the selecting event.
+//   Useful when patterns have different durations.
+//
+//   Usage: pattern.inhabit({a: pattern_a, b: pattern_b})
+
+// let a = s("bd(3,8)")
+// let b = s("cp sd")
+// "<a b [a,b]>".inhabit({a, b})
+
+
+// ── .squeeze() — Manual pattern squeezing ──────────────────────────
+//   Picks and squeezes patterns based on indices.
+//   More explicit than inhabit().
+
+// note(squeeze("<0@2 [1!2] 2>", ["g a", "f g f g", "g a c d"]))
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// COMBINING MODIFIERS FOR COMPLEX PATTERNS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//
+// These tools can be stacked for intricate, evolving arrangements.
+
+// --- Probabilistic rhythmic variation ---
+setcpm(30)
+
+stack(
+  s("bd").euclid(3, 8).sometimes(x => x.speed(0.5)),
+  s("hh*8").degradeBy(0.2).often(x => x.pan(0.3)),
+  s("cp").when("<1 [0 1]>", x => x.gain(1.2))
+)
+
+// --- Cycling drum variations with conditional effects ---
+// stack(
+//   s("bd*4").chunk(4, x => x.speed(choose(0.5, 1, 1.5))),
+//   note("c3 d3 e3 f3").scale("C:major")
+//     .iter(2).mask("<1 [0 1]>").gain(0.6)
+// )

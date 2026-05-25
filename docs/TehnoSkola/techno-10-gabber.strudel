@@ -1,0 +1,158 @@
+// ============================================================
+// TECHNO LESSON 10: Gabber / Hardcore Techno
+// ============================================================
+// Gabber emerged from Rotterdam, Netherlands in 1991–92, pioneered
+// by producers like Paul Elstak, Lenny Dee, and the Euromasters.
+// It took the hardest elements of Chicago house and Detroit techno,
+// pushed the BPM to 160–200+, and distorted everything beyond
+// recognition. The result was the most extreme form of dance music
+// ever made commercially.
+//
+// "Gabber" is Dutch slang for "friend" or "mate" — the music was
+// working-class, community-oriented, and deliberately anti-elitist.
+// It was scorned by the press and loved by millions.
+//
+// KEY ARTISTS:
+//   Rotterdam Termination Source — "Poing" (1992, the first gabber hit)
+//   Lenny Dee — "Annihilator"
+//   Paul Elstak — "Rainbow in the Sky" (happy hardcore variant)
+//   Dano, DJ Outblast — mid-90s peak era
+//   Angerfist, Ophidian — modern gabber
+//   Terror — modern US hardcore
+//
+// DEFINING CHARACTERISTICS:
+//   ✦ BPM: 160–220+ (some tracks exceed 250 BPM)
+//   ✦ THE GABBER KICK — the defining sound: a sine wave that starts
+//     at a high pitch, drops rapidly down to bass, then is clipped/
+//     distorted heavily. The distortion creates a "buzz" on the transient.
+//   ✦ Simple, brutal arrangement — often just kick + one synth line
+//   ✦ Distortion on EVERYTHING
+//   ✦ Short, stabbed chords or leads — no long pads
+//   ✦ Often uses samples or shouted vocals ("HEY!", "OI!")
+//   ✦ Raw, unpolished, aggressive
+//
+// THE GABBER KICK — how it's made:
+//   1. Start with a sine wave (pure tone)
+//   2. Pitch envelope: start at ~200Hz, drop to ~40Hz in 50ms
+//   3. Clip/distort the waveform heavily — creates the "buzz"
+//   4. The result: a kick that has both a bass thump AND a high
+//      distortion artifact — it sounds like a weapon
+//
+// In Strudel we can approximate it:
+//   s("bd") with heavy .distort() is the closest approximation
+//   Real gabber kicks require custom synthesis or samples
+//
+// SOCIAL NOTE:
+//   Gabber has been reclaimed multiple times — from being called
+//   "musical terrorism" by critics in 1992, to being a nostalgia
+//   genre, to fueling modern hardcore festivals drawing 50,000 people.
+//   It is perhaps the most honest genre in electronic music —
+//   it makes no claim to subtlety.
+// ============================================================
+
+setcpm(90)  // ~180 BPM
+
+// --- EXAMPLE 1: The gabber kick ---
+// Heavy distortion approximates the clipped, buzzing gabber kick.
+// IMPORTANT: turn your volume DOWN before playing. This is loud.
+s("bd*4").gain(0.9).distort(0.6)
+
+
+// --- EXAMPLE 2: Gabber kick + fast hi-hats ---
+// At 180 BPM, 8th-note hats feel like machine-gun fire.
+// stack(
+//   s("bd*4").gain(0.9).distort(0.6),
+//   s("hh*8").gain(0.35).hpf(8000)
+// )
+
+
+// --- EXAMPLE 3: Gabber with a minimal melody stab ---
+// Gabber rarely uses complex harmony. A single-note stab or
+// a simple 3-note synth line is all it needs.
+// The synth is distorted, loud, and short.
+// stack(
+//   s("bd*4").gain(0.9).distort(0.6),
+//   s("hh*8").gain(0.3).hpf(8000),
+//   note("~ ~ ~ c4 ~ ~ ~ c4").sound("square")
+//     .attack(0.001).release(0.05)
+//     .distort(0.4).lpf(2000)
+//     .gain(0.7)
+// )
+
+
+// --- EXAMPLE 4: Gabber lead synth ---
+// A fast, aggressive melody. In gabber, melodies are SIMPLE
+// and LOUD. No jazz sophistication — just raw energy.
+// note("c4 c4 eb4 ~ c4 ~ bb3 ~")
+//   .sound("sawtooth")
+//   .attack(0.001).release(0.08)
+//   .distort(0.45).lpf(3000)
+//   .gain(0.72)
+
+
+// --- EXAMPLE 5: Breakdown / impact hit ---
+// Gabber tracks drop everything for a moment, then a massive
+// impact sound brings everything back. Very theatrical.
+// note("c1")
+//   .sound("sine")
+//   .slow(4)
+//   .distort(0.8)
+//   .gain(0.95)
+
+
+// --- EXAMPLE 6: Full gabber track structure ---
+// Kick + hat + lead synth. That's it. Gabber doesn't need more.
+// This 4-element arrangement would work in a 180 BPM set.
+// stack(
+//   // THE KICK — the entire purpose of gabber
+//   s("bd*4").gain(0.92).distort(0.6),
+//
+//   // Fast hats
+//   s("hh*8").gain(0.28).hpf(9000),
+//
+//   // Clap on 2 and 4 — buried under the kick but adds snap
+//   s("~ cp ~ cp").gain(0.62).distort(0.3),
+//
+//   // Distorted bass tone (sub)
+//   note("c2*4").sound("sine")
+//     .distort(0.5).lpf(100).gain(0.55),
+//
+//   // Lead synth — aggressive 2-bar phrase
+//   note("c4 ~ eb4 ~ c4 ~ bb3 c4")
+//     .sound("sawtooth")
+//     .attack(0.001).release(0.06)
+//     .distort(0.4).lpf(2500)
+//     .gain(0.68)
+//     .slow(2)
+// )
+
+
+// --- EXAMPLE 7: HAPPY HARDCORE variant ---
+// Happy hardcore = gabber tempo but with MAJOR chords and
+// uplifting melodies. The most polarizing sub-genre.
+// Technically euphoric, sonically aggressive — a wild contradiction.
+// stack(
+//   s("bd*4").gain(0.9).distort(0.55),
+//   s("hh*8").gain(0.3).hpf(8000),
+//   // Major chord in high register (bright, "happy")
+//   note("<[c5,e5,g5] [f4,a4,c5] [g4,b4,d5] [c5,e5,g5]>")
+//     .sound("sawtooth")
+//     .attack(0.01).release(0.15)
+//     .lpf(4000).room(0.2)
+//     .gain(0.45)
+//     .slow(2)
+// )
+
+
+// ============================================================
+// EXERCISE:
+//   1. Try setcpm(100) = ~200 BPM — can you still hear the groove?
+//   2. Compare .distort(0.1) vs .distort(0.8) on the kick — two different worlds
+//   3. Remove the distortion entirely — does it still feel like gabber?
+//   4. Try writing a "happy hardcore" melody over the gabber kick
+//      (major key, fast arpeggio, uplifting interval jumps)
+//   5. Listen to: Rotterdam Termination Source "Poing" (1992)
+//      — the first gabber hit. 3 minutes, 3 sounds. Brutal simplicity.
+//   6. Compare with Paul Elstak "Rainbow in the Sky" (happy hardcore)
+//      — same tempo and kick, completely different emotional effect
+// ============================================================

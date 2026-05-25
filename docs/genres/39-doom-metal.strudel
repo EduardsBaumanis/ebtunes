@@ -1,0 +1,84 @@
+// ══════════════════════════════════════════════════════════════
+// "Mountain of Sleep"
+// Doom metal — Black Sabbath lineage, slow heavy crawl
+//
+// Key:    E minor (with tritone Bb for "Black Sabbath" interval)
+// Tempo:  62 BPM  (setcpm 15.5)
+// Chords: Em5 — Bbm5 — E5  (tritone substitution gives the doom)
+// Feel:   Slow crushing power chords, rumbling sub, sparse drums.
+//
+// THEORY NOTES
+//   Doom metal descends from Black Sabbath's 1970 self-titled album.
+//   The first track on that record (also "Black Sabbath") opens with
+//   the TRITONE — a root note + a flat 5th, the "devil's interval"
+//   banned in medieval music. That interval is doom's DNA. Tempos
+//   are SLOW (50-80 BPM), power chords (root + fifth, no third)
+//   are sustained with heavy distortion, and the drums hit
+//   crushingly hard on beats 1+3 with little fill. Sub-bass
+//   underpinnings double the guitar an octave below.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(15.5)
+
+stack(
+
+  // ── KICK ─────────────────────────────────────────────────────
+  // Slow crushing kick on 1 and 3. Heavy shape (distortion).
+  s("bd ~ ~ ~ bd ~ ~ ~")
+    .gain(0.95).lpf(150).shape(0.3),
+
+  // ── SNARE ────────────────────────────────────────────────────
+  // Slow crushing snare on 2 and 4. Heavy room + shape for the
+  // cavernous metal snare sound.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.85).hpf(220).room(0.4).size(0.7).shape(0.25),
+
+  // ── RIDE / CRASH ─────────────────────────────────────────────
+  // Slow ride on every beat with crash accents.
+  s("cy*4")
+    .gain("0.42 0.28 0.32 0.28")
+    .hpf(6000).room(0.4),
+
+  // ── BASS — DOOM ROOTS ────────────────────────────────────────
+  // Sub-bass on chord roots — E and Bb (the tritone). Long
+  // sustained tones with distortion and resonance.
+  note("<e1 e1 bb0 e1>")
+    .sound("sawtooth").lpf(280).lpq(6).shape(0.4)
+    .attack(0.01).release(1.5).gain(0.85),
+
+  // ── POWER CHORD GUITAR — TRITONE INTERVAL ────────────────────
+  // Root + flat 5 = THE doom interval. Heavy distortion, sustained.
+  // The chord just SITS there, oppressive.
+  note("<[e2,bb2] [e2,bb2] [bb1,e2] [e2,bb2]>")
+    .sound("sawtooth").shape(0.45)
+    .attack(0.01).release(1.5)
+    .lpf(2000).gain(0.55).pan(0.4),
+
+  // ── SECOND GUITAR LAYER — RIGHT ──────────────────────────────
+  // Same power chord, panned hard right, slightly different
+  // settings — gives the wall of doom guitars.
+  note("<[e2,bb2] [e2,bb2] [bb1,e2] [e2,bb2]>")
+    .sound("sawtooth").shape(0.42)
+    .attack(0.015).release(1.5)
+    .lpf(2050).gain(0.55).pan(0.6),
+
+  // ── LEAD MELODY — SLOW DARK ──────────────────────────────────
+  // Slow soaring lead in E minor — uses the b5 (Bb) for tritone
+  // colour. Bends + reverb give the "ritualistic" feel.
+  note("e4 ~ ~ g4  ~ ~ bb4 ~  ~ ~ ~ e4  ~ ~ ~ ~  bb3 ~ ~ d4  ~ ~ f4 ~  ~ ~ ~ bb3  ~ ~ ~ ~")
+    .sound("sawtooth").shape(0.25)
+    .attack(0.04).release(1.2)
+    .vib(3).vibmod(0.2)
+    .lpf(2800).delay(0.45).delaytime(0.5).delayfeedback(0.4)
+    .room(0.6).gain(0.42).pan(0.55).slow(2),
+
+  // ── DEEP CHANT / VOX (faked) ─────────────────────────────────
+  // Vowel "o" sawtooth = the "doomy chant" pad. Very slow attack,
+  // long release.
+  note("[e3,g3,bb3]")
+    .sound("sawtooth").vowel("o")
+    .attack(1.5).release(3)
+    .lpf(1600).gain(0.28).pan(0.5)
+    .room(0.55).size(0.85).slow(4)
+
+)

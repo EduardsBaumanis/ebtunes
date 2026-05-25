@@ -1,0 +1,78 @@
+// ══════════════════════════════════════════════════════════════
+// "Final Pattern"
+// Track 20 of 20 · IDM — the closer
+//
+// Key:    A minor
+// Tempo:  128 BPM  (setcpm 32)
+// Mood:   Everything we built: glitch, polymetric, granular, melodic,
+//         stutter, generative — distilled into one closing piece.
+//
+// STRUDEL TECHNIQUE — full kitchen sink
+//   .every() + .jux() + .ply() + .sometimesBy() + euclid + choose +
+//   .delay() + .crush() + .scope() + .pianoroll()
+//
+// VISUALIZATION
+//   .scope() on the kick + .pianoroll() on the lead — both at once.
+//   The audio AND its visual signature, side by side. Album-end gesture.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(32)
+
+stack(
+
+  // ── KICK — euclid 5-in-8 + scope ─────────────────────────────
+  s("bd").euclid(5, 8).gain(0.85).lpf(180).shape(0.18)
+    .every(4, ply(2))
+    .color("crimson")
+    .scope(),
+
+  // ── CLAP ─────────────────────────────────────────────────────
+  s("~ cp ~ cp").gain(0.5).hpf(900).room(0.2)
+    .jux(rev)
+    .color("orange"),
+
+  // ── HAT — IDM stutter ────────────────────────────────────────
+  s("hh*16").gain("0.26 0.14 0.30 0.18").hpf(6900)
+    .sometimesBy(0.25, ply(3))
+    .degradeBy(0.1)
+    .color("yellow"),
+
+  // ── BASS — acid 303 ──────────────────────────────────────────
+  note("<a1 a1 c2 g1>")
+    .sound("sawtooth")
+    .lpf(slider(900, 250, 2400)).lpq(12).shape(0.15)
+    .attack(0.005).release(0.14)
+    .struct("x x x x x x x x")
+    .every(3, ply(2))
+    .gain(0.62).pan(0.5)
+    .color("navy"),
+
+  // ── GENERATIVE LEAD — pianoroll, chosen from A minor ─────────
+  note(choose("a4","c5","d5","e5","g5","a5","c6","e6"))
+    .sound("square").attack(0.003).release(0.18)
+    .lpf(3000).crush(7)
+    .delay(0.4).delaytime(0.375).delayfeedback(0.4)
+    .gain(0.36).pan(rand).room(0.3)
+    .fast(4)
+    .degradeBy(0.25)
+    .color("magenta")
+    .pianoroll(),
+
+  // ── MELODY counter-line — every 5 reversed ───────────────────
+  note("<e5 g5 a5 e6  d5 a4 c5 e5>")
+    .sound("triangle").attack(0.003).release(0.2)
+    .lpf(3200).gain(0.3).pan(0.4).room(0.35)
+    .every(5, rev)
+    .color("cyan"),
+
+  // ── PAD — anchor ─────────────────────────────────────────────
+  note("<[a3,c4,e4] [d4,f4,a4] [e4,g4,b4] [a3,c4,e4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(1.5).release(3).lpf(1800)
+    .gain(0.26).pan(0.5).room(0.5).slow(2)
+    .color("indigo"),
+
+  // ── FINAL REVERSE CYMBAL ─────────────────────────────────────
+  s("cy").speed(-1).gain(0.42).hpf(2000).room(0.55).slow(4)
+    .color("ivory")
+)

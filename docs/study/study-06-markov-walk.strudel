@@ -1,0 +1,48 @@
+// ══════════════════════════════════════════════════════════════
+// "Markov Walk"
+// Probabilistic melody — each new note is drawn from a small
+// neighbourhood of the previous one
+//
+// Key:    E minor pentatonic
+// Tempo:  ~76 BPM  (setcpm 19)
+// Theory: Stochastic music (Iannis Xenakis). The melody is not
+//         composed in advance — it's the output of a random
+//         process biased so consecutive notes stay close. Each
+//         draw chooses one of (E G A B D) so motion is by step
+//         or by 3rd, never wider; the ear hears it as a melody
+//         rather than noise.
+// Strudel: .choose([..]) — pick uniformly from a list each
+//          event. Combined with rand-based filter movement to
+//          make the timbre also wander.
+// Pack:   Default Dirt-Samples.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(19)
+
+stack(
+
+  // Bass plays the stable tonic / dominant axis underneath
+  note("e2 ~ ~ b2 ~ ~ e2 ~  ~ ~ b2 ~ e2 ~ ~ ~")
+    .s("sawtooth").lpf(280).attack(0.005).release(0.3).gain(0.55),
+
+  // Pad — modal Em9 chord, sustained
+  note("[e3,g3,b3,d4,fs4]")
+    .s("sawtooth").attack(0.6).release(2)
+    .lpf(1400).gain(0.22).pan(0.4).slow(4),
+
+  // Markov melody — choose from E pentatonic, transposed by a
+  // wandering octave so motion is local but the register slowly drifts.
+  note(choose(["e4", "g4", "a4", "b4", "d5"]))
+    .add(choose([0, 0, 0, 12, -12]))   // mostly stay, sometimes octave-jump
+    .s("triangle")
+    .attack(0.02).release(0.4).gain(0.45)
+    .lpf(range(1200, 4500))            // filter wanders with the melody
+    .pan(0.55)
+    .delay(0.4).delaytime(0.333).delayfeedback(0.32)
+    .room(0.45)
+    .fast(2),
+
+  // Sparse rim ticks for time anchoring
+  s("rim").euclid(3, 16).gain(0.28).hpf(2500).pan(0.35)
+
+)

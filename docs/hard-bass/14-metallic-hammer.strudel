@@ -1,0 +1,82 @@
+// ══════════════════════════════════════════════════════════════
+// "Metallic Hammer"
+// Heavy industrial percussion — Throbbing Gristle / power-noise feel
+//
+// Key:    G minor
+// Tempo:  140 BPM  (setcpm 35)
+// Feel:   Heavy metal-on-metal hits, bit-crushed everything, oppressive.
+//
+// STRUDEL FUNCTIONS HIGHLIGHTED
+//   .crush(N)           — bit-crush distortion (lower N = grittier)
+//   .almostAlways(fn)   — apply fn ~90% of the time
+//   .almostNever(fn)    — apply fn ~10% of the time (rare event)
+// ══════════════════════════════════════════════════════════════
+
+setcpm(slider(35, 30, 42))
+
+stack(
+
+  // ── INDUSTRIAL KICK — bit-crushed ─────────────────────────────
+  s("bd*4")
+    .crush(slider(5, 3, 12))
+    .shape(slider(0.55, 0.2, 0.85))
+    .gain(0.95).lpf(180)
+    .color("crimson"),
+
+  // ── METAL CLANG — sd through heavy distortion ─────────────────
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .shape(0.45).crush(6)
+    .gain(0.7).hpf(280).room(0.2)
+    .color("orange"),
+
+  // ── HI-HAT — crushed, almostAlways bright ─────────────────────
+  // almostAlways(fn) applies fn ~90% of the time — so MOST of the
+  // hats are bright + crushed, with the occasional dry one for variety.
+  s("hh*16")
+    .almostAlways(x => x.hpf(8000).crush(7))
+    .gain("0.30 0.20 0.32 0.22")
+    .color("yellow"),
+
+  // ── SUB BASS ──────────────────────────────────────────────────
+  note("g1")
+    .sound("sine")
+    .struct("x ~ x ~ x x ~ x")
+    .gain(0.85)
+    .color("navy"),
+
+  // ── HEAVY METAL BASS ──────────────────────────────────────────
+  note("g2 ~ ~ ~  bb2 ~ ~ ~  g2 ~ ~ ~  f2 ~ ~ ~")
+    .sound("sawtooth").shape(0.4).crush(6)
+    .lpf(slider(620, 300, 1800)).lpq(8)
+    .attack(0.005).release(0.18)
+    .gain(0.55).pan(0.5)
+    .color("purple"),
+
+  // ── RIM SLAM — euclidean industrial percussion ────────────────
+  s("rim").euclid(7, 16)
+    .shape(0.3).crush(5)
+    .gain(0.5).hpf(3200).pan(0.4)
+    .color("silver"),
+
+  // ── TABLA HIT — almostNever a fast burst ──────────────────────
+  // almostNever applies fn ~10% — most cycles the tabla is normal,
+  // but rarely it bursts into rapid hits.
+  s("tabla").euclid(3, 8)
+    .almostNever(x => x.fast(4))
+    .gain(0.4).hpf(600).pan(0.6)
+    .color("sienna"),
+
+  // ── DARK DRONE ────────────────────────────────────────────────
+  note("[g3,bb3,d4]")
+    .sound("sawtooth").vowel("o")
+    .attack(2).release(2.5)
+    .lpf(1300).gain(0.22).pan(0.5)
+    .room(0.5).slow(4)
+    .color("teal"),
+
+  // ── CRASH ─────────────────────────────────────────────────────
+  s("cy").slow(4)
+    .crush(8)
+    .gain(0.4).room(0.5)
+    .color("white")
+)

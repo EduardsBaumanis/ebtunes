@@ -1,0 +1,52 @@
+// ══════════════════════════════════════════════════════════════
+// "Long Train Coming"
+// Track 5 of 15 · Bluegrass
+//
+// Key:    E major
+// Tempo:  140 BPM  (setcpm 35)
+// Mood:   Train rhythm. Wheels on rail. Whistle in the distance.
+//
+// PALETTE
+//   - Train-rhythm shuffle bass + brush
+//   - Banjo "wheel" 16th rolls evoke iron wheels
+//   - Dobro slide = train whistle
+// ══════════════════════════════════════════════════════════════
+
+setcpm(35)
+
+stack(
+
+  // ── BASS — chugging quarters ─────────────────────────────────
+  note("<e2 b2 e2 b2  a2 e3 b2 e3>")
+    .sound("sine").attack(0.005).release(0.3).lpf(240)
+    .gain(0.68).pan(0.45)
+    .color("saddlebrown"),
+
+  // ── TRAIN BRUSH — constant 16ths on snare ────────────────────
+  s("sd*16").gain(0.16).hpf(1800).pan(rand)
+    .color("dimgray"),
+
+  // ── MANDOLIN CHOP ────────────────────────────────────────────
+  note("<[e4,gs4,b4] [a3,cs4,e4] [b3,ds4,fs4] [e4,gs4,b4]>")
+    .sound("sawtooth").vowel("i")
+    .attack(0.003).release(0.06).lpf(2700).hpf(750).lpq(6)
+    .struct("~ x ~ x ~ x ~ x").gain(0.4).pan(0.6)
+    .color("forestgreen"),
+
+  // ── BANJO WHEEL — 16th-note continuous roll ──────────────────
+  note("e4 b4 gs4 b4 e4 b4 gs4 b4  a4 cs5 e5 cs5 b4 ds5 fs5 ds5")
+    .sound("triangle").attack(0.003).release(0.08).lpf(3300)
+    .gain(0.36).pan(0.4).room(0.18)
+    .color("goldenrod"),
+
+  // ── DOBRO WHISTLE — slide notes, sparse ──────────────────────
+  note("<~ ~ ~ ~  ~ ~ b5 e6>")
+    .sound("sawtooth").vowel("e")
+    .attack(0.15).release(1.2).lpf(3400).lpq(5)
+    .gain(0.38).pan(0.55).room(0.5).delay(0.3).delaytime(0.375).delayfeedback(0.3)
+    .color("orange"),
+
+  // ── KICK — engine push ───────────────────────────────────────
+  s("bd ~ bd ~ bd ~ bd ~").gain(0.5).lpf(170)
+    .color("crimson")
+)

@@ -1,0 +1,205 @@
+// ══════════════════════════════════════════════════════════════
+// "Rave Protocol"
+// Old school rave — 1992–1995, maximum energy, euphoric chaos
+//
+// Key:    B minor
+// Tempo:  144 BPM  (setcpm 72)
+// Chords: Bm – G – D – A   (i – VI – III – VII, natural minor)
+// Feel:   Illegal warehouse, laser beams, 500 people, no rules.
+//         Before the genres separated. Before techno was techno.
+//         Just: LOUD. FASTER. MORE. The floor is shaking.
+//
+// OLD SCHOOL RAVE PHILOSOPHY:
+// Early 90s tracks had no genre boundaries. Everything at once:
+//   - Hardest kick (120–145 BPM)
+//   - HUGE reverbed snare (the 90s snare was a room event)
+//   - Fast 303 acid lines — always two, arguing with each other
+//   - Euphoric pad (the emotional reason for being there)
+//   - Two-octave arp that GOES somewhere
+//   - Lead melody you'll hear in your sleep
+//   - Too many layers. That was correct.
+//
+// EFFECTS ARCHITECTURE:
+// kick     — shape: extra punch in the physical range
+// snare    — jux: different reverb = wider stone room
+// hats     — degradeBy + pan(sine): organic stereo pulse
+// open hat — phaser: 90s modulation character
+// clap     — every(2, crush): alternating lo-fi clap = vintage 90s
+// rim      — jux: stereo split on the euclidean rhythm
+// acid 1   — shape + jux(lpf): distorted stereo acid
+// acid 2   — jux(hpf): square counter-acid spinning in stereo
+// rave bass — off(3/16): ghost bass note = groove and movement
+// euphoric pad — jux(rev): stereo pad wraps both ears
+// high pad — phaser: shimmer on the upper sparkle layer
+// arp      — jux(rev) + degradeBy: stereo spiral with drops
+// lead     — sometimes(crush): lo-fi artifacts on emotional peaks
+// ══════════════════════════════════════════════════════════════
+
+setcpm(72)  // 144 BPM
+
+stack(
+
+  // ── KICK — physical floor punch ──────────────────────────────
+  // shape(0.35): 90s kicks were often distorted on the tape machine
+  // crush(10): subtle digital edge, adds to "tape then digital" feel
+  s("bd*4")
+    .gain(0.95)
+    .distort(0.15)
+    .shape(0.35)
+    .crush(10)
+    .lpf(5000),
+
+  // ── SNARE — wide stone room event ────────────────────────────
+  // room(0.35)/size(0.45): cavernous — the 90s snare was a ROOM
+  // jux: right channel even bigger room — snare sounds like it was
+  //   recorded in a space inside an even larger space. Gothic scale.
+  s("~ ~ sd ~ ~ ~ sd ~")
+    .gain(0.85)
+    .room(0.35).size(0.45)
+    .jux(x => x.room(0.45).size(0.55)),
+
+  // ── HI-HAT 16ths — organic stereo pulse ──────────────────────
+  // degradeBy(0.08): the machine breathes, pan(sine): autopan was
+  //   common in early 90s rave — felt, not just heard
+  s("hh*16")
+    .gain(0.2)
+    .hpf(9000)
+    .degradeBy(0.08)
+    .pan(sine.range(0.42, 0.62).slow(5)),
+
+  // ── OPEN HAT — 90s phased accent ─────────────────────────────
+  // phaser(0.25)/phaserrate(0.8): faster phaser = more obvious modulation
+  //   In the early 90s, phasers were used heavily on percussion
+  s("~ ~ ~ ~ oh ~ ~ ~  ~ ~ ~ ~ oh ~ ~ oh")
+    .gain(0.42)
+    .hpf(7000)
+    .phaser(0.25).phaserrate(0.8),
+
+  // ── CLAP — alternating lo-fi accent ──────────────────────────
+  // every(2, crush(6)): clean clap then lo-fi crushed clap alternating
+  //   Call-and-response between clean and dirty. Celebrates the era.
+  s("~ ~ cp ~ ~ ~ cp ~")
+    .gain(0.6)
+    .hpf(3000)
+    .every(2, x => x.crush(6)),
+
+  // ── RIM — stereo euclidean syncopation ───────────────────────
+  // E(5,16,3): rotated 3 = doesn't start on beat 1 = perpetual surprise
+  // jux: right channel extra hpf(5000) = only the attack click in right
+  //   Left = full rim body, right = only click = wide and scattered
+  s("rim").euclid(5, 16, 3)
+    .gain(0.28)
+    .hpf(4000)
+    .room(0.05)
+    .jux(x => x.hpf(5000).gain(0.7))
+    .pan(0.44),
+
+  // ── MAIN ACID 303 (voice 1) — distorted stereo aggressor ─────
+  // shape(0.3): aggressive waveshaper, high register (b2-d3) = piercing
+  // jux(lpf(1500)): right channel has tighter filter
+  //   Left = full sweep 300-3500Hz, right = capped at 1500Hz
+  //   Asymmetric filter = the acid leans left, reaching right
+  note("b2 ~ b2 d3 b2 ~ a2 ~  g2 ~ b2 ~ fs2 ~ a2 ~")
+    .sound("sawtooth")
+    .lpf(sine.range(300, 3500).slow(1.6))
+    .lpq(14)
+    .shape(0.3)
+    .jux(x => x.lpf(1500))
+    .attack(0.001).decay(0.1).sustain(0.0).release(0.05)
+    .gain(0.85)
+    .slow(2),
+
+  // ── COUNTER ACID 303 (voice 2) — spinning square ─────────────
+  // Square wave: hollow, nasal — answers voice 1's sawtooth bite
+  // Higher register: d3/e3/fs3 — voice 2 screams above voice 1
+  // jux(hpf(700)): right channel only upper harmonics
+  //   Left = full squelch body, right = only the air and crack
+  //   The acid feels like it's spinning — left and right hear different 303
+  // off-beat placement: falls in the gaps left by voice 1
+  note("~ d3 ~ b2 ~ ~ e3 ~  d3 ~ ~ b2 ~ fs3 ~ ~")
+    .sound("square")
+    .lpf(sine.range(400, 4000).slow(1.5))
+    .lpq(15)
+    .attack(0.001).decay(0.08).sustain(0.0).release(0.04)
+    .gain(0.50)
+    .jux(x => x.hpf(700))
+    .pan(0.42)
+    .slow(2),
+
+  // ── RAVE BASS — ghost groove ──────────────────────────────────
+  // off(3/16): ghost note 3/16ths behind the main bass hit
+  //   Ghost: gain(0.22) = just a hint of bass on a syncopated position
+  //   Creates triplet-like groove feel without using triplets
+  note("<b2 g2 d2 a2>")
+    .sound("sawtooth")
+    .lpf(400)
+    .attack(0.003).decay(0.15).sustain(0.0).release(0.08)
+    .gain(0.68)
+    .off(3/16, x => x.gain(0.22))
+    .slow(2),
+
+  // ── EUPHORIC PAD — stereo emotional center ────────────────────
+  // jux(rev): chord sequence reversed in the right channel
+  //   Left = Bm→G→D→A forward. Right = A→D→G→Bm reversed.
+  //   The emotional center fills all space. This is the pad people
+  //   came for. Everything else exists to make its arrival feel huge.
+  note("<[b3,d4,fs4] [g3,b3,d4] [d3,fs3,a3] [a3,cs4,e4]>")
+    .sound("sawtooth")
+    .attack(0.2).decay(0.5).sustain(0.8).release(2.0)
+    .lpf(sine.range(1500, 4000).slow(5))
+    .room(0.7).size(0.8)
+    .jux(rev)
+    .gain(0.24)
+    .pan(0.4)
+    .slow(2),
+
+  // ── HIGH PAD — phased sparkle ─────────────────────────────────
+  // phaser(0.2)/phaserdepth(0.65)/phaserrate(0.25): slow deep phaser
+  //   Upper harmonics shimmer with the phaser. Against the main pad's
+  //   reverb, this shimmer = the laser beams. Light moving in audio.
+  note("<[fs5,a4] [d5,g4] [a4,d5] [e5,cs5]>")
+    .sound("sawtooth")
+    .attack(0.3).decay(0.4).sustain(0.7).release(2.5)
+    .lpf(5000)
+    .room(0.65).size(0.75)
+    .phaser(0.2).phaserdepth(0.65).phaserrate(0.25)
+    .gain(0.14)
+    .pan(0.6)
+    .slow(2),
+
+  // ── FAST ARP — stereo two-octave spiral ──────────────────────
+  // 16 notes: B D E G A B... ascending then descending
+  // jux(rev): reversed in right channel
+  //   Left goes up then down. Right goes down then up.
+  //   The arp starts ascending in your left ear while descending in right
+  //   = spiraling, perpetual motion machine
+  // degradeBy(0.03): barely perceptible 3% drops — almost organic
+  n("0 2 3 5 7 9 10 12 14 12 10 9 7 5 3 2").scale("B:minor")
+    .sound("sawtooth")
+    .lpf(sine.range(2500, 8000).slow(2.5))
+    .lpq(4)
+    .attack(0.001).release(0.05)
+    .gain(0.48)
+    .room(0.2)
+    .jux(rev)
+    .degradeBy(0.03)
+    .pan(0.5),
+
+  // ── LEAD MELODY — lo-fi artifacts on emotional peaks ──────────
+  // sometimes(crush(8)): randomly bit-crushes the lead
+  //   Clean = euphoric and smooth. Crushed = lo-fi, raw, 90s sample quality
+  //   The randomness: sometimes clean, sometimes lo-fi. Like tape degrading.
+  //   This is not a mistake — it's the sound of music being lived in.
+  note("fs5 ~ ~ ~ a5 ~ b5 ~  ~ ~ g5 ~ ~ fs5 ~ ~  d5 ~ ~ ~ e5 ~ ~ fs5  ~ ~ ~ a4 ~ ~ b4 ~")
+    .sound("sine")
+    .attack(0.015).decay(0.28).sustain(0.35).release(0.7)
+    .delay(0.4)
+    .delaytime(0.5)
+    .delayfeedback(0.2)
+    .room(0.45).size(0.5)
+    .sometimes(x => x.crush(8))
+    .gain(0.5)
+    .pan(0.5)
+    .slow(4)
+
+)

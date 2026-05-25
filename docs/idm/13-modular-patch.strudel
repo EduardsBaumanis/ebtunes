@@ -1,0 +1,58 @@
+// ══════════════════════════════════════════════════════════════
+// "Modular Patch"
+// Track 13 of 20 · IDM
+//
+// Key:    C minor (modal — anchored on a C drone)
+// Tempo:  110 BPM  (setcpm 27.5)
+// Mood:   Generative sequencer chain. Self-evolving.
+//
+// STRUDEL TECHNIQUE
+//   choose([...])   — random pick from set per event = generative
+//   .scramble(n)    — randomly reorder steps each cycle
+//
+// VISUALIZATION
+//   .punchcard() on the kick + .pianoroll() on the generative lead
+// ══════════════════════════════════════════════════════════════
+
+setcpm(27.5)
+
+stack(
+
+  // ── DRONE — anchor ───────────────────────────────────────────
+  note("c2").sound("sine").attack(2).release(4).gain(0.5)
+    .color("midnightblue"),
+
+  // ── KICK with punchcard ──────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~").gain(0.78).lpf(180).shape(0.15)
+    .scramble(4)
+    .color("crimson")
+    .punchcard(),
+
+  // ── PERC — scrambled clicks ──────────────────────────────────
+  s("hh hh ~ hh  ~ hh hh ~").gain(0.3).hpf(6800)
+    .scramble(8)
+    .color("yellow"),
+
+  // ── GENERATIVE LEAD — random pick from C minor scale ─────────
+  note(choose("c4","eb4","f4","g4","ab4","bb4","c5","eb5"))
+    .sound("square").attack(0.003).release(0.15)
+    .lpf(2800).gain(0.36).pan(rand).room(0.3)
+    .fast(4)
+    .color("magenta")
+    .pianoroll(),
+
+  // ── BASS — chosen per event ──────────────────────────────────
+  note(choose("c2","eb2","f2","g2"))
+    .sound("sawtooth").lpf(500).shape(0.15).lpq(7)
+    .attack(0.005).release(0.2)
+    .struct("x ~ x ~ x ~ x ~")
+    .gain(0.55).pan(0.5)
+    .color("navy"),
+
+  // ── PAD — stable cmin9 ───────────────────────────────────────
+  note("[c3,eb3,g3,bb3]")
+    .sound("sawtooth").vowel("u")
+    .attack(1.5).release(3).lpf(1700)
+    .gain(0.26).pan(0.5).room(0.5)
+    .color("indigo")
+)

@@ -1,0 +1,61 @@
+// ══════════════════════════════════════════════════════════════
+// "Last Light Ranch"
+// Chill cowboy — feeding time at the end of the day
+//
+// Key:    C major
+// Tempo:  ~80 BPM  (setcpm 20)
+// Chords: C – G – Am – F   (I – V – vi – IV)
+// Feel:   Everything done. Quiet. The kind of tired that feels good.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(20)
+
+stack(
+
+  // ── KICK ──────────────────────────────────────────────────────
+  s("bd ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.44)
+    .lpf(2700),
+
+  // ── BRUSH RIM ─────────────────────────────────────────────────
+  s("~ ~ rim ~ ~ ~ rim ~")
+    .gain(0.34)
+    .room(0.1),
+
+  // ── BANJO ROLL — C G Am F ─────────────────────────────────────
+  note("c5 e5 g5 e5 c5 e5 g5 e5  g4 b4 d5 b4 g4 b4 d5 b4  a4 c5 e5 c5 a4 c5 e5 c5  f4 a4 c5 a4 f4 a4 c5 a4")
+    .sound("triangle")
+    .attack(0.001).decay(0.09).sustain(0.0).release(0.04)
+    .room(0.12)
+    .gain(0.48)
+    .pan(0.58)
+    .slow(4),
+
+  // ── GUITAR BASS ───────────────────────────────────────────────
+  note("c2 ~ g2 ~ ~ ~ ~ ~  g2 ~ d3 ~ ~ ~ ~ ~  a2 ~ e3 ~ ~ ~ ~ ~  f2 ~ c3 ~ ~ ~ f2 ~")
+    .sound("sine")
+    .attack(0.005).decay(0.22).sustain(0.08).release(0.12)
+    .lpf(500)
+    .gain(0.66)
+    .slow(4),
+
+  // ── STEEL GUITAR PAD ──────────────────────────────────────────
+  note("<[c3,e3,g3] [g3,b3,d4] [a3,c4,e4] [f3,a3,c4]>")
+    .sound("sawtooth")
+    .attack(0.14).decay(0.32).sustain(0.5).release(0.95)
+    .lpf(1700)
+    .room(0.38)
+    .gain(0.20)
+    .pan(0.42),
+
+  // ── MELODY — C pentatonic: C D E G A ─────────────────────────
+  note("~ g4 ~ ~ e4 ~ ~ ~  c5 ~ ~ ~ a4 ~ g4 ~  ~ ~ e4 ~ ~ ~ c4 ~  d4 ~ ~ g4 ~ e4 ~ ~")
+    .sound("sine")
+    .attack(0.014).decay(0.24).sustain(0.14).release(0.32)
+    .delay(0.26).delaytime(0.5).delayfeedback(0.18)
+    .room(0.38)
+    .gain(0.44)
+    .pan(0.5)
+    .slow(4)
+
+)

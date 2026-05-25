@@ -1,0 +1,81 @@
+// ══════════════════════════════════════════════════════════════
+// "Reverse Vocal Glitch"
+// IDM / glitch — backwards-played spoken letters
+//
+// Key:    D minor
+// Tempo:  118 BPM  (setcpm 29.5)
+// Genre:  Glitch / IDM (Autechre / Squarepusher)
+//
+// VOCAL TECHNIQUE
+//   .speed(-1) plays the sample BACKWARDS. Vocal samples reversed
+//   become the uncanny "ahhsss" → "ssshhaa" warp that IDM and
+//   horror films love. Mixed with forward vocals you get a
+//   "wrong-direction" call-and-response.
+// ══════════════════════════════════════════════════════════════
+
+setcpm(29.5)
+
+stack(
+
+  // ── BROKEN KICK ───────────────────────────────────────────────
+  s("bd ~ [~ bd] ~  ~ [bd bd] ~ ~")
+    .gain(0.85).lpf(180).shape(0.18)
+    .color("crimson"),
+
+  // ── GLITCHY SNARE — irregular ─────────────────────────────────
+  s("~ ~ sd [sd*2 ~] ~ ~ sd ~")
+    .gain(0.6).hpf(280).shape(0.25)
+    .color("orange"),
+
+  // ── HAT — degraded random speeds ──────────────────────────────
+  s("hh*16").gain(0.3).hpf(5500).degradeBy(0.4)
+    .speed(rand.range(0.8, 1.4))
+    .color("yellow"),
+
+  // ── FORWARD VOCAL — spoken letters ────────────────────────────
+  s("alphabet:0 ~ ~ ~  ~ ~ alphabet:4 ~")
+    .gain(0.55).hpf(300).pan(0.4)
+    .room(0.3)
+    .color("hotpink"),
+
+  // ── REVERSED VOCAL — same alphabet, .speed(-1) ────────────────
+  // Each event plays the letter backwards. Combined with delay,
+  // you get the "ahhss" reversed-tape texture.
+  s("alphabet:8 ~ alphabet:14 ~")
+    .speed(-1)
+    .gain(0.55).hpf(300).pan(0.6)
+    .delay(0.4).delaytime(0.375).delayfeedback(0.4)
+    .room(0.4)
+    .color("magenta"),
+
+  // ── BASS — sparse glitchy ─────────────────────────────────────
+  note("d2 ~ ~ ~  eb2 ~ ~ ~  ab1 ~ ~ ~  g1 ~ ~ ~")
+    .sound("sawtooth").lpf(280).lpq(5).shape(0.2)
+    .attack(0.003).release(0.12).gain(0.55)
+    .color("purple"),
+
+  // ── STUTTERED CHORD — sometimes a fast burst ─────────────────
+  note("<[c5 eb5 g5] [eb5 g5 bb5] [ab4 c5 eb5] [g4 b4 d5]>")
+    .sound("triangle").attack(0.005).release(0.18).gain(0.32)
+    .sometimes(x => x.ply(3))
+    .delay(0.4).delaytime(0.166).delayfeedback(0.45)
+    .pan(0.55).slow(2)
+    .color("teal"),
+
+  // ── RANDOM ALPHABET SCATTER — different letter per cycle ──────
+  // wchoose lets you bias the random pick. Here it's used to keep
+  // throwing different alphabet letters into the texture.
+  s(wchoose([
+    ["alphabet:5",  2],
+    ["alphabet:18", 2],
+    ["alphabet:21", 1],
+    ["alphabet:25", 1]
+  ]))
+    .struct("~ ~ ~ ~ ~ ~ ~ x")
+    .gain(0.4).hpf(500)
+    .speed(rand.range(0.6, 1.4))
+    .pan(rand)
+    .room(0.4).slow(2)
+    .color("white")
+
+)

@@ -1,0 +1,474 @@
+// ╔══════════════════════════════════════════════════════════════╗
+// ║  STRUDEL CHEAT SHEET 5 — ADVANCED EFFECTS & TECHNIQUES      ║
+// ║  Envelopes, Modulation, Orbits, and Sophisticated Sound Design ║
+// ╚══════════════════════════════════════════════════════════════╝
+//
+// Ctrl+Enter  → evaluate & play the uncommented example
+// Ctrl+.      → stop all sound
+//
+// ── CONTENTS ─────────────────────────────────────────────────────
+//   1. Pitch Envelope — dynamic pitch changes
+//   2. Filter Envelope — dynamic filter sweeps
+//   3. Amplitude Modulation — tremolo and rhythmic volume
+//   4. Vibrato and Phaser — modulation effects
+//   5. Panning Techniques — stereo effects (jux, juxBy)
+//   6. Orbits — Global effect routing
+//   7. Ducking / Sidechain — volume ducking
+//   8. Signals — LFO and continuous modulation
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 1. PITCH ENVELOPE — DYNAMIC PITCH SWEEPS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//
+// Shape pitch over time using ADSR-style envelope.
+// Creates expressive pitch slides, kicks, and tails.
+
+// ── .penv(semitones) — Pitch envelope depth ────────────────────────
+//   Amount of pitch change from the base note (in semitones).
+//   Positive = pitch rises, Negative = pitch falls
+//   Requires .pattack() or other envelope parameters to hear effect.
+//
+//   Usage: .penv(12)  →  octave rise
+
+setcpm(30)
+
+note("c4")
+  .s("sine")
+  .penv(12)        // rise one octave
+  .pattack(0.2)    // attack time for pitch change
+  .pdecay(0.1)     // decay time
+
+
+// ── .pattack(seconds) — Attack time ────────────────────────────────
+//   How fast pitch reaches its envelope target.
+//   0.001 = instant, 0.5 = smooth swell
+
+// note("c4 d4 e4 f4").s("sine")
+//   .penv(24).pattack("<0 .1 .25 .5>")
+
+
+// ── .pdecay(seconds) — Decay time ──────────────────────────────────
+//   How fast pitch decays toward sustain level.
+
+// note("g1*4").s("sine")
+//   .penv(32).pattack(0.001).pdecay(0.5)
+
+
+// ── .prelease(seconds) — Release time ──────────────────────────────
+//   Pitch slide after note ends (requires .release() for audible effect).
+
+// note("c4 ~ e4 ~ g4 ~").release(0.5).s("sine")
+//   .penv(-12).prelease(0.3)
+
+
+// ── .pcurve(type) — Envelope shape ────────────────────────────────
+//   0 = linear (straight line)
+//   1 = exponential (curved, good for kicks and swells)
+
+// note("g1*4").s("sine")
+//   .penv(36).pattack(0.001).pdecay(0.12).pcurve(1)
+
+
+// ── .panchor(anchor) — Envelope anchor point ──────────────────────
+//   Controls where the pitch envelope "anchors":
+//   0 = pitch rises from note to note+penv
+//   1 = pitch falls from note-penv to note
+//   0.5 = pitch centered around note
+//
+//   Default: uses sustain value
+
+// note("c c4").s("sine")
+//   .penv(12).panchor("<0 .5 1>")
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 2. FILTER ENVELOPE — DYNAMIC FILTER SWEEPS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//
+// Modulate filter cutoff using ADSR envelope.
+// Creates expressive "twangy" bass, classic 80s synth leads, etc.
+
+// ── Low-Pass Filter Envelope ────────────────────────────────────────
+//
+// .lpenv(semitones)    — depth of filter modulation
+// .lpattack(seconds)   — attack time of filter sweep
+// .lpdecay(seconds)    — decay time toward sustain
+// .lpsustain(amount)   — sustain level (0–1)
+// .lprelease(seconds)  — release time after note ends
+//
+// Aliases: lpa, lpd, lps, lpr, lpe
+
+setcpm(30)
+
+note("c2 e2 f2 g2")
+  .s("sawtooth")
+  .lpf(300)         // base cutoff
+  .lpenv(4)         // sweep depth (4 octaves up)
+  .lpa(0.005)       // fast attack
+  .lpd(0.5)         // slow decay
+  .lps(0.1)         // sustain level
+  .lpr(0.1)         // quick release
+
+// --- More aggressive sweep ---
+// note("c2*4").s("sawtooth")
+//   .lpf(300).lpenv(8).lpa(0.001).lpd(0.2).lps(0).lpr(0.05)
+
+
+// ── High-Pass Filter Envelope ───────────────────────────────────────
+//
+// Similar to lowpass envelope but on highpass filter.
+// .hpenv, .hpattack / .hpa, .hpdecay / .hpd, etc.
+//
+// Useful for "opening up" a sound, removing low-end muddiness dynamically.
+
+// note("c2 e2 f2 g2").s("sawtooth")
+//   .hpf(500).hpenv(-2).hpa(0.01).hpd(0.3)
+
+
+// ── Band-Pass Filter Envelope ──────────────────────────────────────
+//
+// Modulate bandpass filter. Similar naming: .bpenv, .bpa, .bpd, etc.
+
+// note("c2 e2 f2 g2").s("sawtooth").clip(0.5)
+//   .bpf(1000).bpenv(4).bpa(0.01).bpd(0.3)
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 3. AMPLITUDE MODULATION — TREMOLO EFFECTS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//
+// Modulate volume cyclically using waveforms.
+// Creates tremolo, stuttering, and pulsing effects.
+
+// ── .tremolosync(cycles) — Tremolo speed ──────────────────────────
+//   Speed of tremolo modulation in cycles (tempo-synced).
+//   Faster cycles = quicker volume wobble
+//
+//   Usage: .tremolosync(4)  →  one full tremolo per 4 cycles
+
+setcpm(30)
+
+note("d4*8").s("sine")
+  .tremolosync(4)
+  .tremolodepth(1)    // full modulation depth
+
+// --- Faster tremolo ---
+// note("d4*8").s("sine").tremolosync(1).tremolodepth(0.7)
+
+
+// ── .tremolodepth(amount) — Modulation amount ──────────────────────
+//   How much volume changes (0–1).
+//   0 = no modulation, 1 = full swing from silent to full volume
+
+// note("a4*4").s("sawtooth")
+//   .tremolosync(2).tremolodepth("<1 .5 .25 0>")
+
+
+// ── .tremoloskew(amount) — Waveform shape ──────────────────────────
+//   Skew the modulation waveform (0–1).
+//   0 = ramp, 0.5 = sine, 1 = reverse ramp
+//   Creates asymmetric modulation (longer quiet or loud).
+
+// note("{f a c e}%16").s("sawtooth")
+//   .tremolosync(4).tremolodepth(0.8).tremoloskew("<0 .5 1>")
+
+
+// ── .tremolophase(offset) — Modulation offset ──────────────────────
+//   Shift the tremolo phase in cycles.
+//   Useful for creating rhythmic polyrhythms with multiple tremolo sources.
+
+// note("{f a c e}%16").s("sawtooth")
+//   .tremolosync(4).tremolodepth(0.8).tremolophase("<0 .25 .66>")
+
+
+// ── .tremoloshape(waveform) — Modulation shape ─────────────────────
+//   Shape of the modulation wave: "tri", "sine", "square", "saw", "ramp"
+//   Each creates different character:
+//   - sine    = smooth, vocal
+//   - square  = on/off, stuttering
+//   - saw     = ramp (smooth rise, sudden fall)
+//   - tri     = symmetrical sharp peaks
+
+// note("{f g c d}%16").s("sawtooth")
+//   .tremolosync(4).tremolodepth(0.8)
+//   .tremoloshape("<sine square tri>")
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 4. VIBRATO & PHASER — MODULATION EFFECTS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// ── .vib(speed:depth) — Vibrato (pitch modulation) ─────────────────
+//   Modulates pitch slightly for expressive, vocal quality.
+//   Format: .vib("speed:depth")
+//   Speed in cycles, depth in semitones.
+
+setcpm(30)
+
+note("c4").s("sine").release(1)
+  .vib("4:.1")    // 4 cycles/second, 0.1 semitones wobble
+
+// --- Dramatic vibrato ---
+// note("a4").s("sine").release(2).vib("6:.5")
+
+
+// ── .phaser(speed) — Phaser effect ──────────────────────────────────
+//   Creates a sweeping, "whooshing" effect by modulating phase.
+//   Approximates guitar phaser pedals.
+//   Speed in Hz.
+
+// n(run(8)).scale("D:pentatonic").s("sawtooth")
+//   .release(0.5).phaser("<1 2 4 8>")
+
+
+// ── .phaserdepth(amount) — Phaser intensity ────────────────────────
+//   How much the effect is audible (0–1). Default: 0.75
+
+// n(run(8)).scale("D:pentatonic").s("sawtooth").release(0.5)
+//   .phaser(2).phaserdepth("<0 .5 .75 1>")
+
+
+// ── .phasercenter(hz) — Phaser center frequency ────────────────────
+//   Center frequency of the phaser (default: 1000 Hz).
+//   Higher = brighter sweep, Lower = darker sweep.
+
+// n(run(8)).scale("D:pentatonic").s("sawtooth").release(0.5)
+//   .phaser(2).phasercenter("<800 2000 4000>")
+
+
+// ── .phasersweep(hz) — Phaser sweep range ──────────────────────────
+//   Frequency range the phaser sweeps through (default: 2000 Hz).
+//   Wider = more dramatic effect.
+
+// n(run(8)).scale("D:pentatonic").s("sawtooth").release(0.5)
+//   .phaser(2).phasersweep("<800 2000 4000>")
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 5. PANNING TECHNIQUES — STEREO EFFECTS
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// ── .jux(function) — Apply function to right channel only ───────────
+//   Creates stereo interest by applying a transformation only to the
+//   right channel, leaving left unchanged. Classic Strudel technique.
+//
+//   Useful functions: rev(), fast(2), jux(rev), etc.
+
+setcpm(30)
+
+s("bd lt [~ ht] mt cp ~ bd hh")
+  .jux(rev)
+
+// --- More complex jux ---
+// s("bd lt [~ ht] mt cp ~ bd hh")
+//   .jux(jux(rev))  // nested jux = apply rev to right, rev(rev) to left
+
+
+// ── .juxBy(width, function) — Adjustable stereo width ──────────────
+//   Like jux(), but control the stereo width (0–1).
+//   0 = mono, 1 = full stereo, 0.5 = partial stereo
+//
+//   Usage: .juxBy(0.5, function)
+
+// s("bd lt [~ ht] mt cp ~ bd hh")
+//   .juxBy("<0 .5 1>/2", rev)
+
+
+// ── .pan(position) — Stereo position ────────────────────────────────
+//   Place sound in stereo field.
+//   0 = hard left, 0.5 = center, 1 = hard right
+//   Can also be a pattern for dynamic panning.
+
+// s("[bd hh]*2").pan("<.5 1 .5 0>")
+
+// --- Smooth panning using signals ---
+// s("bd hh sd cp").pan(sine.slow(2))    // sweep from left to right
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 6. ORBITS — GLOBAL EFFECT ROUTING
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//
+// Patterns with the same orbit share the same global delay and reverb.
+// Useful for mixing groups of sounds with unified effects.
+//
+// IMPORTANT: Each orbit has ONE shared delay and ONE shared reverb.
+// If two patterns on the same orbit change these parameters, they conflict!
+// Solution: Put patterns on different orbits.
+
+// ── .orbit(number) — Assign pattern to orbit ───────────────────────
+//   Default orbit: 1
+//   Orbits 1–16 available.
+//
+//   Usage: .orbit(1), .orbit(2), etc.
+
+setcpm(30)
+
+stack(
+  s("hh*6").delay(0.5).delaytime(0.25).orbit(1),
+  s("~ sd ~ sd").delay(0.5).delaytime(0.125).orbit(2)
+)
+
+// --- Each orbit can have different delay times (no conflict!) ---
+
+
+// ── Practical orbit arrangement ────────────────────────────────────
+//
+// orbit(1) = drums & bass (dry, tight)
+// orbit(2) = leads & melody (some reverb)
+// orbit(3) = pads & atmosphere (lots of reverb)
+
+// stack(
+//   s("bd sd hh cp").orbit(1).room(0.05),     // tight drums
+//
+//   note("c3 d3 e3 f3").s("sine")
+//     .orbit(2).room(0.4).delay(0.3),         // melodic
+//
+//   note("<[c,g] [f,a]>").s("sawtooth")
+//     .attack(0.5).release(1).slow(4)
+//     .orbit(3).room(0.8).gain(0.3)           // dreamy pad
+// )
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 7. DUCKING / SIDECHAIN — VOLUME DUCKING
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//
+// Create sidechain/ducking effect: reduce volume of one orbit
+// when another pattern plays.
+// Classic for "pumping" bass when kick hits.
+
+// ── .duckorbit(target_orbit) — Trigger ducking ──────────────────────
+//   Reduce volume of target orbit whenever this pattern plays.
+//   Think: "kick ducks the bass"
+
+setcpm(30)
+
+stack(
+  // Bass on orbit 2 — will be ducked
+  n(run(16)).scale("c:minor:pentatonic").s("sawtooth")
+    .delay(0.7).orbit(2),
+
+  // Kick on orbit 1 triggers ducking of orbit 2
+  s("bd:4!4").beat("0,4,8,11,14", 16)
+    .duckorbit(2)
+    .duckattack(0.2)
+    .duckdepth(1)
+)
+
+// --- Multitrack ducking ---
+// $: n(run(16)).scale("c:minor:pentatonic").s("sawtooth")
+//     .delay(0.7).orbit(2)
+// $: s("hh*16").orbit(3)
+// $: s("bd:4!4").beat("0,4,8,11,14",16)
+//     .duckorbit("2:3")        // duck both orbits 2 and 3
+//     .duckattack(0.2)
+//     .duckdepth(1)
+
+
+// ── .duckattack(seconds) — Recovery time ───────────────────────────
+//   How fast the ducked signal returns to normal volume.
+//   0.001 = instant, 0.5 = slow fade back
+
+// .duckattack(0.5)
+
+
+// ── .duckdepth(amount) — Duck intensity ────────────────────────────
+//   How much to reduce volume (0–1).
+//   0 = no ducking, 1 = full muting
+
+// .duckdepth(0.7)
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 8. SIGNALS — LFO AND CONTINUOUS MODULATION
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+//
+// Use waveforms as "signals" to smoothly modulate parameters.
+// Common signals: sine, tri, square, saw, ramp, noise, perlin
+//
+// KEY: Parameters ONLY update when notes trigger!
+// For continuous modulation, use .segment() to create many events.
+
+// ── Sine signal with .range() ──────────────────────────────────────
+//   Create smooth LFO modulation between min and max values.
+//   Format: waveform.range(min, max).slow(cycles)
+
+setcpm(30)
+
+s("bd hh sd hh").lpf(sine.range(200, 5000).slow(2))
+
+// --- Tremolo using sine ---
+// note("c4*4").s("sine").gain(sine.range(0.2, 1).slow(2))
+
+
+// ── Sawtooth / Ramp signal ─────────────────────────────────────────
+//   Linear ramp from 0 to 1 (sawtooth) or 1 to 0 (ramp).
+//
+//   saw.range(min, max)    → 0→1 ramp
+//   ramp.range(min, max)   → 1→0 ramp
+
+// note("c2*4").s("sine").lpf(saw.range(300, 2000).slow(3))
+
+
+// ── Perlin noise signal ────────────────────────────────────────────
+//   Organic, smooth randomness. Great for evolving, natural textures.
+
+// note("<c4 d4 e4 f4>").s("sawtooth").slow(2)
+//   .gain(perlin.range(0.3, 0.8).slow(4))
+
+
+// ── Triangle signal ────────────────────────────────────────────────
+//   Smooth triangular wave (different slope than sine).
+
+// note("c3*4").s("sine").pan(tri.range(0, 1).slow(4))
+
+
+// ── Square signal ──────────────────────────────────────────────────
+//   On/off toggle (0 or 1). Useful for gate-like effects.
+
+// s("hh*8").gain(square.range(0.2, 0.8).slow(2))
+
+
+// ── Signal with .segment() for continuous control ──────────────────
+//   Signals only update when notes trigger. Add .segment() to create
+//   many micro-events for smooth, continuous modulation.
+//
+//   Without segment(): parameter updates once per note
+//   With segment(N): parameter updates N times per cycle
+
+// s("supersaw").seg(16).lpf(tri.range(100, 5000).slow(2))
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ADVANCED SOUND DESIGN EXAMPLE
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Combining multiple advanced techniques
+
+setcpm(25)
+
+stack(
+  // Drums: tight, no effects
+  s("bd ~ sd ~").orbit(1).gain(0.9),
+  s("hh*8").orbit(1).gain(0.35).hpf(5000),
+
+  // Bass: filtered, ducked by kick
+  note("c2 d2 c2 b1").s("sawtooth").slow(4)
+    .lpf(saw.range(300, 800).slow(2))     // filter sweep
+    .orbit(2).gain(0.7)
+    .duckorbit(2).duckdepth(0.8),
+
+  // Pad: with pitch envelope and reverb
+  note("<[c4,g4] [ab3,eb4]>").s("sawtooth").slow(4)
+    .penv(7).pattack(0.5).pdecay(0.1)
+    .attack(0.4).release(1)
+    .orbit(3).room(0.7).gain(0.4)
+    .juxBy(0.6, rev),
+
+  // Lead: modulated with vibrato and phaser
+  note("c4 e4 g4").s("sine").slow(2)
+    .vib("5:.15")
+    .phaser(3)
+    .orbit(2).room(0.3).gain(0.55)
+)
