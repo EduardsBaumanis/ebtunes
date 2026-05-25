@@ -75,6 +75,55 @@ body {
   color: var(--grey);
   font-size: 12px;
 }
+.diag-toggle {
+  background: none;
+  border: 0;
+  color: var(--grey);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin-left: 8px;
+}
+.diag-toggle:hover { color: var(--accent); }
+
+/* ── DIAGNOSTIC PANE ── */
+.diag-pane {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 360px;
+  max-width: 100%;
+  max-height: 50vh;
+  background: rgba(0, 0, 0, 0.92);
+  border: 1px solid var(--dim);
+  border-radius: 0 0 0 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  font-size: 11px;
+}
+.diag-head {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--dim);
+  color: var(--grey);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.diag {
+  padding: 8px 10px;
+  overflow-y: auto;
+  max-height: 40vh;
+  color: var(--white);
+  line-height: 1.5;
+  word-break: break-all;
+  font-family: var(--font);
+}
+.diag-line { white-space: pre-wrap; }
+.diag-line.diag-ok    { color: #6cc274; }
+.diag-line.diag-warn  { color: #d8a040; }
+.diag-line.diag-error { color: #e06868; }
 
 /* ── BODY ── */
 .body {
