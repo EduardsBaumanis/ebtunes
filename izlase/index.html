@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>izlase — Eduarda izlase</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="studio">
+
+  <div class="app">
+
+    <!-- HEADER -->
+    <header class="header">
+      <button id="menu-toggle" class="menu-toggle" title="Saraksts">≡</button>
+      <span class="logo">★</span>
+      <span class="title">izlase</span>
+      <span id="count" class="count"></span>
+    </header>
+
+    <!-- BODY -->
+    <div class="body">
+
+      <!-- SIDEBAR (file list, auto-discovered) -->
+      <aside id="sidebar" class="sidebar">
+        <ul id="file-list" class="file-list"></ul>
+        <div id="hint" class="hint hidden"></div>
+      </aside>
+
+      <!-- BACKDROP for mobile sidebar -->
+      <div id="backdrop" class="backdrop hidden"></div>
+
+      <!-- METADATA STRIP -->
+      <div class="meta-strip">
+        <span id="now-title" class="meta-title">—</span>
+        <span id="now-key"   class="meta-pill"></span>
+        <span id="now-bpm"   class="meta-pill"></span>
+        <span id="now-feel"  class="meta-pill"></span>
+      </div>
+
+      <!-- STRUDEL FRAME -->
+      <main class="frame-wrap">
+        <iframe
+          id="strudel-frame"
+          title="Strudel REPL"
+          allow="autoplay; clipboard-read; clipboard-write"
+          loading="lazy"
+          src="about:blank">
+        </iframe>
+      </main>
+
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

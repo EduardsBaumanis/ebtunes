@@ -1,0 +1,145 @@
+// ============================================================
+// TECHNO LESSON 08: Melodic Techno
+// ============================================================
+// Melodic Techno (sometimes called Melodic Techno/House or
+// "Afterhours Techno") is the most emotionally expressive branch
+// of the genre. It emerged in the late 2000s–2010s, driven by
+// Berlin and Milan's afterhours club culture.
+//
+// Where traditional techno communicates through rhythm and texture,
+// melodic techno layers chord progressions, melodies, and
+// atmospheric pads OVER the driving 4/4 beat — creating music
+// that is both physically driving and emotionally resonant.
+//
+// KEY ARTISTS:
+//   Tale Of Us — "Astral Me", "Eon" (Afterlife label)
+//   Recondite — "Hortus", "Spill"
+//   Innellea — "Monolith", "The Traveller"
+//   Adam Port (Keinemusik) — melodic house/techno boundary
+//   Bicep — "Glue", "Caress"
+//   Adriatique, Mathame, Massano
+//
+// DEFINING CHARACTERISTICS:
+//   ✦ Strong, memorable melodic hooks — you can hum this music
+//   ✦ Lush, cinematic chord progressions
+//   ✦ 4/4 kick — still drives, but less aggressive than hard techno
+//   ✦ BPM: 124–134 (slower than dark techno, more room to breathe)
+//   ✦ Beautiful, emotional atmosphere
+//   ✦ Usually minor key — often Aeolian or Dorian
+//   ✦ Pads with slow attack — evolving, swelling textures
+//   ✦ Balance: the beat and melody are equally important
+//
+// MUSIC THEORY — Emotional Chord Progressions:
+//   i – VI – III – VII  (Am–F–C–G)    →  hopeful, bittersweet
+//   i – VII – VI – VII  (Am–G–F–G)    →  pulsing, circular, trance-like
+//   i – iv – i – V      (Am–Dm–Am–E)  →  classical, dramatic
+//
+// The key to melodic techno's emotion: sustained major 7ths and
+// minor 9ths over the chord root. The 7th and 9th add "longing."
+// ============================================================
+
+setcpm(65)  // ~130 BPM
+
+// --- EXAMPLE 1: Melodic techno kick — present but not aggressive ---
+// Still 4/4, but the kick has a slightly wider, rounder character.
+// Room reverb is tiny — just a hint of space.
+s("bd*4").gain(0.88).room(0.05)
+
+
+// --- EXAMPLE 2: Lush chord progression (i – VI – III – VII) ---
+// In A minor: Am – F – C – G
+// With 7th chords for color: Am7 – Fmaj7 – Cmaj7 – G7
+// note("<[a3,c4,e4,g4] [f3,a3,e4,a4] [c4,e4,g4,b4] [g3,b3,d4,f4]>")
+//   .sound("sawtooth")
+//   .attack(0.5).release(1.2)
+//   .lpf(1800)
+//   .room(0.6).size(0.7)
+//   .gain(0.3)
+//   .slow(4)
+
+
+// --- EXAMPLE 3: Melodic lead (A minor pentatonic) ---
+// The melody floats ABOVE the chords. It uses the pentatonic scale
+// so it naturally fits every chord change without clashing.
+// note("a4 ~ e5 ~ c5 ~ ~ e5 ~ d5 ~ ~ c5 ~ a4 ~")
+//   .sound("triangle")
+//   .attack(0.02).release(0.35)
+//   .delay(0.45).delaytime(0.375).delayfeedback(0.3)
+//   .room(0.5)
+//   .gain(0.5)
+//   .slow(2)
+
+
+// --- EXAMPLE 4: Bass line that moves with the chords ---
+// In melodic techno, the bass follows chord roots — NOT just a
+// static note. This is what gives it that "journey" feeling.
+// note("<a2 f2 c2 g2>")
+//   .sound("sawtooth")
+//   .lpf(400)
+//   .attack(0.01).decay(0.2).sustain(0.5).release(0.1)
+//   .gain(0.65)
+//   .slow(2)
+
+
+// --- EXAMPLE 5: Atmospheric pad layer ---
+// A slower, higher pad floats above the main chords.
+// It reinforces the harmony but adds shimmer and space.
+// note("<[a4,e5] [f4,c5] [c4,g4] [g4,d5]>")
+//   .sound("sawtooth")
+//   .attack(1.0).release(2.0)
+//   .lpf(1200)
+//   .room(0.85).size(0.9)
+//   .gain(0.18)
+//   .pan(0.4)
+//   .slow(4)
+
+
+// --- EXAMPLE 6: Full melodic techno arrangement ---
+// This is the complete picture: rhythm + harmony + melody + atmosphere.
+// Notice it feels like "music" in a way that minimal techno doesn't.
+// stack(
+//   // Kick
+//   s("bd*4").gain(0.88),
+//   // Snare on 2 and 4
+//   s("~ ~ sd ~ ~ ~ sd ~").gain(0.72).room(0.1),
+//   // Hi-hat — 8th notes, not 16ths (more space, less aggression)
+//   s("hh*8").gain(0.28).hpf(7000).pan(0.62),
+//   // Open hat accent
+//   s("oh/2").gain(0.42).pan(0.58),
+//
+//   // Chord-following bass
+//   note("<a2 f2 c2 g2>")
+//     .sound("sawtooth").lpf(450)
+//     .attack(0.01).decay(0.15).sustain(0.5).release(0.1)
+//     .gain(0.65)
+//     .slow(2),
+//
+//   // Lush chord pad
+//   note("<[a3,c4,e4,g4] [f3,a3,e4,a4] [c4,e4,g4,b4] [g3,b3,d4,f4]>")
+//     .sound("sawtooth")
+//     .attack(0.4).release(0.8)
+//     .lpf(2000).room(0.55).size(0.7)
+//     .gain(0.28)
+//     .slow(4),
+//
+//   // Melody
+//   note("a4 ~ e5 ~ c5 ~ ~ e5  ~ d5 ~ ~ c5 ~ a4 ~")
+//     .sound("triangle")
+//     .attack(0.02).release(0.35)
+//     .delay(0.4).delaytime(0.375).delayfeedback(0.28)
+//     .room(0.45).gain(0.48)
+//     .slow(2)
+// )
+
+
+// ============================================================
+// EXERCISE:
+//   1. Change the key: replace all A→C, E→G, C→Eb (C minor)
+//      Notice how different the same progression feels in a new key
+//   2. Try the progression i–VII–VI–VII: Am–G–F–G
+//      This "circular" progression never fully resolves — it loops
+//   3. Change the melody to use only scale degrees 1, 3, 5 (A, C, E)
+//      Does it feel more stable? Less interesting?
+//   4. Listen to: Tale Of Us "Astral Me" — identify chord progression
+//   5. Recondite "Hortus" — notice how melody and techno coexist
+// ============================================================
