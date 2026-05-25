@@ -1,0 +1,46 @@
+// Album: Saxophone Afterhours
+// Track: 09 — dark-alley
+// Genre: Saxophone-centred electronic jazz (noir / cinematic)
+// Tempo / CPM: 72 BPM (setcpm 18)
+// Key / Mode: C minor (with chromatic colour)
+// Saxophone role: cinematic noir lead
+// Musical idea: A film-noir alley — tenor sax line with chromatic descent above a slow heartbeat kick and air-conditioner drone.
+// Strudel focus: chromatic .add() shifts in the sax + bone-dry rim ticks + very long pad.
+// Visualisation: ._pianoroll({ cycles: 4 }) on the chromatic line.
+
+setcpm(18)
+
+stack(
+
+  note("c1").sound("sine").attack(4).release(8).gain(0.45)
+    .color("midnightblue"),
+
+  // ── AIR-CONDITIONER DRONE
+  s("white*4").lpf(slider(800, 300, 1400)).hpf(150)
+    .gain(0.06).pan(rand)
+    .color("dimgray"),
+
+  // ── NOIR SAX — chromatic descent
+  note("g4 fs4 f4 e4  eb4 d4 db4 c4")
+    .sound("sawtooth").vowel("a")
+    .attack(0.1).release(0.55).lpf(2700).lpq(4)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.4)
+    .gain(0.46).pan(0.55).room(0.6)
+    .color("crimson")
+    ._pianoroll({ cycles: 4 }),
+
+  // ── SLOW HEARTBEAT KICK
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.55).lpf(160).shape(0.1)
+    .color("darkred"),
+
+  // ── COLD RIM TICKS
+  s("~ ~ rim ~  ~ ~ ~ rim").gain(0.36).hpf(1700).room(0.4)
+    .color("orange"),
+
+  // ── PAD — Cm with chromatic neighbour
+  note("<[c3,eb3,g3] [c3,eb3,gb3] [c3,d3,g3] [c3,eb3,g3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(4).release(7).lpf(1500)
+    .gain(0.32).pan(0.5).room(0.7).slow(2)
+    .color("indigo")
+)

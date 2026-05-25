@@ -1,0 +1,45 @@
+// Album: Saxophone Afterhours
+// Track: 10 — breath-on-glass
+// Genre: Saxophone-centred electronic jazz (ambient jazz)
+// Tempo / CPM: 50 BPM (setcpm 12.5)
+// Key / Mode: G Lydian
+// Saxophone role: breathy held drone
+// Musical idea: An ambient piece — tenor sax holds long open notes while white-noise "breath" rises and falls under it.
+// Strudel focus: extreme .attack(6) + .release(10) on the sax = pure pad; sine.range on breath LPF for in/out.
+// Visualisation: ._pianoroll({ cycles: 8 }) on the held sax.
+
+setcpm(12.5)
+
+stack(
+
+  note("g1").sound("sine").attack(8).release(13).gain(0.45)
+    .color("midnightblue"),
+
+  // ── HELD SAX — long Lydian colour notes
+  note("<d5 ~ cs5 ~  b4 ~ a4 ~>")
+    .sound("sawtooth").vowel("a")
+    .attack(6).release(10).lpf(2400).lpq(2)
+    .delay(0.4).delaytime(0.75).delayfeedback(0.45)
+    .gain(0.42).pan(0.5).room(0.8)
+    .color("crimson")
+    ._pianoroll({ cycles: 8 }),
+
+  // ── BREATH NOISE — rises/falls
+  s("white*8").lpf(sine.range(1200, 3800).slow(12)).hpf(1200)
+    .gain(0.06).pan(rand)
+    .color("ivory"),
+
+  // ── LYDIAN PAD — Gmaj7#11 → D6
+  note("<[g3,b3,d4,fs4,cs5] [d3,fs3,a3,b3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(5).release(10).lpf(2000)
+    .gain(0.36).pan(0.5).room(0.85).slow(4)
+    .color("teal"),
+
+  // ── DISTANT BELL — every long phrase
+  note("d6 ~ ~ ~  ~ ~ ~ ~")
+    .sound("triangle").attack(0.1).release(5).lpf(4000)
+    .delay(0.6).delaytime(1).delayfeedback(0.55)
+    .gain(0.28).pan(0.55).room(0.9).slow(4)
+    .color("ivory")
+)
