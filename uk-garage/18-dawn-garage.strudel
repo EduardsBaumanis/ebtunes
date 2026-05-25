@@ -1,0 +1,51 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 18 — dawn-garage
+// Genre: UK Garage / soulful
+// Tempo / CPM: 128 BPM (setcpm 32)
+// Musical idea: Sunrise after the rave — soulful pads, gentle 2-step, vocal sigh on top.
+// Strudel focus: long-attack sawtooth+vowel pads, sparse drums, gentle swing.
+// Visualisation: .pianoroll({ cycles: 4, smear: true }) — background smear traces the soulful pad.
+
+setcpm(32)
+
+stack(
+
+  note("d1").sound("sine").attack(4).release(8).gain(0.42)
+    .color("midnightblue"),
+
+  // ── SUNRISE PAD — Dmaj9 → Bm9 → Gmaj7 → A6 + pianoroll ───────
+  note("<[d3,fs3,a3,cs4,e4] [b2,d3,fs3,a3,cs4] [g2,b2,d3,fs3,a3] [a2,cs3,e3,fs3,a3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(2).release(4).lpf(2200)
+    .gain(0.38).pan(0.5).room(0.6).slow(2)
+    .color("teal")
+    .pianoroll({ cycles: 4, smear: true }),
+
+  // ── VOCAL SIGH ───────────────────────────────────────────────
+  note("<a5 ~ ~ ~  fs5 ~ ~ ~  e5 ~ ~ ~  d5 ~ ~ ~>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.1).release(2).lpf(2800)
+    .delay(0.4).delaytime(0.5).delayfeedback(0.4)
+    .gain(0.32).pan(0.55).room(0.65).slow(2)
+    .color("crimson"),
+
+  // ── 2-STEP KICK — soft ───────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~").gain(0.7).lpf(170).shape(0.1)
+    .color("crimson"),
+
+  // ── SOFT SNARE ───────────────────────────────────────────────
+  s("~ ~ sd ~  ~ ~ ~ ~").gain(0.42).hpf(900).room(0.35)
+    .color("orange"),
+
+  // ── HATS shuffled, quiet ─────────────────────────────────────
+  s("hh*16").swingBy(0.35, 2)
+    .gain(0.16).hpf(7400)
+    .color("yellow"),
+
+  // ── SUB ──────────────────────────────────────────────────────
+  note("<d2 b1 g1 a1>")
+    .sound("sine").attack(0.005).release(0.5)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.7).pan(0.5)
+    .color("navy")
+)

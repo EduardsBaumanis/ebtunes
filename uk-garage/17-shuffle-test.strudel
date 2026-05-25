@@ -1,0 +1,46 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 17 — shuffle-test
+// Genre: UK Garage
+// Tempo / CPM: 132 BPM (setcpm 33)
+// Musical idea: Showcase of the swing/shuffle that defines the genre — three layers at different swing amounts.
+// Strudel focus: .swingBy(amount, divisor) at three different amounts (0.2, 0.4, 0.6) layered.
+// Visualisation: ._punchcard({ cycles: 2, smear: true }) — smear visualises the rhythmic swing.
+
+setcpm(33)
+
+stack(
+
+  note("a1").sound("sine").attack(2).release(5).gain(0.42)
+    .color("midnightblue"),
+
+  // ── HATS — light swing ───────────────────────────────────────
+  s("hh*16").swingBy(0.2, 2)
+    .gain(0.18).hpf(7500).pan(0.35)
+    .color("yellow")
+    ._punchcard({ cycles: 2, smear: true }),
+
+  // ── RIM — medium swing ───────────────────────────────────────
+  s("rim*8").swingBy(0.4, 2)
+    .gain(0.32).hpf(1500).pan(0.5).room(0.18)
+    .color("orange"),
+
+  // ── SHAKER — heavy swing ─────────────────────────────────────
+  s("hh*8").swingBy(0.6, 2)
+    .gain(0.16).hpf(8000).pan(0.65)
+    .color("gold"),
+
+  // ── KICK 2-step ──────────────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~").gain(0.8).lpf(170).shape(0.13)
+    .color("crimson"),
+
+  // ── SNARE on 2-and ───────────────────────────────────────────
+  s("~ ~ sd ~  ~ ~ ~ ~").gain(0.55).hpf(900).room(0.22)
+    .color("coral"),
+
+  // ── SUB ──────────────────────────────────────────────────────
+  note("<a1 e2 d2 g1>")
+    .sound("sine").attack(0.005).release(0.4).shape(0.13)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.72).pan(0.5)
+    .color("navy")
+)

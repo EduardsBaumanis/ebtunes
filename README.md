@@ -47,6 +47,7 @@ Strudel IDE, vērtēšanu un līderlisti:
 | [`footwork/`](footwork/) | Čikāgas footwork / juke — 160 BPM, triplet hai-hat, 808 stabu melodijas | 20 |
 | [`gardens-of-broken-clocks/`](gardens-of-broken-clocks/) | Eksperimentāls albums: 30 izdomāti pulksteņi, kas saauguši ar dārzu | 30 |
 | [`similarity-gradient/`](similarity-gradient/) | Metrikas vadīts albums: 30 dziesmas, katra mērķē atšķirīgu līdzības rādītāju (skat. `tools/strudel-similarity.mjs` un `reports/`) | 30 |
+| [`uk-garage/`](uk-garage/) | Londonas UK Garage / 2-step — šuflēti 16-tie, sub-bass, vokālie čopi | 20 |
 
 Daži favorīti:
 
