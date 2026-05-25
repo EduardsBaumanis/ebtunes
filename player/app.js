@@ -5,6 +5,7 @@
 const codeCache       = new Map();   // song path -> { fetchedAt, entry }
 const expandedGroups  = new Set();   // sidebar groups currently expanded
 const SONG_CACHE_MS   = 5000;        // avoids duplicate fetches from click + label refresh
+const FIRST_PUBLIC_PLAYLIST_ID = 'bluegrass';
 let currentPlaylist   = null;        // playlist object
 let currentFilename   = null;        // string
 let currentSongId     = null;        // "playlist_id/filename" — supabase key
@@ -155,19 +156,31 @@ function routeFromUrl() {
   return { album, song };
 }
 
+function playerPlaylists() {
+  if (typeof PLAYLISTS === 'undefined') return [];
+  const firstPublic = PLAYLISTS.findIndex(pl => pl.id === FIRST_PUBLIC_PLAYLIST_ID);
+  return firstPublic >= 0 ? PLAYLISTS.slice(firstPublic) : PLAYLISTS;
+}
+
 function findPlaylist(plId) {
   const target = plId.trim().toLowerCase();
-  if (!target || typeof PLAYLISTS === 'undefined') return null;
-  return PLAYLISTS.find(pl => pl.id.toLowerCase() === target) || null;
+  if (!target) return null;
+  return playerPlaylists().find(pl => pl.id.toLowerCase() === target) || null;
 }
 
 function initialSelection() {
-  if (typeof PLAYLISTS === 'undefined' || !PLAYLISTS.length) return null;
+  const playlists = playerPlaylists();
+  if (!playlists.length) return null;
   const route = routeFromUrl();
-  const playlist = findPlaylist(route.album) || PLAYLISTS[0];
+  const playlist = findPlaylist(route.album) || playlists[0];
   const songIdx = route.song ? playlist.files.indexOf(route.song) : -1;
   const idx = songIdx >= 0 ? songIdx : 0;
   return { playlist, filename: playlist.files[idx], idx };
+}
+
+function isPublicSongId(songId) {
+  const [plId] = songId.split('/');
+  return playerPlaylists().some(pl => pl.id === plId);
 }
 
 // ── Sidebar (collapsible playlist tree) ──────────────────────────────────────
@@ -179,7 +192,7 @@ function buildSidebar() {
   }
 
   elTree.innerHTML = '';
-  PLAYLISTS.forEach(pl => {
+  playerPlaylists().forEach(pl => {
     const group = document.createElement('div');
     group.className = 'pl-group';
     group.dataset.id = pl.id;
@@ -193,8 +206,12 @@ function buildSidebar() {
       <span class="pl-count">${String(pl.files.length).padStart(2, '0')}</span>
     `;
     header.addEventListener('click', () => {
+      const wasExpanded = group.classList.contains('expanded');
       toggleGroup(pl.id);
       updatePlayerUrl(pl);
+      if (!wasExpanded || !currentPlaylist || currentPlaylist.id !== pl.id) {
+        selectSong(pl, pl.files[0], 0);
+      }
     });
 
     // Song list (hidden until group is expanded)
@@ -258,6 +275,16 @@ function highlightActiveSong() {
     const id = h.parentElement.dataset.id;
     h.classList.toggle('active', id === (currentPlaylist && currentPlaylist.id));
   });
+
+  const activeSong = Array.from(elTree.querySelectorAll('.pl-song')).find(el =>
+    el.dataset.playlist === (currentPlaylist && currentPlaylist.id) &&
+    el.dataset.filename === currentFilename
+  );
+  if (activeSong) {
+    requestAnimationFrame(() => {
+      activeSong.scrollIntoView({ block: 'nearest' });
+    });
+  }
 }
 
 // ── Selecting a song ─────────────────────────────────────────────────────────
@@ -361,11 +388,13 @@ function songLabel(songId) {
 }
 
 function renderLeaderboard(entries) {
-  if (!entries.length) {
+  const publicEntries = entries.filter(e => isPublicSongId(e.song_id));
+
+  if (!publicEntries.length) {
     elBoardContent.innerHTML = '<div class="board-empty">NO VOTES YET</div>';
     return;
   }
-  const rows = entries.map((e, i) => {
+  const rows = publicEntries.map((e, i) => {
     const { playlist, name } = songLabel(e.song_id);
     const sign = e.score > 0 ? '+' : '';
     const cls  = e.score > 0 ? 'positive' : e.score < 0 ? 'negative' : '';
@@ -393,7 +422,7 @@ function renderLeaderboard(entries) {
     row.addEventListener('click', () => {
       const songId = row.dataset.songId;
       const [plId, filename] = songId.split('/');
-      const pl  = PLAYLISTS.find(p => p.id === plId);
+      const pl  = findPlaylist(plId);
       if (!pl) return;
       const idx = pl.files.indexOf(filename);
       if (idx < 0) return;
