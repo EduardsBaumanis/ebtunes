@@ -1,0 +1,42 @@
+// Album: Saxophone Afterhours
+// Track: 14 — saxophone-vs-machine
+// Genre: Saxophone-centred electronic jazz (experimental)
+// Tempo / CPM: 124 BPM (setcpm 31)
+// Key / Mode: G minor (with chromatic clashes)
+// Saxophone role: human-shaped sax line fighting a rigid machine grid
+// Musical idea: A free-floating sax line plays AGAINST a mechanical 16th drum machine — they keep almost colliding.
+// Strudel focus: sax uses .late(rand.range()) for micro-timing imperfection; drums stay perfectly quantised.
+// Visualisation: ._punchcard({ cycles: 2 }) on the rigid drum + .pianoroll on the loose sax.
+
+setcpm(31)
+
+stack(
+
+  note("g1").sound("sine").attack(2).release(5).gain(0.4)
+    .color("midnightblue"),
+
+  // ── MACHINE — perfectly quantised
+  s("bd*4").gain(0.8).lpf(170).shape(0.15)
+    .color("crimson")
+    ._punchcard({ cycles: 2 }),
+  s("hh*16").gain(0.22).hpf(7400)
+    .color("yellow"),
+  s("~ cp ~ cp").gain(0.5).hpf(900).room(0.18)
+    .color("coral"),
+
+  // ── SAX — late by random amount = human "behind the beat"
+  note("g4 bb4 c5 d5  eb5 d5 c5 bb4  a4 bb4 d5 g5  f5 eb5 d5 c5")
+    .sound("sawtooth").vowel("a")
+    .attack(0.04).release(0.2).lpf(2900).lpq(4)
+    .late(rand.range(0, 0.08))
+    .delay(0.25).delaytime(0.375).delayfeedback(0.3)
+    .gain(0.44).pan(0.55).room(0.4)
+    .color("crimson")
+    .pianoroll({ cycles: 2 }),
+
+  // ── SUB — locked
+  note("g2*4")
+    .sound("sine").attack(0.003).release(0.18).shape(0.12)
+    .gain(0.6).pan(0.5)
+    .color("navy")
+)

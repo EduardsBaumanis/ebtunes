@@ -1,0 +1,49 @@
+// Album: Saxophone Afterhours
+// Track: 11 — bebop-machine
+// Genre: Saxophone-centred electronic jazz (synthetic bebop)
+// Tempo / CPM: 140 BPM (setcpm 35)
+// Key / Mode: B♭ Bebop (mixolydian with chromatic 6)
+// Saxophone role: fast bebop-style line
+// Musical idea: A "Parker on a sequencer" line — fast 16th-note sax run with chromatic approach tones over walking bass.
+// Strudel focus: long melodic .note() string + .every(4, rev) for variation; walking bass quarter-notes.
+// Visualisation: ._pianoroll({ cycles: 2, labels: true }) — labels make the bebop changes legible.
+
+setcpm(35)
+
+stack(
+
+  note("bb1").sound("sine").attack(2).release(5).gain(0.4)
+    .color("midnightblue"),
+
+  // ── BEBOP SAX LINE — 16ths with chromatic approach
+  note("bb4 c5 d5 eb5  f5 g5 a5 bb5  a5 g5 f5 e5  eb5 d5 c5 bb4")
+    .sound("sawtooth").vowel("a")
+    .attack(0.02).release(0.13).lpf(3100).lpq(4)
+    .delay(0.18).delaytime(0.375).delayfeedback(0.25)
+    .every(4, rev)
+    .gain(0.46).pan(0.55).room(0.35)
+    .color("crimson")
+    ._pianoroll({ cycles: 2, labels: true }),
+
+  // ── WALKING BASS — quarter notes
+  note("bb2 c3 d3 eb3  f3 d3 c3 bb2")
+    .sound("sawtooth").lpf(500).shape(0.08)
+    .attack(0.005).release(0.45)
+    .gain(0.5).pan(0.5)
+    .color("navy"),
+
+  // ── BRUSH KICK — soft 4/4
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.55).lpf(170).shape(0.08)
+    .color("dimgray"),
+
+  // ── RIDE CYMBAL — jazz swing
+  s("oh ~ oh oh  ~ oh oh ~").gain(0.34).hpf(4500)
+    .color("gold"),
+
+  // ── PIANO COMP — Bb7 → Eb7 → Bb7 → F7
+  note("<[bb3,d4,f4,ab4] [eb3,g3,bb3,db4] [bb3,d4,f4,ab4] [f3,a3,c4,eb4]>")
+    .sound("triangle").attack(0.005).release(0.2).lpf(2400)
+    .struct("~ x ~ ~ x ~ x ~")
+    .gain(0.3).pan(0.45).room(0.35)
+    .color("goldenrod")
+)

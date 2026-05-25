@@ -16,6 +16,7 @@
       <span class="logo">★</span>
       <span class="title">izlase</span>
       <span id="count" class="count"></span>
+      <button id="diag-toggle" class="diag-toggle" title="Diagnostika">⚙</button>
     </header>
 
     <!-- BODY -->
@@ -44,9 +45,12 @@
           id="strudel-frame"
           title="Strudel REPL"
           allow="autoplay; clipboard-read; clipboard-write"
-          loading="lazy"
           src="about:blank">
         </iframe>
+        <div id="diag-pane" class="diag-pane hidden">
+          <div class="diag-head">diagnostika (devtools console arī rāda visu)</div>
+          <div id="diag" class="diag"></div>
+        </div>
       </main>
 
     </div>

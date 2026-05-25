@@ -1,0 +1,51 @@
+// Album: Saxophone Afterhours
+// Track: 18 — distant-radio
+// Genre: Saxophone-centred electronic jazz (lo-fi / radio)
+// Tempo / CPM: 70 BPM (setcpm 17.5)
+// Key / Mode: E minor
+// Saxophone role: filtered, narrow-band sax (as if heard through a transistor radio)
+// Musical idea: A sax solo coming through an old AM radio — heavily band-passed, with noise crackle.
+// Strudel focus: tight band-pass via .lpf+.hpf around 1.2-2.4kHz on the sax; constant white-noise crackle.
+// Visualisation: .pianoroll({ cycles: 4 }) — background.
+
+setcpm(17.5)
+
+stack(
+
+  note("e1").sound("sine").attack(4).release(8).gain(0.4)
+    .color("midnightblue"),
+
+  // ── RADIO SAX — band-passed
+  note("<e4 g4 b4 a4  fs4 g4 b4 ~  e5 d5 b4 a4  g4 e4 ~ ~>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.06).release(0.4).lpf(2400).hpf(1200).lpq(4)
+    .delay(0.35).delaytime(0.5).delayfeedback(0.4)
+    .gain(0.5).pan(0.5).room(0.4).crush(7)
+    .color("crimson")
+    .pianoroll({ cycles: 4 }),
+
+  // ── RADIO CRACKLE
+  s("white*16").lpf(slider(3200, 1800, 5000)).hpf(2200)
+    .attack(0.001).release(0.025)
+    .gain("0.06 0.04 0.08 0.04")
+    .pan(rand)
+    .degradeBy(0.4)
+    .color("dimgray"),
+
+  // ── GHOSTED KICK
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.42).lpf(170).shape(0.08).crush(5)
+    .color("brown"),
+
+  // ── PAD — Em9, band-passed
+  note("[e3,g3,b3,d4,fs4]")
+    .sound("sawtooth").vowel("u")
+    .attack(4).release(7).lpf(1900).hpf(400)
+    .gain(0.28).pan(0.5).room(0.5)
+    .color("teal"),
+
+  // ── DISTANT BASS
+  note("<e2 b1 a1 d2>")
+    .sound("sine").attack(0.005).release(0.45).shape(0.1).lpf(400)
+    .struct("x ~ ~ x  ~ x ~ ~").gain(0.6)
+    .color("navy")
+)

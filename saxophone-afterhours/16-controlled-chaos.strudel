@@ -1,0 +1,50 @@
+// Album: Saxophone Afterhours
+// Track: 16 — controlled-chaos
+// Genre: Saxophone-centred electronic jazz (free-jazz inspired)
+// Tempo / CPM: 108 BPM (setcpm 27)
+// Key / Mode: free / atonal — pitches via choose() across two octaves
+// Saxophone role: free-jazz solo over a chaotic Euclidean drum
+// Musical idea: A "free-jazz" sax solo — pitches chosen randomly, fast retriggers, big dynamic swings — over a 7-in-12 Euclidean kick.
+// Strudel focus: choose() pitch + Euclidean drums + .sometimes(rev) chaos shapers; .rarely(ply(3)) for fast runs.
+// Visualisation: ._pianoroll({ cycles: 4, vertical: true, smear: true }) — multi-option viz matches the chaos.
+
+setcpm(27)
+
+stack(
+
+  note("d1").sound("sine").attack(2).release(5).gain(0.4)
+    .color("midnightblue"),
+
+  // ── EUCLIDEAN CHAOS KICK
+  s("bd").euclid(7, 12).gain(0.8).lpf(170).shape(0.15)
+    .sometimes(rev)
+    .color("crimson"),
+
+  // ── EUCLIDEAN SNARE
+  s("sd").euclid(3, 8).gain(0.5).hpf(900).room(0.22)
+    .color("orange"),
+
+  // ── FREE-JAZZ SAX
+  note(choose("d4","f4","gb4","a4","b4","d5","f5","gb5","a5","c6","d6"))
+    .sound("sawtooth").vowel("a")
+    .attack(0.03).release(0.2).lpf(slider(2800, 1500, 4200)).lpq(5)
+    .fast(2)
+    .rarely(ply(3))
+    .sometimesBy(0.2, rev)
+    .delay(0.25).delaytime(0.375).delayfeedback(0.35)
+    .gain(0.46).pan(rand).room(0.4)
+    .color("crimson")
+    ._pianoroll({ cycles: 4, vertical: true, smear: true }),
+
+  // ── HATS chaos
+  s("hh*16").gain("0.24 0.14").hpf(7400)
+    .degradeBy(0.25)
+    .color("yellow"),
+
+  // ── SUB — anchored but sometimes degraded
+  note("d2*4")
+    .sound("sine").attack(0.005).release(0.18).shape(0.13)
+    .degradeBy(0.2)
+    .gain(0.62).pan(0.5)
+    .color("navy")
+)

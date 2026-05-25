@@ -1,0 +1,51 @@
+// Album: Saxophone Afterhours
+// Track: 20 — reprise-at-dawn
+// Genre: Saxophone-centred electronic jazz (closer)
+// Tempo / CPM: 56 BPM (setcpm 14)
+// Key / Mode: D minor → F major (echoing track 01 and track 04)
+// Saxophone role: reprise of motifs from earlier tracks
+// Musical idea: A quiet reprise — the sax recalls the D minor motif from track 01 and the F# minor sigh from track 04, now in D minor & F major. The last bar fades.
+// Strudel focus: same sawtooth+vowel("a") tenor as the opener; slow chord changes; everything wound down.
+// Visualisation: ._pianoroll({ cycles: 8, fold: true }) — long fold matches the slow farewell.
+
+setcpm(14)
+
+stack(
+
+  note("d1").sound("sine").attack(8).release(13).gain(0.45)
+    .color("midnightblue"),
+
+  // ── REPRISE SAX — fragments of tracks 01 and 04
+  note("<d4 ~ f4 a4  ~ g4 ~ f4  d4 ~ e4 ~  ~ ~ a4 ~  c5 ~ a4 ~  d5 ~ c5 ~  bb4 a4 g4 ~  f4 ~ ~ ~>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.3).release(2.5).lpf(2700).lpq(3)
+    .delay(0.5).delaytime(0.625).delayfeedback(0.5)
+    .gain(0.46).pan(0.5).room(0.75)
+    .color("crimson")
+    ._pianoroll({ cycles: 8, fold: true }),
+
+  // ── FAREWELL PAD — Dm9 → Fmaj7 → Bbmaj7 → A7sus
+  note("<[d3,f3,a3,c4,e4] [f3,a3,c4,e4] [bb2,d3,f3,a3,c4] [a2,d3,e3,g3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(5).release(8).lpf(2000)
+    .gain(0.36).pan(0.5).room(0.8).slow(4)
+    .color("teal"),
+
+  // ── SLOW KICK — one per bar
+  s("bd ~ ~ ~ ~ ~ ~ ~").gain(0.45).lpf(170).shape(0.08)
+    .color("dimgray"),
+
+  // ── FINAL BREATH BELL — once per long cycle
+  note("d6 ~ ~ ~  ~ ~ ~ ~")
+    .sound("triangle").attack(0.2).release(7).lpf(4000)
+    .delay(0.7).delaytime(1).delayfeedback(0.6)
+    .gain(0.32).pan(0.5).room(0.9).slow(4)
+    .color("ivory"),
+
+  // ── FINAL WALKING BASS — slow farewell
+  note("<d2 ~ a1 ~  f2 ~ c2 ~  bb1 ~ f1 ~  a1 ~ d2 ~>")
+    .sound("sawtooth").lpf(450).shape(0.08)
+    .attack(0.005).release(0.5)
+    .gain(0.5).pan(0.5)
+    .color("navy")
+)

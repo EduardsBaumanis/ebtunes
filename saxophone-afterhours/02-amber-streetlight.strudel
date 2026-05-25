@@ -1,0 +1,53 @@
+// Album: Saxophone Afterhours
+// Track: 02 — amber-streetlight
+// Genre: Saxophone-centred electronic jazz
+// Tempo / CPM: 88 BPM (setcpm 22)
+// Key / Mode: G minor
+// Saxophone role: lead melody over dusty drum-machine groove
+// Musical idea: A tenor sax wanders a four-bar phrase over a dusty 808 + rim "drum machine jazz" groove.
+// Strudel focus: lo-fi feel via slight .crush + .shape on drums; sax line uses .ply for grace-note bend feel.
+// Visualisation: ._pianoroll({ cycles: 2, labels: true }) — labels show the bluesy intervals.
+
+setcpm(22)
+
+stack(
+
+  note("g1").sound("sine").attack(2).release(5).gain(0.42)
+    .color("midnightblue"),
+
+  // ── TENOR SAX — bluesy, with grace-note ply
+  note("g4 bb4 c5 d5  ~ d5 c5 bb4  g4 ~ f4 g4  bb4 ~ g4 ~")
+    .sound("sawtooth").vowel("a")
+    .attack(0.04).release(0.35).lpf(2900).lpq(4)
+    .ply("1 2 1 1  1 1 1 1")
+    .delay(0.25).delaytime(0.375).delayfeedback(0.3)
+    .gain(0.44).pan(0.5).room(0.45)
+    .color("crimson")
+    ._pianoroll({ cycles: 2, labels: true }),
+
+  // ── DUSTY KICK
+  s("bd ~ ~ bd  ~ ~ bd ~").gain(0.7).lpf(180).shape(0.15).crush(7)
+    .color("brown"),
+
+  // ── DUSTY SNARE
+  s("~ ~ sd ~  ~ sd ~ ~").gain(0.5).hpf(900).room(0.25).crush(6)
+    .color("orange"),
+
+  // ── BRUSH HATS
+  s("hh*8").gain("0.18 0.10").hpf(7000)
+    .color("yellow"),
+
+  // ── WALKING BASS — Gm i-iv-v-i
+  note("<g2 d3 c3 d3  bb2 g2 d2 g2>")
+    .sound("sawtooth").lpf(560).lpq(4).shape(0.1)
+    .attack(0.005).release(0.4).struct("x ~ x ~ ~ x ~ x")
+    .gain(0.55).pan(0.5)
+    .color("navy"),
+
+  // ── PIANO CHORDS — quiet
+  note("<[g3,bb3,d4,f4] [c3,eb3,g3,bb3] [d3,fs3,a3,c4] [g3,bb3,d4]>")
+    .sound("triangle").attack(0.005).release(0.4).lpf(2500)
+    .struct("~ x ~ ~ ~ ~ x ~")
+    .gain(0.3).pan(0.55).room(0.4)
+    .color("gold")
+)

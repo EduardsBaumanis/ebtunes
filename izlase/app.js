@@ -7,21 +7,18 @@
 //   2. HTTP directory listing (for `npx serve` / `python -m http.server`)
 //   3. Empty state with hint
 //
+// File-fetch fallback:
+//   1. Relative to Pages (./file.strudel)
+//   2. raw.githubusercontent.com via main branch (if Pages serves stale/404)
+//
 // The iframe trick is the same as the main player: base64-encode the
 // code into strudel.cc's URL hash so the cloud REPL runs it.
 
-// ─────────────────────────────────────────────────────────────────────
-// CONFIG — autodetected. Override REPO_OWNER / REPO_NAME if you fork.
-// ─────────────────────────────────────────────────────────────────────
-
 const FOLDER = 'izlase';
 
-// Try to autodetect the repo from the URL when on github.io,
-// otherwise fall back to the canonical owner/repo. This means
-// forks "just work" on their own *.github.io pages.
 function detectRepo() {
-  const host = location.hostname; // e.g. eduardsbaumanis.github.io
-  const path = location.pathname; // e.g. /ebtesti/izlase/
+  const host = location.hostname;
+  const path = location.pathname;
   if (host.endsWith('.github.io')) {
     const owner = host.split('.')[0];
     const m = path.match(/^\/([^/]+)\//);
@@ -32,148 +29,148 @@ function detectRepo() {
 
 const REPO = detectRepo();
 const BRANCH = 'main';
+const RAW_BASE = `https://raw.githubusercontent.com/${REPO.owner}/${REPO.repo}/${BRANCH}/${FOLDER}`;
 
-// ─────────────────────────────────────────────────────────────────────
-// FILE DISCOVERY
-// ─────────────────────────────────────────────────────────────────────
+// ── Visible diagnostic log ────────────────────────────────────────────
+function diag(msg, kind = 'info') {
+  const el = document.getElementById('diag');
+  if (!el) return;
+  const line = document.createElement('div');
+  line.className = 'diag-line diag-' + kind;
+  line.textContent = msg;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+  // also console for paste-friendly debugging
+  console[kind === 'error' ? 'error' : 'log']('[izlase]', msg);
+}
 
+// ── FILE DISCOVERY ────────────────────────────────────────────────────
 async function discoverViaGithub() {
   const url = `https://api.github.com/repos/${REPO.owner}/${REPO.repo}/contents/${FOLDER}?ref=${BRANCH}`;
+  diag('trying GitHub API: ' + url);
   const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github+json' } });
-  if (!res.ok) throw new Error('github api ' + res.status);
+  if (!res.ok) throw new Error('github api HTTP ' + res.status);
   const items = await res.json();
-  return items
+  const files = items
     .filter(x => x.type === 'file' && x.name.endsWith('.strudel'))
     .map(x => x.name)
     .sort();
+  diag(`GitHub API returned ${files.length} .strudel files`, 'ok');
+  return files;
 }
 
 async function discoverViaDirListing() {
-  // Most static servers (`python -m http.server`, `npx serve`, Apache, nginx
-  // with autoindex on) return HTML containing <a href="filename"> for each
-  // entry. We scrape that.
+  diag('trying directory listing: ./');
   const res = await fetch('./');
-  if (!res.ok) throw new Error('dir listing ' + res.status);
+  if (!res.ok) throw new Error('dir listing HTTP ' + res.status);
   const html = await res.text();
   const names = new Set();
   for (const m of html.matchAll(/href="([^"]+\.strudel)"/g)) {
-    const raw = decodeURIComponent(m[1]);
-    // Take just the basename — some servers emit absolute paths
-    const base = raw.split('/').pop();
+    const base = decodeURIComponent(m[1]).split('/').pop();
     if (base && base.endsWith('.strudel')) names.add(base);
   }
-  return [...names].sort();
+  const files = [...names].sort();
+  diag(`directory listing returned ${files.length} .strudel files`, files.length ? 'ok' : 'warn');
+  return files;
 }
 
 async function discoverFiles() {
-  // Try GitHub API first when we're online (works locally too)
   try {
     const files = await discoverViaGithub();
-    if (files.length > 0) return { files, source: 'github' };
-    if (files.length === 0) {
-      // Empty repo folder — still treat as success, no need to fall back
-      return { files: [], source: 'github' };
-    }
+    return { files, source: 'github' };
   } catch (e) {
-    console.warn('GitHub discovery failed, falling back to directory listing:', e.message);
+    diag('GitHub API failed: ' + e.message + ' — falling back to dir listing', 'warn');
   }
-
-  // Fallback: HTTP autoindex listing (works with `npx serve`, `python -m http.server`)
   try {
     const files = await discoverViaDirListing();
     return { files, source: 'dir-listing' };
   } catch (e) {
-    console.warn('Directory listing failed:', e.message);
+    diag('directory listing failed: ' + e.message, 'error');
   }
-
   return { files: [], source: 'none' };
 }
 
-// ─────────────────────────────────────────────────────────────────────
-// STRUDEL IFRAME
-// ─────────────────────────────────────────────────────────────────────
-
+// ── STRUDEL IFRAME ────────────────────────────────────────────────────
 function strudelUrlFor(code) {
-  // btoa(unescape(encodeURIComponent(...))) handles non-ASCII (chord
-  // names, Latvian comments, etc.) without breaking btoa's Latin-1 limit.
   return 'https://strudel.cc/#' + btoa(unescape(encodeURIComponent(code)));
 }
 
 function loadIntoFrame(code) {
-  // Replace the iframe element — setting .src to a URL that only differs
-  // in #fragment is treated as a fragment-only nav and the new code does
-  // not run. This is the same workaround the main player uses.
   const old = document.getElementById('strudel-frame');
-  if (!old) return;
+  if (!old) {
+    diag('iframe element missing from DOM', 'error');
+    return;
+  }
   const fresh = document.createElement('iframe');
   fresh.id        = old.id;
   fresh.className = old.className;
   fresh.title     = old.title || 'Strudel REPL';
   fresh.allow     = old.allow || 'autoplay; clipboard-read; clipboard-write';
-  fresh.loading   = old.loading || 'lazy';
   fresh.src       = strudelUrlFor(code);
   old.replaceWith(fresh);
 }
 
-// ─────────────────────────────────────────────────────────────────────
-// METADATA EXTRACTION
-// Pull "Key: ... / Tempo: ... / Mood: ..." style fields from header comments.
-// ─────────────────────────────────────────────────────────────────────
+// ── FILE FETCH (Pages → raw fallback) ─────────────────────────────────
+async function fetchFile(name) {
+  // 1. Pages-relative (normal)
+  try {
+    const r = await fetch(name + '?v=' + Date.now());
+    if (r.ok) return await r.text();
+    throw new Error('relative fetch HTTP ' + r.status);
+  } catch (e) {
+    diag(`pages fetch ${name} failed: ${e.message} — trying raw.githubusercontent`, 'warn');
+  }
+  // 2. raw.githubusercontent.com fallback (works even if Pages is broken)
+  const rawUrl = `${RAW_BASE}/${encodeURIComponent(name)}`;
+  const r2 = await fetch(rawUrl);
+  if (!r2.ok) throw new Error('raw fetch HTTP ' + r2.status);
+  return await r2.text();
+}
 
+// ── METADATA EXTRACTION ───────────────────────────────────────────────
 function parseMeta(code) {
   const head = code.split('\n').slice(0, 60).filter(l => l.trim().startsWith('//')).join(' ');
   const grab = (re) => { const m = head.match(re); return m ? m[1].trim() : ''; };
   return {
-    title:  grab(/Track:\s*\d+\s*[—–-]\s*([^/]+?)(?:\/\/|$)/i) ||
-            grab(/"([^"]+)"/),
+    title:  grab(/Track:\s*\d+\s*[—–-]\s*([^/]+?)(?:\/\/|$)/i) || grab(/"([^"]+)"/),
     key:    grab(/Key:\s*([A-G][#b♯♭]?\s*(?:minor|major|dorian|phrygian|lydian|mixolydian|aeolian|locrian)?)/i),
     bpm:    grab(/(?:Tempo[^:]*:|BPM:)[\s]*(\d{2,3})\s*BPM/i) ||
             (() => {
               const m = head.match(/setcpm\s*\(\s*(\d+(?:\.\d+)?)\s*\)/);
               return m ? Math.round(parseFloat(m[1]) * 4) + ' BPM' : '';
             })(),
-    feel:   grab(/Mood:\s*([^.]+?)\./i) ||
-            grab(/Concept:\s*([^.]+?)\./i),
+    feel:   grab(/Mood:\s*([^.]+?)\./i) || grab(/Concept:\s*([^.]+?)\./i),
   };
 }
 
 function humanizeName(name) {
-  return name
-    .replace(/\.strudel$/, '')
-    .replace(/^(\d+)[-_]/, '$1 · ')
-    .replace(/-/g, ' ');
+  return name.replace(/\.strudel$/, '').replace(/^(\d+)[-_]/, '$1 · ').replace(/-/g, ' ');
 }
 
-// ─────────────────────────────────────────────────────────────────────
-// UI WIRING
-// ─────────────────────────────────────────────────────────────────────
-
+// ── UI WIRING ─────────────────────────────────────────────────────────
 let currentFile = null;
 
 async function selectFile(name) {
+  diag('loading ' + name);
   try {
-    const res = await fetch(name + '?v=' + Date.now());
-    if (!res.ok) throw new Error('fetch ' + res.status);
-    const code = await res.text();
+    const code = await fetchFile(name);
     loadIntoFrame(code);
     currentFile = name;
     location.hash = encodeURIComponent(name);
-    // Active highlight
     document.querySelectorAll('#file-list li').forEach(li => {
       li.classList.toggle('active', li.dataset.name === name);
     });
-    // Metadata strip
     const meta = parseMeta(code);
     document.getElementById('now-title').textContent = meta.title || humanizeName(name);
     document.getElementById('now-key').textContent   = meta.key  ? 'KEY ' + meta.key : '';
     document.getElementById('now-bpm').textContent   = meta.bpm  || '';
     document.getElementById('now-feel').textContent  = meta.feel || '';
-    // Close mobile sidebar
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('backdrop').classList.add('hidden');
+    diag('loaded ' + name, 'ok');
   } catch (e) {
-    console.error('failed to load', name, e);
-    loadIntoFrame(`// Neizdevās ielādēt ${name}\n// (${e.message})\n// Palaid lokālo serveri: npx serve . vai python3 -m http.server`);
+    diag('failed to load ' + name + ': ' + e.message, 'error');
+    loadIntoFrame(`// Neizdevās ielādēt ${name}\n// (${e.message})\n// Pārbaudi DevTools konsoli vai sānjoslas diagnostiku.`);
   }
 }
 
@@ -198,17 +195,15 @@ function showHint(source) {
   if (source === 'none') {
     hint.innerHTML = `
       <p>Nav atrasti <code>.strudel</code> faili.</p>
-      <p>Lai pievienotu favorītu: nokopē jebkuru <code>.strudel</code> failu šajā mapē (<code>izlase/</code>). HTML/JS rediģēt nevajag.</p>
-      <p>Lai redzētu lokāli:</p>
-      <p><code>npx serve .</code> vai <code>python3 -m http.server</code> no repo saknes.</p>
+      <p>Pievieno favorītu: nokopē jebkuru <code>.strudel</code> failu šajā mapē (<code>izlase/</code>). HTML/JS rediģēt nevajag.</p>
+      <p>Lokāli: <code>npx serve .</code> vai <code>python3 -m http.server</code> no repo saknes.</p>
     `;
   } else if (source === 'github') {
     hint.innerHTML = `
-      <p>Mape <code>izlase/</code> ir tukša.</p>
-      <p>Pievieno <code>.strudel</code> failu šajā mapē un atsvaidzini lapu — viss automātiski parādīsies.</p>
+      <p>Mape <code>izlase/</code> ir tukša pēc GitHub.</p>
+      <p>Pievieno failu šajā mapē un atsvaidzini lapu.</p>
     `;
   } else {
-    // dir-listing found nothing
     hint.innerHTML = `<p>Nav atrasti <code>.strudel</code> faili šajā mapē.</p>`;
   }
 }
@@ -217,6 +212,7 @@ function setupMobileMenu() {
   const btn = document.getElementById('menu-toggle');
   const sidebar = document.getElementById('sidebar');
   const backdrop = document.getElementById('backdrop');
+  if (!btn || !sidebar || !backdrop) return;
   btn.addEventListener('click', () => {
     sidebar.classList.add('open');
     backdrop.classList.remove('hidden');
@@ -227,12 +223,21 @@ function setupMobileMenu() {
   });
 }
 
-// ─────────────────────────────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────────────────────────────
+function setupDiagToggle() {
+  const toggle = document.getElementById('diag-toggle');
+  const pane = document.getElementById('diag-pane');
+  if (!toggle || !pane) return;
+  toggle.addEventListener('click', () => {
+    pane.classList.toggle('hidden');
+  });
+}
 
+// ── INIT ──────────────────────────────────────────────────────────────
 async function init() {
+  diag(`izlase init · host=${location.hostname} repo=${REPO.owner}/${REPO.repo} folder=${FOLDER}`);
   setupMobileMenu();
+  setupDiagToggle();
+
   const { files, source } = await discoverFiles();
 
   if (files.length === 0) {
@@ -242,10 +247,13 @@ async function init() {
 
   renderList(files);
 
-  // Pick file from hash if present, else first
   const hash = decodeURIComponent(location.hash.slice(1));
   const initial = files.includes(hash) ? hash : files[0];
   await selectFile(initial);
 }
 
-init();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}

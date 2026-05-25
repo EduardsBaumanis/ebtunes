@@ -1,0 +1,49 @@
+// Album: Saxophone Afterhours
+// Track: 03 — ask-and-answer
+// Genre: Saxophone-centred electronic jazz
+// Tempo / CPM: 84 BPM (setcpm 21)
+// Key / Mode: A minor
+// Saxophone role: call (alto) and response (baritone) — two sax voices in dialogue
+// Musical idea: Alto sax poses a 2-bar question; baritone sax answers it from the bass register.
+// Strudel focus: two sawtooth+vowel lines with complementary .struct() and pan placement.
+// Visualisation: ._pianoroll({ cycles: 4, vertical: true }) — vertical lays the two voices side-by-side.
+
+setcpm(21)
+
+stack(
+
+  note("a1").sound("sine").attack(3).release(6).gain(0.42)
+    .color("midnightblue"),
+
+  // ── ALTO SAX — the question (bars 1-2)
+  note("a4 c5 e5 ~  d5 c5 b4 ~  ~ ~ ~ ~  ~ ~ ~ ~")
+    .sound("sawtooth").vowel("e")
+    .attack(0.04).release(0.35).lpf(3200).lpq(4)
+    .delay(0.25).delaytime(0.375).delayfeedback(0.3)
+    .gain(0.44).pan(0.65).room(0.45)
+    .color("crimson")
+    ._pianoroll({ cycles: 4, vertical: true }),
+
+  // ── BARITONE SAX — the answer (bars 3-4)
+  note("~ ~ ~ ~  ~ ~ ~ ~  a3 g3 e3 ~  d3 e3 a3 ~")
+    .sound("sawtooth").vowel("o")
+    .attack(0.06).release(0.4).lpf(2000)
+    .gain(0.42).pan(0.35).room(0.5)
+    .color("indigo"),
+
+  // ── SUB-BASS pulse
+  note("<a1 ~ e2 ~  ~ d2 ~ a1>")
+    .sound("sine").attack(0.005).release(0.4).shape(0.1)
+    .gain(0.7).pan(0.5)
+    .color("navy"),
+
+  // ── KICK + soft snare
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.55).lpf(170).shape(0.08)
+    .color("dimgray"),
+  s("~ ~ sd ~").gain(0.42).hpf(900).room(0.3)
+    .color("orange"),
+
+  // ── BRUSH HATS
+  s("hh*8").gain(0.16).hpf(7200)
+    .color("yellow")
+)

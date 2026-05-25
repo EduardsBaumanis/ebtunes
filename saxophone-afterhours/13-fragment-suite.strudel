@@ -1,0 +1,51 @@
+// Album: Saxophone Afterhours
+// Track: 13 — fragment-suite
+// Genre: Saxophone-centred electronic jazz (generative)
+// Tempo / CPM: 96 BPM (setcpm 24)
+// Key / Mode: A Dorian
+// Saxophone role: generative fragments — each event picks a new note
+// Musical idea: The sax is composed by chance — choose() picks a new note from the Dorian scale every event; the loop is never the same twice.
+// Strudel focus: choose() on the note function; .degradeBy for breath gaps; .sometimesBy ply for phrase variation.
+// Visualisation: ._pianoroll({ cycles: 4, labels: true, smear: true }) — generative line with labels + smear.
+
+setcpm(24)
+
+stack(
+
+  note("a1").sound("sine").attack(3).release(6).gain(0.42)
+    .color("midnightblue"),
+
+  // ── GENERATIVE SAX
+  note(choose("a4","b4","c5","d5","e5","g5","a5","c6"))
+    .sound("sawtooth").vowel("a")
+    .attack(0.05).release(0.25).lpf(2900).lpq(4)
+    .delay(0.3).delaytime(0.5).delayfeedback(0.35)
+    .fast(2)
+    .sometimesBy(0.25, ply(2))
+    .degradeBy(0.2)
+    .gain(0.42).pan(rand).room(0.45)
+    .color("magenta")
+    ._pianoroll({ cycles: 4, labels: true, smear: true }),
+
+  // ── KICK
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.55).lpf(170).shape(0.1)
+    .color("crimson"),
+
+  // ── SUB — generative bass roots
+  note(choose("a1","e2","g1","d2"))
+    .sound("sine").attack(0.005).release(0.4).shape(0.13)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.6).pan(0.5)
+    .color("navy"),
+
+  // ── BRUSH HATS
+  s("hh*8").gain(0.18).hpf(7200).swingBy(0.35, 2)
+    .color("yellow"),
+
+  // ── PAD — A Dorian
+  note("[a3,c4,e4,g4,b4]")
+    .sound("sawtooth").vowel("u")
+    .attack(3).release(5).lpf(1800)
+    .gain(0.26).pan(0.5).room(0.55)
+    .color("teal")
+)

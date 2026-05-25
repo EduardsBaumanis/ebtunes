@@ -1,0 +1,51 @@
+// Album: Saxophone Afterhours
+// Track: 01 — smoke-from-the-table
+// Genre: Saxophone-centred electronic jazz
+// Tempo / CPM: 80 BPM (setcpm 20)
+// Key / Mode: D minor
+// Saxophone role: lead melody, sparse breathy phrases
+// Musical idea: A single tenor-sax voice opens the album over a deep sub and quiet rim ticks — the room is empty, just a candle and a glass.
+// Strudel focus: sawtooth + vowel("a") + long delay = synthetic tenor; long .release on sparse motif.
+// Visualisation: ._pianoroll({ cycles: 4, smear: true }) — smear traces the long sax tails.
+
+setcpm(20)
+
+stack(
+
+  note("d1").sound("sine").attack(4).release(8).gain(0.42)
+    .color("midnightblue"),
+
+  // ── TENOR SAX LEAD — sparse phrase, breathy
+  note("<d4 ~ f4 a4  ~ g4 ~ f4  d4 ~ e4 ~  ~ ~ a4 ~>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.08).release(0.6).lpf(2800).lpq(4)
+    .delay(0.35).delaytime(0.5).delayfeedback(0.35)
+    .gain(0.44).pan(0.5).room(0.55)
+    .color("crimson")
+    ._pianoroll({ cycles: 4, smear: true }),
+
+  // ── BARITONE SAX UNDERLINE — once per phrase
+  note("<d3 ~ ~ ~  ~ ~ ~ ~  a2 ~ ~ ~  ~ ~ ~ ~>")
+    .sound("sawtooth").vowel("o")
+    .attack(0.5).release(2).lpf(1500)
+    .gain(0.32).pan(0.4).room(0.6)
+    .color("indigo"),
+
+  // ── CHORD PAD — Dm9 wash
+  note("[d3,f3,a3,c4,e4]")
+    .sound("sawtooth").vowel("u")
+    .attack(3).release(5).lpf(1800)
+    .gain(0.26).pan(0.55).room(0.6)
+    .color("teal"),
+
+  // ── QUIET KICK + RIM
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.5).lpf(170).shape(0.08)
+    .color("dimgray"),
+  s("~ ~ rim ~").gain(0.32).hpf(1500).room(0.3)
+    .color("saddlebrown"),
+
+  // ── BREATH NOISE under the sax
+  s("white*4").lpf(slider(2200, 800, 3500)).hpf(1500)
+    .gain(0.04).pan(rand)
+    .color("gray")
+)

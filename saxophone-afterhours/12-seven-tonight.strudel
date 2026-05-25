@@ -1,0 +1,49 @@
+// Album: Saxophone Afterhours
+// Track: 12 — seven-tonight
+// Genre: Saxophone-centred electronic jazz (odd meter)
+// Tempo / CPM: 105 BPM in 7/8 (setcpm 26)
+// Key / Mode: D Dorian
+// Saxophone role: phrase fitting a 7-step cycle
+// Musical idea: A 7-beat groove — the sax line has 7 notes, the kick has 7 hits, but the hi-hat keeps a steady 8.
+// Strudel focus: 7-step .struct() and *7 patterns vs *8 hat = polymeter; .every(3, ply) sax variation.
+// Visualisation: ._punchcard({ cycles: 7 }) on the kick = exact 7-cycle window.
+
+setcpm(26)
+
+stack(
+
+  note("d1").sound("sine").attack(2).release(5).gain(0.42)
+    .color("midnightblue"),
+
+  // ── 7-STEP KICK + punchcard
+  s("bd ~ ~ bd ~ bd ~").gain(0.78).lpf(170).shape(0.13)
+    .color("crimson")
+    ._punchcard({ cycles: 7 }),
+
+  // ── SAX — 7 notes per cycle
+  note("d4 f4 a4 c5 a4 f4 e4")
+    .sound("sawtooth").vowel("a")
+    .attack(0.05).release(0.2).lpf(2900).lpq(4)
+    .every(3, ply(2))
+    .delay(0.25).delaytime(0.375).delayfeedback(0.3)
+    .gain(0.42).pan(0.55).room(0.4)
+    .color("orangered"),
+
+  // ── HAT in 8 — against the 7 = polymeter
+  s("hh*8").gain(0.22).hpf(7200)
+    .color("yellow"),
+
+  // ── BASS in 7
+  note("d2 ~ a2 ~ ~ d2 ~")
+    .sound("sawtooth").lpf(500).lpq(5).shape(0.13)
+    .attack(0.005).release(0.18)
+    .gain(0.62).pan(0.5)
+    .color("navy"),
+
+  // ── PAD — Dm7 sustained
+  note("[d3,f3,a3,c4]")
+    .sound("sawtooth").vowel("u")
+    .attack(3).release(5).lpf(1800)
+    .gain(0.28).pan(0.5).room(0.55)
+    .color("teal")
+)

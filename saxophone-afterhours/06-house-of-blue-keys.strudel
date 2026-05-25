@@ -1,0 +1,50 @@
+// Album: Saxophone Afterhours
+// Track: 06 — house-of-blue-keys
+// Genre: Saxophone-centred electronic jazz (jazz-house)
+// Tempo / CPM: 122 BPM (setcpm 30.5)
+// Key / Mode: F minor
+// Saxophone role: looped riff over an evolving chord progression
+// Musical idea: Deep-jazz-house pulse with a tenor sax riff that gets new harmonic colour as the chords drift through Fm9 / Db6/9 / Bbm7 / Eb9sus.
+// Strudel focus: 4-on-floor kick + off-beat bass + alternating chord; same sax riff over changing chords reveals the harmony.
+// Visualisation: ._pianoroll({ cycles: 4, labels: true }) on the chord pad to read the changes.
+
+setcpm(30.5)
+
+stack(
+
+  note("f1").sound("sine").attack(2).release(5).gain(0.42)
+    .color("midnightblue"),
+
+  // ── HOUSE KICK 4/4
+  s("bd*4").gain(0.82).lpf(170).shape(0.13)
+    .color("crimson"),
+
+  // ── OFF-BEAT BASS
+  note("<f2 db2 bb1 eb2>")
+    .sound("sawtooth").lpf(450).lpq(5).shape(0.13)
+    .attack(0.005).release(0.13)
+    .struct("~ x ~ x ~ x ~ x").gain(0.6)
+    .color("navy"),
+
+  // ── JAZZ CHORD PAD — Fm9 → Db6/9 → Bbm7 → Eb9sus + pianoroll
+  note("<[f3,ab3,c4,eb4,g4] [db3,f3,ab3,c4,eb4] [bb2,db3,f3,ab3,c4] [eb3,ab3,bb3,db4]>")
+    .sound("triangle").attack(0.005).release(0.35).lpf(2700)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .gain(0.4).pan(0.55).room(0.45).slow(2)
+    .color("gold")
+    ._pianoroll({ cycles: 4, labels: true }),
+
+  // ── SAX RIFF — same riff every bar, chord changes recolour it
+  note("f5 ~ ab5 g5  eb5 ~ f5 ~  ab5 ~ c6 bb5  g5 ~ f5 ~")
+    .sound("sawtooth").vowel("a")
+    .attack(0.04).release(0.22).lpf(3000).lpq(4)
+    .delay(0.25).delaytime(0.375).delayfeedback(0.3)
+    .gain(0.4).pan(0.45).room(0.4)
+    .color("orangered"),
+
+  // ── CLAP + HATS
+  s("~ cp ~ cp").gain(0.55).hpf(900).room(0.2)
+    .color("coral"),
+  s("hh*16").gain("0.22 0.14").hpf(7200).swingBy(0.3, 2)
+    .color("yellow")
+)

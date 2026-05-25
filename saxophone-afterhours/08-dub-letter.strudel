@@ -1,0 +1,50 @@
+// Album: Saxophone Afterhours
+// Track: 08 — dub-letter
+// Genre: Saxophone-centred electronic jazz (dub)
+// Tempo / CPM: 92 BPM (setcpm 23)
+// Key / Mode: B minor
+// Saxophone role: dub-echoed phrase
+// Musical idea: A single tenor sax phrase soaked in feedback delay; layers drop in and out via .mask = a dub mixing-desk gesture.
+// Strudel focus: heavy .delay().delayfeedback(0.65) + .mask() arrangement; sparse rim drum.
+// Visualisation: .pianoroll({ cycles: 4, smear: true }) — smear visualises the delay tails.
+
+setcpm(23)
+
+stack(
+
+  note("b1").sound("sine").attack(3).release(6).gain(0.42)
+    .color("midnightblue"),
+
+  // ── TENOR SAX — short phrase, massive delay
+  note("<b4 d5 fs5 ~  ~ a4 fs4 ~  ~ ~ ~ ~  ~ ~ ~ ~>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.05).release(0.3).lpf(2900).lpq(4)
+    .delay(0.7).delaytime("3/8").delayfeedback(0.65).room(0.65)
+    .gain(0.46).pan(0.5)
+    .color("crimson")
+    .pianoroll({ cycles: 4, smear: true }),
+
+  // ── RIM-LED PERC — dub feel, masked
+  s("~ rim ~ rim").gain(0.42).hpf(1600).room(0.45)
+    .mask("<1 1 0 1>")
+    .color("orange"),
+
+  // ── SUB-BASS
+  note("<b1 fs2 g1 d2>")
+    .sound("sine").attack(0.005).release(0.5).shape(0.12)
+    .struct("x ~ ~ x  ~ x ~ ~").gain(0.65)
+    .color("navy"),
+
+  // ── KICK
+  s("bd ~ ~ ~ bd ~ ~ ~").gain(0.5).lpf(160).shape(0.1)
+    .mask("<1 1 1 0>")
+    .color("dimgray"),
+
+  // ── DUB CHORD STAB — single hit every 4 cycles
+  note("[b3,d4,fs4]")
+    .sound("triangle").attack(0.005).release(0.4).lpf(2400)
+    .struct("x ~ ~ ~ ~ ~ ~ ~")
+    .delay(0.65).delaytime(0.5).delayfeedback(0.5).room(0.7)
+    .gain(0.36).pan(0.55).slow(4)
+    .color("gold")
+)
