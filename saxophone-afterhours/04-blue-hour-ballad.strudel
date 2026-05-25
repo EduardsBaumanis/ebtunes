@@ -1,0 +1,43 @@
+// Album: Saxophone Afterhours
+// Track: 04 — blue-hour-ballad
+// Genre: Saxophone-centred electronic jazz
+// Tempo / CPM: 60 BPM (setcpm 15)
+// Key / Mode: F# minor
+// Saxophone role: long sustained ballad line
+// Musical idea: A noir ballad — tenor sax holds long mournful notes over slow Fender-Rhodes-style chords.
+// Strudel focus: very long .release() on the sax + triangle Rhodes pad; .delay creates a dimly-lit hall.
+// Visualisation: .pianoroll({ cycles: 4, fold: true }) — background fold reveals the slow melodic arc.
+
+setcpm(15)
+
+stack(
+
+  note("fs1").sound("sine").attack(5).release(10).gain(0.45)
+    .color("midnightblue"),
+
+  // ── TENOR SAX BALLAD LINE — long notes
+  note("<fs4 ~ a4 ~  cs5 ~ b4 ~  e5 ~ d5 ~  cs5 b4 a4 ~>")
+    .sound("sawtooth").vowel("a")
+    .attack(0.4).release(2).lpf(2700).lpq(3)
+    .delay(0.5).delaytime(0.5).delayfeedback(0.45)
+    .gain(0.45).pan(0.5).room(0.65)
+    .color("crimson")
+    .pianoroll({ cycles: 4, fold: true }),
+
+  // ── RHODES — F#m9 → Bm9 → Emaj7 → A6 (jazz ballad changes)
+  note("<[fs3,a3,cs4,e4,gs4] [b2,d3,fs3,a3,cs4] [e3,gs3,b3,ds4] [a2,cs3,e3,fs3,a3]>")
+    .sound("triangle").attack(0.02).release(2).lpf(2400)
+    .gain(0.34).pan(0.55).room(0.6).slow(2)
+    .color("gold"),
+
+  // ── WALKING BASS — quarter-note quiet
+  note("<fs2 ~ a2 ~  b2 ~ d3 ~  e3 ~ d3 ~  cs3 ~ b2 ~>")
+    .sound("sawtooth").lpf(450).shape(0.08)
+    .attack(0.005).release(0.45)
+    .gain(0.5).pan(0.5)
+    .color("navy"),
+
+  // ── Brush snare — late-night sweep
+  s("~ ~ sd ~").gain(0.28).hpf(900).room(0.5)
+    .color("orange")
+)
