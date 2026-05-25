@@ -1,0 +1,45 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 11 — dotted-snare
+// Genre: UK Garage / broken
+// Tempo / CPM: 134 BPM (setcpm 33.5)
+// Musical idea: Dotted-eighth snare pattern over a syncopated kick — broken-beat lean.
+// Strudel focus: snare placed at dotted-8th positions; kick chooses positions per cycle via choose().
+// Visualisation: ._punchcard({ cycles: 3, vertical: true }) — vertical reads the dotted pattern as columns.
+
+setcpm(33.5)
+
+stack(
+
+  note("d1").sound("sine").attack(2).release(5).gain(0.42)
+    .color("midnightblue"),
+
+  // ── DOTTED SNARE — 3-against-16 + vertical punchcard ─────────
+  s("sd").struct("x ~ ~ x ~ ~ x ~ ~ x ~ ~ x ~ ~ x")
+    .gain(0.55).hpf(900).room(0.22)
+    .color("orange")
+    ._punchcard({ cycles: 3, vertical: true }),
+
+  // ── KICK — generative position ───────────────────────────────
+  s(choose("bd ~ ~ ~ bd ~ ~ ~","bd ~ ~ bd ~ bd ~ ~","bd ~ bd ~ ~ ~ bd ~"))
+    .gain(0.78).lpf(170).shape(0.13)
+    .color("crimson"),
+
+  // ── HATS shuffled ────────────────────────────────────────────
+  s("hh*16").swingBy(0.4, 2)
+    .gain("0.26 0.14 0.22 0.16").hpf(7300)
+    .color("yellow"),
+
+  // ── SUB — bouncing fifths ────────────────────────────────────
+  note("<d2 a1 g1 c2>")
+    .sound("sine").attack(0.005).release(0.35).shape(0.12)
+    .struct("x ~ x ~ ~ x ~ ~")
+    .gain(0.76).pan(0.5)
+    .color("navy"),
+
+  // ── PAD — Dm11 ───────────────────────────────────────────────
+  note("[d3,f3,a3,c4,e4,g4]")
+    .sound("sawtooth").vowel("u")
+    .attack(3).release(5).lpf(1800)
+    .gain(0.24).pan(0.5).room(0.55)
+    .color("indigo")
+)

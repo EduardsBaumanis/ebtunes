@@ -1,0 +1,41 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 12 — wobble-sub
+// Genre: UK Garage / dubstep-adjacent
+// Tempo / CPM: 138 BPM (setcpm 34.5)
+// Musical idea: Wobble sub — LFO-modulated filter on the bass = the proto-dubstep wobble.
+// Strudel focus: sine.range() on lpf creates the wobble; bass holds a sustained note.
+// Visualisation: ._pianoroll({ cycles: 4, smear: true }) on the wobbling bass.
+
+setcpm(34.5)
+
+stack(
+
+  // ── KICK — 2-step ────────────────────────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~").gain(0.82).lpf(170).shape(0.13)
+    .color("crimson"),
+
+  // ── WOBBLE BASS — LFO filter sweep + smear pianoroll ─────────
+  note("<g1 g1 d2 g1  c2 g1 bb1 g1>")
+    .sound("sawtooth")
+    .lpf(sine.range(300, 1800).slow(2)).lpq(12).shape(0.2)
+    .attack(0.005).release(0.32)
+    .struct("x ~ x ~ x ~ x ~")
+    .gain(0.65).pan(0.5)
+    .color("magenta")
+    ._pianoroll({ cycles: 4, smear: true }),
+
+  // ── SNARE off-beat ───────────────────────────────────────────
+  s("~ ~ sd ~  ~ ~ ~ sd").gain(0.55).hpf(900).room(0.22)
+    .color("orange"),
+
+  // ── HATS ─────────────────────────────────────────────────────
+  s("hh*16").swingBy(0.3, 2)
+    .gain("0.24 0.14").hpf(7300)
+    .color("yellow"),
+
+  // ── SUB-SUB ──────────────────────────────────────────────────
+  note("g1*4")
+    .sound("sine").attack(0.005).release(0.18)
+    .gain(0.55).pan(0.5)
+    .color("navy")
+)

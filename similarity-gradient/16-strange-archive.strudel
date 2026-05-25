@@ -1,0 +1,15 @@
+// Album: Similarity Gradient
+// Track: 16 — strange-archive
+// Target similarity: 15/100
+// Actual similarity: 39.6/100
+// Similarity band: noticeably different
+// Concept: A strange archive — minimal brown rumble that loops backwards every odd cycle.
+// Musical strategy: s("brown") + bite + ribbon — rare chain; no stack, no note, no melody, no sound("...").
+// Strudel focus: ribbon(), bite() — repo-rare.
+// Visualisation: ._punchcard({ cycles: 16, playhead: true }) — long-cycle silent viz.
+
+s("brown")
+  .bite(5, "1 3 0 4 2")
+  .ribbon(0, 3)
+  .hpf(80).lpf(450).gain(0.32)
+  ._punchcard({ cycles: 16, playhead: true })

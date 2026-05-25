@@ -244,6 +244,28 @@
   --code-fg:  #d8b890;
 }
 
+/* ── SIMILARITY GRADIENT theme — instrument-panel teal, metric-driven ── */
+[data-theme="similarity-gradient"] {
+  --black:    #051014;
+  --white:    #b0e0d0;
+  --grey:     #508c80;
+  --dim:      #0c1c20;
+  --mid:      #1c3840;
+  --code-bg:  #051014;
+  --code-fg:  #88c8b8;
+}
+
+/* ── UK GARAGE theme — London neon: sodium orange on rainy slate ── */
+[data-theme="uk-garage"] {
+  --black:    #0a0d12;
+  --white:    #ffb878;
+  --grey:     #886040;
+  --dim:      #14181f;
+  --mid:      #2c2418;
+  --code-bg:  #0a0d12;
+  --code-fg:  #e0a070;
+}
+
 /* ── DEMOS theme — showcase gallery: cool slate + cyan accent ── */
 [data-theme="demos"] {
   --black:    #06090e;

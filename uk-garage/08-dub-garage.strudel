@@ -1,0 +1,49 @@
+// Album: UK Garage — 2-Step Codes
+// Track: 08 — dub-garage
+// Genre: UK Garage with dub treatment
+// Tempo / CPM: 132 BPM (setcpm 33)
+// Musical idea: Heavy dub — long feedback delays on snare and chord stab, things drop in and out via .mask.
+// Strudel focus: aggressive .delay().delayfeedback() chains + .mask() arrangement.
+// Visualisation: ._punchcard({ cycles: 4, smear: true }) — smear traces the delay decay.
+
+setcpm(33)
+
+stack(
+
+  note("c1").sound("sine").attack(3).release(6).gain(0.42)
+    .color("midnightblue"),
+
+  // ── 2-STEP KICK — sometimes dropped ──────────────────────────
+  s("bd ~ ~ bd  ~ bd ~ ~").gain(0.78).lpf(170).shape(0.12)
+    .mask("<1 1 1 0>")
+    .color("crimson")
+    ._punchcard({ cycles: 4, smear: true }),
+
+  // ── DUB SNARE — heavy feedback delay ─────────────────────────
+  s("~ ~ sd ~  ~ ~ ~ ~").gain(0.5).hpf(900)
+    .delay(0.7).delaytime(0.375).delayfeedback(0.65).room(0.55)
+    .sometimes(rev)
+    .color("orange"),
+
+  // ── CHORD STAB — dubbed out ──────────────────────────────────
+  note("<[c4,eb4,g4,bb4] [f3,ab3,c4,eb4] [bb2,d3,f3,ab3] [g3,bb3,d4,f4]>")
+    .sound("triangle").attack(0.005).release(0.5).lpf(2400)
+    .struct("x ~ ~ ~ ~ ~ ~ ~")
+    .delay(0.65).delaytime("3/8").delayfeedback(0.6).room(0.7)
+    .gain(0.4).pan(0.5)
+    .color("gold"),
+
+  // ── HATS masked ──────────────────────────────────────────────
+  s("hh*16").swingBy(0.35, 2)
+    .gain(0.18).hpf(7300)
+    .mask("<1 0 1 0>")
+    .color("yellow"),
+
+  // ── SUB — dropped in/out ─────────────────────────────────────
+  note("<c2 g1 bb1 f1>")
+    .sound("sine").attack(0.005).release(0.45)
+    .struct("x ~ ~ x  ~ x ~ ~")
+    .mask("<1 1 0 1>")
+    .gain(0.72).pan(0.5)
+    .color("navy")
+)

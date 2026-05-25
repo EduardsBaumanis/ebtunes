@@ -1,0 +1,15 @@
+// Album: Similarity Gradient
+// Track: 14 — distant-cousin
+// Target similarity: 25/100
+// Actual similarity: 55.8/100
+// Similarity band: moderately similar
+// Concept: A distant cousin — built from a single filtered noise band with uncommon transforms.
+// Musical strategy: s("white") routed through bite, loopAt, juxBy — rare chain combination.
+// Strudel focus: bite(), loopAt(), juxBy() — uncommon repo functions.
+// Visualisation: punchcard({ cycles: 2, vertical: true }) — vertical background.
+
+s("white").chop(7).bite(3, "0 1 2").loopAt(2)
+  .juxBy(0.4, x => x.late(0.0625))
+  .lpf(2400).hpf(900)
+  .gain(0.32)
+  .punchcard({ cycles: 2, vertical: true })

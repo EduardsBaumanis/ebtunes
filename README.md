@@ -46,6 +46,8 @@ Strudel IDE, vērtēšanu un līderlisti:
 | [`amapiano/`](amapiano/) | Dienvidāfrikas amapiano — koka bungas, jaza klavieres, soweto kori, vizualizācijas | 20 |
 | [`footwork/`](footwork/) | Čikāgas footwork / juke — 160 BPM, triplet hai-hat, 808 stabu melodijas | 20 |
 | [`gardens-of-broken-clocks/`](gardens-of-broken-clocks/) | Eksperimentāls albums: 30 izdomāti pulksteņi, kas saauguši ar dārzu | 30 |
+| [`similarity-gradient/`](similarity-gradient/) | Metrikas vadīts albums: 30 dziesmas, katra mērķē atšķirīgu līdzības rādītāju (skat. `tools/strudel-similarity.mjs` un `reports/`) | 30 |
+| [`uk-garage/`](uk-garage/) | Londonas UK Garage / 2-step — šuflēti 16-tie, sub-bass, vokālie čopi | 20 |
 
 Daži favorīti:
 
@@ -67,6 +69,7 @@ Daži favorīti:
 | [`player/`](player/) | **Galvenā lietotne.** Iebūvēts Strudel IDE ar redzamu kodu, kreisajā sānjoslā ir saliekams kataloga koks ar visiem albumiem, atbalsts ar **`+ / −`** vērtēšanu un dzīvo līderlisti. Strādā mobilajās ierīcēs (sānjosla pārvēršas par atvelkamu paneli). | [`/player/`](https://eduardsbaumanis.github.io/ebtesti/player/) |
 | [`lofi-player/`](lofi-player/) | Vecākais atskaņotājs — cilnes pēc albumiem, automātiska nākamā skaņdarba pāreja ar laika gredzenu, BOARD cilne ar Realtime atjauninājumiem. | [`/lofi-player/`](https://eduardsbaumanis.github.io/ebtesti/lofi-player/) |
 | [`lofi-rater/`](lofi-rater/) | _Pārceļ uz `/player/`._ Saglabāts kā saderības saite vecākām grāmatzīmēm. | — |
+| [`izlase/`](izlase/) | **Personīgā izlase.** Atskaņo tikai tos `.strudel` failus, kas ievietoti šajā mapē. Auto-atrod failus caur GitHub Contents API (vai lokālā servera direktoriju sarakstu) — pievienot dziesmas: tikai iemet failu mapē, HTML/JS rediģēt nevajag. | [`/izlase/`](https://eduardsbaumanis.github.io/ebtesti/izlase/) |
 
 Visas trīs lietotnes dalās ar vienu **Supabase backendu** (skat.
 [`SUPABASE_SETUP.md`](SUPABASE_SETUP.md)), tāpēc balsis un līderliste
