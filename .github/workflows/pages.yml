@@ -62,6 +62,14 @@ jobs:
         with:
           path: _site
 
+      - name: Let branch Pages build finish
+        run: |
+          # This repo still has GitHub's automatic branch-based Pages build
+          # enabled. That dynamic build can finish after this workflow and mark
+          # this artifact deployment inactive, leaving the public site at 404.
+          # Deploy this artifact last so the generated public path map wins.
+          sleep 90
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

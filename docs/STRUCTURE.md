@@ -22,3 +22,8 @@ paths for existing links and bookmarks.
 
 The mapping lives in `.github/workflows/pages.yml`. If a public path is renamed,
 update the workflow and any hardcoded app paths together.
+
+GitHub Pages should ideally use **Build and deployment > Source: GitHub
+Actions**. If the repository is still set to a branch source, GitHub also runs
+its automatic `pages build and deployment` job; the workflow waits briefly so
+the generated artifact deploys last.
