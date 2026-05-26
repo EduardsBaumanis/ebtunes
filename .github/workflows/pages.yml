@@ -31,7 +31,10 @@ jobs:
           mkdir _site
 
           cp README.md LICENSE .nojekyll _site/
+          cp docs/STRUCTURE.md _site/STRUCTURE.md
           cp docs/STRUDEL_SAMPLE_REPOS.md _site/STRUDEL_SAMPLE_REPOS.md
+          cp docs/SUPABASE_SETUP.md _site/SUPABASE_SETUP.md
+          cp docs/supabase-setup.sql _site/supabase-setup.sql
           cp apps/index.html _site/index.html
 
           for dir in apps/lofi-player apps/lofi-rater apps/player apps/izlase; do
@@ -53,6 +56,15 @@ jobs:
           rsync -a tools/strudel-to-mp3/ _site/strudel-to-mp3/
           mkdir -p _site/tools
           cp tools/strudel-similarity.mjs _site/tools/strudel-similarity.mjs
+
+          # Keep old docs-prefixed Pages URLs working without duplicating the
+          # source tree in git.
+          mkdir _site-docs-mirror
+          rsync -a _site/ _site-docs-mirror/
+          mkdir -p _site/docs
+          rsync -a _site-docs-mirror/ _site/docs/
+          rm -rf _site-docs-mirror
+          cp docs/*.md docs/*.sql _site/docs/
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

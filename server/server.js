@@ -139,10 +139,15 @@ function mountPublic(publicPath, sourcePath) {
   app.use(publicPath, express.static(path.join(ROOT, sourcePath)));
 }
 
-mountPublic('/lofi-player', 'apps/lofi-player');
-mountPublic('/lofi-rater', 'apps/lofi-rater');
-mountPublic('/player', 'apps/player');
-mountPublic('/izlase', 'apps/izlase');
+function mountLegacyPublic(publicPath, sourcePath) {
+  mountPublic(publicPath, sourcePath);
+  mountPublic('/docs' + publicPath, sourcePath);
+}
+
+mountLegacyPublic('/lofi-player', 'apps/lofi-player');
+mountLegacyPublic('/lofi-rater', 'apps/lofi-rater');
+mountLegacyPublic('/player', 'apps/player');
+mountLegacyPublic('/izlase', 'apps/izlase');
 
 [
   'acid',
@@ -169,37 +174,49 @@ mountPublic('/izlase', 'apps/izlase');
   'uk-garage',
   'vocals',
   'yt',
-].forEach(name => mountPublic('/' + name, path.join('collections', name)));
+].forEach(name => mountLegacyPublic('/' + name, path.join('collections', name)));
 
-mountPublic('/Skola', 'courses/Skola');
-mountPublic('/TehnoSkola', 'courses/TehnoSkola');
+mountLegacyPublic('/Skola', 'courses/Skola');
+mountLegacyPublic('/TehnoSkola', 'courses/TehnoSkola');
 
-mountPublic('/agent', 'tools/agent');
-mountPublic('/merger', 'tools/merger');
-mountPublic('/orginals', 'tools/orginals');
-mountPublic('/reports', 'tools/reports');
-mountPublic('/sampler', 'tools/sampler');
-mountPublic('/strudel-to-mp3', 'tools/strudel-to-mp3');
-mountPublic('/tools', 'tools');
+mountLegacyPublic('/agent', 'tools/agent');
+mountLegacyPublic('/merger', 'tools/merger');
+mountLegacyPublic('/orginals', 'tools/orginals');
+mountLegacyPublic('/reports', 'tools/reports');
+mountLegacyPublic('/sampler', 'tools/sampler');
+mountLegacyPublic('/strudel-to-mp3', 'tools/strudel-to-mp3');
+mountLegacyPublic('/tools', 'tools');
 
 app.get('/', (_req, res) => {
   res.sendFile(path.join(ROOT, 'apps', 'index.html'));
 });
 
-app.get('/index.html', (_req, res) => {
+app.get(['/index.html', '/docs', '/docs/', '/docs/index.html'], (_req, res) => {
   res.sendFile(path.join(ROOT, 'apps', 'index.html'));
 });
 
-app.get('/README.md', (_req, res) => {
+app.get(['/README.md', '/docs/README.md'], (_req, res) => {
   res.sendFile(path.join(ROOT, 'README.md'));
 });
 
-app.get('/LICENSE', (_req, res) => {
+app.get(['/LICENSE', '/docs/LICENSE'], (_req, res) => {
   res.sendFile(path.join(ROOT, 'LICENSE'));
 });
 
-app.get('/STRUDEL_SAMPLE_REPOS.md', (_req, res) => {
+app.get(['/STRUCTURE.md', '/docs/STRUCTURE.md'], (_req, res) => {
+  res.sendFile(path.join(ROOT, 'docs', 'STRUCTURE.md'));
+});
+
+app.get(['/STRUDEL_SAMPLE_REPOS.md', '/docs/STRUDEL_SAMPLE_REPOS.md'], (_req, res) => {
   res.sendFile(path.join(ROOT, 'docs', 'STRUDEL_SAMPLE_REPOS.md'));
+});
+
+app.get(['/SUPABASE_SETUP.md', '/docs/SUPABASE_SETUP.md'], (_req, res) => {
+  res.sendFile(path.join(ROOT, 'docs', 'SUPABASE_SETUP.md'));
+});
+
+app.get(['/supabase-setup.sql', '/docs/supabase-setup.sql'], (_req, res) => {
+  res.sendFile(path.join(ROOT, 'docs', 'supabase-setup.sql'));
 });
 
 app.get('*', (req, res) => {
