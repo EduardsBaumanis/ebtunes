@@ -27,25 +27,32 @@ jobs:
 
       - name: Prepare static site
         run: |
+          set -euo pipefail
           mkdir _site
-          rsync -a \
-            --exclude='.env*' \
-            --exclude='.agents' \
-            --exclude='.claude' \
-            --exclude='.codex' \
-            --exclude='.git' \
-            --exclude='.gitattributes' \
-            --exclude='.github' \
-            --exclude='.gitignore' \
-            --exclude='docs' \
-            --exclude='_site' \
-            --exclude='node_modules' \
-            --exclude='package-lock.json' \
-            --exclude='package.json' \
-            --exclude='server.js' \
-            --exclude='SUPABASE_SETUP.md' \
-            --exclude='supabase-setup.sql' \
-            ./ _site/
+
+          cp README.md LICENSE .nojekyll _site/
+          cp docs/STRUDEL_SAMPLE_REPOS.md _site/STRUDEL_SAMPLE_REPOS.md
+          cp apps/index.html _site/index.html
+
+          for dir in apps/lofi-player apps/lofi-rater apps/player apps/izlase; do
+            public_name="${dir#apps/}"
+            rsync -a "$dir/" "_site/$public_name/"
+          done
+
+          for dir in collections/* courses/*; do
+            [ -d "$dir" ] || continue
+            public_name="${dir#*/}"
+            rsync -a "$dir/" "_site/$public_name/"
+          done
+
+          rsync -a tools/agent/ _site/agent/
+          rsync -a tools/merger/ _site/merger/
+          rsync -a tools/orginals/ _site/orginals/
+          rsync -a tools/reports/ _site/reports/
+          rsync -a tools/sampler/ _site/sampler/
+          rsync -a tools/strudel-to-mp3/ _site/strudel-to-mp3/
+          mkdir -p _site/tools
+          cp tools/strudel-similarity.mjs _site/tools/strudel-similarity.mjs
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

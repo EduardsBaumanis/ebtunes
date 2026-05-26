@@ -1,0 +1,1277 @@
+[
+  {
+    "file": "collections/similarity-gradient/01-near-mirror.strudel",
+    "finalScore": 90,
+    "band": "very similar",
+    "averageSimilarity": 84.6,
+    "flatAverageSimilarity": 46.5,
+    "maxSimilarity": 100,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 100,
+      "musicFunc": 100,
+      "soundSource": 100,
+      "rhythm": 99.9,
+      "meta": 100,
+      "viz": 100
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/30-dangerous-clone.strudel",
+        "score": 100
+      },
+      {
+        "file": "collections/similarity-gradient/29-dangerous-likeness.strudel",
+        "score": 97.2
+      },
+      {
+        "file": "collections/similarity-gradient/27-close-relation.strudel",
+        "score": 95.5
+      },
+      {
+        "file": "collections/harmonic/16-beneath-the-surface.strudel",
+        "score": 87.9
+      },
+      {
+        "file": "collections/harmonic/30-final-light.strudel",
+        "score": 87.1
+      }
+    ],
+    "warnings": [
+      "NEAR-DUPLICATE: max=100.0",
+      "TOKEN-DUPLICATE: token=100%",
+      "SOUND-DUPLICATE: sound=100%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/30-dangerous-clone.strudel (100.0). Dominant features: token=100%, musicFunc=100%. Final 90.0."
+  },
+  {
+    "file": "collections/similarity-gradient/02-familiar-ghost.strudel",
+    "finalScore": 82.2,
+    "band": "very similar",
+    "averageSimilarity": 78.7,
+    "flatAverageSimilarity": 50.8,
+    "maxSimilarity": 88.8,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 84,
+      "musicFunc": 96.1,
+      "soundSource": 97.4,
+      "rhythm": 84.9,
+      "meta": 50,
+      "viz": 100
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/26-repo-shape.strudel",
+        "score": 88.8
+      },
+      {
+        "file": "collections/harmonic/12-spiral-stairs.strudel",
+        "score": 83
+      },
+      {
+        "file": "collections/harmonic/25-cardinal-direction.strudel",
+        "score": 82.6
+      },
+      {
+        "file": "collections/similarity-gradient/04-close-cousin.strudel",
+        "score": 82.5
+      },
+      {
+        "file": "collections/saxophone-afterhours/20-reprise-at-dawn.strudel",
+        "score": 82.5
+      }
+    ],
+    "warnings": [
+      "SOUND-DUPLICATE: sound=97%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/26-repo-shape.strudel (88.8). Dominant features: viz=100%, soundSource=97%. Final 82.2."
+  },
+  {
+    "file": "collections/similarity-gradient/03-borrowed-grammar.strudel",
+    "finalScore": 75.7,
+    "band": "close to existing style",
+    "averageSimilarity": 73.4,
+    "flatAverageSimilarity": 48.4,
+    "maxSimilarity": 80.1,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 68.3,
+      "musicFunc": 88.9,
+      "soundSource": 100,
+      "rhythm": 90.2,
+      "meta": 50,
+      "viz": 25
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/02-familiar-ghost.strudel",
+        "score": 80.1
+      },
+      {
+        "file": "collections/berlin-school/18-twilight-sequencer.strudel",
+        "score": 77.3
+      },
+      {
+        "file": "collections/uk-garage/18-dawn-garage.strudel",
+        "score": 76.2
+      },
+      {
+        "file": "collections/similarity-gradient/26-repo-shape.strudel",
+        "score": 76.2
+      },
+      {
+        "file": "collections/amapiano/03-private-school.strudel",
+        "score": 75.8
+      }
+    ],
+    "warnings": [
+      "SOUND-DUPLICATE: sound=100%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/02-familiar-ghost.strudel (80.1). Dominant features: soundSource=100%, rhythm=90%. Final 75.7."
+  },
+  {
+    "file": "collections/similarity-gradient/04-close-cousin.strudel",
+    "finalScore": 77.2,
+    "band": "very similar",
+    "averageSimilarity": 74.3,
+    "flatAverageSimilarity": 49.2,
+    "maxSimilarity": 82.5,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 85.2,
+      "musicFunc": 98.7,
+      "soundSource": 70.9,
+      "rhythm": 82.7,
+      "meta": 100,
+      "viz": 33.3
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/02-familiar-ghost.strudel",
+        "score": 82.5
+      },
+      {
+        "file": "collections/amapiano/17-choir-and-piano.strudel",
+        "score": 79.2
+      },
+      {
+        "file": "collections/similarity-gradient/08-drift-and-anchor.strudel",
+        "score": 78.1
+      },
+      {
+        "file": "collections/amapiano/20-dawn-reflection.strudel",
+        "score": 75.9
+      },
+      {
+        "file": "collections/amapiano/08-cape-town-drift.strudel",
+        "score": 75.7
+      }
+    ],
+    "warnings": [
+      "TOKEN-DUPLICATE: token=85%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/02-familiar-ghost.strudel (82.5). Dominant features: meta=100%, musicFunc=99%. Final 77.2."
+  },
+  {
+    "file": "collections/similarity-gradient/05-recognizable-shape.strudel",
+    "finalScore": 82.8,
+    "band": "very similar",
+    "averageSimilarity": 80.1,
+    "flatAverageSimilarity": 48,
+    "maxSimilarity": 87.8,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 97.5,
+      "musicFunc": 99.1,
+      "soundSource": 92.9,
+      "rhythm": 91.7,
+      "meta": 0,
+      "viz": 50
+    },
+    "top5": [
+      {
+        "file": "collections/footwork/09-soulful-juke.strudel",
+        "score": 87.8
+      },
+      {
+        "file": "collections/footwork/02-juke-prayer.strudel",
+        "score": 85.8
+      },
+      {
+        "file": "collections/footwork/10-juke-jazz.strudel",
+        "score": 85.6
+      },
+      {
+        "file": "collections/similarity-gradient/28-twin-style.strudel",
+        "score": 85.6
+      },
+      {
+        "file": "collections/uk-garage/13-piano-house-cross.strudel",
+        "score": 85.5
+      }
+    ],
+    "warnings": [
+      "TOKEN-DUPLICATE: token=98%",
+      "SOUND-DUPLICATE: sound=93%"
+    ],
+    "explanation": "Closest match: collections/footwork/09-soulful-juke.strudel (87.8). Dominant features: musicFunc=99%, token=98%. Final 82.8."
+  },
+  {
+    "file": "collections/similarity-gradient/06-familiar-skeleton.strudel",
+    "finalScore": 70.6,
+    "band": "close to existing style",
+    "averageSimilarity": 67.4,
+    "flatAverageSimilarity": 43.9,
+    "maxSimilarity": 76.4,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 66.5,
+      "musicFunc": 85.9,
+      "soundSource": 81,
+      "rhythm": 80.6,
+      "meta": 100,
+      "viz": 33.3
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/25-second-cousin.strudel",
+        "score": 76.4
+      },
+      {
+        "file": "collections/similarity-gradient/04-close-cousin.strudel",
+        "score": 75.4
+      },
+      {
+        "file": "collections/amapiano/18-sunday-yano.strudel",
+        "score": 73.8
+      },
+      {
+        "file": "collections/similarity-gradient/07-half-familiar.strudel",
+        "score": 72.5
+      },
+      {
+        "file": "collections/similarity-gradient/02-familiar-ghost.strudel",
+        "score": 70.6
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/similarity-gradient/25-second-cousin.strudel (76.4). Dominant features: meta=100%, musicFunc=86%. Final 70.6."
+  },
+  {
+    "file": "collections/similarity-gradient/07-half-familiar.strudel",
+    "finalScore": 75.6,
+    "band": "close to existing style",
+    "averageSimilarity": 69.9,
+    "flatAverageSimilarity": 42.5,
+    "maxSimilarity": 86.3,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 71.1,
+      "musicFunc": 98.9,
+      "soundSource": 96.4,
+      "rhythm": 83,
+      "meta": 100,
+      "viz": 66.7
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/25-second-cousin.strudel",
+        "score": 86.3
+      },
+      {
+        "file": "collections/similarity-gradient/28-twin-style.strudel",
+        "score": 74.1
+      },
+      {
+        "file": "collections/similarity-gradient/06-familiar-skeleton.strudel",
+        "score": 72.5
+      },
+      {
+        "file": "collections/amapiano/11-vocal-chop-flutter.strudel",
+        "score": 72.2
+      },
+      {
+        "file": "collections/gardens-of-broken-clocks/16-wisteria-pendulum.strudel",
+        "score": 71.8
+      }
+    ],
+    "warnings": [
+      "SOUND-DUPLICATE: sound=96%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/25-second-cousin.strudel (86.3). Dominant features: meta=100%, musicFunc=99%. Final 75.6."
+  },
+  {
+    "file": "collections/similarity-gradient/08-drift-and-anchor.strudel",
+    "finalScore": 78.2,
+    "band": "very similar",
+    "averageSimilarity": 74.8,
+    "flatAverageSimilarity": 44.3,
+    "maxSimilarity": 84.6,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 72.2,
+      "musicFunc": 98.8,
+      "soundSource": 96.7,
+      "rhythm": 93.1,
+      "meta": 0,
+      "viz": 100
+    },
+    "top5": [
+      {
+        "file": "collections/uk-garage/06-clapless-garage.strudel",
+        "score": 84.6
+      },
+      {
+        "file": "collections/similarity-gradient/28-twin-style.strudel",
+        "score": 82.7
+      },
+      {
+        "file": "collections/amapiano/01-log-drum-intro.strudel",
+        "score": 79.5
+      },
+      {
+        "file": "collections/amapiano/10-log-drum-conversation.strudel",
+        "score": 79.2
+      },
+      {
+        "file": "collections/similarity-gradient/04-close-cousin.strudel",
+        "score": 78.1
+      }
+    ],
+    "warnings": [
+      "SOUND-DUPLICATE: sound=97%"
+    ],
+    "explanation": "Closest match: collections/uk-garage/06-clapless-garage.strudel (84.6). Dominant features: viz=100%, musicFunc=99%. Final 78.2."
+  },
+  {
+    "file": "collections/similarity-gradient/09-bent-mirror.strudel",
+    "finalScore": 54.9,
+    "band": "moderately similar",
+    "averageSimilarity": 53.2,
+    "flatAverageSimilarity": 33.2,
+    "maxSimilarity": 57.9,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 43.2,
+      "musicFunc": 49.1,
+      "soundSource": 86.5,
+      "rhythm": 71.4,
+      "meta": 50,
+      "viz": 20
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/07-half-familiar.strudel",
+        "score": 57.9
+      },
+      {
+        "file": "collections/amapiano/09-piano-deep-chords.strudel",
+        "score": 57.8
+      },
+      {
+        "file": "collections/amapiano/06-midnight-loft.strudel",
+        "score": 57.8
+      },
+      {
+        "file": "collections/amapiano/12-johannesburg-rooftop.strudel",
+        "score": 57.1
+      },
+      {
+        "file": "collections/similarity-gradient/04-close-cousin.strudel",
+        "score": 56.2
+      }
+    ],
+    "warnings": [
+      "SOUND-DUPLICATE: sound=86%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/07-half-familiar.strudel (57.9). Dominant features: soundSource=86%, rhythm=71%. Final 54.9."
+  },
+  {
+    "file": "collections/similarity-gradient/10-half-remembered-loop.strudel",
+    "finalScore": 46.8,
+    "band": "moderately similar",
+    "averageSimilarity": 42.8,
+    "flatAverageSimilarity": 25.9,
+    "maxSimilarity": 54.3,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 19,
+      "musicFunc": 62.8,
+      "soundSource": 71.6,
+      "rhythm": 92.6,
+      "meta": 0,
+      "viz": 66.7
+    },
+    "top5": [
+      {
+        "file": "collections/footwork/08-minimal-tek.strudel",
+        "score": 54.3
+      },
+      {
+        "file": "collections/uk-garage/08-dub-garage.strudel",
+        "score": 52.7
+      },
+      {
+        "file": "collections/footwork/13-ghost-juke.strudel",
+        "score": 47.7
+      },
+      {
+        "file": "collections/similarity-gradient/05-recognizable-shape.strudel",
+        "score": 44.6
+      },
+      {
+        "file": "collections/footwork/18-drumless-tek.strudel",
+        "score": 44.1
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/footwork/08-minimal-tek.strudel (54.3). Dominant features: rhythm=93%, soundSource=72%. Final 46.8."
+  },
+  {
+    "file": "collections/similarity-gradient/11-broken-fingerprint.strudel",
+    "finalScore": 37.3,
+    "band": "noticeably different",
+    "averageSimilarity": 35.1,
+    "flatAverageSimilarity": 16.9,
+    "maxSimilarity": 41.2,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 14.1,
+      "musicFunc": 82.6,
+      "soundSource": 33.1,
+      "rhythm": 69.4,
+      "meta": 0,
+      "viz": 0
+    },
+    "top5": [
+      {
+        "file": "collections/study/study-10-chunk-variations.strudel",
+        "score": 41.2
+      },
+      {
+        "file": "collections/similarity-gradient/10-half-remembered-loop.strudel",
+        "score": 39
+      },
+      {
+        "file": "collections/study/study-22-pentatonic-spirals.strudel",
+        "score": 38.1
+      },
+      {
+        "file": "collections/similarity-gradient/05-recognizable-shape.strudel",
+        "score": 38
+      },
+      {
+        "file": "courses/Skola/lesson-01-rhythm-basics.strudel",
+        "score": 36.5
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/study/study-10-chunk-variations.strudel (41.2). Dominant features: musicFunc=83%, rhythm=69%. Final 37.3."
+  },
+  {
+    "file": "collections/similarity-gradient/12-partial-echo.strudel",
+    "finalScore": 37.1,
+    "band": "noticeably different",
+    "averageSimilarity": 30.1,
+    "flatAverageSimilarity": 14.5,
+    "maxSimilarity": 50.1,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 21.1,
+      "musicFunc": 94,
+      "soundSource": 0,
+      "rhythm": 98.4,
+      "meta": 50,
+      "viz": 75
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/15-unfamiliar-hand.strudel",
+        "score": 50.1
+      },
+      {
+        "file": "collections/similarity-gradient/17-unlike-the-archive.strudel",
+        "score": 47.5
+      },
+      {
+        "file": "collections/similarity-gradient/19-quiet-mutation.strudel",
+        "score": 44.7
+      },
+      {
+        "file": "collections/similarity-gradient/13-uncertain-relative.strudel",
+        "score": 41.5
+      },
+      {
+        "file": "courses/Skola/lesson-04-scales-and-melody.strudel",
+        "score": 41
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/similarity-gradient/15-unfamiliar-hand.strudel (50.1). Dominant features: rhythm=98%, musicFunc=94%. Final 37.1."
+  },
+  {
+    "file": "collections/similarity-gradient/13-uncertain-relative.strudel",
+    "finalScore": 38.6,
+    "band": "noticeably different",
+    "averageSimilarity": 30,
+    "flatAverageSimilarity": 12,
+    "maxSimilarity": 54.5,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 39.5,
+      "musicFunc": 88.4,
+      "soundSource": 0,
+      "rhythm": 76.4,
+      "meta": 100,
+      "viz": 100
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/23-half-and-half.strudel",
+        "score": 54.5
+      },
+      {
+        "file": "collections/similarity-gradient/19-quiet-mutation.strudel",
+        "score": 51.8
+      },
+      {
+        "file": "collections/similarity-gradient/22-sometimes-familiar.strudel",
+        "score": 47.3
+      },
+      {
+        "file": "collections/similarity-gradient/17-unlike-the-archive.strudel",
+        "score": 45.5
+      },
+      {
+        "file": "collections/similarity-gradient/15-unfamiliar-hand.strudel",
+        "score": 45.2
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/similarity-gradient/23-half-and-half.strudel (54.5). Dominant features: meta=100%, viz=100%. Final 38.6."
+  },
+  {
+    "file": "collections/similarity-gradient/14-distant-cousin.strudel",
+    "finalScore": 55.5,
+    "band": "moderately similar",
+    "averageSimilarity": 45.7,
+    "flatAverageSimilarity": 23.2,
+    "maxSimilarity": 73.6,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 22.4,
+      "musicFunc": 100,
+      "soundSource": 100,
+      "rhythm": 87.5,
+      "meta": 100,
+      "viz": 50
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/20-fractured-lineage.strudel",
+        "score": 73.6
+      },
+      {
+        "file": "collections/yt/sfx-01-swoosh.strudel",
+        "score": 57.4
+      },
+      {
+        "file": "collections/similarity-gradient/23-half-and-half.strudel",
+        "score": 50.6
+      },
+      {
+        "file": "collections/yt/sfx-09-tape-rewind.strudel",
+        "score": 49.3
+      },
+      {
+        "file": "collections/similarity-gradient/16-strange-archive.strudel",
+        "score": 48.8
+      }
+    ],
+    "warnings": [
+      "SOUND-DUPLICATE: sound=100%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/20-fractured-lineage.strudel (73.6). Dominant features: musicFunc=100%, soundSource=100%. Final 55.5."
+  },
+  {
+    "file": "collections/similarity-gradient/15-unfamiliar-hand.strudel",
+    "finalScore": 37.3,
+    "band": "noticeably different",
+    "averageSimilarity": 29.9,
+    "flatAverageSimilarity": 11.7,
+    "maxSimilarity": 50.9,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 12.3,
+      "musicFunc": 100,
+      "soundSource": 0,
+      "rhythm": 98.4,
+      "meta": 100,
+      "viz": 60
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/17-unlike-the-archive.strudel",
+        "score": 50.9
+      },
+      {
+        "file": "collections/similarity-gradient/12-partial-echo.strudel",
+        "score": 50.1
+      },
+      {
+        "file": "collections/similarity-gradient/19-quiet-mutation.strudel",
+        "score": 48.4
+      },
+      {
+        "file": "collections/similarity-gradient/13-uncertain-relative.strudel",
+        "score": 45.2
+      },
+      {
+        "file": "collections/similarity-gradient/22-sometimes-familiar.strudel",
+        "score": 43.9
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/similarity-gradient/17-unlike-the-archive.strudel (50.9). Dominant features: musicFunc=100%, meta=100%. Final 37.3."
+  },
+  {
+    "file": "collections/similarity-gradient/16-strange-archive.strudel",
+    "finalScore": 39.4,
+    "band": "noticeably different",
+    "averageSimilarity": 34.3,
+    "flatAverageSimilarity": 21.7,
+    "maxSimilarity": 48.8,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 11.8,
+      "musicFunc": 100,
+      "soundSource": 0,
+      "rhythm": 100,
+      "meta": 100,
+      "viz": 20
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/14-distant-cousin.strudel",
+        "score": 48.8
+      },
+      {
+        "file": "collections/similarity-gradient/20-fractured-lineage.strudel",
+        "score": 45.2
+      },
+      {
+        "file": "collections/similarity-gradient/18-null-fingerprint.strudel",
+        "score": 41.8
+      },
+      {
+        "file": "collections/footwork/12-polymetric-feet.strudel",
+        "score": 37
+      },
+      {
+        "file": "collections/yt/sfx-07-paper-flip.strudel",
+        "score": 37
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/similarity-gradient/14-distant-cousin.strudel (48.8). Dominant features: musicFunc=100%, rhythm=100%. Final 39.4."
+  },
+  {
+    "file": "collections/similarity-gradient/17-unlike-the-archive.strudel",
+    "finalScore": 37.1,
+    "band": "noticeably different",
+    "averageSimilarity": 29.6,
+    "flatAverageSimilarity": 11.6,
+    "maxSimilarity": 50.9,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 12.3,
+      "musicFunc": 100,
+      "soundSource": 0,
+      "rhythm": 98.4,
+      "meta": 100,
+      "viz": 60
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/15-unfamiliar-hand.strudel",
+        "score": 50.9
+      },
+      {
+        "file": "collections/similarity-gradient/19-quiet-mutation.strudel",
+        "score": 50.6
+      },
+      {
+        "file": "collections/similarity-gradient/12-partial-echo.strudel",
+        "score": 47.5
+      },
+      {
+        "file": "collections/similarity-gradient/13-uncertain-relative.strudel",
+        "score": 45.5
+      },
+      {
+        "file": "collections/similarity-gradient/22-sometimes-familiar.strudel",
+        "score": 44.2
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/similarity-gradient/15-unfamiliar-hand.strudel (50.9). Dominant features: musicFunc=100%, meta=100%. Final 37.1."
+  },
+  {
+    "file": "collections/similarity-gradient/18-null-fingerprint.strudel",
+    "finalScore": 35.7,
+    "band": "noticeably different",
+    "averageSimilarity": 32.4,
+    "flatAverageSimilarity": 16.5,
+    "maxSimilarity": 41.8,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 21,
+      "musicFunc": 45.3,
+      "soundSource": 0,
+      "rhythm": 100,
+      "meta": 100,
+      "viz": 66.7
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/16-strange-archive.strudel",
+        "score": 41.8
+      },
+      {
+        "file": "collections/footwork/12-polymetric-feet.strudel",
+        "score": 40
+      },
+      {
+        "file": "courses/Skola/lesson-01-rhythm-basics.strudel",
+        "score": 37.3
+      },
+      {
+        "file": "courses/Skola/lesson-02-mini-notation.strudel",
+        "score": 37.3
+      },
+      {
+        "file": "collections/similarity-gradient/08-drift-and-anchor.strudel",
+        "score": 35.6
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/similarity-gradient/16-strange-archive.strudel (41.8). Dominant features: rhythm=100%, meta=100%. Final 35.7."
+  },
+  {
+    "file": "collections/similarity-gradient/19-quiet-mutation.strudel",
+    "finalScore": 40.6,
+    "band": "noticeably different",
+    "averageSimilarity": 31.3,
+    "flatAverageSimilarity": 10.8,
+    "maxSimilarity": 57.8,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 53.2,
+      "musicFunc": 81.1,
+      "soundSource": 0,
+      "rhythm": 100,
+      "meta": 100,
+      "viz": 50
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/22-sometimes-familiar.strudel",
+        "score": 57.8
+      },
+      {
+        "file": "collections/similarity-gradient/13-uncertain-relative.strudel",
+        "score": 51.8
+      },
+      {
+        "file": "collections/similarity-gradient/17-unlike-the-archive.strudel",
+        "score": 50.6
+      },
+      {
+        "file": "collections/similarity-gradient/23-half-and-half.strudel",
+        "score": 48.7
+      },
+      {
+        "file": "collections/similarity-gradient/15-unfamiliar-hand.strudel",
+        "score": 48.4
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/similarity-gradient/22-sometimes-familiar.strudel (57.8). Dominant features: rhythm=100%, meta=100%. Final 40.6."
+  },
+  {
+    "file": "collections/similarity-gradient/20-fractured-lineage.strudel",
+    "finalScore": 55.8,
+    "band": "moderately similar",
+    "averageSimilarity": 46.3,
+    "flatAverageSimilarity": 23.8,
+    "maxSimilarity": 73.6,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 22.4,
+      "musicFunc": 100,
+      "soundSource": 100,
+      "rhythm": 87.5,
+      "meta": 100,
+      "viz": 50
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/14-distant-cousin.strudel",
+        "score": 73.6
+      },
+      {
+        "file": "collections/yt/sfx-09-tape-rewind.strudel",
+        "score": 55
+      },
+      {
+        "file": "collections/yt/sfx-07-paper-flip.strudel",
+        "score": 54.8
+      },
+      {
+        "file": "collections/yt/sfx-01-swoosh.strudel",
+        "score": 52.7
+      },
+      {
+        "file": "collections/game/sfx-07-explosion.strudel",
+        "score": 48.3
+      }
+    ],
+    "warnings": [
+      "SOUND-DUPLICATE: sound=100%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/14-distant-cousin.strudel (73.6). Dominant features: musicFunc=100%, soundSource=100%. Final 55.8."
+  },
+  {
+    "file": "collections/similarity-gradient/21-drifting-relative.strudel",
+    "finalScore": 47.9,
+    "band": "moderately similar",
+    "averageSimilarity": 44,
+    "flatAverageSimilarity": 27.8,
+    "maxSimilarity": 55,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 13.7,
+      "musicFunc": 73.6,
+      "soundSource": 98.7,
+      "rhythm": 77.7,
+      "meta": 0,
+      "viz": 0
+    },
+    "top5": [
+      {
+        "file": "collections/genres/50-drone.strudel",
+        "score": 55
+      },
+      {
+        "file": "collections/gardens-of-broken-clocks/17-clockstone.strudel",
+        "score": 53
+      },
+      {
+        "file": "collections/rim/song-09-old-porch-swing.strudel",
+        "score": 47.5
+      },
+      {
+        "file": "courses/Skola/lesson-06-synths-and-sound-design.strudel",
+        "score": 47.2
+      },
+      {
+        "file": "collections/gardens-of-broken-clocks/26-mercury-fountain.strudel",
+        "score": 46.2
+      }
+    ],
+    "warnings": [
+      "SOUND-DUPLICATE: sound=99%"
+    ],
+    "explanation": "Closest match: collections/genres/50-drone.strudel (55.0). Dominant features: soundSource=99%, rhythm=78%. Final 47.9."
+  },
+  {
+    "file": "collections/similarity-gradient/22-sometimes-familiar.strudel",
+    "finalScore": 41.1,
+    "band": "moderately similar",
+    "averageSimilarity": 32.1,
+    "flatAverageSimilarity": 11.3,
+    "maxSimilarity": 57.8,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 53.2,
+      "musicFunc": 81.1,
+      "soundSource": 0,
+      "rhythm": 100,
+      "meta": 100,
+      "viz": 50
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/19-quiet-mutation.strudel",
+        "score": 57.8
+      },
+      {
+        "file": "collections/similarity-gradient/13-uncertain-relative.strudel",
+        "score": 47.3
+      },
+      {
+        "file": "collections/similarity-gradient/17-unlike-the-archive.strudel",
+        "score": 44.2
+      },
+      {
+        "file": "collections/similarity-gradient/15-unfamiliar-hand.strudel",
+        "score": 43.9
+      },
+      {
+        "file": "courses/Skola/lesson-04-scales-and-melody.strudel",
+        "score": 42.4
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/similarity-gradient/19-quiet-mutation.strudel (57.8). Dominant features: rhythm=100%, meta=100%. Final 41.1."
+  },
+  {
+    "file": "collections/similarity-gradient/23-half-and-half.strudel",
+    "finalScore": 46.8,
+    "band": "moderately similar",
+    "averageSimilarity": 42.7,
+    "flatAverageSimilarity": 19.5,
+    "maxSimilarity": 54.5,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 39.5,
+      "musicFunc": 88.4,
+      "soundSource": 0,
+      "rhythm": 76.4,
+      "meta": 100,
+      "viz": 100
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/13-uncertain-relative.strudel",
+        "score": 54.5
+      },
+      {
+        "file": "collections/similarity-gradient/14-distant-cousin.strudel",
+        "score": 50.6
+      },
+      {
+        "file": "collections/similarity-gradient/19-quiet-mutation.strudel",
+        "score": 48.7
+      },
+      {
+        "file": "collections/similarity-gradient/20-fractured-lineage.strudel",
+        "score": 48.3
+      },
+      {
+        "file": "collections/yt/sfx-01-swoosh.strudel",
+        "score": 44.7
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/similarity-gradient/13-uncertain-relative.strudel (54.5). Dominant features: meta=100%, viz=100%. Final 46.8."
+  },
+  {
+    "file": "collections/similarity-gradient/24-recognisable-stranger.strudel",
+    "finalScore": 56,
+    "band": "moderately similar",
+    "averageSimilarity": 54.2,
+    "flatAverageSimilarity": 34.3,
+    "maxSimilarity": 59.4,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 24.3,
+      "musicFunc": 87.1,
+      "soundSource": 76.9,
+      "rhythm": 75,
+      "meta": 0,
+      "viz": 66.7
+    },
+    "top5": [
+      {
+        "file": "collections/footwork/11-acid-juke.strudel",
+        "score": 59.4
+      },
+      {
+        "file": "collections/footwork/05-chop-the-loop.strudel",
+        "score": 58.5
+      },
+      {
+        "file": "collections/similarity-gradient/05-recognizable-shape.strudel",
+        "score": 57.9
+      },
+      {
+        "file": "collections/footwork/06-battle-circle.strudel",
+        "score": 57.2
+      },
+      {
+        "file": "collections/saxophone-afterhours/07-choppered.strudel",
+        "score": 57.2
+      }
+    ],
+    "warnings": [],
+    "explanation": "Closest match: collections/footwork/11-acid-juke.strudel (59.4). Dominant features: musicFunc=87%, soundSource=77%. Final 56.0."
+  },
+  {
+    "file": "collections/similarity-gradient/25-second-cousin.strudel",
+    "finalScore": 77.3,
+    "band": "very similar",
+    "averageSimilarity": 72.4,
+    "flatAverageSimilarity": 44.6,
+    "maxSimilarity": 86.3,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 71.1,
+      "musicFunc": 98.9,
+      "soundSource": 96.4,
+      "rhythm": 83,
+      "meta": 100,
+      "viz": 66.7
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/07-half-familiar.strudel",
+        "score": 86.3
+      },
+      {
+        "file": "collections/saxophone-afterhours/09-dark-alley.strudel",
+        "score": 78.1
+      },
+      {
+        "file": "collections/similarity-gradient/02-familiar-ghost.strudel",
+        "score": 77.5
+      },
+      {
+        "file": "collections/similarity-gradient/06-familiar-skeleton.strudel",
+        "score": 76.4
+      },
+      {
+        "file": "collections/similarity-gradient/04-close-cousin.strudel",
+        "score": 75.1
+      }
+    ],
+    "warnings": [
+      "SOUND-DUPLICATE: sound=96%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/07-half-familiar.strudel (86.3). Dominant features: meta=100%, musicFunc=99%. Final 77.3."
+  },
+  {
+    "file": "collections/similarity-gradient/26-repo-shape.strudel",
+    "finalScore": 80.5,
+    "band": "very similar",
+    "averageSimilarity": 76.1,
+    "flatAverageSimilarity": 49.5,
+    "maxSimilarity": 88.8,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 84,
+      "musicFunc": 96.1,
+      "soundSource": 97.4,
+      "rhythm": 84.9,
+      "meta": 50,
+      "viz": 100
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/02-familiar-ghost.strudel",
+        "score": 88.8
+      },
+      {
+        "file": "collections/saxophone-afterhours/03-ask-and-answer.strudel",
+        "score": 80.3
+      },
+      {
+        "file": "collections/similarity-gradient/05-recognizable-shape.strudel",
+        "score": 79.5
+      },
+      {
+        "file": "collections/uk-garage/20-last-train-london.strudel",
+        "score": 79.4
+      },
+      {
+        "file": "collections/uk-garage/15-vocal-mantra.strudel",
+        "score": 78.1
+      }
+    ],
+    "warnings": [
+      "SOUND-DUPLICATE: sound=97%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/02-familiar-ghost.strudel (88.8). Dominant features: viz=100%, soundSource=97%. Final 80.5."
+  },
+  {
+    "file": "collections/similarity-gradient/27-close-relation.strudel",
+    "finalScore": 88.1,
+    "band": "very similar",
+    "averageSimilarity": 84,
+    "flatAverageSimilarity": 46.8,
+    "maxSimilarity": 95.5,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 99.4,
+      "musicFunc": 99.9,
+      "soundSource": 99,
+      "rhythm": 98.1,
+      "meta": 100,
+      "viz": 33.3
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/01-near-mirror.strudel",
+        "score": 95.5
+      },
+      {
+        "file": "collections/similarity-gradient/30-dangerous-clone.strudel",
+        "score": 95.5
+      },
+      {
+        "file": "collections/similarity-gradient/29-dangerous-likeness.strudel",
+        "score": 92.7
+      },
+      {
+        "file": "collections/harmonic/30-final-light.strudel",
+        "score": 88.1
+      },
+      {
+        "file": "collections/harmonic/16-beneath-the-surface.strudel",
+        "score": 87.5
+      }
+    ],
+    "warnings": [
+      "NEAR-DUPLICATE: max=95.5",
+      "TOKEN-DUPLICATE: token=99%",
+      "SOUND-DUPLICATE: sound=99%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/01-near-mirror.strudel (95.5). Dominant features: meta=100%, musicFunc=100%. Final 88.1."
+  },
+  {
+    "file": "collections/similarity-gradient/28-twin-style.strudel",
+    "finalScore": 84.3,
+    "band": "very similar",
+    "averageSimilarity": 79.9,
+    "flatAverageSimilarity": 44.7,
+    "maxSimilarity": 92.6,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 100,
+      "musicFunc": 100,
+      "soundSource": 100,
+      "rhythm": 100,
+      "meta": 0,
+      "viz": 66.7
+    },
+    "top5": [
+      {
+        "file": "collections/amapiano/02-soweto-sunrise.strudel",
+        "score": 92.6
+      },
+      {
+        "file": "collections/amapiano/09-piano-deep-chords.strudel",
+        "score": 88.9
+      },
+      {
+        "file": "collections/similarity-gradient/05-recognizable-shape.strudel",
+        "score": 85.6
+      },
+      {
+        "file": "collections/amapiano/14-sax-feature.strudel",
+        "score": 84.3
+      },
+      {
+        "file": "collections/amapiano/12-johannesburg-rooftop.strudel",
+        "score": 83.5
+      }
+    ],
+    "warnings": [
+      "NEAR-DUPLICATE: max=92.6",
+      "TOKEN-DUPLICATE: token=100%",
+      "SOUND-DUPLICATE: sound=100%"
+    ],
+    "explanation": "Closest match: collections/amapiano/02-soweto-sunrise.strudel (92.6). Dominant features: token=100%, musicFunc=100%. Final 84.3."
+  },
+  {
+    "file": "collections/similarity-gradient/29-dangerous-likeness.strudel",
+    "finalScore": 88.9,
+    "band": "very similar",
+    "averageSimilarity": 84.4,
+    "flatAverageSimilarity": 46.4,
+    "maxSimilarity": 97.2,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 100,
+      "musicFunc": 100,
+      "soundSource": 100,
+      "rhythm": 100,
+      "meta": 50,
+      "viz": 100
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/30-dangerous-clone.strudel",
+        "score": 97.2
+      },
+      {
+        "file": "collections/similarity-gradient/01-near-mirror.strudel",
+        "score": 97.2
+      },
+      {
+        "file": "collections/similarity-gradient/27-close-relation.strudel",
+        "score": 92.7
+      },
+      {
+        "file": "collections/harmonic/16-beneath-the-surface.strudel",
+        "score": 87.9
+      },
+      {
+        "file": "collections/harmonic/30-final-light.strudel",
+        "score": 87.1
+      }
+    ],
+    "warnings": [
+      "NEAR-DUPLICATE: max=97.2",
+      "TOKEN-DUPLICATE: token=100%",
+      "SOUND-DUPLICATE: sound=100%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/30-dangerous-clone.strudel (97.2). Dominant features: token=100%, musicFunc=100%. Final 88.9."
+  },
+  {
+    "file": "collections/similarity-gradient/30-dangerous-clone.strudel",
+    "finalScore": 90,
+    "band": "very similar",
+    "averageSimilarity": 84.6,
+    "flatAverageSimilarity": 46.5,
+    "maxSimilarity": 100,
+    "neighborhoodK": 22,
+    "featureBreakdown": {
+      "token": 100,
+      "musicFunc": 100,
+      "soundSource": 100,
+      "rhythm": 99.9,
+      "meta": 100,
+      "viz": 100
+    },
+    "top5": [
+      {
+        "file": "collections/similarity-gradient/01-near-mirror.strudel",
+        "score": 100
+      },
+      {
+        "file": "collections/similarity-gradient/29-dangerous-likeness.strudel",
+        "score": 97.2
+      },
+      {
+        "file": "collections/similarity-gradient/27-close-relation.strudel",
+        "score": 95.5
+      },
+      {
+        "file": "collections/harmonic/16-beneath-the-surface.strudel",
+        "score": 87.9
+      },
+      {
+        "file": "collections/harmonic/30-final-light.strudel",
+        "score": 87.1
+      }
+    ],
+    "warnings": [
+      "NEAR-DUPLICATE: max=100.0",
+      "TOKEN-DUPLICATE: token=100%",
+      "SOUND-DUPLICATE: sound=100%"
+    ],
+    "explanation": "Closest match: collections/similarity-gradient/01-near-mirror.strudel (100.0). Dominant features: token=100%, musicFunc=100%. Final 90.0."
+  }
+]
