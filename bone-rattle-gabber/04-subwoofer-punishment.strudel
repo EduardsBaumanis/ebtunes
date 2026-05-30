@@ -1,0 +1,43 @@
+// Album: Bone Rattle Gabber
+// Track: 04 — subwoofer-punishment
+// Genre: Gabber / hardcore
+// Tempo / CPM: 172 BPM (setcpm 43)
+// Bass concept: A square-wave bass growl sits a fifth under the kick, filtered with a slow sweep = physical pressure.
+// Kick character: clipped (square-wave bass hits doubling the kick).
+// Musical idea: Pure low-end pressure study — kick + square bass growl, minimal top end, slow filter punishment.
+// Strudel focus: sine.range() LFO on the bass cutoff for a slow rising pressure.
+// Visualisation: ._pianoroll({ cycles: 2 }) — the bass IS the music, so pianoroll shows its movement.
+
+setcpm(43)
+
+stack(
+
+  // ── KICK
+  s("bd*4")
+    .shape(0.52).distort(1.1).lpf(185)
+    .gain(0.9)
+    .color("red"),
+
+  // ── SQUARE BASS GROWL — slow filter sweep = punishment
+  note("<e1 e1 b1 e1>")
+    .sound("square")
+    .lpf(sine.range(220, 1400).slow(8)).lpq(9).distort(0.8).shape(0.2)
+    .attack(0.002).release(0.18)
+    .struct("x ~ x ~ x ~ x ~")
+    .gain(0.55).pan(0.5)
+    .color("magenta")
+    ._pianoroll({ cycles: 2 }),
+
+  // ── SUB reinforcement on the downbeat
+  note("e1*4").sound("sine").attack(0.001).release(0.14)
+    .gain(0.5).pan(0.5)
+    .color("navy"),
+
+  // ── HAT — minimal
+  s("~ hh ~ hh").gain(0.26).hpf(7400)
+    .color("yellow"),
+
+  // ── CLAP
+  s("~ cp ~ cp").gain(0.45).hpf(400).room(0.18)
+    .color("coral")
+)

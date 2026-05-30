@@ -1,0 +1,42 @@
+// Album: Bone Rattle Gabber
+// Track: 03 — concrete-kick-prayer
+// Genre: Gabber / hardcore
+// Tempo / CPM: 168 BPM (setcpm 42)
+// Bass concept: A long-tail sub kick — each hit rings out like concrete settling; space between hits is the weapon.
+// Kick character: long-tail (longer release sub under a distorted transient).
+// Musical idea: A slower, ritual gabber — sparse kicks with massive long-tail sub, dark choir pad as "prayer".
+// Strudel focus: long .release on the sub layer; rests that make each next hit heavier.
+// Visualisation: ._punchcard({ cycles: 4, smear: true }) — smear traces the long sub tails.
+
+setcpm(42)
+
+stack(
+
+  // ── TRANSIENT KICK — punchy distorted top
+  s("bd ~ ~ bd  ~ ~ bd ~")
+    .shape(0.5).distort(1.0).lpf(200)
+    .gain(0.88)
+    .color("red")
+    ._punchcard({ cycles: 4, smear: true }),
+
+  // ── LONG-TAIL SUB — rings out under each kick
+  note("d1 ~ ~ d1  ~ ~ d1 ~")
+    .sound("sine").attack(0.002).release(0.6).shape(0.1)
+    .gain(0.6).pan(0.5)
+    .color("navy"),
+
+  // ── DARK CHOIR PAD — "prayer"
+  note("[d3,f3,a3]")
+    .sound("sawtooth").vowel("o")
+    .attack(2).release(4).lpf(1200).distort(0.3)
+    .gain(0.3).pan(0.5).room(0.6)
+    .color("purple"),
+
+  // ── SPARSE HAT
+  s("~ ~ hh ~  ~ ~ hh ~").gain(0.24).hpf(7200)
+    .color("yellow"),
+
+  // ── DISTANT IMPACT — reverse-ish crash via room
+  s("cy").struct("x ~ ~ ~ ~ ~ ~ ~").gain(0.32).hpf(3000).room(0.6).slow(2)
+    .color("ivory")
+)

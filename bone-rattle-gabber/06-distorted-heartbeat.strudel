@@ -1,0 +1,43 @@
+// Album: Bone Rattle Gabber
+// Track: 06 — distorted-heartbeat
+// Genre: Gabber / hardcore
+// Tempo / CPM: 176 BPM (setcpm 44)
+// Bass concept: A "lub-dub" double-kick heartbeat — two close kicks then space — with sub on each.
+// Kick character: distorted, doubled (heartbeat pairs via ply/struct).
+// Musical idea: The kick is a heart in panic — double-hit pattern, rising tension stab every 4 bars.
+// Strudel focus: heartbeat struct "x x ~ ~"; .every(4) tension build with ply.
+// Visualisation: ._punchcard({ cycles: 4 }) — punchcard shows the heartbeat gaps.
+
+setcpm(44)
+
+stack(
+
+  // ── HEARTBEAT KICK — lub-dub pattern
+  s("bd bd ~ ~  bd bd ~ ~")
+    .shape(0.55).distort(1.2).lpf(190)
+    .gain(0.9)
+    .every(4, x => x.ply("1 1 1 2")) // panic flutter every 4 bars
+    .color("red")
+    ._punchcard({ cycles: 4 }),
+
+  // ── SUB on each heartbeat
+  note("c1 c1 ~ ~  c1 c1 ~ ~")
+    .sound("sine").attack(0.001).release(0.16).shape(0.12)
+    .gain(0.6).color("navy"),
+
+  // ── TENSION STAB — rises every 4 bars
+  note("c4")
+    .sound("sawtooth").lpf(slider(1200, 500, 3500)).lpq(8).distort(0.5)
+    .struct("~ ~ x ~  ~ ~ x ~")
+    .gain(0.36).pan(0.5).room(0.3)
+    .color("orange"),
+
+  // ── ANXIOUS HAT
+  s("hh*8").gain("0.24 0.12").hpf(7200)
+    .sometimesBy(0.3, ply(2))
+    .color("yellow"),
+
+  // ── NOISE BREATH — fills the gap
+  s("white*4").lpf(2200).hpf(1200).gain(0.08).pan(rand)
+    .color("gray")
+)

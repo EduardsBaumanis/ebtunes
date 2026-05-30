@@ -1,0 +1,45 @@
+// Album: Bone Rattle Gabber
+// Track: 08 — rave-stab-violence
+// Genre: Gabber / hardcore
+// Tempo / CPM: 185 BPM (setcpm 46.25)
+// Bass concept: Sub stays simple and locked so the violent rave stabs can dominate the mid-low.
+// Kick character: distorted classic, slightly shorter for speed.
+// Musical idea: Stab-driven happy-hardcore-adjacent gabber — aggressive chord stabs answer the kick.
+// Strudel focus: chord stabs with .off() echo + .every(2, rev) call-and-response with kick.
+// Visualisation: ._pianoroll({ cycles: 2 }) — the chord stabs are the visual focus.
+
+setcpm(46.25)
+
+stack(
+
+  // ── FAST KICK
+  s("bd*4")
+    .shape(0.56).distort(1.25).lpf(195)
+    .gain(0.9)
+    .color("red"),
+
+  // ── SUB
+  note("d1*4").sound("sine").attack(0.001).release(0.12).shape(0.12)
+    .gain(0.56).color("navy"),
+
+  // ── VIOLENT CHORD STABS — Dm, answer the kick on offbeats
+  note("<[d4,f4,a4] [d4,f4,a4] [c4,e4,g4] [bb3,d4,f4]>")
+    .sound("sawtooth").lpf(slider(2600, 900, 4200)).lpq(6).distort(0.7)
+    .attack(0.004).release(0.12)
+    .struct("~ x ~ x ~ x ~ x")
+    .off(0.0625, x => x.gain(0.2))
+    .every(2, rev)
+    .gain(0.4).pan(0.5).room(0.28)
+    .color("orange")
+    ._pianoroll({ cycles: 2 }),
+
+  // ── HATS + open hat offbeat
+  s("hh*16").gain("0.24 0.14").hpf(7300)
+    .color("yellow"),
+  s("~ oh ~ oh").gain(0.3).hpf(5000)
+    .color("gold"),
+
+  // ── CLAP
+  s("~ cp ~ cp").gain(0.55).hpf(400).room(0.2)
+    .color("coral")
+)

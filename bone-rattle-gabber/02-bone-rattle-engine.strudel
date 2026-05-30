@@ -1,0 +1,40 @@
+// Album: Bone Rattle Gabber
+// Track: 02 — bone-rattle-engine
+// Genre: Gabber / hardcore
+// Tempo / CPM: 175 BPM (setcpm 43.75)
+// Bass concept: A rolling offbeat sub "engine" runs under the kick — the low end never stops moving.
+// Kick character: distorted with a short rumbling tail (shape + tiny coarse).
+// Musical idea: An engine that rattles bones — rolling 8th-note sub between the kicks creates perpetual motion.
+// Strudel focus: complementary structs (kick on beats, sub on offbeats) = call-and-response low end.
+// Visualisation: ._punchcard({ cycles: 2, labels: true }) — labels show the kick/sub interlock.
+
+setcpm(43.75)
+
+stack(
+
+  // ── KICK — rumbling, short coarse for grit
+  s("bd*4")
+    .shape(0.5).distort(1.1).coarse(2).lpf(190)
+    .gain(0.9)
+    .color("red")
+    ._punchcard({ cycles: 2, labels: true }),
+
+  // ── ROLLING SUB ENGINE — offbeat 8ths between the kicks
+  note("<f1 f1 c2 f1>")
+    .sound("sine").attack(0.001).release(0.12).shape(0.15)
+    .struct("~ x ~ x ~ x ~ x")
+    .gain(0.58).pan(0.5)
+    .color("navy"),
+
+  // ── METAL HAT — driving 16ths, filtered high
+  s("hh*16").gain("0.26 0.14 0.22 0.16").hpf(7400)
+    .color("yellow"),
+
+  // ── INDUSTRIAL CLANK — euclid metal
+  s("metal").euclid(5, 8).gain(0.3).hpf(2000).room(0.25)
+    .color("gray"),
+
+  // ── CLAP
+  s("~ cp ~ cp").gain(0.5).hpf(400).room(0.2)
+    .color("coral")
+)

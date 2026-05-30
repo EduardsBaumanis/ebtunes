@@ -1,0 +1,48 @@
+// Album: Bone Rattle Gabber
+// Track: 05 — skull-pressure-rave
+// Genre: Gabber / hardcore
+// Tempo / CPM: 180 BPM (setcpm 45)
+// Bass concept: Kick + sub hammer 4/4 while a hoover rave stab screams a minor riff over the top.
+// Kick character: distorted classic gabber hammer.
+// Musical idea: Peak-time classic gabber — hoover stab riff, hammer kick, the rave is on.
+// Strudel focus: detuned sawtooth "hoover" stab via two stacked saws with .add(0.1); rave riff melody.
+// Visualisation: ._pianoroll({ cycles: 2, labels: true }) — the hoover riff is the hook.
+
+setcpm(45)
+
+stack(
+
+  // ── HAMMER KICK
+  s("bd*4")
+    .shape(0.58).distort(1.3).lpf(185)
+    .gain(0.92)
+    .color("red"),
+
+  // ── SUB
+  note("a1*4").sound("sine").attack(0.001).release(0.14).shape(0.12)
+    .gain(0.58).color("navy"),
+
+  // ── HOOVER RAVE STAB — detuned saw riff
+  note("<a3 a3 c4 a3  e4 d4 c4 a3>")
+    .sound("sawtooth").lpf(slider(2200, 800, 4000)).lpq(7).distort(0.7)
+    .attack(0.005).release(0.18)
+    .gain(0.4).pan(0.55).room(0.25)
+    .color("orange")
+    ._pianoroll({ cycles: 2, labels: true }),
+
+  // ── HOOVER DETUNE TWIN — thickens the stab
+  note("<a3 a3 c4 a3  e4 d4 c4 a3>")
+    .add(0.1)
+    .sound("sawtooth").lpf(2400).lpq(6).distort(0.6)
+    .attack(0.005).release(0.18)
+    .gain(0.28).pan(0.45)
+    .color("darkorange"),
+
+  // ── HATS
+  s("hh*16").gain("0.26 0.14").hpf(7300)
+    .color("yellow"),
+
+  // ── CLAP
+  s("~ cp ~ cp").gain(0.55).hpf(400).room(0.2)
+    .color("coral")
+)

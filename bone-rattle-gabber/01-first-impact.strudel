@@ -1,0 +1,43 @@
+// Album: Bone Rattle Gabber
+// Track: 01 — first-impact
+// Genre: Gabber / hardcore
+// Tempo / CPM: 170 BPM (setcpm 42.5)
+// Bass concept: A single pitched sub-sine doubles each kick — kick and sub locked = one giant low-end body.
+// Kick character: distorted, controlled (shape only, no crush yet) — the album's "clean heavy" baseline.
+// Musical idea: Establish the bass world: four-on-floor distorted kick + locked A1 sub, sparse hats, one warning stab.
+// Strudel focus: kick/sub doubling via shared struct; .every(4) breakdown drop.
+// Visualisation: ._punchcard({ cycles: 2 }) — kick-centred, the punchcard reads the 4/4 hammer.
+
+setcpm(42.5)
+
+stack(
+
+  // ── GABBER KICK — distorted but controlled (shape, gentle lpf)
+  s("bd*4")
+    .shape(0.55).distort(1.2).lpf(180)
+    .gain(0.92)
+    .every(8, x => x.degradeBy(0.5)) // small breakdown every 8 bars
+    .color("red")
+    ._punchcard({ cycles: 2 }),
+
+  // ── LOCKED SUB — A1 sine doubling the kick = one body
+  note("a1*4")
+    .sound("sine").attack(0.001).release(0.16).shape(0.12)
+    .gain(0.6).pan(0.5)
+    .color("navy"),
+
+  // ── HI-HAT — sparse, hpf'd out of the bass region
+  s("~ hh ~ hh").gain(0.3).hpf(7000)
+    .color("yellow"),
+
+  // ── WARNING STAB — one hostile note per bar
+  note("a3")
+    .sound("sawtooth").lpf(slider(1400, 400, 3000)).lpq(8).distort(0.6)
+    .struct("x ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.4).pan(0.5).room(0.3)
+    .color("orange"),
+
+  // ── INDUSTRIAL CLAP on 2+4
+  s("~ cp ~ cp").gain(0.5).hpf(400).room(0.2)
+    .color("coral")
+)

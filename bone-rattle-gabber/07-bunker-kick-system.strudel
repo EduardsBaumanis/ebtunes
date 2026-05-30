@@ -1,0 +1,41 @@
+// Album: Bone Rattle Gabber
+// Track: 07 — bunker-kick-system
+// Genre: Gabber / hardcore
+// Tempo / CPM: 182 BPM (setcpm 45.5)
+// Bass concept: Industrial kick-bass hybrid — the kick is pitched (note on bd) so it carries the bassline itself.
+// Kick character: industrial, pitched kick-bass hybrid.
+// Musical idea: A bunker machine — the kick plays a descending note pattern, becoming both rhythm and bass.
+// Strudel focus: note() applied to s("bd") so the kick is tuned = classic gabber tonal-kick technique.
+// Visualisation: ._pianoroll({ cycles: 2, labels: true }) — pianoroll because the kick is now melodic.
+
+setcpm(45.5)
+
+stack(
+
+  // ── TONAL KICK-BASS — pitched gabber kick carries the bassline
+  s("bd*4")
+    .note("<g1 g1 f1 d1>")
+    .shape(0.6).distort(1.3).lpf(220)
+    .gain(0.9)
+    .color("red")
+    ._pianoroll({ cycles: 2, labels: true }),
+
+  // ── SUB reinforce lowest note
+  note("<g1 g1 f1 d1>")
+    .sound("sine").attack(0.001).release(0.15)
+    .struct("x ~ ~ ~").gain(0.5)
+    .color("navy"),
+
+  // ── INDUSTRIAL PERC — euclidean metal
+  s("metal").euclid(7, 12).gain(0.32).hpf(2400).room(0.25)
+    .color("gray"),
+
+  // ── HATS
+  s("hh*16").gain("0.24 0.14").hpf(7400)
+    .chunk(4, x => x.hpf(9500).gain(0.4))
+    .color("yellow"),
+
+  // ── CLAP
+  s("~ cp ~ cp").gain(0.5).hpf(400).room(0.2)
+    .color("coral")
+)
