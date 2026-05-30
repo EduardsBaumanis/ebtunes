@@ -1,0 +1,45 @@
+// Album: Bone Rattle Gabber
+// Track: 18 — overpressure
+// Genre: Gabber / hardcore
+// Tempo / CPM: 200 BPM (setcpm 50)
+// Bass concept: Doubletime sub rolls under a screaming kick — maximum sustained low-end pressure.
+// Kick character: distorted, fast, relentless.
+// Musical idea: Overpressure — 200 BPM relentless kick with a doubletime sub roll, no mercy, tiny mutations.
+// Strudel focus: fast sub roll via "*8"; .every() micro-mutations to avoid fatigue.
+// Visualisation: ._pianoroll({ cycles: 2 }) — the rolling sub line is the focus.
+
+setcpm(50)
+
+stack(
+
+  // ── SCREAMING KICK
+  s("bd*4")
+    .shape(0.6).distort(1.4).lpf(205)
+    .gain(0.9)
+    .every(8, x => x.degradeBy(0.4)) // breath every 8 bars
+    .color("red"),
+
+  // ── DOUBLETIME SUB ROLL
+  note("<c1 c1 c1 g1  c1 c1 eb1 c1>")
+    .sound("sine").attack(0.001).release(0.08).shape(0.14)
+    .struct("x x x x x x x x")
+    .gain(0.5).pan(0.5)
+    .color("navy")
+    ._pianoroll({ cycles: 2 }),
+
+  // ── INDUSTRIAL PERC — driving
+  s("metal*16").gain(0.2).hpf(2600)
+    .chunk(4, x => x.gain(0.32))
+    .color("gray"),
+
+  // ── HATS
+  s("hh*16").gain("0.26 0.14").hpf(7400)
+    .color("yellow"),
+
+  // ── STAB — short hostile blip
+  note("c4")
+    .sound("square").lpf(3000).distort(0.7)
+    .struct("~ ~ ~ x ~ ~ ~ x")
+    .gain(0.32).pan(0.55)
+    .color("orange")
+)

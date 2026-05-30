@@ -255,6 +255,17 @@
   --code-fg:  #88c8b8;
 }
 
+/* ── BONE RATTLE GABBER theme — blood-orange distortion on bunker black ── */
+[data-theme="bone-rattle-gabber"] {
+  --black:    #0a0402;
+  --white:    #ff8848;
+  --grey:     #a85020;
+  --dim:      #1c0a04;
+  --mid:      #401405;
+  --code-bg:  #0a0402;
+  --code-fg:  #f0a060;
+}
+
 /* ── SAXOPHONE AFTERHOURS theme — brass on smoky midnight blue ── */
 [data-theme="saxophone-afterhours"] {
   --black:    #0a0610;

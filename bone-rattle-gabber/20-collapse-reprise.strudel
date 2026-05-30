@@ -1,0 +1,44 @@
+// Album: Bone Rattle Gabber
+// Track: 20 — collapse-reprise
+// Genre: Gabber / hardcore
+// Tempo / CPM: 180 BPM (setcpm 45)
+// Bass concept: The album collapses — recalls the track-01 locked kick+sub, then everything decays and filters out.
+// Kick character: distorted, winding down (filter closes over the track).
+// Musical idea: Final reprise — the opening hammer returns, then a slow lpf collapse drags the rave into silence.
+// Strudel focus: sine.range() on a global-ish lpf to "close" the track; reprise of the 01 motif.
+// Visualisation: ._punchcard({ cycles: 4, smear: true }) — smear traces the slow collapse.
+
+setcpm(45)
+
+stack(
+
+  // ── REPRISE KICK — filter closes slowly = collapse
+  s("bd*4")
+    .shape(0.55).distort(1.2)
+    .lpf(sine.range(220, 90).slow(16))
+    .gain(0.9)
+    .color("red")
+    ._punchcard({ cycles: 4, smear: true }),
+
+  // ── LOCKED SUB — the track-01 motif returns
+  note("a1*4")
+    .sound("sine").attack(0.001).release(0.16).shape(0.12)
+    .gain(0.58).color("navy"),
+
+  // ── FAREWELL STAB — fades via degrade over time
+  note("<a3 a3 c4 a3  e4 d4 c4 a3>")
+    .sound("sawtooth").lpf(slider(2000, 500, 3500)).lpq(7).distort(0.6)
+    .attack(0.005).release(0.18)
+    .degradeBy(sine.range(0, 0.7).slow(16))
+    .gain(0.38).pan(0.5).room(0.35)
+    .color("orange"),
+
+  // ── HATS — thin out
+  s("hh*16").gain(0.22).hpf(7300)
+    .degradeBy(sine.range(0, 0.6).slow(16))
+    .color("yellow"),
+
+  // ── FINAL IMPACT — one last crash
+  s("cy").struct("x ~ ~ ~ ~ ~ ~ ~").gain(0.36).hpf(2500).room(0.6).slow(4)
+    .color("ivory")
+)

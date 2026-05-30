@@ -1,0 +1,44 @@
+// Album: Bone Rattle Gabber
+// Track: 19 — the-last-rave
+// Genre: Gabber / hardcore
+// Tempo / CPM: 210 BPM (setcpm 52.5)
+// Bass concept: Kick and a euphoric-but-brutal stab riff carry the energy; sub stays tight so the riff can soar.
+// Kick character: distorted, extreme tempo, anthemic.
+// Musical idea: The last rave — fastest, most anthemic track; a triumphant-yet-violent minor riff over the hammer.
+// Strudel focus: long melodic stab line with .off() harmony + .every(4, rev) variation.
+// Visualisation: ._pianoroll({ cycles: 4, labels: true }) — the anthem riff deserves a labelled roll.
+
+setcpm(52.5)
+
+stack(
+
+  // ── ANTHEM KICK
+  s("bd*4")
+    .shape(0.58).distort(1.35).lpf(205)
+    .gain(0.9)
+    .color("red"),
+
+  // ── TIGHT SUB
+  note("a1*4").sound("sine").attack(0.001).release(0.1).shape(0.13)
+    .gain(0.55).color("navy"),
+
+  // ── ANTHEM STAB RIFF — soaring minor line
+  note("<a4 c5 e5 a5  g5 e5 d5 c5  a4 c5 e5 d5  c5 a4 e4 a4>")
+    .sound("sawtooth").lpf(slider(3000, 1200, 4800)).lpq(6).distort(0.7)
+    .attack(0.004).release(0.13)
+    .off(0.0625, x => x.add(12).gain(0.2)) // octave shimmer
+    .every(4, rev)
+    .gain(0.42).pan(0.5).room(0.28)
+    .color("orange")
+    ._pianoroll({ cycles: 4, labels: true }),
+
+  // ── HATS + open hat
+  s("hh*16").gain("0.26 0.14").hpf(7300)
+    .color("yellow"),
+  s("~ oh ~ oh").gain(0.3).hpf(5000)
+    .color("gold"),
+
+  // ── CLAP
+  s("~ cp ~ cp").gain(0.55).hpf(400).room(0.2)
+    .color("coral")
+)

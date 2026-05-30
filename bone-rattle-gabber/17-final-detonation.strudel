@@ -1,0 +1,46 @@
+// Album: Bone Rattle Gabber
+// Track: 17 — final-detonation
+// Genre: Gabber / hardcore
+// Tempo / CPM: 195 BPM (setcpm 48.75)
+// Bass concept: Full-power kick+sub stack with a build-up that detonates — breakdown then maximum density.
+// Kick character: distorted maximum, with a riser into the drop.
+// Musical idea: Peak-time detonation — a noise riser builds, drops into a hammering hoover-stab assault.
+// Strudel focus: .every(4) breakdown via mask + noise riser using sine.range gain ramp.
+// Visualisation: ._punchcard({ cycles: 4 }) — shows the breakdown/drop contrast.
+
+setcpm(48.75)
+
+stack(
+
+  // ── MAX KICK — drops out every 4th bar for the build
+  s("bd*4")
+    .shape(0.6).distort(1.4).lpf(200)
+    .gain(0.92)
+    .mask("<1 1 1 0>")
+    .color("red")
+    ._punchcard({ cycles: 4 }),
+
+  // ── SUB
+  note("a1*4").sound("sine").attack(0.001).release(0.13).shape(0.13)
+    .mask("<1 1 1 0>")
+    .gain(0.58).color("navy"),
+
+  // ── NOISE RISER — builds in the 4th (breakdown) bar
+  s("white*16").lpf(sine.range(800, 6000).slow(4)).hpf(600)
+    .gain("<0.05 0.08 0.12 0.2>")
+    .pan(rand)
+    .color("gray"),
+
+  // ── HOOVER ASSAULT — the drop riff
+  note("<a3 c4 e4 a4  g4 e4 d4 c4>")
+    .sound("sawtooth").lpf(slider(2800, 1000, 4500)).lpq(7).distort(0.8)
+    .attack(0.004).release(0.14)
+    .gain(0.4).pan(0.5).room(0.25)
+    .color("orange"),
+
+  // ── HATS + clap
+  s("hh*16").gain("0.26 0.14").hpf(7300)
+    .color("yellow"),
+  s("~ cp ~ cp").gain(0.55).hpf(400).room(0.2)
+    .color("coral")
+)

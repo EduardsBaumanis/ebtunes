@@ -49,6 +49,7 @@ Strudel IDE, vērtēšanu un līderlisti:
 | [`similarity-gradient/`](similarity-gradient/) | Metrikas vadīts albums: 30 dziesmas, katra mērķē atšķirīgu līdzības rādītāju (skat. `tools/strudel-similarity.mjs` un `reports/`) | 30 |
 | [`uk-garage/`](uk-garage/) | Londonas UK Garage / 2-step — šuflēti 16-tie, sub-bass, vokālie čopi | 20 |
 | [`saxophone-afterhours/`](saxophone-afterhours/) | Saksofona ass elektroniskais džezs — naktīgs, noir, dub, glitch, free; saksofons sintezēts ar sawtooth + vowel | 20 |
+| [`bone-rattle-gabber/`](bone-rattle-gabber/) | Gabber / hardcore — kropļoti kiki, kaulus drebinošs sub-bass, industriālā perkusija, reiva stabi | 20 |
 
 Daži favorīti:
 
