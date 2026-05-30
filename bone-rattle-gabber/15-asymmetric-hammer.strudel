@@ -1,0 +1,41 @@
+// Album: Bone Rattle Gabber
+// Track: 15 — asymmetric-hammer
+// Genre: Gabber / hardcore
+// Tempo / CPM: 186 BPM (setcpm 46.5)
+// Bass concept: Broken/asymmetric kick accents — the hammer falls on odd positions, sub follows.
+// Kick character: distorted, asymmetrically accented.
+// Musical idea: A hammer that misses the beat on purpose — euclidean kick with rotating accent, bass locked to it.
+// Strudel focus: .euclid() + .euclidRot() for asymmetric kick; bass struct mirrors the kick.
+// Visualisation: ._punchcard({ cycles: 4, labels: true }) — labels expose the asymmetric accents.
+
+setcpm(46.5)
+
+stack(
+
+  // ── ASYMMETRIC KICK — euclid 7-in-12, rotated
+  s("bd").euclidRot(7, 12, 3)
+    .shape(0.56).distort(1.2).lpf(195)
+    .gain(0.9)
+    .color("red")
+    ._punchcard({ cycles: 4, labels: true }),
+
+  // ── SUB follows kick — euclid 7-in-12
+  note("g1").euclidRot(7, 12, 3)
+    .sound("sine").attack(0.001).release(0.15).shape(0.13)
+    .gain(0.56).color("navy"),
+
+  // ── COUNTER PERC — euclid 5-in-12 (the gap-filler)
+  s("metal").euclid(5, 12).gain(0.3).hpf(2400).room(0.25)
+    .color("gray"),
+
+  // ── HATS — steady to anchor the asymmetry
+  s("hh*16").gain("0.24 0.14").hpf(7400)
+    .color("yellow"),
+
+  // ── STAB on the downbeat only — re-grounds the ear
+  note("g3")
+    .sound("sawtooth").lpf(2200).lpq(7).distort(0.6)
+    .struct("x ~ ~ ~ ~ ~ ~ ~")
+    .gain(0.36).pan(0.5).room(0.3)
+    .color("orange")
+)

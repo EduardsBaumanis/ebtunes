@@ -1,0 +1,43 @@
+// Album: Bone Rattle Gabber
+// Track: 12 — black-lung-bass
+// Genre: Gabber / hardcore
+// Tempo / CPM: 170 BPM (setcpm 42.5)
+// Bass concept: A wheezing bass that "breathes" — gain and filter pulse in/out like damaged lungs under the kick.
+// Kick character: distorted, mid-weight, with a coughing gap pattern.
+// Musical idea: Black-lung horror — the bass breathes raggedly, kicks cough, air is thick with noise.
+// Strudel focus: sine.range() on gain (breathing) + asymmetric kick gaps.
+// Visualisation: ._pianoroll({ cycles: 4, smear: true }) — smear shows the breathing bass envelope.
+
+setcpm(42.5)
+
+stack(
+
+  // ── COUGHING KICK — asymmetric gaps
+  s("bd ~ bd ~  ~ bd ~ bd  bd ~ ~ bd  ~ ~ bd ~")
+    .shape(0.5).distort(1.05).lpf(185)
+    .gain(0.88)
+    .color("red"),
+
+  // ── BREATHING BASS — gain pulses like lungs
+  note("d1")
+    .sound("sawtooth").lpf(sine.range(250, 1100).slow(4)).lpq(8).distort(0.5)
+    .attack(0.01).release(0.3)
+    .struct("x ~ ~ x ~ x ~ ~")
+    .gain(sine.range(0.35, 0.6).slow(4))
+    .pan(0.5)
+    .color("magenta")
+    ._pianoroll({ cycles: 4, smear: true }),
+
+  // ── SUB anchor
+  note("d1*2").sound("sine").attack(0.001).release(0.18)
+    .gain(0.48).color("navy"),
+
+  // ── THICK AIR — noise bed
+  s("white*8").lpf(slider(1800, 800, 3200)).hpf(900)
+    .gain(0.07).pan(rand)
+    .color("gray"),
+
+  // ── SPARSE HAT
+  s("~ hh ~ hh").gain(0.22).hpf(7200)
+    .color("yellow")
+)

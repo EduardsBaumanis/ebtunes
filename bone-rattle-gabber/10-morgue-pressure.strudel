@@ -1,0 +1,43 @@
+// Album: Bone Rattle Gabber
+// Track: 10 — morgue-pressure
+// Genre: Gabber / hardcore
+// Tempo / CPM: 165 BPM (setcpm 41.25)
+// Bass concept: Slow, suffocating sub drone under sparse kicks — pressure without speed.
+// Kick character: long-tail, heavily filtered (claustrophobic).
+// Musical idea: A horror breakdown track — slow kicks, suffocating drone, distant screams (filtered noise).
+// Strudel focus: .mask() arrangement creating silence/impact contrast; long sub drone.
+// Visualisation: ._punchcard({ cycles: 4, playhead: true }) — playhead shows the sparse impacts in space.
+
+setcpm(41.25)
+
+stack(
+
+  // ── SLOW SUFFOCATING KICK
+  s("bd ~ ~ ~  bd ~ ~ ~")
+    .shape(0.48).distort(0.9).lpf(150)
+    .gain(0.86)
+    .mask("<1 1 1 0>") // breakdown every 4th bar
+    .color("red")
+    ._punchcard({ cycles: 4, playhead: true }),
+
+  // ── SUB DRONE — sustained pressure
+  note("c1")
+    .sound("sine").attack(2).release(6).shape(0.1)
+    .gain(0.55).color("navy"),
+
+  // ── DARK DRONE PAD
+  note("[c2,eb2,gb2]")
+    .sound("sawtooth").vowel("o").lpf(700).distort(0.3)
+    .attack(4).release(7)
+    .gain(0.3).pan(0.5).room(0.65)
+    .color("purple"),
+
+  // ── DISTANT SCREAM — filtered noise sweep
+  s("white*4").lpf(sine.range(1500, 4000).slow(12)).hpf(1200)
+    .gain(0.1).pan(rand).room(0.5)
+    .color("gray"),
+
+  // ── RARE IMPACT
+  s("cy").struct("x ~ ~ ~ ~ ~ ~ ~").gain(0.34).hpf(2500).room(0.7).slow(2)
+    .color("ivory")
+)

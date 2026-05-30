@@ -1,0 +1,42 @@
+// Album: Bone Rattle Gabber
+// Track: 11 — machine-exorcism
+// Genre: Gabber / hardcore
+// Tempo / CPM: 188 BPM (setcpm 47)
+// Bass concept: A growling filtered bass possesses the track — resonant lpf sweeps like a demon voice.
+// Kick character: distorted industrial with resonant filter.
+// Musical idea: An exorcism in a factory — possessed resonant bass growl, hammering kick, ritual perc.
+// Strudel focus: high .lpq() resonance + slow filter automation = "voice"; euclidRot ritual perc.
+// Visualisation: ._pianoroll({ cycles: 2, vertical: true }) — vertical shows the possessed bass sweep.
+
+setcpm(47)
+
+stack(
+
+  // ── KICK
+  s("bd*4")
+    .shape(0.56).distort(1.25).lpf(200)
+    .gain(0.9)
+    .color("red"),
+
+  // ── POSSESSED BASS GROWL — screaming resonance
+  note("<a1 a1 c2 a1  e2 d2 c2 a1>")
+    .sound("sawtooth")
+    .lpf(sine.range(300, 2600).slow(6)).lpq(14).distort(0.7).shape(0.18)
+    .attack(0.003).release(0.16)
+    .struct("x ~ x ~ x ~ x ~")
+    .gain(0.5).pan(0.5)
+    .color("magenta")
+    ._pianoroll({ cycles: 2, vertical: true }),
+
+  // ── SUB anchor
+  note("a1*4").sound("sine").attack(0.001).release(0.12)
+    .gain(0.5).color("navy"),
+
+  // ── RITUAL PERC — euclidRot shifts the accent
+  s("metal").euclidRot(5, 8, 2).gain(0.32).hpf(2200).room(0.3)
+    .color("gray"),
+
+  // ── HATS
+  s("hh*16").gain("0.24 0.14").hpf(7400)
+    .color("yellow")
+)

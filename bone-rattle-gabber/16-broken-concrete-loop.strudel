@@ -1,0 +1,44 @@
+// Album: Bone Rattle Gabber
+// Track: 16 — broken-concrete-loop
+// Genre: Gabber / hardcore
+// Tempo / CPM: 180 BPM (setcpm 45)
+// Bass concept: A loop that cracks apart — chunk() rotates a destructive transform across the kick each cycle.
+// Kick character: distorted, periodically pitch-warped (speed) for "cracking".
+// Musical idea: Concrete breaking under repeated impact — each cycle a different quarter of the loop fractures.
+// Strudel focus: .chunk(4, fn) rotating a speed/crush transform; the break walks through the bar.
+// Visualisation: ._punchcard({ cycles: 4, flipTime: true }) — flipTime gives the cracked, reversed feel.
+
+setcpm(45)
+
+stack(
+
+  // ── CRACKING KICK — chunk rotates a warp through the bar
+  s("bd*4")
+    .shape(0.55).distort(1.2).lpf(195)
+    .chunk(4, x => x.speed(0.8).crush(5))
+    .gain(0.88)
+    .color("red")
+    ._punchcard({ cycles: 4, flipTime: true }),
+
+  // ── SUB — chunk rotates a drop
+  note("eb1*4")
+    .sound("sine").attack(0.001).release(0.16).shape(0.13)
+    .chunk(4, x => x.gain(0.2))
+    .gain(0.56).color("navy"),
+
+  // ── DEBRIS PERC
+  s("metal*8").gain(0.26).hpf(2400)
+    .chunk(2, x => x.fast(2).gain(0.18))
+    .color("gray"),
+
+  // ── HATS
+  s("hh*16").gain("0.24 0.14").hpf(7400)
+    .color("yellow"),
+
+  // ── CHORD STAB — Ebm
+  note("[eb4,gb4,bb4]")
+    .sound("sawtooth").lpf(2400).lpq(6).distort(0.6)
+    .struct("~ ~ x ~  ~ ~ x ~")
+    .gain(0.34).pan(0.5).room(0.28)
+    .color("orange")
+)

@@ -1,0 +1,41 @@
+// Album: Bone Rattle Gabber
+// Track: 13 — polymeter-fracture
+// Genre: Gabber / hardcore
+// Tempo / CPM: 184 BPM (setcpm 46)
+// Bass concept: Kick in 4, sub-bass in 5, perc in 7 — the low end fractures across non-aligning meters.
+// Kick character: distorted, steady (the only stable reference in the chaos).
+// Musical idea: Bass destruction via polymeter — three layers phase against each other and never repeat the same bar.
+// Strudel focus: "*4" / "*5" / "*7" cycle-length mini-notation = polymeter.
+// Visualisation: ._punchcard({ cycles: 8, labels: true }) — long window reveals the phasing.
+
+setcpm(46)
+
+stack(
+
+  // ── KICK in 4 — stable anchor
+  s("bd*4")
+    .shape(0.55).distort(1.2).lpf(195)
+    .gain(0.9)
+    .color("red")
+    ._punchcard({ cycles: 8, labels: true }),
+
+  // ── SUB in 5 — phases against the kick
+  note("c1 c1 g1 c1 eb1")
+    .sound("sine").attack(0.001).release(0.14).shape(0.13)
+    .gain(0.55).color("navy"),
+
+  // ── PERC in 7
+  s("metal*7").gain(0.3).hpf(2400).room(0.25)
+    .color("gray"),
+
+  // ── HATS in 16 (aligned, drives)
+  s("hh*16").gain("0.24 0.14").hpf(7400)
+    .color("yellow"),
+
+  // ── STAB in 3 — extra polymetric tension
+  note("c4*3")
+    .sound("sawtooth").lpf(2400).lpq(7).distort(0.6)
+    .attack(0.004).release(0.12)
+    .gain(0.32).pan(0.55).room(0.25)
+    .color("orange")
+)

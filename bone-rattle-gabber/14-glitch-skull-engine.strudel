@@ -1,0 +1,49 @@
+// Album: Bone Rattle Gabber
+// Track: 14 — glitch-skull-engine
+// Genre: Gabber / hardcore
+// Tempo / CPM: 190 BPM (setcpm 47.5)
+// Bass concept: The kick-bass is chopped and retriggered into glitch bursts — low end as digital debris.
+// Kick character: distorted + glitch-chopped.
+// Musical idea: Glitch gabber — the kick stutters and reverses unpredictably, bass becomes shrapnel.
+// Strudel focus: .ply(), .chop(), .sometimesBy(rev) glitch transforms on the kick.
+// Visualisation: ._punchcard({ cycles: 2, smear: true }) — smear visualises the glitch bursts.
+
+setcpm(47.5)
+
+stack(
+
+  // ── GLITCH KICK — stutters and reverses
+  s("bd*4")
+    .shape(0.55).distort(1.2).lpf(200)
+    .ply("1 1 2 1")
+    .sometimesBy(0.25, rev)
+    .every(3, x => x.fast(2))
+    .gain(0.88)
+    .color("red")
+    ._punchcard({ cycles: 2, smear: true }),
+
+  // ── CHOPPED SUB — digital debris
+  note("<a1 a1 c2 g1>")
+    .sound("sine").attack(0.001).release(0.16).shape(0.13)
+    .chop(4)
+    .sometimesBy(0.3, ply(2))
+    .struct("x ~ x ~ x ~ x ~")
+    .gain(0.52).color("navy"),
+
+  // ── GLITCH PERC
+  s("metal*16").gain(0.22).hpf(2600)
+    .degradeBy(0.4)
+    .color("gray"),
+
+  // ── HATS
+  s("hh*16").gain("0.24 0.14").hpf(7400)
+    .sometimesBy(0.2, ply(3))
+    .color("yellow"),
+
+  // ── DIGITAL STAB
+  note("a4")
+    .sound("square").lpf(3000).distort(0.6).crush(6)
+    .struct("~ ~ x ~ ~ x ~ ~")
+    .gain(0.3).pan(rand)
+    .color("orange")
+)

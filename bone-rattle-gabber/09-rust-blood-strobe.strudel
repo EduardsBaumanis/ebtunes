@@ -1,0 +1,43 @@
+// Album: Bone Rattle Gabber
+// Track: 09 — rust-blood-strobe
+// Genre: Gabber / hardcore
+// Tempo / CPM: 178 BPM (setcpm 44.5)
+// Bass concept: A crushed, corroded sub — bit-crush + coarse make the low end sound like rusted metal vibrating.
+// Kick character: distorted + crushed (industrial decay).
+// Musical idea: Dark industrial horror — strobing crushed kick, corroded sub, dissonant drone.
+// Strudel focus: .crush() and .coarse() on the low end; dissonant minor-2nd drone.
+// Visualisation: ._punchcard({ cycles: 4, smear: true }) — strobing visual matches the strobe concept.
+
+setcpm(44.5)
+
+stack(
+
+  // ── CRUSHED KICK — corroded
+  s("bd*4")
+    .shape(0.52).distort(1.1).crush(5).lpf(200)
+    .gain(0.88)
+    .color("red")
+    ._punchcard({ cycles: 4, smear: true }),
+
+  // ── RUSTED SUB — crushed + coarse
+  note("<f1 f1 gb1 f1>")
+    .sound("sine").attack(0.001).release(0.2).shape(0.14).crush(6).coarse(2)
+    .struct("x ~ x ~ x ~ x ~")
+    .gain(0.56).color("navy"),
+
+  // ── DISSONANT DRONE — minor 2nd horror
+  note("[f2,gb2]")
+    .sound("sawtooth").lpf(900).distort(0.4)
+    .attack(3).release(5)
+    .gain(0.26).pan(0.5).room(0.5)
+    .color("purple"),
+
+  // ── STROBE HAT — degraded for flicker
+  s("hh*16").gain(0.22).hpf(7600)
+    .degradeBy(0.3)
+    .color("yellow"),
+
+  // ── METAL HITS
+  s("metal").euclid(5, 16).gain(0.3).hpf(2600).room(0.3)
+    .color("gray")
+)
