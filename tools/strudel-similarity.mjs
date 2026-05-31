@@ -6,7 +6,7 @@
 //   node tools/strudel-similarity.mjs --all
 //   node tools/strudel-similarity.mjs path/to/file.strudel
 //   node tools/strudel-similarity.mjs path/to/folder
-//   node tools/strudel-similarity.mjs path/to/folder --json reports/x.json
+//   node tools/strudel-similarity.mjs path/to/folder --json tools/reports/x.json
 //
 // When --json is given, a sibling .md file is also written.
 
@@ -404,7 +404,7 @@ function main() {
       if (r) results.push(r);
     }
   } else {
-    console.error('Usage: node tools/strudel-similarity.mjs <path|--all> [--json reports/x.json]');
+    console.error('Usage: node tools/strudel-similarity.mjs <path|--all> [--json tools/reports/x.json]');
     process.exit(1);
   }
 

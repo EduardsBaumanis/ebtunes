@@ -1,0 +1,37 @@
+// "Pressure Valve"
+// Bass - off-grid pressure rhythm
+// Key: C minor
+// Tempo: 132 BPM (setcpm 33)
+// Feel: Sub bass valves opening against a slow, heavy kick pattern.
+// Chords: Cm - Bb - Ab - G
+
+setcpm(33)
+
+stack(
+
+  note("<c2 g1 bb1 ab1>")
+    .sound("sine").attack(0.001).release(0.36).shape(0.17)
+    .struct("x ~ x ~  ~ x ~ x")
+    .gain(0.86).pan(0.5)
+    .color("darkred"),
+
+  note("<c3 ~ eb3 ~  g2 ~ bb2 ~>")
+    .sound("triangle").attack(0.004).release(0.16)
+    .lpf(1200).degradeBy(0.1)
+    .gain(0.24).pan(0.62)
+    .color("salmon"),
+
+  s("bd ~ ~ ~  bd ~ ~ bd")
+    .gain(0.82).lpf(140).shape(0.2)
+    .color("maroon"),
+
+  s("~ ~ rim ~  ~ cp ~ rim")
+    .gain(0.32).hpf(1800).room(0.22)
+    .color("peru"),
+
+  s("hh*8")
+    .swingBy(0.28, 2)
+    .gain("0.22 0.1 0.16 0.12")
+    .hpf(7400)
+    .color("gold")
+)
