@@ -5,10 +5,13 @@
 const codeCache       = new Map();   // song path -> { fetchedAt, entry }
 const expandedGroups  = new Set();   // sidebar groups currently expanded
 const SONG_CACHE_MS   = 5000;        // avoids duplicate fetches from click + label refresh
-const FIRST_PUBLIC_PLAYLIST_ID = 'bluegrass';
+const BUILD_MODE_ID   = 'build';
+const BUILD_LABEL     = 'Uzbuvē pats';
+const BLANK_STRUDEL_CODE = ' ';
 let currentPlaylist   = null;        // playlist object
 let currentFilename   = null;        // string
 let currentSongId     = null;        // "playlist_id/filename" — supabase key
+let buildModeActive   = false;
 let boardActive       = false;
 
 // ── DOM refs (resolved in init) ──────────────────────────────────────────────
@@ -133,12 +136,25 @@ function albumUrl(playlist, filename = '') {
   return url;
 }
 
+function buildUrl() {
+  const url = new URL(window.location.href);
+  url.search = '';
+  url.hash = '';
+  url.searchParams.set('mode', BUILD_MODE_ID);
+  return url;
+}
+
 function updatePlayerUrl(playlist, filename = '') {
   window.history.replaceState(null, '', albumUrl(playlist, filename));
 }
 
+function updateBuildUrl() {
+  window.history.replaceState(null, '', buildUrl());
+}
+
 function routeFromUrl() {
   const query = new URLSearchParams(window.location.search);
+  let mode = query.get('mode') || '';
   let album = query.get('album') || query.get('playlist') || '';
   let song = query.get('song') || '';
 
@@ -146,6 +162,7 @@ function routeFromUrl() {
     const hash = decodeURIComponent(window.location.hash.slice(1));
     if (hash.includes('=')) {
       const hashParams = new URLSearchParams(hash);
+      mode = hashParams.get('mode') || mode;
       album = hashParams.get('album') || hashParams.get('playlist') || '';
       song = hashParams.get('song') || '';
     } else {
@@ -153,13 +170,12 @@ function routeFromUrl() {
     }
   }
 
-  return { album, song };
+  return { mode, album, song };
 }
 
 function playerPlaylists() {
   if (typeof PLAYLISTS === 'undefined') return [];
-  const firstPublic = PLAYLISTS.findIndex(pl => pl.id === FIRST_PUBLIC_PLAYLIST_ID);
-  return firstPublic >= 0 ? PLAYLISTS.slice(firstPublic) : PLAYLISTS;
+  return PLAYLISTS.filter(pl => typeof pl.path === 'string' && pl.path.includes('collections/'));
 }
 
 function findPlaylist(plId) {
@@ -169,9 +185,13 @@ function findPlaylist(plId) {
 }
 
 function initialSelection() {
-  const playlists = playerPlaylists();
-  if (!playlists.length) return null;
   const route = routeFromUrl();
+  if (route.mode === BUILD_MODE_ID || route.album === BUILD_MODE_ID || (!route.album && !route.song)) {
+    return { build: true };
+  }
+
+  const playlists = playerPlaylists();
+  if (!playlists.length) return { build: true };
   const playlist = findPlaylist(route.album) || playlists[0];
   const songIdx = route.song ? playlist.files.indexOf(route.song) : -1;
   const idx = songIdx >= 0 ? songIdx : 0;
@@ -186,12 +206,34 @@ function isPublicSongId(songId) {
 // ── Sidebar (collapsible playlist tree) ──────────────────────────────────────
 
 function buildSidebar() {
+  elTree.innerHTML = '';
+
+  const buildButton = document.createElement('button');
+  buildButton.className = 'pl-build';
+  buildButton.dataset.mode = BUILD_MODE_ID;
+  buildButton.innerHTML = `
+    <span class="pl-build-icon">+</span>
+    <span class="pl-label">${BUILD_LABEL}</span>
+  `;
+  buildButton.addEventListener('click', () => {
+    updateBuildUrl();
+    selectBuildYourself();
+  });
+  elTree.appendChild(buildButton);
+
   if (typeof PLAYLISTS === 'undefined') {
-    elTree.innerHTML = '<div class="board-empty">PLAYLISTS not loaded</div>';
+    const missing = document.createElement('div');
+    missing.className = 'board-empty';
+    missing.textContent = 'PLAYLISTS not loaded';
+    elTree.appendChild(missing);
     return;
   }
 
-  elTree.innerHTML = '';
+  const sectionTitle = document.createElement('div');
+  sectionTitle.className = 'pl-section-title';
+  sectionTitle.textContent = 'Collections';
+  elTree.appendChild(sectionTitle);
+
   playerPlaylists().forEach(pl => {
     const group = document.createElement('div');
     group.className = 'pl-group';
@@ -264,17 +306,25 @@ function expandGroup(plId) {
 }
 
 function highlightActiveSong() {
+  const buildButton = elTree.querySelector('.pl-build');
+  if (buildButton) {
+    buildButton.classList.toggle('active', buildModeActive);
+  }
+
   elTree.querySelectorAll('.pl-song').forEach(el => {
     el.classList.toggle(
       'active',
+      !buildModeActive &&
       el.dataset.playlist === (currentPlaylist && currentPlaylist.id) &&
         el.dataset.filename === currentFilename,
     );
   });
   elTree.querySelectorAll('.pl-header').forEach(h => {
     const id = h.parentElement.dataset.id;
-    h.classList.toggle('active', id === (currentPlaylist && currentPlaylist.id));
+    h.classList.toggle('active', !buildModeActive && id === (currentPlaylist && currentPlaylist.id));
   });
+
+  if (buildModeActive) return;
 
   const activeSong = Array.from(elTree.querySelectorAll('.pl-song')).find(el =>
     el.dataset.playlist === (currentPlaylist && currentPlaylist.id) &&
@@ -290,6 +340,7 @@ function highlightActiveSong() {
 // ── Selecting a song ─────────────────────────────────────────────────────────
 
 async function selectSong(playlist, filename, idx) {
+  buildModeActive = false;
   currentPlaylist = playlist;
   currentFilename = filename;
   currentSongId   = playlist.id + '/' + filename;
@@ -311,6 +362,7 @@ async function selectSong(playlist, filename, idx) {
   elChords.textContent  = m.chords || '';
 
   // Reflect any existing local vote on the +/- buttons
+  setVoteButtonsEnabled(true);
   refreshVoteButtons();
 
   // Push the code into the embedded strudel.cc iframe. Changing src
@@ -319,7 +371,34 @@ async function selectSong(playlist, filename, idx) {
   loadIntoFrame(entry.code);
 }
 
+function selectBuildYourself() {
+  buildModeActive = true;
+  currentPlaylist = null;
+  currentFilename = null;
+  currentSongId   = null;
+
+  highlightActiveSong();
+  closeSidebarIfMobile();
+
+  elCounter.textContent = 'NEW';
+  elTitle.textContent   = BUILD_LABEL;
+  elKey.textContent     = '—';
+  elBpm.textContent     = '—';
+  elPack.textContent    = 'STRUDEL';
+  elFeel.textContent    = '';
+  elChords.textContent  = '';
+
+  setVoteButtonsEnabled(false);
+  refreshVoteButtons();
+  loadIntoFrame(BLANK_STRUDEL_CODE);
+}
+
 // ── Voting ───────────────────────────────────────────────────────────────────
+
+function setVoteButtonsEnabled(enabled) {
+  elBtnNot.disabled = !enabled;
+  elBtnHot.disabled = !enabled;
+}
 
 function refreshVoteButtons() {
   if (!currentSongId) {
@@ -519,9 +598,13 @@ function init() {
 
   const initial = initialSelection();
   if (initial) {
-    expandGroup(initial.playlist.id);
-    // Pre-select the first song so the editor has something to show
-    selectSong(initial.playlist, initial.filename, initial.idx);
+    if (initial.build) {
+      selectBuildYourself();
+    } else {
+      expandGroup(initial.playlist.id);
+      // Pre-select the first song so the editor has something to show
+      selectSong(initial.playlist, initial.filename, initial.idx);
+    }
   }
 
   // Tab switching

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>eBlēņas - Eduards Baumanis</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=collections-modern">
 </head>
 <body data-theme="studio">
 
@@ -37,21 +37,21 @@
         <div class="song-info" id="song-info">
           <div class="si-row">
             <div class="si-meta-block">
-              <div class="si-counter" id="si-counter">— · —</div>
-              <h1 class="si-title" id="si-title">Pick a song from the sidebar</h1>
+              <div class="si-counter" id="si-counter">NEW</div>
+              <h1 class="si-title" id="si-title">Uzbuvē pats</h1>
               <div class="si-meta">
                 <span class="si-badge" id="si-key">—</span>
                 <span class="si-sep">·</span>
                 <span class="si-badge" id="si-bpm">—</span>
                 <span class="si-sep">·</span>
-                <span class="si-badge" id="si-pack">—</span>
+                <span class="si-badge" id="si-pack">STRUDEL</span>
               </div>
               <p class="si-feel"   id="si-feel"></p>
               <p class="si-chords" id="si-chords"></p>
             </div>
             <div class="vote-bar" id="vote-bar">
-              <button id="btn-not" class="vote-btn vote-not" title="Vote down (-)">−</button>
-              <button id="btn-hot" class="vote-btn vote-hot" title="Vote up (+)">+</button>
+              <button id="btn-not" class="vote-btn vote-not" title="Vote down (-)" disabled>−</button>
+              <button id="btn-hot" class="vote-btn vote-hot" title="Vote up (+)" disabled>+</button>
             </div>
           </div>
         </div>
@@ -67,7 +67,7 @@
         <iframe id="strudel-frame"
                 class="editor"
                 title="Strudel REPL"
-                src="https://strudel.cc/"
+                src="https://strudel.cc/#IA=="
                 allow="autoplay; clipboard-read; clipboard-write"
                 loading="lazy"></iframe>
 
@@ -97,6 +97,6 @@
        repo shows up in the sidebar tree automatically. -->
   <script src="../lofi-player/playlists.js"></script>
   <script src="supabase.js"></script>
-  <script src="app.js"></script>
+  <script src="app.js?v=collections-modern"></script>
 </body>
 </html>
