@@ -1,0 +1,32 @@
+// "YouTube Sting Suite"
+// Album: Finisher
+// Track: 13 of 40
+// Stage: Short-form sound effects becoming tiny compositions.
+// Key: C major
+// Tempo: 112 BPM (setcpm 28)
+// Feel: Notification, reveal, rewind, and success in one compact bar.
+
+setcpm(28)
+
+stack(
+
+  s("~ ~ white ~  ~ white ~ ~")
+    .gain(0.12).hpf(7000).lpf(12000)
+    .shape(0.08).pan("0.3 0.7")
+    .color("gray"),
+
+  s("rim ~ ~ ~  cp ~ ~ ~")
+    .gain(0.38).hpf(1800).room(0.22)
+    .color("silver"),
+
+  note("c6 e6 g6 c7  ~ g6 e6 ~")
+    .sound("triangle").attack(0.001).release(0.18)
+    .delay(0.25).delaytime(0.125).delayfeedback(0.18)
+    .gain(0.42)
+    .color("cyan"),
+
+  note("c4 ~ g4 ~")
+    .sound("sine").attack(0.005).release(0.35)
+    .gain(0.28).slow(2)
+    .color("navy")
+)

@@ -1,0 +1,42 @@
+// "Detroit Syllabus"
+// Album: Finisher
+// Track: 07 of 40
+// Stage: TehnoSkola turning history into executable rhythm.
+// Key: A minor
+// Tempo: 130 BPM (setcpm 32.5)
+// Feel: Clean machines, rolling soul, class notes on a warehouse wall.
+
+setcpm(32.5)
+
+stack(
+
+  s("bd*4")
+    .gain(0.86).lpf(180).shape(0.14)
+    .color("crimson"),
+
+  s("~ cp ~ cp")
+    .gain(0.58).hpf(300).room(0.16)
+    .color("coral"),
+
+  s("hh*16")
+    .jux(rev)
+    .gain("0.25 0.14 0.23 0.16").hpf(7600)
+    .color("yellow"),
+
+  note("a1 ~ a1 ~  a1 ~ a1 ~")
+    .sound("sawtooth").lpf(380).lpq(5).shape(0.15)
+    .attack(0.004).release(0.16)
+    .off(1/8, x => x.add(7).gain(0.35))
+    .gain(0.55)
+    .color("purple"),
+
+  s("rim").euclid(5, 8)
+    .gain(0.34).hpf(3000).pan(0.58)
+    .color("silver"),
+
+  note("[a3,c4,e4]")
+    .sound("sawtooth").vowel("o")
+    .attack(1.0).release(2.5).lpf(1500)
+    .gain(0.18).room(0.45).slow(4)
+    .color("teal")
+)

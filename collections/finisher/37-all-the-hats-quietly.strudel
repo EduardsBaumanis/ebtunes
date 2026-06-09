@@ -1,0 +1,41 @@
+// "All The Hats, Quietly"
+// Album: Finisher
+// Track: 37 of 40
+// Stage: The catalog admits its most-used sound, then softens it.
+// Key: A minor
+// Tempo: 120 BPM (setcpm 30)
+// Feel: A hi-hat museum where nothing is allowed to be loud.
+
+setcpm(30)
+
+stack(
+
+  s("hh*16")
+    .gain("0.12 0.06 0.10 0.05").hpf(7800)
+    .jux(rev).degradeBy(0.18)
+    .color("yellow"),
+
+  s("~ oh ~ ~  ~ ~ oh ~")
+    .gain(0.16).hpf(5600).room(0.2)
+    .color("gold"),
+
+  s("rim").euclid(3, 8)
+    .gain(0.18).hpf(3000).pan(0.6)
+    .color("silver"),
+
+  note("a1")
+    .sound("sine").attack(3).release(5).gain(0.36)
+    .color("navy"),
+
+  note("<[a3,c4,e4,g4] [f3,a3,c4,e4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(2).release(5).lpf(1400)
+    .gain(0.22).room(0.72).slow(4)
+    .color("teal"),
+
+  note("e5 ~ ~ c5  ~ a4 ~ ~")
+    .sound("triangle").attack(0.04).release(1.2)
+    .delay(0.45).delaytime(0.5).delayfeedback(0.32)
+    .gain(0.24).room(0.7).slow(2)
+    .color("cyan")
+)

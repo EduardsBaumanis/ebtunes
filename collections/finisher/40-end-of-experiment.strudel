@@ -1,0 +1,46 @@
+// "End Of Experiment"
+// Album: Finisher
+// Track: 40 of 40
+// Stage: The closing track for the whole experiment.
+// Key: C major / A minor afterimage
+// Tempo: 32 BPM (setcpm 8)
+// Feel: The repo exhales: pulse, choir, rain, and one last note.
+
+setcpm(8)
+
+stack(
+
+  note("c1")
+    .sound("sine").attack(12).release(18).gain(0.46)
+    .color("midnightblue"),
+
+  note("a1")
+    .sound("sine").attack(14).release(18).gain(0.22)
+    .color("navy"),
+
+  note("[c2,e2,g2,b2]")
+    .sound("sawtooth").vowel("o")
+    .attack(12).release(18).lpf(1200)
+    .gain(0.34).room(0.9).slow(8)
+    .color("purple"),
+
+  note("[g3,c4,e4,a4]")
+    .sound("sawtooth").vowel("u")
+    .attack(13).release(18).lpf(1900)
+    .gain(0.28).room(0.92).slow(8)
+    .color("teal"),
+
+  note("c6")
+    .sound("triangle")
+    .struct("x ~ ~ ~  ~ ~ ~ ~")
+    .attack(0.01).release(12)
+    .delay(0.75).delaytime(1.5).delayfeedback(0.6)
+    .gain(0.34).room(0.95).slow(8)
+    .color("ivory")
+    ._pianoroll({ cycles: 8, vertical: true }),
+
+  s("white*8")
+    .gain("0.025 0.035 0.02 0.03").hpf(5200)
+    .degradeBy(0.45).slow(8)
+    .color("gray")
+)

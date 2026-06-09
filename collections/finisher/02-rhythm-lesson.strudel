@@ -1,0 +1,35 @@
+// "Rhythm Lesson"
+// Album: Finisher
+// Track: 02 of 40
+// Stage: Skola rhythm basics, rests, repeats, and the first backbeat.
+// Key: C minor
+// Tempo: 96 BPM (setcpm 24)
+// Feel: Didactic, dry, but already trying to dance.
+
+setcpm(24)
+
+stack(
+
+  s("bd*4")
+    .gain(0.74).lpf(2200)
+    .color("crimson"),
+
+  s("~ ~ sd ~  ~ ~ sd ~")
+    .gain(0.58).room(0.1)
+    .color("orange"),
+
+  s("hh*8")
+    .gain(0.24).hpf(7000)
+    .degradeBy(0.12)
+    .color("yellow"),
+
+  s("rim").euclid(3, 8)
+    .gain(0.32).hpf(2500).pan(0.62)
+    .color("silver"),
+
+  note("0 2 3 5  7 5 3 2")
+    .scale("C:minor")
+    .sound("triangle").attack(0.01).release(0.18)
+    .gain(0.32).room(0.25).slow(2)
+    .color("cyan")
+)

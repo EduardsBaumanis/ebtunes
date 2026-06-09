@@ -1,0 +1,39 @@
+// "Catalog Choir"
+// Album: Finisher
+// Track: 38 of 40
+// Stage: The new catalog becomes a composition guide and a choir.
+// Key: C major
+// Tempo: 48 BPM (setcpm 12)
+// Feel: The counted tokens singing their own index.
+
+setcpm(12)
+
+stack(
+
+  note("c1")
+    .sound("sine").attack(8).release(12).gain(0.44)
+    .color("midnightblue"),
+
+  note("[c2,g2]")
+    .sound("sawtooth").vowel("o")
+    .attack(7).release(12).lpf(1100)
+    .gain(0.34).room(0.82).slow(4)
+    .color("purple"),
+
+  note("[e3,g3,b3,d4]")
+    .sound("sawtooth").vowel("a")
+    .attack(8).release(13).lpf(1900)
+    .gain(0.28).room(0.86).slow(4)
+    .color("teal"),
+
+  note("[g4,a4,d4,e4,c4]")
+    .sound("triangle").attack(0.1).release(4)
+    .gain(0.22).room(0.88).slow(8)
+    .color("ivory")
+    ._pianoroll({ cycles: 8, labels: true }),
+
+  s("white*8")
+    .gain("0.035 0.05 0.03 0.04").hpf(5200)
+    .degradeBy(0.35).slow(4)
+    .color("gray")
+)

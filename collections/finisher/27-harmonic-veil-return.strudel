@@ -1,0 +1,38 @@
+// "Harmonic Veil Return"
+// Album: Finisher
+// Track: 27 of 40
+// Stage: The harmonic album's patient voicings and chapel-light drones.
+// Key: C major
+// Tempo: 56 BPM (setcpm 14)
+// Feel: Slow harmonic glass, almost still.
+
+setcpm(14)
+
+stack(
+
+  note("c1")
+    .sound("sine").attack(7).release(12).gain(0.42)
+    .color("midnightblue"),
+
+  note("[c2,g2]")
+    .sound("sawtooth").vowel("o")
+    .attack(6).release(11).lpf(1200)
+    .gain(0.34).room(0.78).slow(4)
+    .color("purple"),
+
+  note("<[e3,g3,b3,d4] [a3,c4,e4,g4] [f3,a3,c4,e4] [g3,b3,d4,f4]>")
+    .sound("sawtooth").vowel("a")
+    .attack(7).release(12).lpf(2200)
+    .gain(0.28).room(0.82).slow(4)
+    .color("teal"),
+
+  note("b4 ~ c5 ~  e5 ~ d5 ~")
+    .sound("triangle").attack(0.1).release(3.5)
+    .delay(0.55).delaytime(0.75).delayfeedback(0.45)
+    .gain(0.26).room(0.88).slow(4)
+    .color("ivory"),
+
+  s("white*8")
+    .gain(0.035).hpf(6000).degradeBy(0.4).slow(4)
+    .color("gray")
+)

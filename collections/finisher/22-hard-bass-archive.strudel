@@ -1,0 +1,40 @@
+// "Hard Bass Archive"
+// Album: Finisher
+// Track: 22 of 40
+// Stage: Hard-bass and industrial techno pressure.
+// Key: A minor
+// Tempo: 144 BPM (setcpm 36)
+// Feel: The archive shelves shaking loose.
+
+setcpm(36)
+
+stack(
+
+  s("bd*4")
+    .shape(0.42).lpf(170).gain(0.9)
+    .color("crimson"),
+
+  s("~ cp ~ cp")
+    .gain(0.58).hpf(300).room(0.18)
+    .color("orange"),
+
+  s("hh*16")
+    .gain("0.28 0.12 0.24 0.14").hpf(8000)
+    .jux(rev)
+    .color("yellow"),
+
+  note("a1 ~ a1 ~  e2 ~ a1 ~  a1 ~ c2 ~  e2 a1 ~ g1")
+    .sound("sawtooth").lpf(420).lpq(7).shape(0.25)
+    .attack(0.002).release(0.13)
+    .gain(0.58)
+    .color("purple"),
+
+  s("metal").euclid(5, 16)
+    .gain(0.28).hpf(3500).pan(0.6)
+    .color("silver"),
+
+  s("white")
+    .struct("~ ~ ~ ~  x ~ ~ x")
+    .gain(0.16).hpf(5000)
+    .color("gray")
+)

@@ -1,0 +1,36 @@
+// "Bluegrass Wireframe"
+// Album: Finisher
+// Track: 25 of 40
+// Stage: Bluegrass reels translated into synth-plucked code.
+// Key: G major
+// Tempo: 112 BPM (setcpm 28)
+// Feel: Porch picking, but the strings are tiny waveforms.
+
+setcpm(28)
+
+stack(
+
+  s("bd ~ sd ~  bd ~ sd ~")
+    .gain(0.44).lpf(1800).room(0.18)
+    .color("sienna"),
+
+  s("hh*8")
+    .gain(0.16).hpf(6200).swingBy(0.12, 4)
+    .color("khaki"),
+
+  note("g2 d3 g2 d3  c3 g2 d3 g2")
+    .sound("sine").attack(0.002).release(0.2)
+    .gain(0.42)
+    .color("navy"),
+
+  note("g4 b4 d5 g5  d5 b4 a4 g4  c5 e5 g5 e5  d5 b4 g4 d4")
+    .sound("triangle").attack(0.001).release(0.12)
+    .gain(0.34).pan(0.45)
+    .color("gold"),
+
+  note("b4 d5 g5 b5  a5 g5 e5 d5")
+    .sound("sawtooth").lpf(2200)
+    .attack(0.002).release(0.1).gain(0.18)
+    .fast(2).pan(0.62).degradeBy(0.2)
+    .color("orange")
+)

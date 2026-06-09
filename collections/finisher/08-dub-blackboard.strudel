@@ -1,0 +1,37 @@
+// "Dub Blackboard"
+// Album: Finisher
+// Track: 08 of 40
+// Stage: Dub techno lessons, delay math, and patient stabs.
+// Key: F minor
+// Tempo: 124 BPM (setcpm 31)
+// Feel: Chalk dust in a tape delay.
+
+setcpm(31)
+
+stack(
+
+  s("bd*4")
+    .gain(0.78).lpf(160).room(0.1)
+    .color("crimson"),
+
+  s("~ ~ sd ~  ~ ~ sd ~")
+    .gain(0.42).hpf(700).room(0.38)
+    .delay(0.25).delaytime(0.5).delayfeedback(0.35)
+    .color("orange"),
+
+  s("~ hh ~ hh  ~ hh ~ hh")
+    .gain(0.22).hpf(6500).room(0.1)
+    .color("yellow"),
+
+  note("f1 ~ c2 ~  f1 ~ eb2 ~")
+    .sound("sine").attack(0.003).release(0.34)
+    .gain(0.7)
+    .color("navy"),
+
+  note("<[f3,ab3,c4,eb4] [db3,f3,ab3,c4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(0.02).release(0.45).lpf(1100)
+    .delay(0.55).delaytime(0.75).delayfeedback(0.48)
+    .gain(0.28).room(0.62).slow(2)
+    .color("teal")
+)

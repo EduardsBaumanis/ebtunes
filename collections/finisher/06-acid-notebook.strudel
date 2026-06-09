@@ -1,0 +1,37 @@
+// "Acid Notebook"
+// Album: Finisher
+// Track: 06 of 40
+// Stage: The first TB-303 studies and filter obsession.
+// Key: E minor pentatonic
+// Tempo: 132 BPM (setcpm 33)
+// Feel: A pencilled acid line becoming a machine.
+
+setcpm(33)
+
+stack(
+
+  s("bd*4")
+    .gain(0.88).lpf(170).shape(0.18)
+    .color("crimson"),
+
+  s("~ cp ~ cp")
+    .gain(0.56).hpf(400).room(0.14)
+    .color("orange"),
+
+  s("hh*16")
+    .gain("0.26 0.12 0.20 0.14").hpf(7800)
+    .color("yellow"),
+
+  note("0 5 7 0  3 0 5 7  0 7 5 3  0 5 0 7")
+    .scale("E:minorPentatonic")
+    .sound("sawtooth").lpf("380 640 980 1600")
+    .lpq(14).shape(0.28)
+    .attack(0.001).decay(0.08).sustain(0.25).release(0.05)
+    .gain(0.5).chunk(8, x => x.add(12))
+    .color("lime"),
+
+  note("e1")
+    .sound("sine").struct("x ~ x ~ x x ~ x")
+    .gain(0.72)
+    .color("navy")
+)

@@ -1,0 +1,39 @@
+// "First Clock"
+// Album: Finisher
+// Track: 01 of 40
+// Stage: The first pulse and the lesson-room metronome.
+// Key: C minor
+// Tempo: 72 BPM (setcpm 18)
+// Feel: A quiet opening count-in, half tutorial and half memory.
+
+setcpm(18)
+
+stack(
+
+  // Kick and snare: the first grammar in the repo.
+  s("bd ~ ~ ~  bd ~ sd ~")
+    .gain(0.68).lpf(2600).room(0.12)
+    .color("crimson"),
+
+  s("hh*8")
+    .gain("0.20 0.12 0.18 0.10")
+    .hpf(6500).pan("0.44 0.56")
+    .color("yellow"),
+
+  note("c2 ~ g2 ~  eb2 ~ g2 ~")
+    .sound("sine").attack(0.01).release(0.5)
+    .gain(0.56)
+    .color("navy"),
+
+  note("[c3,eb3,g3,bb3]")
+    .sound("sawtooth").vowel("o")
+    .attack(1.2).release(3.5).lpf(1350)
+    .gain(0.26).room(0.65).slow(4)
+    .color("purple"),
+
+  note("c5 ~ ~ g4  eb5 ~ d5 ~")
+    .sound("triangle").attack(0.02).release(0.8)
+    .delay(0.35).delaytime(0.5).delayfeedback(0.25)
+    .gain(0.34).room(0.45).slow(2)
+    .color("cyan")
+)

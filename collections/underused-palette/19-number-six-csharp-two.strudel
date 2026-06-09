@@ -1,0 +1,48 @@
+// "Number Six Csharp Two"
+// Album: Underused Palette
+// Track: 19 of 40
+// Palette sounds: numbers:6
+// Palette notes: c#2, cb3
+// Key: C# / Cb low study
+// Tempo: 92 BPM (setcpm 23)
+// Feel: Two spellings rubbing in the low register.
+
+setcpm(23)
+
+stack(
+
+  // Rare sound token layer.
+  s("numbers:6 ~ ~ numbers:6  ~ numbers:6 ~ ~")
+    .gain(0.34).hpf(850).room(0.22)
+    .delay(0.18).delaytime(0.25).delayfeedback(0.16)
+    .color("pink"),
+
+  // Sparse support pulse, kept quiet so the rare colors lead.
+  s("bd ~ ~ bd  ~ ~ bd ~")
+    .gain(0.48).lpf(190).shape(0.08)
+    .color("crimson"),
+
+  s("hh*8")
+    .gain(0.12).hpf(7200).degradeBy(0.24)
+    .color("yellow"),
+
+  // Register-color line made from low-count explicit notes.
+  note("c#2 cb3 cb3 c#2  c#2 cb3")
+    .sound("triangle").attack(0.008).release(0.45)
+    .delay(0.32).delaytime(0.375).delayfeedback(0.22)
+    .gain(0.28).room(0.46).slow(2)
+    .color("cyan"),
+
+  // Long pad preserves the odd spelling instead of normalising it away.
+  note("[c#2,cb3,g4]")
+    .sound("sawtooth").vowel("u")
+    .attack(1.2).release(3.2).lpf(1350)
+    .gain(0.18).room(0.62).slow(4)
+    .color("teal"),
+
+  // Sub or anchor note from the same rare-note set.
+  note("c#2")
+    .sound("sine").attack(0.02).release(1.4)
+    .gain(0.34).slow(2)
+    .color("navy")
+)

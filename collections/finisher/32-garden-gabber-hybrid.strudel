@@ -1,0 +1,43 @@
+// "Garden Gabber Hybrid"
+// Album: Finisher
+// Track: 32 of 40
+// Stage: Late albums colliding: clock gardens under hardcore kicks.
+// Key: C minor
+// Tempo: 180 BPM (setcpm 45)
+// Feel: A flowerbed trying to survive a warehouse system.
+
+setcpm(45)
+
+stack(
+
+  s("bd*4")
+    .shape(0.52).distort(0.9).lpf(190)
+    .gain(0.86)
+    .color("red"),
+
+  s("hh*16")
+    .gain("0.20 0.10").hpf(7800).degradeBy(0.12)
+    .color("yellow"),
+
+  s("rim")
+    .struct("x ~ ~ ~  ~ x ~ ~")
+    .gain(0.24).hpf(2800).room(0.62)
+    .color("silver"),
+
+  note("c1*4")
+    .sound("sine").attack(0.001).release(0.12)
+    .gain(0.52)
+    .color("navy"),
+
+  note("<[c3,eb3,g3,bb3] [ab2,c3,eb3,g3]>")
+    .sound("sawtooth").vowel("o")
+    .attack(2).release(4).lpf(1300)
+    .gain(0.22).room(0.78).slow(4)
+    .color("green"),
+
+  note("c6 ~ ~ eb6  ~ g5 ~ ~")
+    .sound("triangle").attack(0.003).release(1.8)
+    .delay(0.5).delaytime(0.75).delayfeedback(0.4)
+    .gain(0.24).room(0.72).slow(2)
+    .color("ivory")
+)

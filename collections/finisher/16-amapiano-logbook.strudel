@@ -1,0 +1,40 @@
+// "Amapiano Logbook"
+// Album: Finisher
+// Track: 16 of 40
+// Stage: Amapiano, log drums, township piano, and polyperc studies.
+// Key: A minor
+// Tempo: 112 BPM (setcpm 28)
+// Feel: Low wooden answers under soft rooftop chords.
+
+setcpm(28)
+
+stack(
+
+  s("bd ~ ~ ~  ~ bd ~ ~")
+    .gain(0.62).lpf(160).shape(0.1)
+    .color("crimson"),
+
+  s("rim ~ ~ rim  ~ rim ~ ~")
+    .gain(0.42).hpf(1400).room(0.2)
+    .color("silver"),
+
+  s("hh*16")
+    .gain("0.20 0.10 0.16 0.12").hpf(7200)
+    .swingBy(0.16, 4)
+    .color("yellow"),
+
+  note("a1 ~ c2 ~  e2 ~ g1 ~  a1 c2 ~ e2  g1 ~ e2 ~")
+    .sound("sine").attack(0.001).release(0.2).shape(0.22)
+    .gain(0.82)
+    .color("navy"),
+
+  note("<[a3,c4,e4,g4] [g3,b3,d4,fs4] [f3,a3,c4,e4] [e3,g3,b3,d4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(0.25).release(1.5).lpf(1600)
+    .gain(0.24).room(0.46).slow(2)
+    .color("teal"),
+
+  s("tabla").euclid(7, 16)
+    .gain(0.26).hpf(1200).pan(0.6)
+    .color("sienna")
+)

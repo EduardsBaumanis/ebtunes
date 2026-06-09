@@ -1,0 +1,42 @@
+// "Final Player Heartbeat"
+// Album: Finisher
+// Track: 39 of 40
+// Stage: The browser player, votes, and every sidebar album pulsing once.
+// Key: G minor
+// Tempo: 128 BPM (setcpm 32)
+// Feel: Not a goodbye yet: the UI still has a pulse.
+
+setcpm(32)
+
+stack(
+
+  s("bd ~ ~ ~  bd ~ bd ~")
+    .gain(0.78).lpf(170).shape(0.16)
+    .color("crimson"),
+
+  s("~ ~ cp ~  ~ ~ cp ~")
+    .gain(0.5).hpf(450).room(0.2)
+    .color("coral"),
+
+  s("hh*16")
+    .gain("0.22 0.10 0.18 0.12").hpf(7600)
+    .degradeBy(0.12)
+    .color("yellow"),
+
+  note("g1 ~ d2 ~  f1 ~ d2 ~")
+    .sound("sine").attack(0.002).release(0.28)
+    .gain(0.72)
+    .color("navy"),
+
+  note("<[g3,bb3,d4,f4] [eb3,g3,bb3,d4] [c3,eb3,g3,bb3] [d3,f3,a3,c4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(0.12).release(1.0).lpf(1900)
+    .gain(0.26).room(0.46).slow(2)
+    .color("teal"),
+
+  note("g4 bb4 d5 f5  g5 f5 d5 bb4")
+    .sound("triangle").attack(0.01).release(0.32)
+    .delay(0.36).delaytime(0.375).delayfeedback(0.26)
+    .gain(0.32).room(0.44)
+    .color("cyan")
+)

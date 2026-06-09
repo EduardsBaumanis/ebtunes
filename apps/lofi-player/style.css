@@ -299,6 +299,28 @@
   --code-fg:  #e0a070;
 }
 
+/* -- FINISHER theme - final archive: warm ivory on near-black violet -- */
+[data-theme="finisher"] {
+  --black:    #07060a;
+  --white:    #f2e6c8;
+  --grey:     #8a7a68;
+  --dim:      #121018;
+  --mid:      #2a2232;
+  --code-bg:  #050407;
+  --code-fg:  #dcc89c;
+}
+
+/* -- UNDERUSED PALETTE theme - catalog violet with rare-sample pink -- */
+[data-theme="underused-palette"] {
+  --black:    #08070d;
+  --white:    #f0d8ff;
+  --grey:     #9a6fa8;
+  --dim:      #141020;
+  --mid:      #2a1d38;
+  --code-bg:  #050409;
+  --code-fg:  #d8b8e8;
+}
+
 /* ── DEMOS theme — showcase gallery: cool slate + cyan accent ── */
 [data-theme="demos"] {
   --black:    #06090e;

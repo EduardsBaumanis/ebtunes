@@ -1,0 +1,39 @@
+// "DNB Clean Break Memory"
+// Album: Finisher
+// Track: 34 of 40
+// Stage: Break chopping, jungle memory, and study tools meeting tempo.
+// Key: A minor
+// Tempo: 170 BPM (setcpm 42.5)
+// Pack: github:yaxu/clean-breaks
+// Feel: The break is chopped, but the bass remains calm.
+
+samples('github:yaxu/clean-breaks')
+
+setcpm(42.5)
+
+stack(
+
+  s("break").chop(8)
+    .struct("x ~ x x  ~ x ~ x  x x ~ x  ~ x x ~")
+    .gain(0.72)
+    .color("orange"),
+
+  s("bd ~ ~ ~  ~ bd ~ ~")
+    .gain(0.48).lpf(160)
+    .color("crimson"),
+
+  note("a1 ~ ~ ~  e2 ~ ~ ~  g1 ~ ~ ~  a1 ~ e2 ~")
+    .sound("sine").attack(0.002).release(0.38)
+    .gain(0.7)
+    .color("navy"),
+
+  note("<[a3,c4,e4,g4,b4] [d3,f3,a3,c4,e4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(0.4).release(1.6).lpf(1500)
+    .gain(0.2).room(0.45).slow(4)
+    .color("teal"),
+
+  s("rim").euclid(5, 16)
+    .gain(0.22).hpf(3200).pan(0.6)
+    .color("silver")
+)

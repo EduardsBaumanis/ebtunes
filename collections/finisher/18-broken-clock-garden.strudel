@@ -1,0 +1,39 @@
+// "Broken Clock Garden"
+// Album: Finisher
+// Track: 18 of 40
+// Stage: The garden album, clocks, bells, rust, and slowed time.
+// Key: C major
+// Tempo: 48 BPM (setcpm 12)
+// Feel: A mechanical flower turning toward a bell.
+
+setcpm(12)
+
+stack(
+
+  s("rim")
+    .struct("x ~ ~ ~  ~ ~ ~ ~")
+    .gain(0.28).hpf(2500).room(0.75).slow(2)
+    .color("silver"),
+
+  s("white*8")
+    .gain("0.04 0.025 0.035 0.02").hpf(5000)
+    .degradeBy(0.45).slow(2)
+    .color("gray"),
+
+  note("c1")
+    .sound("sine").attack(6).release(10)
+    .gain(0.42)
+    .color("navy"),
+
+  note("<[c3,e3,g3,b3] [a2,c3,e3,g3] [f2,a2,c3,e3] [g2,b2,d3,f3]>")
+    .sound("sawtooth").vowel("o")
+    .attack(4).release(8).lpf(1300)
+    .gain(0.3).room(0.82).slow(4)
+    .color("green"),
+
+  note("c6 ~ ~ ~  e6 ~ ~ g5")
+    .sound("triangle").attack(0.01).release(4)
+    .delay(0.65).delaytime(1.25).delayfeedback(0.52)
+    .gain(0.3).room(0.9).slow(4)
+    .color("ivory")
+)

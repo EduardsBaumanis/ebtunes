@@ -1,0 +1,40 @@
+// "Vocal Alphabet Prayer"
+// Album: Finisher
+// Track: 30 of 40
+// Stage: Vowels, alphabet samples, vocoders, and chant studies.
+// Key: E minor
+// Tempo: 112 BPM (setcpm 28)
+// Feel: Letters becoming a choir before they become words.
+
+setcpm(28)
+
+stack(
+
+  s("bd ~ ~ ~  bd ~ ~ ~")
+    .gain(0.62).lpf(180).shape(0.08)
+    .color("crimson"),
+
+  s("~ ~ sd ~  ~ ~ sd ~")
+    .gain(0.42).hpf(700).room(0.24)
+    .color("orange"),
+
+  s("alphabet:0 ~ alphabet:4 ~  alphabet:8 ~ alphabet:14 ~")
+    .gain(0.28).hpf(900).room(0.3)
+    .delay(0.25).delaytime(0.25).delayfeedback(0.24)
+    .color("pink"),
+
+  note("e1")
+    .sound("sine").attack(1.5).release(3).gain(0.45)
+    .color("navy"),
+
+  note("<[e3,g3,b3] [a3,c4,e4] [d3,fs3,a3] [b2,d3,fs3]>")
+    .sound("sawtooth").vowel("<o u a i>")
+    .attack(0.8).release(2.5).lpf(1600)
+    .gain(0.28).room(0.65).slow(2)
+    .color("purple"),
+
+  note("e4 ~ fs4 ~  g4 ~ b4 ~  a4 ~ g4 ~  e4 ~ d4 ~")
+    .sound("triangle").attack(0.04).release(0.7)
+    .gain(0.32).room(0.52).slow(2)
+    .color("cyan")
+)

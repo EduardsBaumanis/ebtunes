@@ -1,0 +1,37 @@
+// "IDM Probability Room"
+// Album: Finisher
+// Track: 29 of 40
+// Stage: IDM probability clouds, stuttered clocks, and generative bloom.
+// Key: C minor
+// Tempo: 136 BPM (setcpm 34)
+// Feel: A tidy room whose furniture keeps rotating.
+
+setcpm(34)
+
+stack(
+
+  s("bd ~ ~ bd  ~ ~ bd ~")
+    .gain(0.7).lpf(170).shape(0.14)
+    .color("crimson"),
+
+  s("sd ~ rim ~  ~ sd ~ rim")
+    .gain(0.42).hpf(1200).room(0.2)
+    .iter(4)
+    .color("silver"),
+
+  s("hh*16")
+    .gain("0.18 0.08 0.14 0.1").hpf(8000)
+    .degradeBy(0.22).chunk(4, x => x.rev())
+    .color("yellow"),
+
+  note("c2 ~ eb2 ~  g1 ~ bb1 ~")
+    .sound("sine").attack(0.002).release(0.25)
+    .gain(0.62)
+    .color("navy"),
+
+  note("c5 eb5 g5 bb5  d5 f5 g5 c6")
+    .sound("triangle").attack(0.004).release(0.18)
+    .gain(0.28).pan(0.58).degradeBy(0.35)
+    .off(1/16, x => x.add(7).gain(0.25))
+    .color("cyan")
+)

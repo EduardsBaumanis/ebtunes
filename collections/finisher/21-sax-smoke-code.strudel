@@ -1,0 +1,36 @@
+// "Sax Smoke Code"
+// Album: Finisher
+// Track: 21 of 40
+// Stage: Saxophone Afterhours, synthetic reeds, noir electronics.
+// Key: D Dorian
+// Tempo: 92 BPM (setcpm 23)
+// Feel: A sawtooth sax line in a small room after closing.
+
+setcpm(23)
+
+stack(
+
+  s("bd ~ ~ ~  ~ bd ~ ~")
+    .gain(0.62).lpf(500).room(0.18)
+    .color("crimson"),
+
+  s("~ ~ rim ~  ~ ~ sd ~")
+    .gain(0.42).hpf(1500).room(0.28)
+    .color("silver"),
+
+  s("hh*8")
+    .gain(0.16).hpf(6500).degradeBy(0.25)
+    .color("yellow"),
+
+  note("d2 ~ a1 ~  c2 ~ a1 ~")
+    .sound("sine").attack(0.006).release(0.45)
+    .gain(0.5)
+    .color("navy"),
+
+  note("d4 ~ f4 a4  ~ c5 a4 f4  g4 ~ a4 c5  d5 ~ c5 a4")
+    .sound("sawtooth").vowel("a")
+    .attack(0.04).release(0.32).lpf(2400)
+    .delay(0.35).delaytime(0.333).delayfeedback(0.24)
+    .gain(0.36).room(0.5).slow(2)
+    .color("gold")
+)

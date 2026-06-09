@@ -1,0 +1,39 @@
+// "Bone Rattle Last Bell"
+// Album: Finisher
+// Track: 23 of 40
+// Stage: Gabber and hardcore, but with one final bell still audible.
+// Key: A minor
+// Tempo: 208 BPM (setcpm 52)
+// Feel: Brutal, fast, strangely ceremonial.
+
+setcpm(52)
+
+stack(
+
+  s("bd*4")
+    .shape(0.6).distort(1.3).lpf(205)
+    .gain(0.88)
+    .color("red"),
+
+  note("a1*4")
+    .sound("sine").attack(0.001).release(0.1).shape(0.12)
+    .gain(0.5)
+    .color("navy"),
+
+  note("a4 c5 e5 a5  g5 e5 d5 c5  a4 c5 e5 d5  c5 a4 e4 a4")
+    .sound("sawtooth").lpf(2800).lpq(5).distort(0.55)
+    .attack(0.004).release(0.12)
+    .off(1/16, x => x.add(12).gain(0.18))
+    .gain(0.38).room(0.24)
+    .color("orange"),
+
+  s("hh*16")
+    .gain("0.23 0.11").hpf(7300)
+    .color("yellow"),
+
+  note("a6")
+    .sound("triangle").struct("x ~ ~ ~  ~ ~ ~ ~")
+    .attack(0.001).release(1.6).gain(0.28).room(0.55)
+    .slow(2)
+    .color("ivory")
+)

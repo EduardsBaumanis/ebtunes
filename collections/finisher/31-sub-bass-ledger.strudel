@@ -1,0 +1,38 @@
+// "Sub Bass Ledger"
+// Album: Finisher
+// Track: 31 of 40
+// Stage: The bass collection, pressure maps, wobble, and restraint.
+// Key: F minor
+// Tempo: 140 BPM (setcpm 35)
+// Feel: Every low note written down as a debt.
+
+setcpm(35)
+
+stack(
+
+  s("bd ~ ~ bd  ~ bd ~ ~")
+    .gain(0.82).lpf(150).shape(0.2)
+    .color("crimson"),
+
+  s("~ ~ cp ~  ~ ~ cp ~")
+    .gain(0.46).hpf(500).room(0.18)
+    .color("orange"),
+
+  s("hh*16")
+    .gain("0.22 0.09 0.16 0.11").hpf(7600)
+    .color("yellow"),
+
+  note("f1 ~ f1 ~  c2 ~ eb2 ~  f1 ~ ab1 ~  c2 eb2 ~ f1")
+    .sound("sine").attack(0.001).release(0.24).shape(0.22)
+    .gain(0.88)
+    .color("navy"),
+
+  note("f2 ~ c3 ~  eb3 ~ c3 ~")
+    .sound("sawtooth").lpf("200 420 260 520").lpq(5)
+    .attack(0.002).release(0.18).gain(0.32)
+    .color("purple"),
+
+  s("rim").euclid(7, 16)
+    .gain(0.28).hpf(3200).pan(0.64)
+    .color("silver")
+)

@@ -1,0 +1,35 @@
+// "Footwork Grid"
+// Album: Finisher
+// Track: 17 of 40
+// Stage: Chicago footwork, juke edits, and fast bodies.
+// Key: C minor
+// Tempo: 160 BPM (setcpm 40)
+// Feel: Feet drawing a grid faster than the head can label it.
+
+setcpm(40)
+
+stack(
+
+  s("bd ~ ~ bd  ~ bd ~ ~")
+    .gain(0.8).lpf(160).shape(0.18)
+    .color("crimson"),
+
+  s("~ cp ~ ~  cp ~ ~ cp")
+    .gain(0.52).hpf(550).room(0.18)
+    .color("coral"),
+
+  s("hh*16")
+    .gain("0.24 0.10 0.18 0.12").hpf(8200)
+    .swingBy(0.2, 4)
+    .color("yellow"),
+
+  note("c2 ~ g1 ~  c2 eb2 ~ g1  c2 ~ bb1 ~  g1 c2 ~ eb2")
+    .sound("sine").attack(0.001).release(0.18).shape(0.15)
+    .gain(0.78)
+    .color("navy"),
+
+  note("c5 eb5 g5 c6  bb5 g5 eb5 c5")
+    .sound("square").attack(0.001).release(0.09)
+    .gain(0.22).pan(0.58).degradeBy(0.25)
+    .color("magenta")
+)

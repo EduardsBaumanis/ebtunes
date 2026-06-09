@@ -1,0 +1,33 @@
+// "Study Phase Return"
+// Album: Finisher
+// Track: 11 of 40
+// Stage: Minimal study pieces and phase-music experiments.
+// Key: D Dorian
+// Tempo: 80 BPM (setcpm 20)
+// Feel: The same line, slightly misremembered by its reflection.
+
+setcpm(20)
+
+stack(
+
+  note("d4 e4 f4 g4 a4 g4 f4 e4  d4 e4 f4 g4 a4 g4 d4 a3")
+    .sound("triangle")
+    .attack(0.006).release(0.32).gain(0.36)
+    .pan(0.28).slow(4)
+    .color("cyan"),
+
+  note("d4 e4 f4 g4 a4 g4 f4 e4  d4 e4 f4 g4 a4 g4 d4 a3")
+    .sound("triangle")
+    .attack(0.006).release(0.32).gain(0.32)
+    .pan(0.72).slow(4.05)
+    .color("teal"),
+
+  note("d2 ~ a2 ~")
+    .sound("sawtooth").lpf(260)
+    .attack(0.02).release(0.5).gain(0.42).slow(2)
+    .color("purple"),
+
+  s("white*16")
+    .gain(0.045).hpf(6200).degradeBy(0.55)
+    .color("gray")
+)

@@ -1,0 +1,37 @@
+// "UKG Nightbus"
+// Album: Finisher
+// Track: 20 of 40
+// Stage: UK garage, sublow bounce, shuffles, and wet streets.
+// Key: F minor
+// Tempo: 134 BPM (setcpm 33.5)
+// Feel: Nightbus window, shuffled hats, bass leading the route.
+
+setcpm(33.5)
+
+stack(
+
+  note("f1 ~ c2 ~  f1 ab1 c2 ~  f1 ~ eb2 ~  f1 ab1 c2 db2")
+    .sound("sine").attack(0.001).release(0.22).shape(0.18)
+    .gain(0.86).pan(0.5)
+    .color("navy")
+    ._pianoroll({ cycles: 2, labels: true }),
+
+  s("bd ~ ~ bd  ~ bd ~ ~")
+    .gain(0.78).lpf(170).shape(0.13)
+    .color("crimson"),
+
+  s("~ ~ sd ~  ~ ~ ~ ~")
+    .gain(0.55).hpf(900).room(0.2)
+    .color("orange"),
+
+  s("hh*16")
+    .swingBy(0.4, 2)
+    .gain("0.24 0.13 0.21 0.15").hpf(7300)
+    .color("yellow"),
+
+  note("[f3,ab3,c4,eb4,g4]")
+    .sound("sawtooth").vowel("u")
+    .attack(2.0).release(4.5).lpf(1700)
+    .gain(0.2).room(0.55).slow(2)
+    .color("indigo")
+)

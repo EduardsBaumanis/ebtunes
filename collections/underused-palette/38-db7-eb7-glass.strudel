@@ -1,0 +1,48 @@
+// "Db7 Eb7 Glass"
+// Album: Underused Palette
+// Track: 38 of 40
+// Palette sounds: alphabet:4, numbers:7
+// Palette notes: db7, eb7, ds6
+// Key: High flat glass
+// Tempo: 70 BPM (setcpm 17.5)
+// Feel: Flat and sharp high notes refracting the same light.
+
+setcpm(17.5)
+
+stack(
+
+  // Rare sound token layer.
+  s("alphabet:4 ~ numbers:7 ~ ~ alphabet:4 ~ numbers:7")
+    .gain(0.30).hpf(850).room(0.24)
+    .delay(0.2).delaytime(0.25).delayfeedback(0.18)
+    .color("pink"),
+
+  // Sparse support pulse, kept quiet so the rare colors lead.
+  s("bd ~ ~ bd  ~ ~ bd ~")
+    .gain(0.48).lpf(190).shape(0.08)
+    .color("crimson"),
+
+  s("hh*8")
+    .gain(0.12).hpf(7200).degradeBy(0.24)
+    .color("yellow"),
+
+  // Register-color line made from low-count explicit notes.
+  note("db7 eb7 ds6 ds6  eb7 db7 db7 eb7")
+    .sound("triangle").attack(0.008).release(0.45)
+    .delay(0.32).delaytime(0.375).delayfeedback(0.22)
+    .gain(0.28).room(0.46).slow(2)
+    .color("cyan"),
+
+  // Long pad preserves the odd spelling instead of normalising it away.
+  note("[db7,eb7,ds6]")
+    .sound("sawtooth").vowel("u")
+    .attack(1.2).release(3.2).lpf(1350)
+    .gain(0.18).room(0.62).slow(4)
+    .color("teal"),
+
+  // Sub or anchor note from the same rare-note set.
+  note("db7")
+    .sound("sine").attack(0.02).release(1.4)
+    .gain(0.34).slow(2)
+    .color("navy")
+)

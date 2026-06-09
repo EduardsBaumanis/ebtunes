@@ -1,0 +1,40 @@
+// "Amens Under Glass"
+// Album: Finisher
+// Track: 35 of 40
+// Stage: Amen demos, break science, and the sample-pack shelf.
+// Key: D minor
+// Tempo: 172 BPM (setcpm 43)
+// Pack: github:Bubobubobubobubo/Dough-Amen
+// Feel: Break fragments behind a museum pane, still moving.
+
+samples('github:Bubobubobubobubo/Dough-Amen')
+
+setcpm(43)
+
+stack(
+
+  s("amen").chop(16)
+    .struct("x x ~ x  ~ x x ~  x ~ x x  ~ x ~ x")
+    .gain(0.68).hpf(80)
+    .color("orange"),
+
+  note("d1 ~ ~ a1  ~ d2 ~ a1")
+    .sound("sine").attack(0.002).release(0.24)
+    .gain(0.72)
+    .color("navy"),
+
+  s("hh*16")
+    .gain(0.08).hpf(8500).degradeBy(0.45)
+    .color("yellow"),
+
+  note("d4 f4 a4 c5  e5 c5 a4 f4")
+    .sound("triangle").attack(0.003).release(0.16)
+    .gain(0.22).pan(0.58).degradeBy(0.3)
+    .color("cyan"),
+
+  note("<[d3,f3,a3,c4] [bb2,d3,f3,a3]>")
+    .sound("sawtooth").vowel("o")
+    .attack(0.8).release(2.0).lpf(1400)
+    .gain(0.18).room(0.48).slow(4)
+    .color("purple")
+)

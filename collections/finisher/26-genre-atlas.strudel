@@ -1,0 +1,40 @@
+// "Genre Atlas"
+// Album: Finisher
+// Track: 26 of 40
+// Stage: The 50-genre atlas compressed into one club map.
+// Key: A minor
+// Tempo: 124 BPM (setcpm 31)
+// Feel: Boom-bap, dub, house, trance, and drone sharing one page.
+
+setcpm(31)
+
+stack(
+
+  s("bd ~ ~ bd  ~ bd ~ ~")
+    .gain(0.76).lpf(180).shape(0.15)
+    .color("crimson"),
+
+  s("~ ~ sd ~  cp ~ sd ~")
+    .gain(0.48).hpf(700).room(0.22)
+    .color("orange"),
+
+  s("hh*16")
+    .gain("0.23 0.10 0.18 0.12").hpf(7600)
+    .swingBy(0.12, 4)
+    .color("yellow"),
+
+  note("a1 ~ e2 ~  g1 ~ d2 ~")
+    .sound("sine").attack(0.002).release(0.28)
+    .gain(0.7)
+    .color("navy"),
+
+  note("<[a3,c4,e4,g4] [f3,a3,c4,e4] [d3,f3,a3,c4] [g3,b3,d4,f4]>")
+    .sound("sawtooth").vowel("u")
+    .attack(0.2).release(1.4).lpf(1800)
+    .gain(0.24).room(0.48).slow(2)
+    .color("teal"),
+
+  s("tabla").euclid(5, 8)
+    .gain(0.22).hpf(900).pan(0.6)
+    .color("sienna")
+)

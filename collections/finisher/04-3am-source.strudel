@@ -1,0 +1,41 @@
+// "3am Source"
+// Album: Finisher
+// Track: 04 of 40
+// Stage: The lo-fi rain root that taught the repo warmth.
+// Key: C minor
+// Tempo: 72 BPM (setcpm 18)
+// Chords: Cm7 - Abmaj7 - Ebmaj7 - Bb7
+// Feel: Dust, lamp light, soft hats, patient chords.
+
+setcpm(18)
+
+stack(
+
+  s("bd ~ ~ ~  bd ~ ~ ~")
+    .gain(0.74).lpf(3000).room(0.12)
+    .color("crimson"),
+
+  s("~ ~ sd ~  ~ ~ sd ~")
+    .gain(0.55).room(0.18)
+    .color("orange"),
+
+  s("[hh [~ hh]]*4")
+    .gain(0.22).lpf(7800).room(0.08).pan(0.58)
+    .color("khaki"),
+
+  note("c2 eb2 g2 bb2  ab2 c3 eb3 g3  eb2 g2 bb2 d3  bb2 d3 f3 ab3")
+    .sound("sawtooth").lpf(210)
+    .attack(0.006).release(0.12).gain(0.54).slow(2)
+    .color("purple"),
+
+  note("<[c4,eb4,g4,bb4] [ab3,c4,eb4,g4] [eb4,g4,bb4,d5] [bb3,d4,f4,ab4]>")
+    .sound("sawtooth").attack(0.08).release(0.65)
+    .lpf(1800).room(0.42).gain(0.25).slow(2)
+    .color("teal"),
+
+  note("c5 ~ eb5 ~  g4 bb4 ~ c5  ~ ~ g4 ~  f4 ~ eb4 ~")
+    .sound("triangle").attack(0.015).release(0.42)
+    .delay(0.38).delaytime(0.375).delayfeedback(0.24)
+    .gain(0.36).room(0.5).slow(2)
+    .color("cyan")
+)

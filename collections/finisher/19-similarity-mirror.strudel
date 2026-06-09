@@ -1,0 +1,40 @@
+// "Similarity Mirror"
+// Album: Finisher
+// Track: 19 of 40
+// Stage: The metric-driven similarity-gradient album looking back.
+// Key: G minor
+// Tempo: 56 BPM (setcpm 14)
+// Feel: Familiar enough to be recognised, bent enough to answer back.
+
+setcpm(14)
+
+stack(
+
+  note("g1").sound("sine")
+    .attack(7).release(13).gain(0.42)
+    .color("midnightblue"),
+
+  note("[g2,bb2,d3]")
+    .sound("sawtooth").vowel("o")
+    .attack(5).release(10).lpf(1200)
+    .gain(0.34).room(0.75).slow(4)
+    .color("purple"),
+
+  note("[bb3,d4,f4]")
+    .sound("sawtooth").vowel("u")
+    .attack(6).release(10).lpf(1900)
+    .gain(0.3).room(0.72).slow(4)
+    .color("teal"),
+
+  note("g5 ~ ~ bb5  ~ d5 ~ ~")
+    .sound("triangle").attack(0.05).release(2.5)
+    .delay(0.52).delaytime(0.625).delayfeedback(0.42)
+    .gain(0.28).room(0.8).slow(4)
+    .color("cyan")
+    ._pianoroll({ cycles: 4, labels: true }),
+
+  s("white*8")
+    .gain("0.04 0.06 0.035 0.05").hpf(500)
+    .lpf(3000).slow(4)
+    .color("gray")
+)

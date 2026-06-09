@@ -1,0 +1,37 @@
+// "Sample Pack Postcard"
+// Album: Finisher
+// Track: 15 of 40
+// Stage: The GitHub sample-pack expedition, folded back into song form.
+// Key: A minor
+// Tempo: 92 BPM (setcpm 23)
+// Pack: github:felixroos/dough-samples
+// Feel: A postcard from the sample archive, with default sounds still nearby.
+
+samples('github:felixroos/dough-samples')
+
+setcpm(23)
+
+stack(
+
+  s("bd ~ ~ ~  bd ~ sd ~")
+    .gain(0.65).lpf(1700).room(0.14)
+    .color("crimson"),
+
+  s("hh*8")
+    .gain(0.18).hpf(6500).degradeBy(0.18)
+    .color("yellow"),
+
+  note("a1 ~ e2 ~  g1 ~ e2 ~")
+    .sound("sine").attack(0.005).release(0.4)
+    .gain(0.58)
+    .color("navy"),
+
+  note("<[a3,c4,e4,g4] [f3,a3,c4,e4] [d3,f3,a3,c4] [e3,g3,b3,d4]>")
+    .s("piano").attack(0.04).release(1.2)
+    .gain(0.48).room(0.45).slow(2)
+    .color("ivory"),
+
+  s("tabla").euclid(5, 8)
+    .gain(0.26).hpf(900).pan(0.63)
+    .color("sienna")
+)

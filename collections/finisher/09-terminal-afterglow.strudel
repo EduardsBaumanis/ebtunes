@@ -1,0 +1,40 @@
+// "Terminal Afterglow"
+// Album: Finisher
+// Track: 09 of 40
+// Stage: The programming songs, CRT green, and late-night focus.
+// Key: G minor
+// Tempo: 88 BPM (setcpm 22)
+// Feel: IDE still open after the music stopped explaining itself.
+
+setcpm(22)
+
+stack(
+
+  s("bd ~ ~ ~  ~ ~ bd ~")
+    .gain(0.64).lpf(1800)
+    .color("green"),
+
+  s("~ ~ sd ~  ~ rim ~ ~")
+    .gain(0.44).hpf(1200).room(0.22)
+    .color("lime"),
+
+  s("hh*8")
+    .gain(0.16).hpf(7200).degradeBy(0.2)
+    .color("yellow"),
+
+  note("g1 ~ d2 ~  f2 ~ d2 ~")
+    .sound("sawtooth").lpf(240).lpq(2)
+    .attack(0.01).release(0.35).gain(0.52)
+    .color("darkgreen"),
+
+  note("<[g3,bb3,d4,f4] [eb3,g3,bb3,d4] [f3,a3,c4,eb4] [d3,f3,a3,c4]>")
+    .sound("sawtooth").attack(0.4).release(1.8).lpf(1600)
+    .gain(0.24).room(0.55).slow(2)
+    .color("teal"),
+
+  note("d5 ~ f5 ~  g5 ~ f5 d5")
+    .sound("triangle").attack(0.02).release(0.6)
+    .delay(0.35).delaytime(0.333).delayfeedback(0.26)
+    .gain(0.3).room(0.5).slow(2)
+    .color("cyan")
+)

@@ -2,7 +2,7 @@
 
 Personīgs eksperimentu lauks, lai apgūtu [Strudel](https://strudel.cc) —
 pārlūkā darbojošos live-coding vidi mūzikas veidošanai ar kodu. Šajā
-repozitorijā ir vairāk nekā **300 oriģināli `.strudel` skaņdarbi**, divi
+repozitorijā ir vairāk nekā **700 `.strudel` skaņdarbi**, divi
 mācību kursi, vairāki atskaņotāji ar vērtēšanu un līderlisti, kā arī
 rīki, kas to visu sasaista.
 
@@ -50,6 +50,8 @@ Strudel IDE, vērtēšanu un līderlisti:
 | [`collections/uk-garage/`](collections/uk-garage/) | Londonas UK Garage / 2-step — šuflēti 16-tie, sub-bass, vokālie čopi | 20 |
 | [`collections/saxophone-afterhours/`](collections/saxophone-afterhours/) | Saksofona ass elektroniskais džezs — naktīgs, noir, dub, glitch, free; saksofons sintezēts ar sawtooth + vowel | 20 |
 | [`collections/bone-rattle-gabber/`](collections/bone-rattle-gabber/) | Gabber / hardcore — kropļoti kiki, kaulus drebinošs sub-bass, industriālā perkusija, reiva stabi | 20 |
+| [`collections/finisher/`](collections/finisher/) | Noslēguma albums — 40 skaņdarbi, kas iziet cauri repo attīstības posmiem no ritma pamatiem līdz pēdējai arhīva elpai | 40 |
+| [`collections/underused-palette/`](collections/underused-palette/) | Reto skaņu un nošu albums — 40 skaņdarbi no kataloga "Underused Palette Ideas" (`alphabet:*`, `numbers:*`, `amen`, `break`, ekstremāli reģistri) | 40 |
 
 Daži favorīti:
 
@@ -61,6 +63,8 @@ Daži favorīti:
 - `collections/gardens-of-broken-clocks/17-clockstone` — viens akords aizturēts 8 ciklus, lēni atveras filtrs
 - `courses/TehnoSkola/techno-08-melodic-techno` — melodiskais tehno ar Detroitas saknēm
 - `collections/prog/song-06-terminal-green` — CRT fosfora zaļš, kompilēšanās laikā
+- `collections/finisher/40-end-of-experiment` — noslēguma drons: pulss, koris, lietus un pēdējā nots
+- `collections/underused-palette/40-underused-palette-choir` — reto semplu un ekstremālo nošu koris
 
 ---
 
@@ -125,6 +129,7 @@ Detroita · Berlīnes minimālisms · Skābe · Dabs · Industriālais · Cietai
 | [`docs/SUPABASE_SETUP.md`](docs/SUPABASE_SETUP.md) | Soli pa solim, kā iestatīt Supabase projektu ar `song_votes` tabulu, `leaderboard` skatu un Realtime publikāciju. Atskaņotāji izmanto vienu un to pašu backendu, un balsis tiek apvienotas starp visām trim lietotnēm. |
 | [`docs/supabase-setup.sql`](docs/supabase-setup.sql) | Idempotents SQL skripts, kas atbilst SUPABASE_SETUP.md — palaiž to Supabase SQL Editor. |
 | [`docs/STRUCTURE.md`](docs/STRUCTURE.md) | Avota mapju un GitHub Pages publisko ceļu karte, lai reorganizācija nesalauztu vecās saites. |
+| [`docs/SONG_GENERATION_CATALOG.md`](docs/SONG_GENERATION_CATALOG.md) | Skaņu, instrumentu, nošu, akordu un semplu paku skaitītais katalogs — praktisks ceļvedis nākamo `.strudel` skaņdarbu ģenerēšanai. |
 
 ---
 

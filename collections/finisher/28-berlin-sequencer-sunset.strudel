@@ -1,0 +1,36 @@
+// "Berlin Sequencer Sunset"
+// Album: Finisher
+// Track: 28 of 40
+// Stage: Berlin-school arpeggios, analog drift, and sequencer patience.
+// Key: E minor
+// Tempo: 96 BPM (setcpm 24)
+// Feel: Tangerine pulse fading into terminal dusk.
+
+setcpm(24)
+
+stack(
+
+  note("e2 b2 g3 b2  e3 b2 g3 b2")
+    .sound("sawtooth").lpf(700).lpq(4)
+    .attack(0.005).release(0.16).gain(0.46)
+    .color("orange"),
+
+  note("e1")
+    .sound("sine").attack(2).release(4)
+    .gain(0.42).slow(4)
+    .color("navy"),
+
+  note("<[e3,g3,b3,d4] [c3,e3,g3,b3] [a2,c3,e3,g3] [b2,d3,fs3,a3]>")
+    .sound("sawtooth").vowel("u")
+    .attack(1.5).release(4).lpf(1500)
+    .gain(0.24).room(0.62).slow(4)
+    .color("teal"),
+
+  s("bd ~ ~ ~  ~ ~ ~ ~")
+    .gain(0.42).lpf(180).slow(2)
+    .color("crimson"),
+
+  s("hh*8")
+    .gain(0.12).hpf(7000).degradeBy(0.35)
+    .color("yellow")
+)

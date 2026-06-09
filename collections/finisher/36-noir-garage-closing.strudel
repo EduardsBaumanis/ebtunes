@@ -1,0 +1,37 @@
+// "Noir Garage Closing"
+// Album: Finisher
+// Track: 36 of 40
+// Stage: Sax hours and UK garage sharing the last train.
+// Key: D minor
+// Tempo: 132 BPM (setcpm 33)
+// Feel: Rainy 2-step with a synthetic sax ghost.
+
+setcpm(33)
+
+stack(
+
+  s("bd ~ ~ bd  ~ bd ~ ~")
+    .gain(0.76).lpf(160).shape(0.13)
+    .color("crimson"),
+
+  s("~ ~ sd ~  ~ ~ ~ sd")
+    .gain(0.5).hpf(900).room(0.22)
+    .color("orange"),
+
+  s("hh*16")
+    .swingBy(0.36, 2)
+    .gain("0.21 0.10 0.18 0.12").hpf(7300)
+    .color("yellow"),
+
+  note("d1 ~ a1 ~  d2 f2 ~ a1")
+    .sound("sine").attack(0.001).release(0.22).shape(0.12)
+    .gain(0.78)
+    .color("navy"),
+
+  note("d4 ~ f4 a4  ~ c5 a4 f4  e4 ~ f4 a4  d5 ~ c5 a4")
+    .sound("sawtooth").vowel("a")
+    .attack(0.025).release(0.28).lpf(2600)
+    .delay(0.32).delaytime(0.375).delayfeedback(0.24)
+    .gain(0.34).room(0.46).slow(2)
+    .color("gold")
+)
