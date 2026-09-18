@@ -43,9 +43,9 @@ stack(
   // The lpf() takes a pattern of cutoff values that step across the
   // 16th-note grid — this is what gives the 303 its "talking" quality.
   // lpq(15) at near-self-oscillation creates the classic squelch.
-  // .scale("A:minorPentatonic") lets us use degree numbers as notes.
+  // .scale("A:minor pentatonic") lets us use degree numbers as notes.
   note("0 7 0 5 7 0 5 7  3 0 7 0 5 7 3 0")
-    .scale("A:minorPentatonic")
+    .scale("A:minor pentatonic")
     .add("<0 0 12 12>")           // jump octaves every 4 cycles
     .sound("sawtooth")
     .lpf("400 600 1000 1600 2500 3500 2200 1200")

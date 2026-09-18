@@ -65,7 +65,7 @@ stack(
   // ── RANDOM ALPHABET SCATTER — different letter per cycle ──────
   // wchoose lets you bias the random pick. Here it's used to keep
   // throwing different alphabet letters into the texture.
-  s(wchoose([
+  s(wchoose(...[
     ["alphabet:5",  2],
     ["alphabet:18", 2],
     ["alphabet:21", 1],

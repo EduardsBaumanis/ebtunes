@@ -10,7 +10,7 @@
 //         only piano music takes advantage. Spiraling motifs
 //         exploit the pentatonic's symmetry — same shape works
 //         starting on every degree.
-// Strudel: .scale("Fs:majorPentatonic") + integer degrees. The
+// Strudel: .scale("Fs:major pentatonic") + integer degrees. The
 //          pattern "0 2 4 0 7 4 2 0" is a 5-note spiral that
 //          climbs out beyond an octave using degree 7 (= +1
 //          octave from degree 0).
@@ -33,7 +33,7 @@ stack(
   // Spiraling melody. Each cycle the shape transposes
   // within the pentatonic via the .chunk transposition.
   note("0 2 4 0 7 4 2 0  1 3 5 1 8 5 3 1")
-    .scale("Fs:majorPentatonic")
+    .scale("Fs:major pentatonic")
     .s("triangle").attack(0.005).release(0.18).gain(0.4)
     .delay(0.3).delaytime(0.166).delayfeedback(0.35)
     .room(0.5).pan(0.55)

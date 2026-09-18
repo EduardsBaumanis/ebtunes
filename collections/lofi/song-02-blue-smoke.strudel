@@ -38,7 +38,8 @@ stack(
   // the hi-hat sits in the back third of the beat (triplet swing).
   s("[hh [~ hh]]*4")
     .gain(0.28)
-    .hpf(5200)\n    .room(0.1)
+    .hpf(5200)
+    .room(0.1)
     .pan(0.64)
     .room(0.06),
 

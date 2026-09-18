@@ -1,23 +1,40 @@
 {
-  "name": "lofi-player-with-votes",
+  "name": "ebtunes",
   "version": "1.0.0",
-  "description": "Lofi music player with song rating",
+  "description": "Strudel songbook and static player",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
     "dev": "nodemon server/server.js",
-    "install-deps": "npm install"
+    "install-deps": "npm install",
+    "prestart": "npm run build:player",
+    "predev": "npm run build:player",
+    "build:player": "node tools/build-player.mjs",
+    "build:site": "node tools/build-site.mjs",
+    "test": "node --test tests/player/*.test.mjs",
+    "test:player": "playwright test",
+    "check:player": "npm run build:site && npm test && npm run test:player"
   },
-  "keywords": ["lofi", "music", "strudel", "ratings"],
-  "author": "Eduarda Baumaņa",
+  "keywords": [
+    "lofi",
+    "music",
+    "strudel",
+    "ratings"
+  ],
+  "author": "Eduarda Bauma\u0146a",
   "license": "AGPL-3.0",
   "dependencies": {
-    "express": "^4.18.2",
+    "@supabase/supabase-js": "^2.43.4",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "@supabase/supabase-js": "^2.43.4"
+    "express": "^4.18.2"
   },
   "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@strudel/repl": "1.3.0",
     "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

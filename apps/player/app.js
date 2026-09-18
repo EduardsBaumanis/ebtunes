@@ -1,763 +1,346 @@
-// Copyright (C) 2024 Eduarda Baumaņa. AGPL-3.0.
+// Copyright (C) 2026 Eduarda Baumaņa. AGPL-3.0.
+import { fetchText, loadCatalog, readRoute } from './lib/catalog.mjs';
+import { Playback } from './lib/playback.mjs';
 
-// ── State ────────────────────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+const base = new URL('./', import.meta.url);
+const starter = '// Make something of your own.\nsetcpm(100 / 4)\nstack(\n  s("bd ~ bd ~").gain(0.6),\n  note("c3 eb3 g3 bb3").sound("triangle").gain(0.3)\n)\n';
+let catalog, album, track, original = '', sequence = 0, loading, view = 'library', retryAction;
+let boardTimer, boardSequence = 0, voteBusy = false;
+const codeCache = new Map();
+const trackIndex = new Map();
+const drafts = new Map();
+let ratingsPromise;
+const ratings = () => ratingsPromise ||= import('./supabase.js').catch(error => { ratingsPromise = null; throw error; });
 
-const codeCache       = new Map();   // song path -> { fetchedAt, entry }
-const expandedGroups  = new Set();   // sidebar groups currently expanded
-const SONG_CACHE_MS   = 5000;        // avoids duplicate fetches from click + label refresh
-const BUILD_MODE_ID   = 'build';
-const BUILD_LABEL     = 'Uzbuvē pats';
-const BLANK_STRUDEL_CODE = ' ';
-let currentPlaylist   = null;        // playlist object
-let currentFilename   = null;        // string
-let currentSongId     = null;        // "playlist_id/filename" — supabase key
-let buildModeActive   = false;
-let boardActive       = false;
-
-// ── DOM refs (resolved in init) ──────────────────────────────────────────────
-
-let elPlayPane, elBoardPane;
-let elTree, elSidebar, elBackdrop, elMenuToggle;
-let elTabPlay, elTabBoard;
-let elCounter, elTitle, elKey, elBpm, elPack, elFeel, elChords;
-let elBtnNot, elBtnHot;
-let elBoardContent, elBoardStatus;
-
-// ── Strudel iframe ───────────────────────────────────────────────────────────
-//
-// We embed strudel.cc itself via an iframe instead of hosting the
-// strudel-editor web component locally. Hand the song's code to
-// strudel.cc as base64 in the URL hash and it loads with the code
-// pre-filled and its native transport bar (▶ ⟳ ⏮ ⏭). This is the
-// same trick the old lofi-rater used and the only setup we've
-// confirmed works reliably on mobile.
-
-function strudelUrlFor(code) {
-  // btoa(unescape(encodeURIComponent(...))) is the standard "base64
-  // a UTF-8 string" recipe — handles non-ASCII chord names, accented
-  // comments, etc., without throwing on btoa's Latin-1 limitation.
-  return 'https://strudel.cc/#' + btoa(unescape(encodeURIComponent(code)));
+function showError(message, retry) {
+  $('error-message').textContent = message;
+  $('error-banner').hidden = false;
+  $('retry').hidden = !retry;
+  retryAction = retry;
 }
-
-function loadIntoFrame(code) {
-  const old = document.getElementById('strudel-frame');
-  if (!old) return;
-  // Setting iframe.src to a URL that differs only in the #fragment is
-  // treated as a fragment-only navigation — the iframe scrolls but does
-  // NOT reload, so the new code never runs. Replace the element instead.
-  // Cloning the old node's attributes keeps the layout identical; we
-  // just swap in a fresh element so the browser does a full load.
-  const fresh = document.createElement('iframe');
-  fresh.id        = old.id;
-  fresh.className = old.className;
-  fresh.title     = old.title || 'Strudel REPL';
-  fresh.allow     = old.allow || 'autoplay; clipboard-read; clipboard-write';
-  fresh.loading   = old.loading || 'lazy';
-  fresh.src       = strudelUrlFor(code);
-  old.replaceWith(fresh);
+function clearError() { $('error-banner').hidden = true; retryAction = null; }
+function closeMenu() {
+  document.body.classList.remove('menu-open');
+  $('menu').setAttribute('aria-expanded', 'false');
+  $('backdrop').hidden = true;
 }
-
-// ── Metadata parser (same shape as lofi-player) ──────────────────────────────
-
-function humanize(filename) {
-  return filename
-    .replace(/\.(strudel|txt)$/, '')
-    .replace(/^[a-z]+-\d+-/i, '')
-    .replace(/[-_]/g, ' ');
-}
-
-function parseMeta(filename, code) {
-  const quoted = code.match(/^\/\/\s*"([^"]+)"/m);
-  if (quoted) {
-    const afterTitle  = code.match(/^\/\/\s*"[^"]+"\n\/\/\s*(.+)/m);
-    const keyMatch    = code.match(/^\/\/\s*Key:\s*(.+)/m);
-    const bpmMatch    = code.match(/~?(\d+)\s*BPM/i);
-    const feelMatch   = code.match(/^\/\/\s*Feel:\s*(.+)/m);
-    const chordsMatch = code.match(/^\/\/\s*Chords:\s*(.+)/m);
-    return {
-      title:    quoted[1],
-      subtitle: afterTitle   ? afterTitle[1].trim()         : '',
-      key:      keyMatch     ? keyMatch[1].trim()           : '',
-      bpm:      bpmMatch     ? parseInt(bpmMatch[1], 10)    : 0,
-      feel:     feelMatch    ? feelMatch[1].trim()          : '',
-      chords:   chordsMatch  ? chordsMatch[1].trim()        : '',
-    };
-  }
-  return {
-    title:    humanize(filename),
-    subtitle: '', key: '', bpm: 0, feel: '', chords: '',
-  };
-}
-
-function songPath(playlist, filename) {
-  return playlist.path + filename;
-}
-
-function freshSongUrl(playlist, filename) {
-  const url = new URL(songPath(playlist, filename), window.location.href);
-  url.searchParams.set('v', Date.now().toString(36));
-  return url.href;
-}
-
-async function fetchSong(playlist, filename) {
-  const key = songPath(playlist, filename);
-  const cached = codeCache.get(key);
-  if (cached && Date.now() - cached.fetchedAt < SONG_CACHE_MS) {
-    return cached.entry;
-  }
-
-  const url = freshSongUrl(playlist, filename);
-  try {
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const code  = await res.text();
-    const meta  = parseMeta(filename, code);
-    const entry = { filename, code, meta };
-    codeCache.set(key, { fetchedAt: Date.now(), entry });
-    return entry;
-  } catch (err) {
-    console.error('fetch failed:', url, err);
-    return {
-      filename,
-      code: '// Could not load file. Run a local server (npx serve .) so fetch() works.\nsilence',
-      meta: parseMeta(filename, ''),
-    };
+function showView(next) {
+  view = next;
+  for (const name of ['library', 'track', 'board']) $(`${name}-view`).hidden = name !== next;
+  $('library-tab').classList.toggle('active', next !== 'board');
+  $('board-tab').classList.toggle('active', next === 'board');
+  clearInterval(boardTimer);
+  boardSequence++;
+  if (next === 'board') {
+    refreshBoard();
+    boardTimer = setInterval(() => { if (!document.hidden) refreshBoard(); }, 60000);
   }
 }
-
-// ── Player links ─────────────────────────────────────────────────────────────
-
-function albumUrl(playlist, filename = '') {
-  const url = new URL(window.location.href);
-  url.search = '';
-  url.hash = '';
-  url.searchParams.set('album', playlist.id);
-  if (filename) url.searchParams.set('song', filename);
-  return url;
+function rememberDraft() {
+  if (!original) return;
+  const code = currentCode();
+  if (code !== original) drafts.set(track?.id || 'build', code);
+  else drafts.delete(track?.id || 'build');
 }
-
-function buildUrl() {
-  const url = new URL(window.location.href);
-  url.search = '';
-  url.hash = '';
-  url.searchParams.set('mode', BUILD_MODE_ID);
-  return url;
+function currentCode() { return $('engine-host').hidden ? $('source').value : playback.getCode(); }
+function edited(code) {
+  $('source').value = code;
+  $('edit-status').textContent = code !== original ? '· EDITED' : '';
 }
-
-function updatePlayerUrl(playlist, filename = '') {
-  window.history.replaceState(null, '', albumUrl(playlist, filename));
-}
-
-function updateBuildUrl() {
-  window.history.replaceState(null, '', buildUrl());
-}
-
-function routeFromUrl() {
-  const query = new URLSearchParams(window.location.search);
-  let mode = query.get('mode') || '';
-  let album = query.get('album') || query.get('playlist') || '';
-  let song = query.get('song') || '';
-
-  if (!album && window.location.hash) {
-    const hash = decodeURIComponent(window.location.hash.slice(1));
-    if (hash.includes('=')) {
-      const hashParams = new URLSearchParams(hash);
-      mode = hashParams.get('mode') || mode;
-      album = hashParams.get('album') || hashParams.get('playlist') || '';
-      song = hashParams.get('song') || '';
-    } else {
-      album = hash;
-    }
-  }
-
-  return { mode, album, song };
-}
-
-function playerPlaylists() {
-  if (typeof PLAYLISTS === 'undefined') return [];
-  return PLAYLISTS.filter(pl => pl.mode === 'player');
-}
-
-function findPlaylist(plId) {
-  const target = plId.trim().toLowerCase();
-  if (!target) return null;
-  return playerPlaylists().find(pl => pl.id.toLowerCase() === target) || null;
-}
-
-function initialSelection() {
-  const route = routeFromUrl();
-  if (route.mode === BUILD_MODE_ID || route.album === BUILD_MODE_ID || (!route.album && !route.song)) {
-    return { build: true };
-  }
-
-  const playlists = playerPlaylists();
-  if (!playlists.length) return { build: true };
-  const playlist = findPlaylist(route.album) || playlists[0];
-  const songIdx = route.song ? playlist.files.indexOf(route.song) : -1;
-  const idx = songIdx >= 0 ? songIdx : 0;
-  return { playlist, filename: playlist.files[idx], idx };
-}
-
-function isPublicSongId(songId) {
-  const [plId] = songId.split('/');
-  return playerPlaylists().some(pl => pl.id === plId);
-}
-
-// ── Live collection discovery ─────────────────────────────────────────────────
-//
-// playlists.js still supplies each collection's id/label/theme/path (and an
-// initial `files` list so the sidebar has something correct to paint
-// immediately). But that list is hand-maintained, so it can lag behind
-// what's actually in collections/<name>/. To make "drop a file in the
-// folder" work here the same way it already does in apps/izlase, we fetch
-// the real file list live — GitHub Contents API on the deployed site,
-// directory-listing HTML as a local-dev fallback — and patch it in.
-//
-// Discovery is lazy (only for the collection currently open) rather than
-// firing for all ~30 collections on load: GitHub's unauthenticated Contents
-// API is rate-limited per IP, and most sessions only ever look at a handful
-// of albums.
-
-function detectRepo() {
-  const host = location.hostname;
-  const path = location.pathname;
-  if (host.endsWith('.github.io')) {
-    const owner = host.split('.')[0];
-    const m = path.match(/^\/([^/]+)\//);
-    if (m) return { owner, repo: m[1] };
-  }
-  return { owner: 'eduardsbaumanis', repo: 'ebtesti' };
-}
-
-const REPO   = detectRepo();
-const BRANCH = 'main';
-const discoveredFiles   = new Map(); // playlist.id -> string[] (resolved list)
-const discoveryInFlight = new Map(); // playlist.id -> Promise
-
-// pl.path is page-relative (e.g. "../../collections/fog-techno/"). The
-// GitHub Contents API needs a repo-root-relative path instead, so resolve
-// the URL against this page and slice from the "collections" segment —
-// works whether Pages serves from a repo subpath or the app runs at root.
-function repoRelativePath(pl) {
-  const resolved = new URL(pl.path, window.location.href).pathname;
-  const parts = resolved.split('/').filter(Boolean);
-  const idx = parts.indexOf('collections');
-  if (idx !== -1) return parts.slice(idx).join('/').replace(/\/$/, '');
-  // Deployed Pages build flattens apps/* and collections/* to the site
-  // root (see .github/workflows/pages.yml), so the resolved URL never
-  // contains a "collections" segment there — fall back to the last path
-  // segment, which is the collection's folder name either way.
-  const name = parts[parts.length - 1];
-  return name ? `collections/${name}` : null;
-}
-
-async function discoverViaGithub(folderPath) {
-  const url = `https://api.github.com/repos/${REPO.owner}/${REPO.repo}/contents/${folderPath}?ref=${BRANCH}`;
-  const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github+json' } });
-  if (!res.ok) throw new Error('github api HTTP ' + res.status);
-  const items = await res.json();
-  return items
-    .filter(x => x.type === 'file' && /\.(strudel|txt)$/.test(x.name))
-    .map(x => x.name)
-    .sort();
-}
-
-async function discoverViaDirListing(pagePath) {
-  const res = await fetch(new URL(pagePath, window.location.href).href);
-  if (!res.ok) throw new Error('dir listing HTTP ' + res.status);
-  const html = await res.text();
-  const names = new Set();
-  for (const m of html.matchAll(/href="([^"]+\.(?:strudel|txt))"/g)) {
-    const base = decodeURIComponent(m[1]).split('/').pop();
-    if (base) names.add(base);
-  }
-  return [...names].sort();
-}
-
-// Fetch the live file list once per playlist per page load, then patch it
-// into `pl.files` and re-render just that group. Silently keeps whatever is
-// already on screen if both discovery paths fail (offline, rate-limited,
-// dir-listing unsupported by the host) — never worse than today's static list.
-function ensureDiscovery(pl) {
-  if (discoveredFiles.has(pl.id) || discoveryInFlight.has(pl.id)) return discoveryInFlight.get(pl.id);
-
-  const promise = (async () => {
-    let files = null;
-    const folderPath = repoRelativePath(pl);
-    if (folderPath) {
-      try { files = await discoverViaGithub(folderPath); } catch (_) { /* fall through */ }
-    }
-    if (!files || !files.length) {
-      try { files = await discoverViaDirListing(pl.path); } catch (_) { /* fall through */ }
-    }
-    if (files && files.length) {
-      discoveredFiles.set(pl.id, files);
-      applyDiscoveredFiles(pl, files);
-    }
-    discoveryInFlight.delete(pl.id);
-  })();
-
-  discoveryInFlight.set(pl.id, promise);
-  return promise;
-}
-
-function applyDiscoveredFiles(pl, files) {
-  const unchanged = files.length === pl.files.length && files.every((f, i) => f === pl.files[i]);
-  if (unchanged) return;
-  pl.files = files;
-  rebuildGroupSongs(pl);
-}
-
-// ── Sidebar (collapsible playlist tree) ──────────────────────────────────────
-
-function renderSongList(pl, listEl) {
-  listEl.innerHTML = '';
-  pl.files.forEach((filename, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'pl-song';
-    btn.dataset.playlist = pl.id;
-    btn.dataset.filename = filename;
-    btn.innerHTML = `
-      <span class="pl-num">${String(i + 1).padStart(2, '0')}</span>
-      <span class="pl-name">${humanize(filename)}</span>
-    `;
-    btn.addEventListener('click', () => {
-      updatePlayerUrl(pl, filename);
-      selectSong(pl, filename, i);
-      // Lazy-fetch title from the file for nicer labels
-      fetchSong(pl, filename).then(entry => {
-        btn.querySelector('.pl-name').textContent = entry.meta.title;
-      });
-    });
-    listEl.appendChild(btn);
-  });
-}
-
-// Called once live discovery resolves a (possibly different) file list for
-// an already-rendered group: repaint just that group's songs + count badge
-// rather than rebuilding the whole sidebar, so scroll position, expanded
-// groups, and the currently-playing highlight all stay put.
-function rebuildGroupSongs(pl) {
-  const group = elTree.querySelector(`.pl-group[data-id="${pl.id}"]`);
-  if (!group) return;
-  const list    = group.querySelector('.pl-list');
-  const countEl = group.querySelector('.pl-count');
-  if (list) renderSongList(pl, list);
-  if (countEl) countEl.textContent = String(pl.files.length).padStart(2, '0');
-  highlightActiveSong();
-}
-
-function buildSidebar() {
-  elTree.innerHTML = '';
-
-  const buildButton = document.createElement('button');
-  buildButton.className = 'pl-build';
-  buildButton.dataset.mode = BUILD_MODE_ID;
-  buildButton.innerHTML = `
-    <span class="pl-build-icon">+</span>
-    <span class="pl-label">${BUILD_LABEL}</span>
-  `;
-  buildButton.addEventListener('click', () => {
-    updateBuildUrl();
-    selectBuildYourself();
-  });
-  elTree.appendChild(buildButton);
-
-  if (typeof PLAYLISTS === 'undefined') {
-    const missing = document.createElement('div');
-    missing.className = 'board-empty';
-    missing.textContent = 'PLAYLISTS not loaded';
-    elTree.appendChild(missing);
+function playbackState(state, message) {
+  if (state === 'warning') {
+    $('sample-warning').textContent = message;
+    $('sample-warning').hidden = !message;
     return;
   }
+  $('playback-status').dataset.state = state;
+  $('playback-status').textContent = message;
+  $('play').disabled = !['ready', 'playing', 'stopped', 'error'].includes(state);
+  $('stop').disabled = !['playing', 'evaluating'].includes(state);
+  $('play').textContent = state === 'playing' ? '↻ Update' : '▶ Play';
+  if (state === 'ready') {
+    $('engine-host').hidden = false;
+    $('source').hidden = true;
+    clearError();
+  }
+  if (state === 'error') {
+    showError(message, reloadEngine);
+    // A failed bootstrap leaves readable, editable source even without Strudel.
+    if ($('engine-host').hidden) $('play').disabled = true;
+  }
+}
+const playback = new Playback($('engine-host'), playbackState, edited);
+function loadEngine(code) {
+  $('sample-warning').hidden = true;
+  $('source').value = code;
+  $('source').hidden = false;
+  $('engine-host').hidden = true;
+  playback.load(code);
+}
+function reloadEngine() { clearError(); loadEngine(currentCode()); }
 
-  const sectionTitle = document.createElement('div');
-  sectionTitle.className = 'pl-section-title';
-  sectionTitle.textContent = 'Collections';
-  elTree.appendChild(sectionTitle);
-
-  playerPlaylists().forEach(pl => {
-    const group = document.createElement('div');
-    group.className = 'pl-group';
-    group.dataset.id = pl.id;
-
-    // Header — click to expand/collapse
-    const header = document.createElement('button');
-    header.className = 'pl-header';
-    header.innerHTML = `
-      <span class="pl-toggle">▸</span>
-      <span class="pl-label">${pl.label}</span>
-      <span class="pl-count">${String(pl.files.length).padStart(2, '0')}</span>
-    `;
-    header.addEventListener('click', () => {
-      const wasExpanded = group.classList.contains('expanded');
-      toggleGroup(pl.id);
-      updatePlayerUrl(pl);
-      ensureDiscovery(pl);
-      if (!wasExpanded || !currentPlaylist || currentPlaylist.id !== pl.id) {
-        selectSong(pl, pl.files[0], 0);
-      }
-    });
-
-    // Song list (hidden until group is expanded)
+function makeTrackButton(item, parent, index) {
+  const button = document.createElement('button');
+  button.className = 'track-link';
+  button.dataset.trackId = item.id;
+  const number = document.createElement('span');
+  number.textContent = String(index + 1).padStart(2, '0');
+  const title = document.createElement('span');
+  title.textContent = item.title;
+  button.append(number, title);
+  button.setAttribute('aria-current', String(track?.id === item.id));
+  button.onclick = () => selectTrack(parent, item);
+  return button;
+}
+function renderCatalog() {
+  const query = $('search').value.trim().toLocaleLowerCase();
+  const expanded = new Set([...$('album-tree').querySelectorAll('details[open]')].map(node => node.dataset.albumId));
+  const tree = document.createDocumentFragment();
+  const grid = document.createDocumentFragment();
+  let matches = 0;
+  for (const [i, item] of catalog.albums.entries()) {
+    const albumMatches = item.title.toLocaleLowerCase().includes(query) || item.id.toLocaleLowerCase().includes(query);
+    const tracks = item.tracks.filter(song => albumMatches || `${song.title} ${song.filename}`.toLocaleLowerCase().includes(query));
+    if (!tracks.length) continue;
+    matches += tracks.length;
+    const group = document.createElement('details');
+    group.className = 'album-group';
+    group.dataset.albumId = item.id;
+    group.open = Boolean(query) || expanded.has(item.id) || album?.id === item.id;
+    const summary = document.createElement('summary');
+    summary.append(document.createTextNode(item.title));
+    const count = document.createElement('span');
+    count.textContent = tracks.length;
+    summary.append(count);
     const list = document.createElement('div');
-    list.className = 'pl-list';
-    renderSongList(pl, list);
-
-    group.appendChild(header);
-    group.appendChild(list);
-    elTree.appendChild(group);
-  });
+    list.className = 'track-list';
+    const populate = () => {
+      if (!list.childElementCount && group.open) {
+        list.append(...tracks.map(song => makeTrackButton(song, item, item.tracks.indexOf(song))));
+      }
+    };
+    group.addEventListener('toggle', populate);
+    group.append(summary, list);
+    populate();
+    tree.append(group);
+    const card = document.createElement('button');
+    card.className = 'album-card';
+    card.dataset.albumId = item.id;
+    card.style.setProperty('--hue', (i * 47 + 85) % 360);
+    const art = document.createElement('div');
+    art.className = 'album-art';
+    art.setAttribute('aria-hidden', 'true');
+    const index = document.createElement('span');
+    index.textContent = `EB / ${String(i + 1).padStart(2, '0')}`;
+    art.append(index);
+    const title = document.createElement('strong');
+    title.textContent = item.title;
+    const subtitle = document.createElement('small');
+    subtitle.textContent = `${item.tracks.length} tracks · Open album ↗`;
+    card.append(art, title, subtitle);
+    card.onclick = () => selectTrack(item, tracks[0]);
+    grid.append(card);
+  }
+  $('album-tree').replaceChildren(tree);
+  $('album-grid').replaceChildren(grid);
+  $('catalog-status').textContent = query ? `${matches} matching tracks` : '';
 }
-
-function toggleGroup(plId) {
-  const group = elTree.querySelector(`.pl-group[data-id="${plId}"]`);
-  if (!group) return;
-  if (group.classList.contains('expanded')) {
-    group.classList.remove('expanded');
-    expandedGroups.delete(plId);
-  } else {
-    group.classList.add('expanded');
-    expandedGroups.add(plId);
+function updateRoute(selectedAlbum, selectedTrack, mode, replace = false) {
+  const url = new URL(location.href);
+  url.search = '';
+  url.hash = '';
+  if (selectedAlbum) url.searchParams.set('album', selectedAlbum.id);
+  if (selectedTrack) url.searchParams.set('song', selectedTrack.filename);
+  if (mode) url.searchParams.set('mode', mode);
+  if (url.href !== location.href) history[replace ? 'replaceState' : 'pushState']({}, '', url);
+}
+async function selectTrack(parent, item, { route = true } = {}) {
+  rememberDraft();
+  const request = ++sequence;
+  loading?.abort();
+  loading = new AbortController();
+  playback.dispose();
+  album = parent;
+  track = item;
+  original = '';
+  clearError();
+  closeMenu();
+  showView('track');
+  if (route) updateRoute(parent, item);
+  document.title = `${item.title} · ebtunes`;
+  $('track-album').textContent = `${parent.title} / ${parent.tracks.indexOf(item) + 1} of ${parent.tracks.length}`;
+  $('track-title').textContent = item.title;
+  $('track-meta').textContent = [item.key, item.tempo].filter(Boolean).join(' · ');
+  $('track-feel').textContent = item.feel;
+  $('source').value = '';
+  $('source').hidden = false;
+  $('engine-host').hidden = true;
+  $('edit-status').textContent = '';
+  $('vote-status').textContent = '';
+  $('previous').disabled = parent.tracks.indexOf(item) === 0;
+  $('next').disabled = parent.tracks.indexOf(item) === parent.tracks.length - 1;
+  for (const id of ['reload-engine', 'reset-code', 'download', 'open-strudel']) $(id).disabled = true;
+  playbackState('loading', 'Loading source…');
+  renderCatalog();
+  refreshVotes();
+  try {
+    const url = new URL(item.path, base);
+    url.searchParams.set('v', item.sha256);
+    const code = codeCache.get(item.id) || await fetchText(url, { signal: loading.signal });
+    if (request !== sequence) return;
+    codeCache.set(item.id, code);
+    if (codeCache.size > 40) codeCache.delete(codeCache.keys().next().value);
+    original = code;
+    for (const id of ['reload-engine', 'reset-code', 'download', 'open-strudel']) $(id).disabled = false;
+    const draft = drafts.get(item.id) ?? code;
+    edited(draft);
+    loadEngine(draft);
+  } catch (error) {
+    if (request !== sequence) return;
+    playbackState('load-error', 'Source could not be loaded');
+    showError(error.message, () => selectTrack(parent, item, { route: false }));
   }
 }
-
-function expandGroup(plId) {
-  const group = elTree.querySelector(`.pl-group[data-id="${plId}"]`);
-  if (group && !group.classList.contains('expanded')) {
-    group.classList.add('expanded');
-    expandedGroups.add(plId);
-  }
+function newPattern({ route = true } = {}) {
+  rememberDraft();
+  ++sequence;
+  loading?.abort();
+  album = track = null;
+  original = starter;
+  clearError();
+  closeMenu();
+  showView('track');
+  if (route) updateRoute(null, null, 'build');
+  document.title = 'New pattern · ebtunes';
+  $('track-album').textContent = 'YOUR WORKSPACE';
+  $('track-title').textContent = 'New pattern';
+  $('track-meta').textContent = 'A blank canvas for your next idea';
+  $('track-feel').textContent = '';
+  $('vote-status').textContent = '';
+  for (const id of ['previous', 'next', 'vote-up', 'vote-down']) $(id).disabled = true;
+  for (const id of ['reload-engine', 'reset-code', 'download', 'open-strudel']) $(id).disabled = false;
+  const draft = drafts.get('build') ?? starter;
+  edited(draft);
+  loadEngine(draft);
+  if (catalog) renderCatalog();
 }
-
-function highlightActiveSong() {
-  const buildButton = elTree.querySelector('.pl-build');
-  if (buildButton) {
-    buildButton.classList.toggle('active', buildModeActive);
-  }
-
-  elTree.querySelectorAll('.pl-song').forEach(el => {
-    el.classList.toggle(
-      'active',
-      !buildModeActive &&
-      el.dataset.playlist === (currentPlaylist && currentPlaylist.id) &&
-        el.dataset.filename === currentFilename,
-    );
-  });
-  elTree.querySelectorAll('.pl-header').forEach(h => {
-    const id = h.parentElement.dataset.id;
-    h.classList.toggle('active', !buildModeActive && id === (currentPlaylist && currentPlaylist.id));
-  });
-
-  if (buildModeActive) return;
-
-  const activeSong = Array.from(elTree.querySelectorAll('.pl-song')).find(el =>
-    el.dataset.playlist === (currentPlaylist && currentPlaylist.id) &&
-    el.dataset.filename === currentFilename
-  );
-  if (activeSong) {
-    requestAnimationFrame(() => {
-      activeSong.scrollIntoView({ block: 'nearest' });
-    });
-  }
-}
-
-// ── Selecting a song ─────────────────────────────────────────────────────────
-
-async function selectSong(playlist, filename, idx) {
-  buildModeActive = false;
-  currentPlaylist = playlist;
-  currentFilename = filename;
-  currentSongId   = playlist.id + '/' + filename;
-
-  highlightActiveSong();
-  closeSidebarIfMobile();
-
-  // Fetch + render meta
-  const entry = await fetchSong(playlist, filename);
-  const m     = entry.meta;
-  const total = playlist.files.length;
-
-  elCounter.textContent = `${String(idx + 1).padStart(2, '0')} · ${String(total).padStart(2, '0')}`;
-  elTitle.textContent   = m.title;
-  elKey.textContent     = m.key || '—';
-  elBpm.textContent     = m.bpm ? m.bpm + ' BPM' : '—';
-  elPack.textContent    = playlist.label;
-  elFeel.textContent    = m.feel   || '';
-  elChords.textContent  = m.chords || '';
-
-  // Reflect any existing local vote on the +/- buttons
-  setVoteButtonsEnabled(true);
-  refreshVoteButtons();
-
-  // Push the code into the embedded strudel.cc iframe. Changing src
-  // triggers a fresh strudel.cc load with the new code — the user
-  // sees the same player they're used to from the docs.
-  loadIntoFrame(entry.code);
-}
-
-function selectBuildYourself() {
-  buildModeActive = true;
-  currentPlaylist = null;
-  currentFilename = null;
-  currentSongId   = null;
-
-  highlightActiveSong();
-  closeSidebarIfMobile();
-
-  elCounter.textContent = 'NEW';
-  elTitle.textContent   = BUILD_LABEL;
-  elKey.textContent     = '—';
-  elBpm.textContent     = '—';
-  elPack.textContent    = 'STRUDEL';
-  elFeel.textContent    = '';
-  elChords.textContent  = '';
-
-  setVoteButtonsEnabled(false);
-  refreshVoteButtons();
-  loadIntoFrame(BLANK_STRUDEL_CODE);
-}
-
-// ── Voting ───────────────────────────────────────────────────────────────────
-
-function setVoteButtonsEnabled(enabled) {
-  elBtnNot.disabled = !enabled;
-  elBtnHot.disabled = !enabled;
-}
-
-function refreshVoteButtons() {
-  if (!currentSongId) {
-    elBtnNot.classList.remove('active');
-    elBtnHot.classList.remove('active');
+function applyRoute() {
+  const route = readRoute(location);
+  if (route.mode === 'build' || route.album === 'build') return newPattern({ route: false });
+  if (!route.album) { showView('library'); return; }
+  const parent = catalog.albums.find(item => item.id.toLowerCase() === route.album.toLowerCase());
+  const item = parent?.tracks.find(item => item.filename === route.song) || (!route.song && parent?.tracks[0]);
+  if (!item) {
+    showView('library');
+    showError('This album or track is not in the current collection. Choose one from the library.');
     return;
   }
-  const v = getLocalVote(currentSongId);
-  elBtnNot.classList.toggle('active', v === -1);
-  elBtnHot.classList.toggle('active', v ===  1);
+  selectTrack(parent, item, { route: false });
 }
-
-async function vote(value) {
-  if (!currentSongId) return;
-
-  // Toggle — clicking the active vote a second time removes it
-  const current = getLocalVote(currentSongId);
-  const next    = current === value ? null : value;
-
-  setLocalVote(currentSongId, next);
-  refreshVoteButtons();
-
-  // Flash whichever button was just engaged, kick off the submission in
-  // the background (don't block the auto-advance on the network).
-  const btn = value === 1 ? elBtnHot : elBtnNot;
-  btn.classList.add('flash');
-  submitVote(currentSongId, next).catch(err => {
-    console.error('vote submit failed; vote stays in local cache:', err);
-  });
-
-  // Brief pause so the user sees the button flash + state change, then
-  // jump to the next song in the current playlist (wraps at the end).
-  await new Promise(r => setTimeout(r, 220));
-  btn.classList.remove('flash');
-
-  const nextSong = nextSongInPlaylist();
-  if (nextSong) {
-    updatePlayerUrl(nextSong.playlist, nextSong.filename);
-    await selectSong(nextSong.playlist, nextSong.filename, nextSong.idx);
-  }
+async function refreshVotes() {
+  const id = track?.id;
+  for (const name of ['vote-up', 'vote-down']) $(name).disabled = !id || voteBusy;
+  if (!id) return;
+  try {
+    const api = await ratings();
+    if (track?.id !== id) return;
+    $('vote-up').setAttribute('aria-pressed', String(api.localVote(id) === 1));
+    $('vote-down').setAttribute('aria-pressed', String(api.localVote(id) === -1));
+  } catch { $('vote-status').textContent = 'Ratings are unavailable. Playback is ready to use.'; }
 }
-
-// Find the next song in the current playlist. Wraps to the first song
-// once we hit the end so a long voting session keeps flowing instead
-// of stopping cold on the last track.
-function nextSongInPlaylist() {
-  if (!currentPlaylist || !currentFilename) return null;
-  const idx = currentPlaylist.files.indexOf(currentFilename);
-  if (idx < 0) return null;
-  const nextIdx = (idx + 1) % currentPlaylist.files.length;
-  return {
-    playlist: currentPlaylist,
-    filename: currentPlaylist.files[nextIdx],
-    idx:      nextIdx,
-  };
+async function submitVote(value) {
+  if (!track || voteBusy) return;
+  const id = track.id;
+  voteBusy = true;
+  refreshVotes();
+  try {
+    const api = await ratings();
+    await api.vote(id, api.localVote(id) === value ? null : value);
+    if (id === track?.id) $('vote-status').textContent = 'Rating saved.';
+  } catch (error) {
+    if (id === track?.id) $('vote-status').textContent = `${error.message} Please try again.`;
+  } finally { voteBusy = false; refreshVotes(); }
 }
-
-// ── Board (leaderboard) ──────────────────────────────────────────────────────
-
-function songLabel(songId) {
-  const parts    = songId.split('/');
-  const playlist = (parts[0] || '').toUpperCase();
-  const raw      = (parts[1] || songId).replace(/\.(strudel|txt)$/, '');
-  const name     = raw.replace(/^[a-z]+-\d+-/i, '').replace(/[-_]/g, ' ').toUpperCase();
-  return { playlist, name };
-}
-
-function renderLeaderboard(entries) {
-  const publicEntries = entries.filter(e => isPublicSongId(e.song_id));
-
-  if (!publicEntries.length) {
-    elBoardContent.innerHTML = '<div class="board-empty">NO VOTES YET</div>';
-    return;
-  }
-  const rows = publicEntries.map((e, i) => {
-    const { playlist, name } = songLabel(e.song_id);
-    const sign = e.score > 0 ? '+' : '';
-    const cls  = e.score > 0 ? 'positive' : e.score < 0 ? 'negative' : '';
-    return `<div class="lb-row" data-song-id="${e.song_id}">
-      <span class="lb-rank">${String(i + 1).padStart(2, '0')}</span>
-      <span class="lb-name">${name}</span>
-      <span class="lb-tag">${playlist}</span>
-      <span class="lb-up">+${e.up}</span>
-      <span class="lb-down">-${e.down}</span>
-      <span class="lb-score ${cls}">${sign}${e.score}</span>
-    </div>`;
-  }).join('');
-  elBoardContent.innerHTML = `<div class="lb-table">
-    <div class="lb-head">
-      <span class="lb-rank">#</span>
-      <span class="lb-name">SONG</span>
-      <span class="lb-tag">PLAYLIST</span>
-      <span class="lb-up">+</span>
-      <span class="lb-down">-</span>
-      <span class="lb-score">NET</span>
-    </div>${rows}</div>`;
-
-  // Click a leaderboard row to jump to that song in the player
-  elBoardContent.querySelectorAll('.lb-row').forEach(row => {
-    row.addEventListener('click', () => {
-      const songId = row.dataset.songId;
-      const [plId, filename] = songId.split('/');
-      const pl  = findPlaylist(plId);
-      if (!pl) return;
-      const idx = pl.files.indexOf(filename);
-      if (idx < 0) return;
-      expandGroup(plId);
-      showPlay();
-      updatePlayerUrl(pl, filename);
-      selectSong(pl, filename, idx);
-    });
-  });
-}
-
-function setBoardStatus(state) {
-  if (!elBoardStatus) return;
-  elBoardStatus.classList.toggle('live',    state === 'live');
-  elBoardStatus.classList.toggle('loading', state === 'loading');
-  elBoardStatus.textContent = state === 'live' ? '● LIVE' : state === 'loading' ? 'REFRESHING…' : '';
-}
-
 async function refreshBoard() {
-  setBoardStatus('loading');
-  const entries = await fetchLeaderboard();
-  renderLeaderboard(entries);
-  setBoardStatus('live');
-}
-
-function showPlay() {
-  boardActive = false;
-  elTabPlay.classList.add('active');
-  elTabBoard.classList.remove('active');
-  elPlayPane.classList.remove('hidden');
-  elBoardPane.classList.add('hidden');
-  unsubscribeLeaderboard();
-  setBoardStatus('');
-}
-
-function showBoard() {
-  boardActive = true;
-  elTabBoard.classList.add('active');
-  elTabPlay.classList.remove('active');
-  elBoardPane.classList.remove('hidden');
-  elPlayPane.classList.add('hidden');
-  refreshBoard();
-  subscribeLeaderboard(refreshBoard);
-}
-
-// ── Mobile sidebar drawer ────────────────────────────────────────────────────
-
-function isMobile() { return window.matchMedia('(max-width: 768px)').matches; }
-
-function openSidebar() {
-  elSidebar.classList.add('open');
-  elBackdrop.classList.add('open');
-}
-function closeSidebar() {
-  elSidebar.classList.remove('open');
-  elBackdrop.classList.remove('open');
-}
-function toggleSidebar() {
-  if (elSidebar.classList.contains('open')) closeSidebar();
-  else                                       openSidebar();
-}
-function closeSidebarIfMobile() {
-  if (isMobile()) closeSidebar();
-}
-
-// ── Init ─────────────────────────────────────────────────────────────────────
-
-function init() {
-  elPlayPane     = document.getElementById('play-pane');
-  elBoardPane    = document.getElementById('board-pane');
-  elTree         = document.getElementById('playlist-tree');
-  elSidebar      = document.getElementById('sidebar');
-  elBackdrop     = document.getElementById('sidebar-backdrop');
-  elMenuToggle   = document.getElementById('menu-toggle');
-  elTabPlay      = document.getElementById('tab-play');
-  elTabBoard     = document.getElementById('tab-board');
-
-  elCounter      = document.getElementById('si-counter');
-  elTitle        = document.getElementById('si-title');
-  elKey          = document.getElementById('si-key');
-  elBpm          = document.getElementById('si-bpm');
-  elPack         = document.getElementById('si-pack');
-  elFeel         = document.getElementById('si-feel');
-  elChords       = document.getElementById('si-chords');
-
-  elBtnNot       = document.getElementById('btn-not');
-  elBtnHot       = document.getElementById('btn-hot');
-
-  elBoardContent = document.getElementById('board-content');
-  elBoardStatus  = document.getElementById('board-status');
-
-  // Sidebar tree
-  buildSidebar();
-
-  const initial = initialSelection();
-  if (initial) {
-    if (initial.build) {
-      selectBuildYourself();
-    } else {
-      expandGroup(initial.playlist.id);
-      ensureDiscovery(initial.playlist);
-      // Pre-select the first song so the editor has something to show
-      selectSong(initial.playlist, initial.filename, initial.idx);
-    }
+  const request = ++boardSequence;
+  $('board-status').textContent = 'Loading ratings…';
+  try {
+    const rows = await (await ratings()).leaderboard();
+    if (request !== boardSequence || view !== 'board') return;
+    const items = rows.filter(row => trackIndex.has(row.song_id)).slice(0, 20).map(row => {
+      const { album, track } = trackIndex.get(row.song_id);
+      const item = document.createElement('li');
+      const button = document.createElement('button');
+      button.textContent = `${track.title} · ${album.title}`;
+      button.onclick = () => selectTrack(album, track);
+      const score = document.createElement('small');
+      score.textContent = `${Number(row.score) || 0} points`;
+      item.append(button, score);
+      return item;
+    });
+    $('board-list').replaceChildren(...items);
+    $('board-status').textContent = items.length ? 'Updates every minute while this page is visible.' : 'No ratings yet. Open a track to cast the first vote.';
+  } catch (error) {
+    if (request === boardSequence && view === 'board') $('board-status').textContent = `${error.message} Use Refresh to retry.`;
   }
-
-  // Tab switching
-  elTabPlay.addEventListener('click',  showPlay);
-  elTabBoard.addEventListener('click', showBoard);
-
-  // Voting
-  elBtnNot.addEventListener('click', () => vote(-1));
-  elBtnHot.addEventListener('click', () => vote(1));
-
-  // Mobile drawer
-  elMenuToggle.addEventListener('click', toggleSidebar);
-  elBackdrop.addEventListener('click',   closeSidebar);
-
-  // Keyboard shortcuts (page-level; the editor swallows them when focused)
-  document.addEventListener('keydown', e => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    if (e.target.closest('.editor')) return;       // let CodeMirror handle its own
-    if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey && !e.metaKey) {
-      e.preventDefault(); showBoard();
-    }
-    if ((e.key === 'p' || e.key === 'P') && !e.ctrlKey && !e.metaKey) {
-      e.preventDefault(); showPlay();
-    }
-    if ((e.key === '+' || e.key === '=') && !e.ctrlKey && !e.metaKey) vote(1);
-    if ((e.key === '-' || e.key === '_') && !e.ctrlKey && !e.metaKey) vote(-1);
-  });
 }
-
-document.addEventListener('DOMContentLoaded', init);
+async function initialize() {
+  clearError();
+  try {
+    catalog = await loadCatalog(base);
+    for (const album of catalog.albums) for (const track of album.tracks) trackIndex.set(track.id, { album, track });
+    $('album-count').textContent = catalog.albums.length;
+    $('library-count').textContent = `${catalog.albums.length} albums · ${catalog.trackCount} tracks`;
+    renderCatalog();
+    applyRoute();
+  } catch (error) {
+    $('catalog-status').textContent = 'Library unavailable';
+    showError(`${error.message} The site needs a generated catalog from npm run build:player.`, initialize);
+  }
+}
+$('retry').onclick = () => retryAction?.();
+$('search').addEventListener('input', () => { if (catalog) renderCatalog(); });
+$('menu').onclick = () => {
+  const open = document.body.classList.toggle('menu-open');
+  $('menu').setAttribute('aria-expanded', String(open));
+  $('backdrop').hidden = !open;
+  if (open) $('search').focus();
+};
+$('backdrop').onclick = closeMenu;
+$('library-tab').onclick = () => { clearError(); showView('library'); updateRoute(); closeMenu(); };
+$('board-tab').onclick = () => { clearError(); showView('board'); closeMenu(); };
+$('new-pattern').onclick = () => newPattern();
+$('play').onclick = () => { clearError(); playback.play(); };
+$('stop').onclick = () => playback.stop();
+$('reload-engine').onclick = reloadEngine;
+$('reset-code').onclick = () => { drafts.delete(track?.id || 'build'); edited(original); loadEngine(original); };
+$('source').addEventListener('input', () => edited($('source').value));
+$('previous').onclick = () => { const item = album?.tracks[album.tracks.indexOf(track) - 1]; if (item) selectTrack(album, item); };
+$('next').onclick = () => { const item = album?.tracks[album.tracks.indexOf(track) + 1]; if (item) selectTrack(album, item); };
+$('vote-up').onclick = () => submitVote(1);
+$('vote-down').onclick = () => submitVote(-1);
+$('refresh-board').onclick = refreshBoard;
+$('download').onclick = () => {
+  const url = URL.createObjectURL(new Blob([currentCode()], { type: 'text/plain;charset=utf-8' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = track?.filename.split('/').pop() || 'my-pattern.strudel';
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+$('open-strudel').onclick = () => {
+  const bytes = new TextEncoder().encode(currentCode());
+  const encoded = btoa(Array.from(bytes, byte => String.fromCharCode(byte)).join(''));
+  window.open('https://strudel.cc/#' + encodeURIComponent(encoded), '_blank', 'noopener');
+};
+window.addEventListener('popstate', () => { if (catalog) applyRoute(); });
+window.addEventListener('hashchange', () => { if (catalog) applyRoute(); });
+window.addEventListener('pagehide', () => playback.dispose());
+window.addEventListener('pageshow', event => { if (event.persisted && original) reloadEngine(); });
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') { closeMenu(); $('menu').focus(); }
+  if ((event.ctrlKey || event.metaKey) && event.key === 'Enter' && !$('play').disabled) { event.preventDefault(); playback.play(); }
+  if ((event.ctrlKey || event.metaKey) && event.key === '.') { event.preventDefault(); playback.stop(); }
+});
+initialize();

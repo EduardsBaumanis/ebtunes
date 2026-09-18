@@ -9,7 +9,7 @@
 // STRUDEL FUNCTIONS HIGHLIGHTED
 //   .vowel("a"|"e"|"i"|"o"|"u")  — formant filter ≈ vocal vowels
 //   .distort(N)                   — soft drive distortion
-//   wchoose([[item, weight], ...]) — weighted random pick
+//   wchoose(...[[item, weight], ...]) — weighted random pick
 // ══════════════════════════════════════════════════════════════
 
 setcpm(slider(36, 30, 44))
@@ -48,9 +48,9 @@ stack(
   // ── SECOND VOX LAYER — random word picks via wchoose ──────────
   // wchoose lets you bias the random selection — here the "ah"
   // vowel is most common (weight 3), with rarer "oh" and "uh".
-  note(wchoose([["c5", 3], ["e5", 2], ["a4", 4], ["g4", 1]]))
+  note(wchoose(...[["c5", 3], ["e5", 2], ["a4", 4], ["g4", 1]]))
     .sound("sawtooth")
-    .vowel(wchoose([["a", 3], ["o", 2], ["e", 1]]))
+    .vowel(wchoose(...[["a", 3], ["o", 2], ["e", 1]]))
     .distort(0.3)
     .attack(0.005).decay(0.12).sustain(0.15).release(0.1)
     .struct("~ ~ ~ ~  ~ ~ x ~")

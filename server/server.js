@@ -17,6 +17,7 @@ const express = require('express');
 const cors    = require('cors');
 const { createClient } = require('@supabase/supabase-js');
 const path    = require('path');
+const fs      = require('fs');
 require('dotenv').config();
 
 const app  = express();
@@ -28,10 +29,14 @@ app.use(express.json());
 
 // ── Supabase ──────────────────────────────────────────────────────────────────
 
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL,
-  process.env.VITE_SUPABASE_ANON_KEY
-);
+const supabase = process.env.VITE_SUPABASE_URL && process.env.VITE_SUPABASE_ANON_KEY
+  ? createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY)
+  : null;
+
+app.use('/api', (req, res, next) => {
+  if (!supabase && req.path !== '/health') return res.status(503).json({ error: 'Ratings are not configured.' });
+  next();
+});
 
 // ── API endpoints ─────────────────────────────────────────────────────────────
 
@@ -149,32 +154,10 @@ mountLegacyPublic('/lofi-rater', 'apps/lofi-rater');
 mountLegacyPublic('/player', 'apps/player');
 mountLegacyPublic('/izlase', 'apps/izlase');
 
-[
-  'acid',
-  'amapiano',
-  'bass',
-  'berlin-school',
-  'bluegrass',
-  'footwork',
-  'game',
-  'gardens-of-broken-clocks',
-  'genres',
-  'hard-bass',
-  'harmonic',
-  'idm',
-  'jazz-piano',
-  'lofi',
-  'medeival',
-  'pack-demos',
-  'prog',
-  'rim',
-  'saxophone-afterhours',
-  'similarity-gradient',
-  'study',
-  'uk-garage',
-  'vocals',
-  'yt',
-].forEach(name => mountLegacyPublic('/' + name, path.join('collections', name)));
+// New albums are served automatically, just as they are in the Pages build.
+for (const entry of fs.readdirSync(path.join(ROOT, 'collections'), { withFileTypes: true })) {
+  if (entry.isDirectory()) mountLegacyPublic('/' + entry.name, path.join('collections', entry.name));
+}
 
 mountLegacyPublic('/Skola', 'courses/Skola');
 mountLegacyPublic('/TehnoSkola', 'courses/TehnoSkola');
@@ -219,9 +202,7 @@ app.get(['/supabase-setup.sql', '/docs/supabase-setup.sql'], (_req, res) => {
   res.sendFile(path.join(ROOT, 'docs', 'supabase-setup.sql'));
 });
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(ROOT, 'apps', 'lofi-player', 'index.html'));
-});
+app.use((_req, res) => res.status(404).type('text').send('Not found'));
 
 // ── Start ─────────────────────────────────────────────────────────────────────
 

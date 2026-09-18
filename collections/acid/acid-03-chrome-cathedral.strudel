@@ -80,7 +80,7 @@ stack(
   // ── LOW TOM — seismic footfall ────────────────────────────────
   // E(3,16,5): 3 hits rotated 5 = lands in unexpected spots
   // jux: right channel has extra room = wide, physical thud
-  s("lt").euclid(3, 16, 5)
+  s("lt").euclidRot(3, 16, 5)
     .gain(0.32)
     .room(0.12)
     .lpf(800)

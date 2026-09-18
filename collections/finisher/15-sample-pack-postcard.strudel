@@ -7,7 +7,7 @@
 // Pack: github:felixroos/dough-samples
 // Feel: A postcard from the sample archive, with default sounds still nearby.
 
-samples('github:felixroos/dough-samples')
+samples('https://raw.githubusercontent.com/felixroos/dough-samples/main/Dirt-Samples.json')
 
 setcpm(23)
 

@@ -44,7 +44,7 @@ stack(
   // every part has been octave-popped — produces the long-form
   // evolving 303 that defines acid roller tracks.
   note("0 5 7 0  3 0 5 7  0 7 5 3  0 5 0 7")
-    .scale("E:minorPentatonic")
+    .scale("E:minor pentatonic")
     .add("<0 12 0 -12 0 7 0 -7>")
     .chunk(8, x => x.add(12))
     .sound("sawtooth")

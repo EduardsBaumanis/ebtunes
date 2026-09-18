@@ -87,7 +87,7 @@ stack(
   // E(5,16,3): rotated 3 = doesn't start on beat 1 = perpetual surprise
   // jux: right channel extra hpf(5000) = only the attack click in right
   //   Left = full rim body, right = only click = wide and scattered
-  s("rim").euclid(5, 16, 3)
+  s("rim").euclidRot(5, 16, 3)
     .gain(0.28)
     .hpf(4000)
     .room(0.05)

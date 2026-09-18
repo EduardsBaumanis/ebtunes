@@ -69,7 +69,7 @@ stack(
   // ── EUCLIDEAN RIM — mathematical syncopation ──────────────────
   // E(5,16,3): 5 hits in 16, rotated 3 = never lands on beat 1
   // phaser(0.3): metallic shimmer, flanged industrial character
-  s("rim").euclid(5, 16, 3)
+  s("rim").euclidRot(5, 16, 3)
     .gain(0.3)
     .hpf(4000)
     .phaser(0.3)

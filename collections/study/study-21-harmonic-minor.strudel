@@ -10,7 +10,7 @@
 //         the characteristic augmented 2nd (F → G#) between
 //         degrees 6 and 7. The interval gives the scale its
 //         "Middle Eastern" / "Klezmer" colour.
-// Strudel: .scale("A:harmonicMinor") — degree numbers in
+// Strudel: .scale("A:harmonic minor") — degree numbers in
 //          note() are interpreted against the named scale, so
 //          "0 2 4 6" automatically yields A, C, E, G# (not the
 //          chromatic semitone steps). Pitch logic stays
@@ -34,7 +34,7 @@ stack(
   // The note "6 7 0" plays F→G#→A, hitting the characteristic
   // augmented 2nd resolution.
   note("0 2 4 5 6 7 0 -1  -2 0 2 4 6 5 4 2")
-    .scale("A:harmonicMinor")
+    .scale("A:harmonic minor")
     .s("triangle").attack(0.02).release(0.4).gain(0.45)
     .delay(0.4).delaytime(0.333).delayfeedback(0.3)
     .room(0.5).pan(0.55).slow(2),

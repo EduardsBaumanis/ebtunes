@@ -1,102 +1,72 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>eBlēņas - Eduards Baumanis</title>
-  <link rel="stylesheet" href="style.css?v=collections-modern">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10191c">
+  <meta name="description" content="Explore and play the complete ebtunes Strudel songbook. Open an album, edit the music, and listen.">
+  <title>ebtunes · Strudel songbook</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2310191c'/%3E%3Ctext x='10' y='46' font-size='46' fill='%23c9f582'%3Ee%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
 </head>
-<body data-theme="studio">
-
-  <div class="app">
-
-    <!-- HEADER -->
-    <header class="header">
-      <button id="menu-toggle" class="menu-toggle" title="Playlists">≡</button>
-      <span class="logo">◈</span>
-      <nav class="view-tabs">
-        <button id="tab-play"  class="tab-btn active" data-view="play">PLAY</button>
-        <button id="tab-board" class="tab-btn"        data-view="board">BOARD</button>
-      </nav>
-    </header>
-
-    <!-- BODY -->
-    <div class="body">
-
-      <!-- SIDEBAR (playlist tree) -->
-      <aside id="sidebar" class="sidebar">
-        <div id="playlist-tree" class="playlist-tree"></div>
-      </aside>
-
-      <!-- Mobile backdrop, captures taps outside the drawer -->
-      <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
-
-      <!-- PLAY PANE: song header + editor -->
-      <main id="play-pane" class="play-pane">
-
-        <div class="song-info" id="song-info">
-          <div class="si-row">
-            <div class="si-meta-block">
-              <div class="si-counter" id="si-counter">NEW</div>
-              <h1 class="si-title" id="si-title">Uzbuvē pats</h1>
-              <div class="si-meta">
-                <span class="si-badge" id="si-key">—</span>
-                <span class="si-sep">·</span>
-                <span class="si-badge" id="si-bpm">—</span>
-                <span class="si-sep">·</span>
-                <span class="si-badge" id="si-pack">STRUDEL</span>
-              </div>
-              <p class="si-feel"   id="si-feel"></p>
-              <p class="si-chords" id="si-chords"></p>
-            </div>
-            <div class="vote-bar" id="vote-bar">
-              <button id="btn-not" class="vote-btn vote-not" title="Vote down (-)" disabled>−</button>
-              <button id="btn-hot" class="vote-btn vote-hot" title="Vote up (+)" disabled>+</button>
-            </div>
-          </div>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="topbar">
+    <button id="menu" class="icon-button" aria-label="Toggle album library" aria-expanded="false" aria-controls="sidebar">☰</button>
+    <a class="brand" href="./" aria-label="ebtunes home"><span class="brand-mark">e</span>ebtunes<span class="brand-caption">A STRUDEL SONGBOOK</span></a>
+    <nav aria-label="Main navigation">
+      <button id="library-tab" class="nav-button active">Library</button>
+      <button id="board-tab" class="nav-button">Leaderboard</button>
+    </nav>
+    <a class="source-link" href="https://github.com/EduardsBaumanis/ebtunes" target="_blank" rel="noopener">Source ↗</a>
+  </header>
+  <div class="workspace">
+    <aside id="sidebar" aria-label="Album library">
+      <div class="sidebar-heading"><span>YOUR COLLECTIONS</span><span id="album-count">—</span></div>
+      <label class="search-label" for="search">Find an album or track</label>
+      <input id="search" type="search" placeholder="Search the songbook…" autocomplete="off">
+      <button id="new-pattern" class="new-pattern">＋ New pattern</button>
+      <div id="catalog-status" role="status">Loading the songbook…</div>
+      <div id="album-tree"></div>
+      <p class="sidebar-footer">Music made of code.<br>Open a track. Make it your own.</p>
+    </aside>
+    <button id="backdrop" aria-label="Close album library" hidden></button>
+    <main id="main" tabindex="-1">
+      <div id="error-banner" role="alert" hidden><span id="error-message"></span><button id="retry">Retry</button></div>
+      <section id="library-view" aria-labelledby="library-title">
+        <div class="eyebrow">THE COMPLETE COLLECTION</div>
+        <h1 id="library-title">A little code.<br>A whole lot of sound.</h1>
+        <p class="intro">From quiet piano to broken beats. Pick an album, open the code, and press play.</p>
+        <div class="library-summary"><span id="library-count">Discovering your music…</span><span>LIVE CODE · INFINITE LOOPS</span></div>
+        <div id="album-grid" class="album-grid"></div>
+      </section>
+      <section id="track-view" aria-labelledby="track-title" hidden>
+        <div class="track-heading">
+          <div><div id="track-album" class="eyebrow"></div><h1 id="track-title">Select a track</h1><p id="track-meta" class="muted"></p><p id="track-feel"></p></div>
+          <div class="vote-controls" aria-label="Rate this track"><button id="vote-down" aria-label="Vote down" aria-pressed="false">−</button><button id="vote-up" aria-label="Vote up" aria-pressed="false">＋</button></div>
         </div>
-
-        <!-- Embedded strudel.cc — the same default player that the
-             strudel docs use. We pass the song's code as base64 in
-             the URL hash; strudel.cc loads with that code pre-filled
-             and shows its native transport bar (play / restart /
-             prev / next). Iframe avoids every CSS / AudioContext /
-             mobile-touch issue we hit trying to host the editor
-             ourselves — strudel.cc is already proven to work on
-             phone, so we embed it as-is. -->
-        <iframe id="strudel-frame"
-                class="editor"
-                title="Strudel REPL"
-                src="https://strudel.cc/#IA=="
-                allow="autoplay; clipboard-read; clipboard-write"
-                loading="lazy"></iframe>
-
-        <div class="hints">
-          <span>Tap the ▶ button inside the player to start</span>
-          <span class="sep">·</span>
-          <span>You can edit the code freely</span>
+        <p id="vote-status" class="muted" role="status"></p>
+        <div class="transport" aria-label="Playback controls">
+          <button id="previous" class="icon-button" aria-label="Previous track">←</button>
+          <button id="play" class="primary" disabled>▶ Play</button>
+          <button id="stop" disabled>■ Stop</button>
+          <button id="next" class="icon-button" aria-label="Next track">→</button>
+          <span id="playback-status" role="status" aria-live="polite">Select a track to begin</span>
         </div>
-      </main>
-
-      <!-- BOARD PANE: leaderboard -->
-      <main id="board-pane" class="board-pane hidden">
-        <div class="board-header">
-          <h2 class="board-title">LEADERBOARD</h2>
-          <span id="board-status" class="board-refresh-timer"></span>
-        </div>
-        <div id="board-content" class="board-content">
-          <div class="board-loading">LOADING...</div>
-        </div>
-      </main>
-
-    </div>
+        <p id="sample-warning" role="status" hidden></p>
+        <div class="editor-bar"><span>SOURCE <span id="edit-status"></span></span><div><button id="reload-engine">Reload engine</button><button id="reset-code">Reset edits</button><button id="download">Download</button><button id="open-strudel">Open in Strudel ↗</button></div></div>
+        <div class="editor-shell"><textarea id="source" aria-label="Strudel source code" spellcheck="false"></textarea><div id="engine-host" hidden></div></div>
+        <p class="editor-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> play / update · <kbd>Ctrl</kbd> + <kbd>.</kbd> stop · Edits stay in this session. Download to keep them.</p>
+      </section>
+      <section id="board-view" aria-labelledby="board-title" hidden>
+        <div class="eyebrow">COMMUNITY PICKS</div><h1 id="board-title">On repeat.</h1>
+        <div class="board-heading"><p id="board-status" role="status">Loading ratings…</p><button id="refresh-board">Refresh</button></div>
+        <ol id="board-list"></ol>
+      </section>
+      <footer>Built with <a href="https://strudel.cc" target="_blank" rel="noopener">Strudel</a> · By Eduards Baumanis · <a href="https://github.com/EduardsBaumanis/ebtunes/blob/main/LICENSE">AGPL-3.0</a></footer>
+    </main>
   </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-  <!-- Re-use the lofi-player playlist registry so every folder in the
-       repo shows up in the sidebar tree automatically. -->
-  <script src="../lofi-player/playlists.js"></script>
-  <script src="supabase.js"></script>
-  <script src="app.js?v=collections-modern"></script>
+  <noscript>This songbook needs JavaScript to load and play Strudel music.</noscript>
 </body>
 </html>
